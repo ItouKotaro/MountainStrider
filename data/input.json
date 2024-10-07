@@ -1,0 +1,67 @@
+{
+    "click":
+    {
+        "key": ["m:left","p:a"],
+        "input": "trigger"
+    },
+    "select_up":
+    {
+        "key": ["up","w","p:up"],
+        "input": "trigger"
+    },
+    "select_down":
+    {
+        "key": ["down","s","p:down"],
+        "input": "trigger"
+    },
+    "select_left":
+    {
+        "key": ["left","a","p:left"],
+        "input": "trigger"
+    },
+    "select_right":
+    {
+        "key": ["right","d","p:right"],
+        "input": "trigger"
+    },
+    "select_enter":
+    {
+        "key": ["m:left","enter","space","p:start","p:a"],
+        "input": "trigger"
+    },
+    "pause":
+    {
+        "key": ["esc","p","p:start"],
+        "input": "trigger"
+    },
+    "attack":
+    {
+        "key": ["m:left","p:x"],
+        "input": "press"
+    },
+    "dash":
+    {
+        "key": ["lshift","p:lt"],
+        "input": "press"
+    },
+    "jump":
+    {
+        "key": ["space","p:a"],
+        "input": "trigger"
+    },
+    "rolling":
+    {
+        "key": ["lctrl","p:ls"],
+        "input": "trigger"
+    },
+    "skill_0":
+    {
+        "key": ["f", "p:b"],
+        "input": "press"
+    },
+    "skill_1":
+    {
+        "key": ["2", "p:b"],
+        "input": "press"
+    }
+}

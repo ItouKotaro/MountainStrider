@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\general">
+      <UniqueIdentifier>{545392d9-43cc-4c0d-992a-1eed3e886f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\general">
+      <UniqueIdentifier>{c67f62ec-2f49-46c9-99af-6515bfa6929c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene">
+      <UniqueIdentifier>{d4b3ef1b-465b-4eb4-bb1e-d22bb1d65105}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scene">
+      <UniqueIdentifier>{c8cfac69-003f-4518-b56a-ab8aa5d55171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\component">
+      <UniqueIdentifier>{e65e60da-8f51-473b-bf0a-1515a2243338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\component\3d">
+      <UniqueIdentifier>{8c57a16f-9032-4c25-bcc0-1ac8b23e74ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\internal">
+      <UniqueIdentifier>{07a4ccc2-bc9d-41f2-a1eb-c36598ef1787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\internal">
+      <UniqueIdentifier>{6105fc87-ef7f-459c-b503-38b7c37eac66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\component\2d">
+      <UniqueIdentifier>{3c56361d-8717-45bf-8f21-111718f5a5f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\component">
+      <UniqueIdentifier>{a1017012-f855-4313-81f3-42a4a953cea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\component\3d">
+      <UniqueIdentifier>{de91ad76-8c9d-4e1e-88bc-a4b1f2dd4c21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\component\2d">
+      <UniqueIdentifier>{9e29c4b0-e9a6-4b48-94e4-f3d8f71663e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scripts">
+      <UniqueIdentifier>{89e376d2-9bf3-4233-8f0a-cc2fd1ad147f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts">
+      <UniqueIdentifier>{3726b76d-1001-4338-b364-216c8d88e389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\libs">
+      <UniqueIdentifier>{b1a7c9ba-2fa4-4297-8621-cd5017e006af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\libs">
+      <UniqueIdentifier>{544096e2-39ae-40ed-ad06-478f125f60a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\component\other">
+      <UniqueIdentifier>{782d327c-084c-44cd-8c9c-fefdcb146473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\component\other">
+      <UniqueIdentifier>{05511f29-1a82-456d-ba38-2277cc39ecba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\general\main.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\component.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\gameobject.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\transform.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\scene.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\game.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\camera.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\mesh.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\shadow.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\renderer.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\manager.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\light.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\2d\polygon.cpp">
+      <Filter>ソース ファイル\component\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\movement_space.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\collision.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\physics.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\data_manager.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\line.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\motion.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="Pch.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\start_scene.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\render_texture.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\field.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\result.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\audio_manager.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\input_system.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\benlib.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\billboard.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\particle.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\world_loader.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\other\flag.cpp">
+      <Filter>ソース ファイル\component\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\data_field.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\title.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\2d\text.cpp">
+      <Filter>ソース ファイル\component\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\other\render_objects_texture.cpp">
+      <Filter>ソース ファイル\component\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\3d\skybox.cpp">
+      <Filter>ソース ファイル\component\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\other\sound.cpp">
+      <Filter>ソース ファイル\component\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\other\emitter.cpp">
+      <Filter>ソース ファイル\component\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\2d\bar.cpp">
+      <Filter>ソース ファイル\component\2d</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\general\benlib.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\main.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\component.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\gameobject.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\transform.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\scene.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\game.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\camera.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\light.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\mesh.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\shadow.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\renderer.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\manager.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\2d\polygon.h">
+      <Filter>ヘッダー ファイル\component\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\movement_space.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\collision.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\physics.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\data_manager.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\line.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\motion.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="Pch.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\start_scene.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\render_texture.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\field.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\result.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\audio_manager.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\input_system.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\KeyAssignmentTable.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\billboard.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\particle.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\world_loader.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\other\flag.h">
+      <Filter>ヘッダー ファイル\component\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\data_field.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\title.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\2d\text.h">
+      <Filter>ヘッダー ファイル\component\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\other\render_objects_texture.h">
+      <Filter>ヘッダー ファイル\component\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\3d\skybox.h">
+      <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\other\sound.h">
+      <Filter>ヘッダー ファイル\component\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\other\emitter.h">
+      <Filter>ヘッダー ファイル\component\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\2d\bar.h">
+      <Filter>ヘッダー ファイル\component\2d</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
