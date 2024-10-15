@@ -20,13 +20,15 @@ void CGameScene::Init()
 	m_pCamera->SetTag("Camera");
 	m_pCamera->AddComponent<CCamera>();
 	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
+	m_pCamera->transform->Translate(100.0f, 0.0f, 100.0f);
+	m_pCamera->transform->LookAt({ 0.0f, -20.0f, 200.0f });
 
 	// ライトを作成
 	GameObject* pLight = new GameObject();
 	CD3DLight::SetDefaultD3DLight(pLight);
 
 	// ベンチを作成
-	GameObject* pBench = GameObject::LoadPrefab("data\\PREFAB\\bench.pref", Transform({ 0.0f, -20.0f, 200.0f }));
+	GameObject* pBench = GameObject::LoadPrefab("data\\PREFAB\\motor_bike.pref", Transform({ 0.0f, -20.0f, 200.0f }));
 }
 
 //=============================================================

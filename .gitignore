@@ -397,3 +397,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /Caplush.exe
+/data/prefabeditor_ui.ini
+/data/worldit_ui.ini

@@ -1,0 +1,129 @@
+{
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\MOTOR_BIKE\\body.x",
+            "name": "body",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        },
+        "1": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\MOTOR_BIKE\\handle.x",
+            "name": "handle",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    8.5,
+                    -23.399999618530273
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        },
+        "2": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\MOTOR_BIKE\\tire.x",
+            "name": "front",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    -24.0,
+                    -40.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        },
+        "3": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\MOTOR_BIKE\\tire.x",
+            "name": "behind",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    -24.0,
+                    28.899999618530273
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        }
+    },
+    "parent": {
+        "0": -1,
+        "1": 0,
+        "2": 0,
+        "3": 0
+    },
+    "prefab": {
+        "friction": 1.0,
+        "mass": 10.0,
+        "name": "MotorBike",
+        "tag": "Bike",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": false
+    }
+}
