@@ -24,7 +24,7 @@ private:
 
 	btRaycastVehicle::btVehicleTuning m_vehicleTuning;
 	btDefaultVehicleRaycaster* m_vehicleRaycaster;
-	btRaycastVehicle* m_raycastVehicle;
+	btRaycastVehicle* m_vehicle;
 };
 
 #endif // !_VEHICLE_H_

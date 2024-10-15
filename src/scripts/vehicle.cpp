@@ -35,17 +35,20 @@ void CVehicle::Init()
 	m_bodyRigidbody = new btRigidBody(rb_info);
 	CPhysics::GetInstance()->GetDynamicsWorld().addRigidBody(m_bodyRigidbody);
 
+	// ブロードフェイズ
+	//CPhysics::GetInstance()->GetDynamicsWorld().getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(m_bodyRigidbody->getBroadphaseHandle(), CPhysics::GetInstance()->GetDynamicsWorld().getDispatcher());
+
 	// レイキャスター
 	m_vehicleRaycaster = new btDefaultVehicleRaycaster(&CPhysics::GetInstance()->GetDynamicsWorld());
 
 	// 車両アクションインターフェイスを作成する
-	m_raycastVehicle = new btRaycastVehicle(m_vehicleTuning, m_bodyRigidbody, m_vehicleRaycaster);
-	m_bodyRigidbody = m_raycastVehicle->getRigidBody();
-	//m_bodyRigidbody->setActivationState(DISABLE_DEACTIVATION);
+	m_vehicle = new btRaycastVehicle(m_vehicleTuning, m_bodyRigidbody, m_vehicleRaycaster);
+	m_bodyRigidbody = m_vehicle->getRigidBody();
+	m_bodyRigidbody->setActivationState(DISABLE_DEACTIVATION);
 
 	// 追加する
-	CPhysics::GetInstance()->GetDynamicsWorld().addVehicle(m_raycastVehicle);
-	//m_raycastVehicle->setCoordinateSystem(0, 1, 2);
+	CPhysics::GetInstance()->GetDynamicsWorld().addVehicle(m_vehicle);
+	//m_vehicle->setCoordinateSystem(0, 1, 2);
 
 	btVector3 wheelDirectionCS0(0, -1, 0);
 	btVector3 wheelAxleCS(-1, 0, 0);
@@ -60,14 +63,14 @@ void CVehicle::Init()
 
 	// 車輪を追加する
 	btVector3 connectionPointCS0(0.0f, connectionHeight, 14.0f - 2.8f);
-	m_raycastVehicle->addWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, 0.6f, wheelRadius, m_vehicleTuning, true);
+	m_vehicle->addWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, 0.6f, wheelRadius, m_vehicleTuning, true);
 
 	connectionPointCS0 = btVector3(0.0f, connectionHeight, -14.0f + 2.8f);
-	m_raycastVehicle->addWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, 0.6f, wheelRadius, m_vehicleTuning, false);
+	m_vehicle->addWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, 0.6f, wheelRadius, m_vehicleTuning, false);
 
-	for (int i = 0; i < m_raycastVehicle->getNumWheels(); i++)
+	for (int i = 0; i < m_vehicle->getNumWheels(); i++)
 	{
-		btWheelInfo& wheel = m_raycastVehicle->getWheelInfo(i);
+		btWheelInfo& wheel = m_vehicle->getWheelInfo(i);
 		wheel.m_suspensionStiffness = suspensionStiffness;
 		wheel.m_wheelsDampingRelaxation = suspensionDamping;
 		wheel.m_wheelsDampingCompression = suspensionCompression;
@@ -82,11 +85,11 @@ void CVehicle::Init()
 void CVehicle::Uninit()
 {
 	// 物理ワールドから消す
-	CPhysics::GetInstance()->GetDynamicsWorld().removeVehicle(m_raycastVehicle);
-	if (m_raycastVehicle != nullptr)
+	CPhysics::GetInstance()->GetDynamicsWorld().removeVehicle(m_vehicle);
+	if (m_vehicle != nullptr)
 	{
-		delete m_raycastVehicle;
-		m_raycastVehicle = nullptr;
+		delete m_vehicle;
+		m_vehicle = nullptr;
 	}
 
 	// モーションステートを破棄する
@@ -117,23 +120,25 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
-	//for (int i = 0; i < 2; ++i)
-	//{
-	//	if (m_raycastVehicle)
-	//	{
-	//		btTransform wheelTransform = m_raycastVehicle->getWheelTransformWS(i);
-	//		
-	//	}
-	//}
+	for (int i = 0; i < 2; ++i)
+	{
+		if (m_vehicle)
+		{
+			btTransform wheelTransform = m_vehicle->getWheelTransformWS(i);
+			//m_raycastVehicle->updateVehicle(1. / 60.);
+		}
+	}
+
+	for (int i = 0; i < m_vehicle->getNumWheels(); i++)
+	{
+		m_vehicle->updateWheelTransform(i, true);
+	}
 
 
 	for (int i = 0; i < 2; ++i)
 	{
-		if (m_raycastVehicle)
-		{
-			int aa = m_raycastVehicle->getNumWheels();
-			m_raycastVehicle->applyEngineForce(10000.0f, i);
-			//m_raycastVehicle->setBrake(100.0f, i);
-		}
+		int aa = m_vehicle->getNumWheels();
+		m_vehicle->applyEngineForce(1000.0f, i);
+		//m_vehicle->setBrake(100.0f, i);
 	}
 }
