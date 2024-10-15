@@ -619,7 +619,7 @@ void CCollision::Create(GameObject* gameObject)
 	m_collisions.push_back(pCollision);
 
 	// ƒOƒ‹[ƒvID‚ðÝ’è‚·‚é
-	pCollision->m_nGroup = m_collisions.size();
+	pCollision->m_nGroup = static_cast<int>(m_collisions.size());
 }
 
 //=============================================================

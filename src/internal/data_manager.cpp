@@ -411,7 +411,7 @@ HRESULT CDataAudio::Load(const std::string& sPath)
 	m_fp.seekg(m_DataHead);
 	m_LoadedSize = 0;
 	m_DataSize -= m_DataSize % 100;
-	m_Length = m_DataSize / m_Bps;
+	m_Length = static_cast<unsigned int>(m_DataSize) / m_Bps;
 
 	std::vector<char> wavData(m_DataSize);
 	int read = Read(&wavData[0], m_DataSize);
@@ -456,5 +456,5 @@ int CDataAudio::Read(void* out, size_t size)
 		m_LoadedSize = 0;
 		m_fp.seekg(m_DataHead);
 	}
-	return size;
+	return static_cast<int>(size);
 }

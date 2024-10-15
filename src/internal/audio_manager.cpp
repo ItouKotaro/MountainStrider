@@ -93,7 +93,7 @@ bool WaveFile::Open(const char* path) {
 	m_fp.seekg(m_DataHead);
 	m_LoadedSize = 0;
 	m_DataSize -= m_DataSize % 100;
-	m_Length = m_DataSize / m_Bps;
+	m_Length = static_cast<unsigned int>(m_DataSize) / m_Bps;
 	return true;
 }
 
@@ -115,7 +115,7 @@ int WaveFile::Read(void* out, size_t size) {
 		m_LoadedSize = 0;
 		m_fp.seekg(m_DataHead);
 	}
-	return size;
+	return static_cast<int>(size);
 }
 
 ALuint WaveFile::CreateBuffer(ALuint buffer) {

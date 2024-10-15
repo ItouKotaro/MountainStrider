@@ -246,7 +246,7 @@ void GameObject::DestroyAll(bool bIncludeNot)
 //=============================================================
 void GameObject::DestroyDeathFlag()
 {
-	for (int i = m_gameObjects.size() - 1; i >= 0; i--)
+	for (int i = static_cast<int>(m_gameObjects.size()) - 1; i >= 0; i--)
 	{
 		if (m_gameObjects[i]->m_bDeathFlag)
 		{ // Ž€–Sƒtƒ‰ƒO‚ª‚Â‚¢‚Ä‚¢‚é‚Æ‚«

@@ -64,7 +64,7 @@ void CInputSystem::Uninit()
 {
 	// すべての入力デバイスを終了する
 	vector<CInputDevice*>& pInputDevice = CInputDevice::GetInputDevice();
-	int nNumDevice = pInputDevice.size();
+	int nNumDevice = static_cast<int>(pInputDevice.size());
 	for (int i = 0; i < nNumDevice; i++)
 	{
 		if (pInputDevice[0] != nullptr)
@@ -265,7 +265,7 @@ std::vector<std::string> CInputSystem::KeySplit(std::string key)
 	// 変数
 	vector<string> result;
 	unsigned int first = 0;
-	int last = key.find_first_of("&");
+	int last = static_cast<int>(key.find_first_of("&"));
 	if (last <= -1) result.push_back(key);
 
 	// &ごとに区切る
@@ -277,11 +277,11 @@ std::vector<std::string> CInputSystem::KeySplit(std::string key)
 
 		// 次の&までの範囲を取得
 		first = last + 1;
-		last = key.find_first_of("&", first);
+		last = static_cast<int>(key.find_first_of("&", first));
 
 		if (last == string::npos)
 		{
-			last = key.size();
+			last = static_cast<int>(key.size());
 		}
 	}
 

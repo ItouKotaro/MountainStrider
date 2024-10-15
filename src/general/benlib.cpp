@@ -77,7 +77,7 @@ void Benlib::BackFileChar(FILE* pFile, const int& nBackCount)
 
 void Benlib::RemovePathSplit(char* FilePath, const int& nSplit)
 {
-	int nLength = strlen(&FilePath[0]);
+	int nLength = static_cast<int>(strlen(&FilePath[0]));
 	int nPathSplit = 0;												 // パスの区切りカウント
 	int nLimitPathDel = nSplit;										 // パス削除のリミット
 

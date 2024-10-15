@@ -182,9 +182,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 //=============================================================
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	HDC hDC;
-	PAINTSTRUCT ps;
-
 	int nID;
 
 	switch (uMsg)

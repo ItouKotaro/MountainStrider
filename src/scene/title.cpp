@@ -19,14 +19,14 @@ void CTitleScene::Init()
 	GameObject* pBG = new GameObject;
 	pBG->AddComponent<CPolygon>();
 	pBG->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	pBG->transform->SetSize(CRenderer::SCREEN_WIDTH, CRenderer::SCREEN_HEIGHT);
+	pBG->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH), static_cast<float>(CRenderer::SCREEN_HEIGHT));
 
 	// テキスト
 	GameObject* pText = new GameObject;
 	pText->AddComponent<CText>();
 	pText->GetComponent<CText>()->SetText("<color=0,0,0><size=200>ゲーム名");
 	pText->GetComponent<CText>()->SetAlign(CText::ALIGN::CENTER);
-	pText->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, 120.0f);
+	pText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2, 120.0f);
 
 	// 選択肢を生成する
 	for (int i = 0; i < SELECT::MAX; i++)
@@ -48,7 +48,7 @@ void CTitleScene::Init()
 		m_pSelectObj[i]->AddComponent<CText>();
 		m_pSelectObj[i]->GetComponent<CText>()->SetText("<color=0,0,0>" + sShowName);
 		m_pSelectObj[i]->GetComponent<CText>()->SetAlign(CText::ALIGN::CENTER);
-		m_pSelectObj[i]->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, 600.0f + i * 200.0f);
+		m_pSelectObj[i]->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2, 600.0f + i * 200.0f);
 	}
 }
 

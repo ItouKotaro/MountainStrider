@@ -240,7 +240,7 @@ void CText::UpdateText()
         CSizeTag* pSizeTag = new CSizeTag();
         pSizeTag->SetSize(atoi(match.str(1).c_str()));
 
-        pSizeTag->SetIdx(match.position(0));
+        pSizeTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pSizeTag);
 
@@ -249,7 +249,7 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
@@ -262,7 +262,7 @@ void CText::UpdateText()
         CColorTag* pColorTag = new CColorTag();
         pColorTag->SetColor(D3DCOLOR_RGBA( atoi(match.str(1).c_str()), atoi(match.str(2).c_str()), atoi(match.str(3).c_str()), 255));
 
-        pColorTag->SetIdx(match.position(0));
+        pColorTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pColorTag);
 
@@ -271,7 +271,7 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
@@ -285,7 +285,7 @@ void CText::UpdateText()
         pColorTag->SetFillColor(m_fillColor);
         pColorTag->SetEdgeColor(m_outlineColor);
 
-        pColorTag->SetIdx(match.position(0));
+        pColorTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pColorTag);
 
@@ -294,7 +294,7 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
@@ -307,7 +307,7 @@ void CText::UpdateText()
         CFontColorTag* pFontColorTag = new CFontColorTag();
         pFontColorTag->SetColor(D3DCOLOR_RGBA(atoi(match.str(1).c_str()), atoi(match.str(2).c_str()), atoi(match.str(3).c_str()), 255));
 
-        pFontColorTag->SetIdx(match.position(0));
+        pFontColorTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pFontColorTag);
 
@@ -316,7 +316,7 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
@@ -329,7 +329,7 @@ void CText::UpdateText()
         CFontColorTag* pFontColorTag = new CFontColorTag();
         pFontColorTag->SetColor(m_fillColor);
 
-        pFontColorTag->SetIdx(match.position(0));
+        pFontColorTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pFontColorTag);
 
@@ -338,7 +338,7 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
@@ -351,7 +351,7 @@ void CText::UpdateText()
         CEdgeColorTag* pEdgeColorTag = new CEdgeColorTag();
         pEdgeColorTag->SetColor(D3DCOLOR_RGBA(atoi(match.str(1).c_str()), atoi(match.str(2).c_str()), atoi(match.str(3).c_str()), 255));
 
-        pEdgeColorTag->SetIdx(match.position(0));
+        pEdgeColorTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pEdgeColorTag);
 
@@ -360,7 +360,7 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
@@ -373,7 +373,7 @@ void CText::UpdateText()
         CEdgeColorTag* pEdgeColorTag = new CEdgeColorTag();
         pEdgeColorTag->SetColor(m_outlineColor);
 
-        pEdgeColorTag->SetIdx(match.position(0));
+        pEdgeColorTag->SetIdx(static_cast<int>(match.position(0)));
         sShowText.erase(match.position(0), match.length());
         vecTextTag.push_back(pEdgeColorTag);
 
@@ -382,12 +382,12 @@ void CText::UpdateText()
         {
             if (vecTextTag[i]->GetIdx() > match.position(0))
             {
-                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - match.length());
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
     }
 
-    int nTextLength = sShowText.length();     // ï∂éöêî
+    int nTextLength = static_cast<int>(sShowText.length());     // ï∂éöêî
     float fTextWidth = 0.0f;
     int fontSize = m_fontSize;
     D3DXCOLOR fillColor = m_fillColor;
