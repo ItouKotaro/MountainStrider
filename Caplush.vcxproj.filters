@@ -186,6 +186,9 @@
     <ClCompile Include="src\component\2d\bar.cpp">
       <Filter>ソース ファイル\component\2d</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\vehicle.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -307,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="src\component\2d\bar.h">
       <Filter>ヘッダー ファイル\component\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\vehicle.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

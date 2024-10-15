@@ -107,8 +107,7 @@ void CPhysics::Init()
 
 	// デバッグ
 	m_debugDraw = new CPhysicsDebugDraw();
-	//m_debugDraw->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	m_debugDraw->setDebugMode(btIDebugDraw::DBG_NoDebug);
+	m_debugDraw->setDebugMode(SHOW_WIREFRAME ? btIDebugDraw::DBG_DrawWireframe : btIDebugDraw::DBG_NoDebug);
 	m_dynamicsWorld->setDebugDrawer(m_debugDraw);
 
 	// アクションインターフェイス

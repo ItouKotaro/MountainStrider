@@ -13,6 +13,9 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
+// 表示設定
+constexpr bool SHOW_WIREFRAME = true;			// ワイヤーフレームを表示するか
+
 class CLine;
 
 // 物理デバッグの描画

@@ -125,6 +125,11 @@ void CSkybox::Uninit()
 //=============================================================
 void CSkybox::Draw()
 {
+	if (m_pTexture[0] == nullptr)
+	{ // テクスチャが設定されていないときは無効
+		return;
+	}
+
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();		// デバイスを取得
 	D3DXMATRIX mtx = m_pCameraTransform->GetTranslationMatrix();
 
