@@ -9,6 +9,8 @@
 #include "component/3d/light.h"
 #include "component/3d/mesh.h"
 #include "component/3d/collision.h"
+#include "component/3d/field.h"
+#include "scripts/vehicle.h"
 
 //=============================================================
 // [CGameScene] 初期化
@@ -20,7 +22,7 @@ void CGameScene::Init()
 	m_pCamera->SetTag("Camera");
 	m_pCamera->AddComponent<CCamera>();
 	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
-	m_pCamera->transform->Translate(0.0f, 100.0f, -200.0f);
+	m_pCamera->transform->Translate(100.0f, 0.0f, -200.0f);
 	m_pCamera->transform->LookAt({ 0.0f, 0.0f, 0.0f });
 
 	// ライトを作成
@@ -34,6 +36,12 @@ void CGameScene::Init()
 	GameObject* pFloor = new GameObject;
 	pFloor->transform->Translate(0.0f, -30.0f, 100.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(200.0f, 1.0f, 200.0f));
+	pFloor->AddComponent<CField>();
+	pFloor->GetComponent<CField>()->Set(400.0f, 400.0f);
+
+	// バイクを生成する
+	GameObject* pBike = new GameObject;
+	pBike->AddComponent<CVehicle>();
 }
 
 //=============================================================
