@@ -15,7 +15,7 @@ class Transform
 public:
 	Transform(D3DXVECTOR3 pos = { 0.0f, 0.0f, 0.0f }, D3DXVECTOR3 rot = { 0.0f, 0.0f, 0.0f }, D3DXVECTOR3 scale = { 1.0f, 1.0f, 1.0f }) {
 		m_position = pos;
-		m_rotation = rot;
+		this->SetRot(rot);
 		m_scale = scale;
 		m_size = { 1.0f, 1.0f };
 		m_pParent = nullptr;
@@ -24,20 +24,20 @@ public:
 	void Translate(float x, float y, float z) { m_position += {x, y, z}; }
 	void Translate(D3DXVECTOR3 pos) { Translate(pos.x, pos.y, pos.z); }
 	void Rotate(float x, float y, float z) {
-		D3DXVECTOR3 currentRot = GetRot();
-		SetRot(currentRot.x + x, currentRot.y + y, currentRot.z + z);
+		D3DXVECTOR3 axis;
+		D3DXQUATERNION q;
+		D3DXQuaternionRotationYawPitchRoll(&q, y, x, z);
+		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
 	}
 	void Rotate(D3DXVECTOR3 rot) {
-		D3DXVECTOR3 currentRot = GetRot();
-		currentRot += rot;
-		SetRot(currentRot);
+		Rotate(rot.x, rot.y, rot.z);
 	}
 
 	D3DXVECTOR3 GetPos() { return m_position; }
 	float GetPosX() { return m_position.x; }
 	float GetPosY() { return m_position.y; }
 	float GetPosZ() { return m_position.z; }
-	D3DXVECTOR3 GetRot() { return m_rotation; }
+	D3DXVECTOR3 GetRot();
 	float GetRotX() { return GetRot().x; }
 	float GetRotY() { return GetRot().y; }
 	float GetRotZ() { return GetRot().z; }
@@ -80,6 +80,7 @@ public:
 	void SetPos(D3DXVECTOR3 position) { SetPos(position.x, position.y, position.z); }
 	void SetPos(float x, float y) { SetPos(x, y, m_position.z);  }
 	void SetPos(D3DXVECTOR2 position) { SetPos(position.x, position.y, m_position.z); }
+	void SetQuaternion(D3DXQUATERNION quaternion) { m_rotation = quaternion; }
 	void SetRot(float x, float y, float z);
 	void SetRot(D3DXVECTOR3 rotation) { SetRot(rotation.x, rotation.y, rotation.z); }
 	void SetRot(float fAngle) { SetRot(m_rotation.x, m_rotation.y, fAngle); }
@@ -96,7 +97,7 @@ public:
 	bool operator ==(Transform& transform);
 private:
 	D3DXVECTOR3 m_position;		// 位置
-	D3DXVECTOR3 m_rotation;	// 回転
+	D3DXQUATERNION m_rotation;	// 回転
 	D3DXVECTOR3 m_scale;			// スケール
 	D3DXVECTOR2 m_size;			// サイズ（2D）
 	D3DXMATRIX m_mtx;				// マトリックス

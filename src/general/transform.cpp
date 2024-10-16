@@ -20,7 +20,9 @@ void Transform::SetPos(float x, float y, float z)
 //=============================================================
 void Transform::SetRot(float x, float y, float z)
 {
-	m_rotation = { x, y, z };
+	D3DXQUATERNION q;
+	D3DXQuaternionRotationYawPitchRoll(&q, y, x, z);
+	m_rotation = q;
 }
 
 //=============================================================
@@ -42,6 +44,21 @@ void Transform::SetParent(Transform* pParent)
 	// 指定したトランスフォームの親が自分以外の時のみ、設定する
 	if (pParent->GetParent() != this)
 		m_pParent = pParent;
+}
+
+//=============================================================
+// [Transform] 回転の取得
+//=============================================================
+D3DXVECTOR3 Transform::GetRot()
+{
+	auto sx = -(2 * m_rotation.y * m_rotation.z - 2 * m_rotation.x * m_rotation.w);
+	auto unlocked = std::abs(sx) < 0.99999f;
+	return D3DXVECTOR3(
+		std::asin(sx),
+		unlocked ? std::atan2(2 * m_rotation.x * m_rotation.z + 2 * m_rotation.y * m_rotation.w, 2 * m_rotation.w * m_rotation.w + 2 * m_rotation.z * m_rotation.z - 1)
+		: std::atan2(-(2 * m_rotation.x * m_rotation.z - 2 * m_rotation.y * m_rotation.w), 2 * m_rotation.w * m_rotation.w + 2 * m_rotation.x * m_rotation.x - 1),
+		unlocked ? std::atan2(2 * m_rotation.x * m_rotation.y + 2 * m_rotation.z * m_rotation.w, 2 * m_rotation.w * m_rotation.w + 2 * m_rotation.y * m_rotation.y - 1) : 0
+	);
 }
 
 //=============================================================
@@ -129,7 +146,8 @@ D3DXMATRIX& Transform::GetMatrix()
 
 	// 向きを反映
 	D3DXVECTOR3 rotation = GetRot();
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, rotation.y, rotation.x, rotation.z);
+	D3DXMatrixRotationQuaternion(&mtxRot, &m_rotation);
+	//D3DXMatrixRotationYawPitchRoll(&mtxRot, rotation.y, rotation.x, rotation.z);
 	D3DXMatrixMultiply(&m_mtx, &m_mtx, &mtxRot);
 
 	// 位置を反映

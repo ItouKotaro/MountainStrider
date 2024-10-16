@@ -115,7 +115,7 @@ void CPhysics::Init()
 	m_dynamicsWorld->addAction(m_actionInterface);
 
 	// d—Í‚ðÝ’è
-	m_dynamicsWorld->setGravity(btVector3(0, -90, 0));
+	m_dynamicsWorld->setGravity(btVector3(0, -19, 0));
 }
 
 //=============================================================
@@ -282,7 +282,7 @@ void CPhysics::Update()
 			pTransform->SetPos({ resultTrans.getOrigin().getX(), resultTrans.getOrigin().getY(), resultTrans.getOrigin().getZ() });
 
 			// Œü‚«‚Ì”½‰f
-			pTransform->SetRot(Benlib::QuaternionToEuler(D3DXQUATERNION(resultTrans.getRotation().getX(), resultTrans.getRotation().getY(), resultTrans.getRotation().getZ(), resultTrans.getRotation().getW())));
+			pTransform->SetQuaternion(D3DXQUATERNION(resultTrans.getRotation().getX(), resultTrans.getRotation().getY(), resultTrans.getRotation().getZ(), resultTrans.getRotation().getW()));
 		}
 	}
 
