@@ -72,6 +72,14 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
+	if (INPUT_INSTANCE->onTrigger("space"))
+	{
+		GameObject* pObj = new GameObject();
+		pObj->transform->Translate(0.0f, 10.0f, 0.0f);
+		pObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
+		pObj->AddComponent<CSphereCollider>(10.0f);
+		pObj->AddComponent<CRigidBody>();
+	}
 }
 
 //=============================================================

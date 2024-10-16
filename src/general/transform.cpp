@@ -72,20 +72,35 @@ D3DXVECTOR3 Transform::GetWPos()
 }
 
 //=============================================================
-// [Transform] ワールド座標での回転を取得
+// [Transform] ワールド座標でのクォータニオンを取得
+//=============================================================
+D3DXQUATERNION Transform::GetWQuaternion()
+{
+	D3DXQUATERNION worldQuaternion;
+	D3DXQuaternionIdentity(&worldQuaternion);
+
+	Transform* worldTransform = this;
+	do
+	{
+		D3DXQUATERNION q = worldTransform->GetQuaternion();
+		D3DXQuaternionMultiply(&worldQuaternion, &worldQuaternion, &q);
+
+		// 次の親に進む
+		worldTransform = worldTransform->GetParent();
+
+	} while (worldTransform != nullptr);
+
+	// 正規化
+	D3DXQuaternionNormalize(&worldQuaternion, &worldQuaternion);
+
+	return worldQuaternion;
+}
+
+//=============================================================
+// [Transform] ワールド座標でのオイラー角を取得
 //=============================================================
 D3DXVECTOR3 Transform::GetWRot()
 {
-	//rot.z = atan2f(mtx._12, mtx._22);
-	//rot.x = asinf(-mtx._32);
-	//rot.y = atan2f(mtx._31, mtx._33);
-
-	//if (fabsf(cosf(rot.x)) < 1.0e-6f)
-	//{
-	//	rot.z += mtx._12 > 0.0f ? D3DX_PI : -D3DX_PI;
-	//	rot.y += mtx._31 > 0.0f ? D3DX_PI : -D3DX_PI;
-	//}
-
 	// 親のワールド座標をローカル座標に足す
 	D3DXVECTOR3 worldRot = { 0.0f, 0.0f, 0.0f };
 	Transform* worldTransform = this;
@@ -147,7 +162,6 @@ D3DXMATRIX& Transform::GetMatrix()
 	// 向きを反映
 	D3DXVECTOR3 rotation = GetRot();
 	D3DXMatrixRotationQuaternion(&mtxRot, &m_rotation);
-	//D3DXMatrixRotationYawPitchRoll(&mtxRot, rotation.y, rotation.x, rotation.z);
 	D3DXMatrixMultiply(&m_mtx, &m_mtx, &mtxRot);
 
 	// 位置を反映
@@ -171,7 +185,7 @@ D3DXMATRIX& Transform::GetMatrix()
 bool Transform::operator ==(Transform& transform)
 {
 	if (GetWPos() == transform.GetWPos() &&
-		GetWRot() == transform.GetWRot() &&
+		GetWQuaternion() == transform.GetWQuaternion() &&
 		GetWScale() == transform.GetWScale() &&
 		m_pParent == transform.m_pParent)
 	{

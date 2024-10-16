@@ -19,6 +19,9 @@ btDiscreteDynamicsWorld* CPhysics::m_dynamicsWorld = nullptr;
 btAlignedObjectArray<btCollisionShape*> CPhysics::m_collisionShapes;
 CPhysicsDebugDraw* CPhysics::m_debugDraw = nullptr;
 
+// 設定
+constexpr bool COLLISION_WIREFRAME = true;
+
 //=============================================================
 // [CPhysicsDebugDraw] コンストラクタ
 //=============================================================
@@ -107,7 +110,7 @@ void CPhysics::Init()
 
 	// デバッグ
 	m_debugDraw = new CPhysicsDebugDraw();
-	m_debugDraw->setDebugMode(SHOW_WIREFRAME ? btIDebugDraw::DBG_DrawWireframe : btIDebugDraw::DBG_NoDebug);
+	m_debugDraw->setDebugMode(COLLISION_WIREFRAME ? btIDebugDraw::DBG_DrawWireframe : btIDebugDraw::DBG_NoDebug);
 	m_dynamicsWorld->setDebugDrawer(m_debugDraw);
 
 	// アクションインターフェイス
@@ -115,7 +118,7 @@ void CPhysics::Init()
 	m_dynamicsWorld->addAction(m_actionInterface);
 
 	// 重力を設定
-	m_dynamicsWorld->setGravity(btVector3(0, -19, 0));
+	m_dynamicsWorld->setGravity(btVector3(0, -90, 0));
 }
 
 //=============================================================
@@ -212,15 +215,13 @@ void CPhysics::Update()
 		btTransform resultTrans;		// 結果トランスフォーム
 
 		// 前回の回転に変更が加えられていないか
-		if (pCollisions[i]->GetBeforeRot() != pCollisions[i]->GetAttachObject()->transform->GetWRot())
+		if (pCollisions[i]->GetBeforeRot() != pCollisions[i]->GetAttachObject()->transform->GetWQuaternion())
 		{
 			// 変更後の回転の取得
-			D3DXVECTOR3 wRot = pCollisions[i]->GetAttachObject()->transform->GetWRot();
+			D3DXQUATERNION wRot = pCollisions[i]->GetAttachObject()->transform->GetWQuaternion();
 
 			// 新たに設定する回転を作成する
-			btQuaternion quaternion;
-			quaternion.getIdentity();
-			quaternion.setEuler(wRot.y, wRot.x, wRot.z);
+			btQuaternion quaternion(wRot.x, wRot.y, wRot.z, wRot.w);
 
 			// 回転を適用する
 			if (pRigidBody != nullptr)
@@ -256,7 +257,6 @@ void CPhysics::Update()
 				}
 				else
 				{ // キネマティックオブジェクト以外のとき
-					//pRigidBody->getWorldTransform().getOrigin() = btVector3(wPos.x, wPos.y, wPos.z);
 					D3DXVECTOR3 moveTrans = wPos - pCollisions[i]->GetBeforePos();
 					pRigidBody->translate(btVector3(moveTrans.x, moveTrans.y, moveTrans.z));
 				}
@@ -312,7 +312,7 @@ CCollision::CCollision(GameObject* gameObject) : m_pAttachObject(gameObject)
 	m_nMask = 0;
 	m_bUseFilter = false;
 	m_beforePos = gameObject->transform->GetWPos();
-	m_beforeRot = gameObject->transform->GetWRot();
+	m_beforeRot = gameObject->transform->GetWQuaternion();
 }
 
 //=============================================================
@@ -377,7 +377,7 @@ void CCollision::Uninit()
 void CCollision::SaveTransform()
 {
 	m_beforePos = m_pAttachObject->transform->GetWPos();
-	m_beforeRot = m_pAttachObject->transform->GetWRot();
+	m_beforeRot = m_pAttachObject->transform->GetWQuaternion();
 }
 
 //=============================================================
@@ -618,7 +618,7 @@ void CCollision::Create(GameObject* gameObject)
 	m_collisions.push_back(pCollision);
 
 	// グループIDを設定する
-	pCollision->m_nGroup = static_cast<int>(m_collisions.size());
+	pCollision->m_nGroup = m_collisions.size();
 }
 
 //=============================================================

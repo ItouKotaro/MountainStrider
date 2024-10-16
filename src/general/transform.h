@@ -37,6 +37,7 @@ public:
 	float GetPosX() { return m_position.x; }
 	float GetPosY() { return m_position.y; }
 	float GetPosZ() { return m_position.z; }
+	D3DXQUATERNION GetQuaternion() { return m_rotation; }
 	D3DXVECTOR3 GetRot();
 	float GetRotX() { return GetRot().x; }
 	float GetRotY() { return GetRot().y; }
@@ -54,6 +55,7 @@ public:
 	float GetWPosX() { return GetWPos().x; }
 	float GetWPosY() { return GetWPos().y; }
 	float GetWPosZ() { return GetWPos().z; }
+	D3DXQUATERNION GetWQuaternion();
 	D3DXVECTOR3 GetWRot();
 	float GetWRotX() { return GetWRot().x; }
 	float GetWRotY() { return GetWRot().y; }

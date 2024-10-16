@@ -13,9 +13,6 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
-// 表示設定
-constexpr bool SHOW_WIREFRAME = true;			// ワイヤーフレームを表示するか
-
 class CLine;
 
 // 物理デバッグの描画
@@ -89,7 +86,7 @@ public:
 	void SaveTransform();									// トランスフォーム値を保存する
 
 	const D3DXVECTOR3& GetBeforePos() { return m_beforePos; }					// 前回の位置の取得
-	const D3DXVECTOR3& GetBeforeRot() { return m_beforeRot; }					// 前回の回転の取得
+	const D3DXQUATERNION& GetBeforeRot() { return m_beforeRot; }			// 前回の回転の取得
 
 	GameObject* GetAttachObject() { return m_pAttachObject; }					// アタッチされているゲームオブジェクトの取得
 	btGhostObject* GetGhostObject() { return m_pGhostObject; }					// ゴーストオブジェクトの取得
@@ -136,8 +133,8 @@ private:
 	
 
 	// 前回の値
-	D3DXVECTOR3 m_beforePos;		// 位置
-	D3DXVECTOR3 m_beforeRot;		// 回転
+	D3DXVECTOR3 m_beforePos;			// 位置
+	D3DXQUATERNION m_beforeRot;	// 回転
 };
 
 #endif // !_PHYSICS_3D_H_
