@@ -40,8 +40,24 @@ void CGameScene::Init()
 	pFloor->GetComponent<CField>()->Set(400.0f, 400.0f);
 
 	// バイクを生成する
-	GameObject* pBike = new GameObject;
-	pBike->AddComponent<CVehicle>();
+	//GameObject* pBike = new GameObject;
+	//pBike->AddComponent<CVehicle>();
+
+	//GameObject* pBall = new GameObject;
+	//pBall->AddComponent<CSphereCollider>(10.0f);
+	//pBall->AddComponent<CRigidBody>();
+	//CCollision::GetCollision(pBall)->SetMass(0.0f);
+	//pBall->transform->Translate(0.0f, 20.0f, 0.0f);
+
+	//GameObject* pBox = new GameObject;
+	//pBox->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 5.0f, 5.0f));
+	//pBox->AddComponent<CRigidBody>();
+
+	//pBox->AddComponent<CPoint2PointConstraint>()->SetConstraint(
+	//	CCollision::GetCollision(pBall)->GetRigidBody(),
+	//	CCollision::GetCollision(pBox)->GetRigidBody(),
+	//	{ 0.0f, 10.0f, 0.0f }, { 0.0f, 30.0f, 0.0f }
+	//);
 }
 
 //=============================================================

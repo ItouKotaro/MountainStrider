@@ -34,6 +34,41 @@ public:
 	CCollision* GetCollision();					// コリジョンの取得
 };
 
+// 点球結合
+class CPoint2PointConstraint : public Component
+{
+public:
+	CPoint2PointConstraint();
+	void Uninit() override;
+	void SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& pivotInB);
+private:
+	btPoint2PointConstraint* m_p2p;
+};
+
+// ヒンジ結合
+class CHingeConstraint : public Component
+{
+public:
+	CHingeConstraint();
+	void Uninit() override;
+	void SetConstraint(btRigidBody* rb, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& axisInA);
+	btHingeConstraint* GetHinge() { return m_hinge; }
+private:
+	btHingeConstraint* m_hinge;
+};
+
+// 2軸ヒンジ結合
+class CHinge2Constraint : public Component
+{
+public:
+	CHinge2Constraint();
+	void Uninit() override;
+	void SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& anchor, const D3DXVECTOR3& parentAxis, const D3DXVECTOR3& childAxis);
+	btHinge2Constraint* GetHinge2() { return m_hinge2; }
+private:
+	btHinge2Constraint* m_hinge2;
+};
+
 // コライダー基底クラス
 class CCollider : public Component
 {

@@ -84,6 +84,140 @@ CCollision* CGhostObject::GetCollision()
 	return CCollision::GetCollision(gameObject);
 }
 
+
+//=============================================================
+// [CPoint2PointConstraint] コンストラクタ
+//=============================================================
+CPoint2PointConstraint::CPoint2PointConstraint() : 
+	m_p2p(nullptr)
+{
+}
+
+//=============================================================
+// [CPoint2PointConstraint] 終了
+//=============================================================
+void CPoint2PointConstraint::Uninit()
+{
+	if (m_p2p != nullptr)
+	{
+		// 物理ワールドから削除する
+		CPhysics::GetInstance()->GetDynamicsWorld().removeConstraint(m_p2p);
+
+		// 破棄する
+		delete m_p2p;
+		m_p2p = nullptr;
+	}
+}
+
+//=============================================================
+// [CPoint2PointConstraint] 拘束設定
+//=============================================================
+void CPoint2PointConstraint::SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& pivotInB)
+{
+	// 破棄する
+	CPoint2PointConstraint::Uninit();
+
+	// 作成する
+	m_p2p = new btPoint2PointConstraint(
+		*rb1, 
+		*rb2, 
+		btVector3(pivotInA.x, pivotInA.y, pivotInA.z), 
+		btVector3(pivotInB.x, pivotInB.y, pivotInB.z)
+	);
+
+	// 設定する
+	CPhysics::GetInstance()->GetDynamicsWorld().addConstraint(m_p2p);
+}
+
+
+//=============================================================
+// [CHingeConstraint] コンストラクタ
+//=============================================================
+CHingeConstraint::CHingeConstraint() :
+	m_hinge(nullptr)
+{
+}
+
+//=============================================================
+// [CHingeConstraint] 終了
+//=============================================================
+void CHingeConstraint::Uninit()
+{
+	if (m_hinge != nullptr)
+	{
+		// 物理ワールドから削除する
+		CPhysics::GetInstance()->GetDynamicsWorld().removeConstraint(m_hinge);
+
+		// 破棄する
+		delete m_hinge;
+		m_hinge = nullptr;
+	}
+}
+
+//=============================================================
+// [CHingeConstraint] 拘束設定
+//=============================================================
+void CHingeConstraint::SetConstraint(btRigidBody* rb, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& axisInA)
+{
+	// 破棄する
+	CHingeConstraint::Uninit();
+
+	// 作成する
+	m_hinge = new btHingeConstraint(
+		*rb,
+		btVector3(pivotInA.x, pivotInA.y, pivotInA.z),
+		btVector3(axisInA.x, axisInA.y, axisInA.z)
+	);
+
+	// 設定する
+	CPhysics::GetInstance()->GetDynamicsWorld().addConstraint(m_hinge);
+}
+
+
+//=============================================================
+// [CHinge2Constraint] コンストラクタ
+//=============================================================
+CHinge2Constraint::CHinge2Constraint() :
+	m_hinge2(nullptr)
+{
+}
+
+//=============================================================
+// [CHinge2Constraint] 終了
+//=============================================================
+void CHinge2Constraint::Uninit()
+{
+	if (m_hinge2 != nullptr)
+	{
+		// 物理ワールドから削除する
+		CPhysics::GetInstance()->GetDynamicsWorld().removeConstraint(m_hinge2);
+
+		// 破棄する
+		delete m_hinge2;
+		m_hinge2 = nullptr;
+	}
+}
+
+//=============================================================
+// [CHinge2Constraint] 拘束設定
+//=============================================================
+void CHinge2Constraint::SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& anchor, const D3DXVECTOR3& parentAxis, const D3DXVECTOR3& childAxis)
+{
+	// 破棄する
+	CHinge2Constraint::Uninit();
+
+	// 作成する
+	//m_hinge2 = new btHinge2Constraint(
+	//	*rb1, *rb2,
+	//	btVector3(anchor.x, anchor.y, anchor.z),
+	//	btVector3(parentAxis.x, parentAxis.y, parentAxis.z),
+	//	btVector3(childAxis.x, childAxis.y, childAxis.z)
+	//);
+
+	// 設定する
+	CPhysics::GetInstance()->GetDynamicsWorld().addConstraint(m_hinge2, true);
+}
+
 //=============================================================
 // [CBoxCollider] コンストラクタ
 //=============================================================

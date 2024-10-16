@@ -76,7 +76,7 @@ public:
 		return mtx;
 	}
 
-	void SetPos(float x, float y, float z) { m_position = { x, y, z }; }
+	void SetPos(float x, float y, float z);
 	void SetPos(D3DXVECTOR3 position) { SetPos(position.x, position.y, position.z); }
 	void SetPos(float x, float y) { SetPos(x, y, m_position.z);  }
 	void SetPos(D3DXVECTOR2 position) { SetPos(position.x, position.y, m_position.z); }
