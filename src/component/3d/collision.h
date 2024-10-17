@@ -19,10 +19,8 @@ public:
 
 	btRigidBody* GetRigidBody();		// リジッドボディの取得
 	CCollision* GetCollision();			// コリジョンの取得
-	void SetAlwayActive(bool bActive) { m_bAlwayActive = bActive; }
-	bool GetAlwayActive() { return m_bAlwayActive; }
+	void EnableAlwayActive();
 private:
-	bool m_bAlwayActive;						// 常にアクティブ
 };
 
 // ゴーストオブジェクト
@@ -52,6 +50,7 @@ public:
 	CHingeConstraint();
 	void Uninit() override;
 	void SetConstraint(btRigidBody* rb, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& axisInA);
+	void SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& pivotInB, const D3DXVECTOR3& axisInA, const D3DXVECTOR3& axisInB);
 	btHingeConstraint* GetHinge() { return m_hinge; }
 private:
 	btHingeConstraint* m_hinge;
@@ -63,7 +62,7 @@ class CHinge2Constraint : public Component
 public:
 	CHinge2Constraint();
 	void Uninit() override;
-	void SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& anchor, const D3DXVECTOR3& parentAxis, const D3DXVECTOR3& childAxis);
+	void SetConstraint(btRigidBody* rb1, btRigidBody* rb2, D3DXVECTOR3 anchor, D3DXVECTOR3 parentAxis, D3DXVECTOR3 childAxis);
 	btHinge2Constraint* GetHinge2() { return m_hinge2; }
 private:
 	btHinge2Constraint* m_hinge2;

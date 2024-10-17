@@ -134,6 +134,14 @@ void CPhysics::Uninit()
 		delete shape;
 	}
 
+	// 拘束を削除する
+	for (int i = 0; i < m_dynamicsWorld->getNumConstraints(); i++)
+	{
+		btTypedConstraint* pConstraint = m_dynamicsWorld->getConstraint(i);
+		m_dynamicsWorld->removeConstraint(pConstraint);
+		delete pConstraint;
+	}
+
 	// アクションインターフェイスの破棄
 	if (m_actionInterface != nullptr)
 	{

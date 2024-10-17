@@ -30,10 +30,6 @@ void CRigidBody::Init()
 //=============================================================
 void CRigidBody::Update()
 {
-	if (m_bAlwayActive)
-	{
-		GetRigidBody()->activate(true);
-	}
 }
 
 //=============================================================
@@ -50,6 +46,14 @@ btRigidBody* CRigidBody::GetRigidBody()
 CCollision* CRigidBody::GetCollision()
 {
 	return CCollision::GetCollision(gameObject);
+}
+
+//=============================================================
+// [CRigidBody] 常にアクティブ
+//=============================================================
+void CRigidBody::EnableAlwayActive()
+{
+	GetRigidBody()->setActivationState(DISABLE_DEACTIVATION);
 }
 
 //=============================================================
@@ -173,6 +177,25 @@ void CHingeConstraint::SetConstraint(btRigidBody* rb, const D3DXVECTOR3& pivotIn
 	CPhysics::GetInstance()->GetDynamicsWorld().addConstraint(m_hinge);
 }
 
+//=============================================================
+// [CHingeConstraint] 拘束設定
+//=============================================================
+void CHingeConstraint::SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& pivotInB, const D3DXVECTOR3& axisInA, const D3DXVECTOR3& axisInB)
+{
+	// 破棄する
+	CHingeConstraint::Uninit();
+
+	// 作成する
+	m_hinge = new btHingeConstraint(
+		*rb1, *rb2,
+		btVector3(pivotInA.x, pivotInA.y, pivotInA.z), btVector3(pivotInB.x, pivotInB.y, pivotInB.z),
+		btVector3(axisInA.x, axisInA.y, axisInA.z), btVector3(axisInB.x, axisInB.y, axisInB.z)
+	);
+
+	// 設定する
+	CPhysics::GetInstance()->GetDynamicsWorld().addConstraint(m_hinge);
+}
+
 
 //=============================================================
 // [CHinge2Constraint] コンストラクタ
@@ -201,18 +224,21 @@ void CHinge2Constraint::Uninit()
 //=============================================================
 // [CHinge2Constraint] 拘束設定
 //=============================================================
-void CHinge2Constraint::SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& anchor, const D3DXVECTOR3& parentAxis, const D3DXVECTOR3& childAxis)
+void CHinge2Constraint::SetConstraint(btRigidBody* rb1, btRigidBody* rb2, D3DXVECTOR3 anchor, D3DXVECTOR3 parentAxis, D3DXVECTOR3 childAxis)
 {
 	// 破棄する
 	CHinge2Constraint::Uninit();
 
 	// 作成する
-	//m_hinge2 = new btHinge2Constraint(
-	//	*rb1, *rb2,
-	//	btVector3(anchor.x, anchor.y, anchor.z),
-	//	btVector3(parentAxis.x, parentAxis.y, parentAxis.z),
-	//	btVector3(childAxis.x, childAxis.y, childAxis.z)
-	//);
+	btVector3 btAnchor = btVector3(anchor.x, anchor.y, anchor.z);
+	btVector3 btParentAxis = btVector3(parentAxis.x, parentAxis.y, parentAxis.z);
+	btVector3 btChildAxis = btVector3(childAxis.x, childAxis.y, childAxis.z);
+	m_hinge2 = new btHinge2Constraint(
+		*rb1, *rb2,
+		btAnchor,
+		btParentAxis,
+		btChildAxis
+	);
 
 	// 設定する
 	CPhysics::GetInstance()->GetDynamicsWorld().addConstraint(m_hinge2, true);
