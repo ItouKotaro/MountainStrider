@@ -9,7 +9,6 @@
 
 #include "component.h"
 #include "internal/physics.h"
-#include "BulletDynamics/Vehicle/btRaycastVehicle.h"
 
 // ŽÔ—¼
 class CVehicle : public Component
@@ -19,12 +18,9 @@ public:
 	void Uninit() override;
 	void Update() override;
 private:
-	btRigidBody* m_bodyRigidbody;
-	btMotionState* m_pMotionState;
-
-	btRaycastVehicle::btVehicleTuning m_vehicleTuning;
-	btDefaultVehicleRaycaster* m_vehicleRaycaster;
-	btRaycastVehicle* m_vehicle;
+	GameObject* m_pHandle;
+	GameObject* m_pFrontTire;
+	GameObject* m_pBackTire;
 };
 
 #endif // !_VEHICLE_H_

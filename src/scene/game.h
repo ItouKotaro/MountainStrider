@@ -19,10 +19,8 @@ public:
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
 private:
-	void CreateBike();				// バイクを生成する
-
 	GameObject* m_pCamera;	// カメラ
-	btHinge2Constraint* m_hinge2;
+	GameObject* m_pBike;
 };
 
 #endif // !_GAME_H_

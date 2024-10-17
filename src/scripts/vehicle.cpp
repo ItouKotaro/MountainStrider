@@ -5,78 +5,92 @@
 //
 //=============================================================
 #include "vehicle.h"
+#include "component/3d/collision.h"
+#include "component/3d/mesh.h"
+#include "BulletDynamics/Vehicle/btRaycastVehicle.h"
 
 //=============================================================
 // [CVehicle] 初期化
 //=============================================================
 void CVehicle::Init()
 {
-	// 剛体の形状
-	btBoxShape* bodyShape = new btBoxShape(btVector3(10.0f, 2.0f, 20.0f));
+	// バイクを生成する
+	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 10.0f, 30.0f));
+	gameObject->AddComponent<CRigidBody>()->EnableAlwayActive();
+	gameObject->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\body.x");
+	CCollision::GetCollision(gameObject)->SetMass(700.0f);
+
+	// ハンドル
+	m_pHandle = new GameObject;
+	m_pHandle->SetParent(gameObject);
+	m_pHandle->transform->Translate(0.0f, 8.0f, -25.0f);
+	m_pHandle->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\handle.x");
+
+	// 前輪の生成
+	m_pFrontTire = new GameObject;
+	m_pFrontTire->transform->Translate(0.0f, -30.0f, -45.0f);
+	m_pFrontTire->AddComponent<CCylinderCollider>(15.0f, 15.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
+	CCollision::GetCollision(m_pFrontTire)->SetFriction(100);
+	CCollision::GetCollision(m_pFrontTire)->SetMass(50);
+	m_pFrontTire->AddComponent<CRigidBody>()->EnableAlwayActive();
+
+	// 後輪の生成
+	m_pBackTire = new GameObject;
+	m_pBackTire->transform->Translate(0.0f, -30.0f, 23.0f);
+	m_pBackTire->AddComponent<CCylinderCollider>(15.0f, 15.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
+	CCollision::GetCollision(m_pBackTire)->SetFriction(100);
+	CCollision::GetCollision(m_pBackTire)->SetMass(50);
+	m_pBackTire->AddComponent<CRigidBody>()->EnableAlwayActive();
+
+	// ヒンジの設定
+	m_pFrontTire->AddComponent<CHinge2Constraint>()->SetConstraint(
+		CCollision::GetCollision(gameObject)->GetRigidBody(),
+		CCollision::GetCollision(m_pFrontTire)->GetRigidBody(),
+		m_pFrontTire->transform->GetPos(),
+		{ 0.0f, 1.0f, 0.0f },
+		{ 1.0f, 0.0f, 0.0f }
+	);
+	m_pBackTire->AddComponent<CHinge2Constraint>()->SetConstraint(
+		CCollision::GetCollision(gameObject)->GetRigidBody(),
+		CCollision::GetCollision(m_pBackTire)->GetRigidBody(),
+		m_pBackTire->transform->GetPos(),
+		{ 0.0f, 1.0f, 0.0f },
+		{ 1.0f, 0.0f, 0.0f }
+	);
+
+	// 前輪の設定
+	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
+	pFrontHinge->enableMotor(0, true);
+	pFrontHinge->setTargetVelocity(0, btRadians(90));
+	pFrontHinge->setMaxMotorForce(0, btRadians(500));
+	pFrontHinge->setAngularUpperLimit(btVector3(D3DX_PI * 0.5f, 0.01f, 0.0f));
+	pFrontHinge->setAngularLowerLimit(btVector3(-D3DX_PI * 0.5f, -0.01f, 0.0f));
+
+	// 後輪の設定
+	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
+	pBackHinge->enableMotor(0, true);
+	pBackHinge->setTargetVelocity(0, btRadians(90));
+	pBackHinge->setMaxMotorForce(0, btRadians(500));
+	pBackHinge->setAngularUpperLimit(btVector3(D3DX_PI * 0.5f, 0.01f, 0.0f));
+	pBackHinge->setAngularLowerLimit(btVector3(-D3DX_PI * 0.5f, -0.01f, 0.0f));
+
+	// 前輪の回転設定
+	auto pRotationalFront = pFrontHinge->getRotationalLimitMotor(0);
+	pRotationalFront->m_enableMotor = true;
+	pRotationalFront->m_hiLimit = 10.0f;
+	pRotationalFront->m_targetVelocity = 5000.0f;
+	pRotationalFront->m_maxMotorForce = 100000.0f;
+	pRotationalFront->m_bounce = 10.0f;
 	
-	CPhysics::GetInstance()->GetCollisionShape().push_back(bodyShape);
-
-	// 位置を設定
-	btTransform startTransform;
-	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(0.0f, 0.0f, 0.0f));
-
-	// 慣性モーメント
-	btVector3 inertia(0, 0, 0);
-	bodyShape->calculateLocalInertia(btScalar(10.0f), inertia);
-
-	// 剛体操作
-	m_pMotionState = new btDefaultMotionState(startTransform);
-
-	// 剛体作成
-	btRigidBody::btRigidBodyConstructionInfo rb_info(btScalar(10.0f), m_pMotionState, bodyShape, inertia);
-
-	// 車体を設定する
-	m_bodyRigidbody = new btRigidBody(rb_info);
-	CPhysics::GetInstance()->GetDynamicsWorld().addRigidBody(m_bodyRigidbody);
-
-	// ブロードフェイズ
-	//CPhysics::GetInstance()->GetDynamicsWorld().getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(m_bodyRigidbody->getBroadphaseHandle(), CPhysics::GetInstance()->GetDynamicsWorld().getDispatcher());
-
-	// レイキャスター
-	m_vehicleRaycaster = new btDefaultVehicleRaycaster(&CPhysics::GetInstance()->GetDynamicsWorld());
-
-	// 車両アクションインターフェイスを作成する
-	m_vehicle = new btRaycastVehicle(m_vehicleTuning, m_bodyRigidbody, m_vehicleRaycaster);
-	m_bodyRigidbody = m_vehicle->getRigidBody();
-	m_bodyRigidbody->setActivationState(DISABLE_DEACTIVATION);
-
-	// 追加する
-	CPhysics::GetInstance()->GetDynamicsWorld().addVehicle(m_vehicle);
-	//m_vehicle->setCoordinateSystem(0, 1, 2);
-
-	btVector3 wheelDirectionCS0(0, -1, 0);
-	btVector3 wheelAxleCS(-1, 0, 0);
-	float wheelWidth = 10.0f;
-	float wheelRadius = 10.0f;
-	float wheelFriction = 2.0f;
-	float suspensionStiffness = 20.f;
-	float suspensionDamping = 2.3f;
-	float suspensionCompression = 4.4f;
-	float rollInfluence = 0.01f;  //1.0f;
-	float connectionHeight = -0.9f;
-
-	// 車輪を追加する
-	btVector3 connectionPointCS0(0.0f, connectionHeight, 14.0f - 2.8f);
-	m_vehicle->addWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, 0.6f, wheelRadius, m_vehicleTuning, true);
-
-	connectionPointCS0 = btVector3(0.0f, connectionHeight, -14.0f + 2.8f);
-	m_vehicle->addWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, 0.6f, wheelRadius, m_vehicleTuning, false);
-
-	for (int i = 0; i < m_vehicle->getNumWheels(); i++)
-	{
-		btWheelInfo& wheel = m_vehicle->getWheelInfo(i);
-		wheel.m_suspensionStiffness = suspensionStiffness;
-		wheel.m_wheelsDampingRelaxation = suspensionDamping;
-		wheel.m_wheelsDampingCompression = suspensionCompression;
-		wheel.m_frictionSlip = wheelFriction;
-		wheel.m_rollInfluence = rollInfluence;
-	}
+	// 後輪の回転設定
+	auto pRotationalBack = pBackHinge->getRotationalLimitMotor(0);
+	pRotationalBack->m_enableMotor = true;
+	pRotationalBack->m_hiLimit = 10.0f;
+	pRotationalBack->m_targetVelocity = 5000.0f;
+	pRotationalBack->m_maxMotorForce = 100000.0f;
+	pRotationalBack->m_bounce = 10.0f;
 }
 
 //=============================================================
@@ -84,35 +98,7 @@ void CVehicle::Init()
 //=============================================================
 void CVehicle::Uninit()
 {
-	// 物理ワールドから消す
-	CPhysics::GetInstance()->GetDynamicsWorld().removeVehicle(m_vehicle);
-	if (m_vehicle != nullptr)
-	{
-		delete m_vehicle;
-		m_vehicle = nullptr;
-	}
 
-	// モーションステートを破棄する
-	if (m_pMotionState != nullptr)
-	{
-		delete m_pMotionState;
-		m_pMotionState = nullptr;
-	}
-
-	// レイキャスターを破棄する
-	if (m_vehicleRaycaster != nullptr)
-	{
-		delete m_vehicleRaycaster;
-		m_vehicleRaycaster = nullptr;
-	}
-
-	// リジッドボディを破棄する
-	CPhysics::GetInstance()->GetDynamicsWorld().removeRigidBody(m_bodyRigidbody);
-	if (m_bodyRigidbody != nullptr)
-	{
-		delete m_bodyRigidbody;
-		m_bodyRigidbody = nullptr;
-	}
 }
 
 //=============================================================
@@ -120,25 +106,20 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
-	for (int i = 0; i < 2; ++i)
+	if (INPUT_INSTANCE->onPress("space"))
 	{
-		if (m_vehicle)
-		{
-			btTransform wheelTransform = m_vehicle->getWheelTransformWS(i);
-			//m_raycastVehicle->updateVehicle(1. / 60.);
-		}
-	}
+		auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
+		
+		// モーター
 
-	for (int i = 0; i < m_vehicle->getNumWheels(); i++)
-	{
-		m_vehicle->updateWheelTransform(i, true);
 	}
+	//else
+	//{
+	//	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 
-
-	for (int i = 0; i < 2; ++i)
-	{
-		int aa = m_vehicle->getNumWheels();
-		m_vehicle->applyEngineForce(1000.0f, i);
-		//m_vehicle->setBrake(100.0f, i);
-	}
+	//	// モーター
+	//	btRotationalLimitMotor2* rotMotor = pFrontHinge->getRotationalLimitMotor(0);
+	//	rotMotor->m_enableMotor = true;
+	//	rotMotor->m_targetVelocity = btRadians(0.0);
+	//}
 }
