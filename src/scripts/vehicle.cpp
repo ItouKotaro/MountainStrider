@@ -63,34 +63,28 @@ void CVehicle::Init()
 	// 前輪の設定
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	pFrontHinge->enableMotor(0, true);
-	pFrontHinge->setTargetVelocity(0, btRadians(90));
-	pFrontHinge->setMaxMotorForce(0, btRadians(500));
-	pFrontHinge->setAngularUpperLimit(btVector3(D3DX_PI * 0.5f, 0.01f, 0.0f));
-	pFrontHinge->setAngularLowerLimit(btVector3(-D3DX_PI * 0.5f, -0.01f, 0.0f));
+	pFrontHinge->setUpperLimit(D3DX_PI * 0.3f);
+	pFrontHinge->setLowerLimit(-D3DX_PI * 0.3f);
+	pFrontHinge->setLinearUpperLimit(btVector3(0.0f, 0.0f, 2.0f));
+	pFrontHinge->setLinearLowerLimit(btVector3(0.0f, 0.0f, 0.0f));
 
 	// 後輪の設定
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	pBackHinge->enableMotor(0, true);
-	pBackHinge->setTargetVelocity(0, btRadians(90));
-	pBackHinge->setMaxMotorForce(0, btRadians(500));
-	pBackHinge->setAngularUpperLimit(btVector3(D3DX_PI * 0.5f, 0.01f, 0.0f));
-	pBackHinge->setAngularLowerLimit(btVector3(-D3DX_PI * 0.5f, -0.01f, 0.0f));
+	pBackHinge->setUpperLimit(D3DX_PI * 0.3f);
+	pBackHinge->setLowerLimit(-D3DX_PI * 0.3f);
+	pBackHinge->setLinearUpperLimit(btVector3(0.0f, 0.0f, 2.0f));
+	pBackHinge->setLinearLowerLimit(btVector3(0.0f, 0.0f, 0.0f));
 
 	// 前輪の回転設定
 	auto pRotationalFront = pFrontHinge->getRotationalLimitMotor(0);
 	pRotationalFront->m_enableMotor = true;
-	pRotationalFront->m_hiLimit = 10.0f;
-	pRotationalFront->m_targetVelocity = 5000.0f;
-	pRotationalFront->m_maxMotorForce = 100000.0f;
-	pRotationalFront->m_bounce = 10.0f;
-	
+	pRotationalFront->m_hiLimit = btRadians(600);
+	pRotationalFront->m_maxMotorForce = 500000;
+
 	// 後輪の回転設定
 	auto pRotationalBack = pBackHinge->getRotationalLimitMotor(0);
 	pRotationalBack->m_enableMotor = true;
-	pRotationalBack->m_hiLimit = 10.0f;
-	pRotationalBack->m_targetVelocity = 5000.0f;
-	pRotationalBack->m_maxMotorForce = 100000.0f;
-	pRotationalBack->m_bounce = 10.0f;
 }
 
 //=============================================================
@@ -108,10 +102,10 @@ void CVehicle::Update()
 {
 	if (INPUT_INSTANCE->onPress("space"))
 	{
-		auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
+		auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2()->getRotationalLimitMotor(0);
 		
 		// モーター
-
+		//pFrontHinge->m_targetVelocity = btRadians(120);
 	}
 	//else
 	//{

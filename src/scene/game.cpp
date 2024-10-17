@@ -23,7 +23,7 @@ void CGameScene::Init()
 	m_pCamera->AddComponent<CCamera>();
 	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 	m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
-	m_pCamera->transform->Translate(600.0f, 400.0f, -1000.0f);
+	m_pCamera->transform->Translate(800.0f, 200.0f, -300.0f);
 	m_pCamera->transform->LookAt({ 0.0f, 0.0f, 0.0f });
 
 	// ライトを作成
@@ -67,15 +67,17 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
-	D3DXQUATERNION q, t;
-	t = m_pBike->transform->GetQuaternion();
-	D3DXQuaternionInverse(&t, &t);
-	D3DXVECTOR3 dir = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	D3DXQuaternionRotationAxis(&q, &dir, D3DX_PI);
-	D3DXQuaternionMultiply(&q, &t, &q);
+	//D3DXQUATERNION q, t;
+	//t = m_pBike->transform->GetQuaternion();
+	//D3DXQuaternionInverse(&t, &t);
+	//D3DXVECTOR3 dir = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	//D3DXQuaternionRotationAxis(&q, &dir, D3DX_PI);
+	//D3DXQuaternionMultiply(&q, &t, &q);
 
-	m_pCamera->transform->SetQuaternion(q);
-	m_pCamera->transform->SetPos(m_pBike->transform->GetWPos() + D3DXVECTOR3(0.0f, 20.0f, 30.0f));
+	//m_pCamera->transform->SetQuaternion(q);
+	//m_pCamera->transform->SetPos(m_pBike->transform->GetWPos() + D3DXVECTOR3(0.0f, 20.0f, 30.0f));
+
+	m_pCamera->transform->LookAt(m_pBike->transform->GetWPos());
 
 	//if (INPUT_INSTANCE->onTrigger("space"))
 	//{
