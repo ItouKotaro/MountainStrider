@@ -33,10 +33,9 @@ void CGameScene::Init()
 	// 地面を作成
 	GameObject* pFloor = new GameObject;
 	pFloor->transform->Translate(0.0f, -80.0f, -2000.0f);
-	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(5000.0f, 1.0f, 5000.0f));
+	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(5000.0f, 3.0f, 5000.0f));
 	pFloor->AddComponent<CField>();
 	pFloor->GetComponent<CField>()->Set(10000.0f, 10000.0f);
-	CCollision::GetCollision(pFloor)->SetFriction(3);
 
 	// バイクの生成
 	m_pBike = new GameObject;
