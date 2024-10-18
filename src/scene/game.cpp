@@ -23,7 +23,7 @@ void CGameScene::Init()
 	m_pCamera->AddComponent<CCamera>();
 	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 	m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
-	m_pCamera->transform->Translate(800.0f, 200.0f, -300.0f);
+	m_pCamera->transform->Translate(200.0f, 10.0f, -100.0f);
 	m_pCamera->transform->LookAt({ 0.0f, 0.0f, 0.0f });
 
 	// ライトを作成
@@ -39,12 +39,7 @@ void CGameScene::Init()
 
 	// バイクの生成
 	m_pBike = new GameObject;
-	m_pBike->AddComponent<CVehicle>();
-
-	GameObject* pLi = new GameObject;
-	pLi->transform->Translate(0.0f, 50.0f, 0.0f);
-	pLi->SetParent(m_pBike);
-	pLi->AddComponent<CLight>(500);
+	m_pBike->AddComponent<CRaycastVehicle>();
 
 	for (int i = 0; i < 1000; i++)
 	{
