@@ -35,11 +35,17 @@ public:
 	void Uninit() override;
 	void Update() override;
 private:
+	void UpdateRay();
+
 	btRaycastVehicle* m_vehicle;
 	btDefaultVehicleRaycaster* m_raycaster;
 	btRaycastVehicle::btVehicleTuning m_tuning;
 	btRigidBody* m_body;
 	btMotionState* m_motionstate;
+
+	// ƒ‚ƒfƒ‹
+	GameObject* m_pFrontWheel;
+	GameObject* m_pBackWheel;
 	GameObject* m_pText;
 };
 

@@ -50,21 +50,19 @@ void CCamera::Uninit()
 //=============================================================
 void CCamera::Update()
 {
-	// 方向の割り出し
-	m_posR.x = cosf(transform->GetWRot().x) * cosf(transform->GetWRot().y + D3DX_PI * 0.5f);
-	m_posR.y = sinf(transform->GetWRot().x);
-	m_posR.z = cosf(transform->GetWRot().x) * sinf(transform->GetWRot().y + D3DX_PI * 0.5f);
-	m_posR *= m_fLength;
+	D3DXMATRIX rotMtx = transform->GetRotationMatrix();
+	m_posR = { 0.0f, 0.0f, m_fLength };
+	D3DXVec3TransformCoord(&m_posR, &m_posR, &rotMtx);
 	m_posR += transform->GetWPos();
 
 	// Z回転（上向きベクトル）
-	D3DXVECTOR3 defUp = { 0.0f, 1.0f, 0.0f };
-	D3DXMATRIX mtxUp;
-	D3DXMatrixIdentity(&mtxUp);
-	D3DXMatrixRotationZ(&mtxUp, transform->GetWRot().z);
-	D3DXMatrixInverse(&mtxUp, NULL, &mtxUp);
-	D3DXVec3TransformCoord(&m_vecU, &defUp, &mtxUp);
-	D3DXVec3Normalize(&m_vecU, &m_vecU);
+	//D3DXVECTOR3 defUp = { 0.0f, 1.0f, 0.0f };
+	//D3DXMATRIX mtxUp;
+	//D3DXMatrixIdentity(&mtxUp);
+	//D3DXMatrixRotationZ(&mtxUp, transform->GetWRot().z);
+	//D3DXMatrixInverse(&mtxUp, NULL, &mtxUp);
+	//D3DXVec3TransformCoord(&m_vecU, &defUp, &mtxUp);
+	//D3DXVec3Normalize(&m_vecU, &m_vecU);
 
 	//m_vecU = { sinf(transform->GetWRot().z), cosf(transform->GetWRot().z), tanf(transform->GetWRot().z) };
 	//D3DXVec3Normalize(&m_vecU, &m_vecU);

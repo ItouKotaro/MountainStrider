@@ -102,22 +102,32 @@ D3DXQUATERNION Transform::GetWQuaternion()
 D3DXVECTOR3 Transform::GetWRot()
 {
 	// 親のワールド座標をローカル座標に足す
-	D3DXVECTOR3 worldRot = { 0.0f, 0.0f, 0.0f };
-	Transform* worldTransform = this;
-	do
-	{
-		// 座標を足す
-		worldRot += worldTransform->GetRot();
+	//D3DXVECTOR3 worldRot = { 0.0f, 0.0f, 0.0f };
+	//Transform* worldTransform = this;
+	//do
+	//{
+	//	// 座標を足す
+	//	worldRot += worldTransform->GetRot();
 
-		// 次の親に進む
-		worldTransform = worldTransform->GetParent();
+	//	// 次の親に進む
+	//	worldTransform = worldTransform->GetParent();
 
-	} while (worldTransform != nullptr);
+	//} while (worldTransform != nullptr);
+
 
 	// 正規化
-	worldRot = NormalizeRotation(worldRot);
+	//worldRot = NormalizeRotation(worldRot);
 
-	return worldRot;
+	D3DXQUATERNION q = this->GetWQuaternion();
+
+	auto sx = -(2 * q.y * q.z - 2 * q.x * q.w);
+	auto unlocked = std::abs(sx) < 0.99999f;
+	return D3DXVECTOR3(
+		std::asin(sx),
+		unlocked ? std::atan2(2 * q.x * q.z + 2 * q.y * q.w, 2 * q.w * q.w + 2 * q.z * q.z - 1)
+		: std::atan2(-(2 * q.x * q.z - 2 * q.y * q.w), 2 * q.w * q.w + 2 * q.x * q.x - 1),
+		unlocked ? std::atan2(2 * q.x * q.y + 2 * q.z * q.w, 2 * q.w * q.w + 2 * q.y * q.y - 1) : 0
+	);
 }
 
 //=============================================================
@@ -199,18 +209,31 @@ bool Transform::operator ==(Transform& transform)
 //=============================================================
 void Transform::LookAt(D3DXVECTOR3 target)
 {
-	// 現在の位置を取得する
-	D3DXVECTOR3 pos = GetWPos();
+	//// 現在の位置を取得する
+	//D3DXVECTOR3 pos = GetWPos();
 
-	// 向くべき方向を算出する
-	D3DXVECTOR3 rot;
-	float fTargetAngle = -atan2f(target.x - pos.x, target.z - pos.z);
-	float fTargetHeightAngle = atan2f(sqrtf(fabsf(target.x - pos.x) * fabsf(target.x - pos.x) +
-	fabsf(target.z - pos.z) * fabsf(target.z - pos.z)), (target.y - pos.y));
+	//// 向くべき方向を算出する
+	//D3DXVECTOR3 rot;
+	//float fTargetAngle = -atan2f(target.x - pos.x, target.z - pos.z);
+	//float fTargetHeightAngle = atan2f(sqrtf(fabsf(target.x - pos.x) * fabsf(target.x - pos.x) +
+	//fabsf(target.z - pos.z) * fabsf(target.z - pos.z)), (target.y - pos.y));
 
-	// 向かせる
-	rot = D3DXVECTOR3(-fTargetHeightAngle + D3DX_PI * 0.5f, fTargetAngle, 0.0f);
-	SetRot(rot);
+	//// 向かせる
+	//rot = D3DXVECTOR3(-fTargetHeightAngle + D3DX_PI * 0.5f, fTargetAngle, 0.0f);
+	//SetRot(rot);
+
+
+
+	//D3DXVECTOR3 direction = target - this->GetWPos();
+
+	//D3DXVECTOR3 upVector(0.0f, 1.0f, 0.0f);
+	//D3DXVECTOR3 axis;
+	//D3DXVec3Cross(&axis, &upVector, &direction);
+	//D3DXVec3Normalize(&axis, &axis);
+
+	//float angle = acos(D3DXVec3Dot(&upVector, &axis));
+
+	//D3DXQuaternionRotationAxis(&m_rotation, &axis, angle);
 }
 
 //=============================================================
