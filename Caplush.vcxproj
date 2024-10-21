@@ -222,6 +222,7 @@
     <ClCompile Include="src\internal\data_manager.cpp" />
     <ClCompile Include="src\internal\physics.cpp" />
     <ClCompile Include="src\internal\shadow.cpp" />
+    <ClCompile Include="src\internal\util.cpp" />
     <ClCompile Include="src\scene\game.cpp" />
     <ClCompile Include="src\scene\result.cpp" />
     <ClCompile Include="src\scene\start_scene.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="src\internal\KeyAssignmentTable.h" />
     <ClInclude Include="src\internal\physics.h" />
     <ClInclude Include="src\internal\shadow.h" />
+    <ClInclude Include="src\internal\util.h" />
     <ClInclude Include="src\scene\game.h" />
     <ClInclude Include="src\scene\result.h" />
     <ClInclude Include="src\scene\start_scene.h" />

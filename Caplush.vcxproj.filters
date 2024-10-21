@@ -189,6 +189,9 @@
     <ClCompile Include="src\scripts\vehicle.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\internal\util.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -313,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\vehicle.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\util.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

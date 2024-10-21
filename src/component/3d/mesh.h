@@ -20,6 +20,7 @@ public:
 	void Uninit();
 	void Draw();
 	HRESULT LoadMeshX(std::string sPath, bool bShadow = true);
+	HRESULT SetMesh(LPD3DXMESH pMesh);
 	ID3DXMesh* GetShadowMesh() { return m_pShadowMesh; }
 	LPD3DXMESH GetMesh() { return m_pMesh; }
 	LPD3DXBUFFER GetBuffMat() { return m_pBuffMat; }

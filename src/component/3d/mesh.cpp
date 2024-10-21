@@ -176,6 +176,48 @@ HRESULT CMesh::LoadMeshX(std::string sPath, bool bShadow)
 }
 
 //=============================================================
+// [CMesh] メッシュのセット
+//=============================================================
+HRESULT CMesh::SetMesh(LPD3DXMESH pMesh)
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
+
+	// メッシュ情報を破棄
+	Uninit();
+
+	// メッシュのデータを参照する
+	m_pMesh = pMesh;
+
+	// モデルテクスチャの読み込み
+	D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
+	m_apTexture.resize(m_dwNumMat);
+	for (int nCntMat = 0; nCntMat < (int)m_dwNumMat; nCntMat++)
+	{
+		if (pMat[nCntMat].pTextureFilename != nullptr)
+		{ // テクスチャがあるとき
+
+			// テクスチャの存在チェック
+			if (!PathFileExistsA(pMat[nCntMat].pTextureFilename))
+			{ // 存在しないとき
+				pMat[nCntMat].pTextureFilename = nullptr;
+				m_apTexture[nCntMat] = nullptr;
+				continue;
+			}
+
+			// テクスチャを作成
+			m_apTexture[nCntMat] = CDataManager::GetInstance()->RefTexture(pMat[nCntMat].pTextureFilename)->GetTexture();
+		}
+		else
+		{
+			m_apTexture[nCntMat] = nullptr;
+		}
+	}
+
+	return S_OK;
+}
+
+//=============================================================
 // [CMesh] テクスチャの設定
 //=============================================================
 void CMesh::SetTexture(int nIdx, LPDIRECT3DTEXTURE9 pTexture)
