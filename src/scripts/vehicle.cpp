@@ -93,8 +93,8 @@ void CVehicle::Init()
 	pFrontHinge->setDamping(2, 1.0);
 	pFrontHinge->setStiffness(2, 40.0);
 
-	pFrontHinge->setUpperLimit(D3DX_PI * 0.04f);
-	pFrontHinge->setLowerLimit(-D3DX_PI * 0.04f);
+	pFrontHinge->setUpperLimit(D3DX_PI * 0.03f);
+	pFrontHinge->setLowerLimit(-D3DX_PI * 0.03f);
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
 
@@ -116,30 +116,22 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
-	float ang = CCollision::GetCollision(gameObject)->GetRigidBody()->getAngularVelocity().getZ();
-	//m_body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+	float ang = transform->GetRotZ();
+	//CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
 
-	btQuaternion current_orientation = CCollision::GetCollision(gameObject)->GetRigidBody()->getOrientation();
+	//btQuaternion current_orientation = CCollision::GetCollision(gameObject)->GetRigidBody()->getOrientation();
+	//btVector3 axis(0, 0, 1);
+	//btScalar angle = 0.1;
+	//btQuaternion target_orientation(axis, angle);
+	//btQuaternion delta = target_orientation * current_orientation.inverse();
+	//float x, y, z;
+	//delta.getEulerZYX(z, y, x);
+	//btVector3 local_torque = btVector3(x, y, z) * 1.0f;
+	//btVector3 world_torque = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getBasis() * local_torque;
 
-	btVector3 axis(0, 0, 1);
-	btScalar angle = 0.1;
-	btQuaternion target_orientation(axis, angle);
+	CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(btVector3(sinf(transform->GetWRotY()) * ang * ang * -2000.0f, 0.0f, cosf(transform->GetWRotY()) * ang * ang * -2000.0f));
 
-	btQuaternion delta = target_orientation * current_orientation.inverse();
-
-	// Get Euler angles
-	float x, y, z;
-	delta.getEulerZYX(z, y, x);
-
-	// Feed torque into control function (see accepted answer)
-	btVector3 local_torque = btVector3(x, y, z) * 10.0f;
-
-	// Transform torque to world space
-	btVector3 world_torque = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getBasis() * local_torque;
-
-	CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(world_torque);
-
-
+	//m_pSpeedText->GetComponent<CText>()->SetText(std::to_string(y));
 	//m_pSupport->GetComponent<CPoint2PointConstraint>()->GetPoint2Point()->setPivotA(
 	//	btVector3(m_pSupport->transform->GetWPos().x, m_pSupport->transform->GetWPos().y, m_pSupport->transform->GetWPos().z)
 	//);
@@ -171,12 +163,12 @@ void CVehicle::Update()
 
 	if (INPUT_INSTANCE->onPress("a"))
 	{
-		//pBodyRB->applyTorqueImpulse(btVector3(sinf(0.0f) * 3000.0f, 0.0f, cosf(0.0f) * 3000.0f));
+		pBodyRB->applyTorqueImpulse(btVector3(sinf(transform->GetRotY()) * 500.0f, 0.0f, cosf(transform->GetRotY()) * 500.0f));
 		m_fSteering += STEERING_VALUE;
 	}
 	if (INPUT_INSTANCE->onPress("d"))
 	{
-		//pBodyRB->applyTorqueImpulse(btVector3(sinf(0.0f) * -3000.0f, 0.0f, cosf(0.0f) * -3000.0f));
+		pBodyRB->applyTorqueImpulse(btVector3(sinf(transform->GetRotY()) * -500.0f, 0.0f, cosf(transform->GetRotY()) * -500.0f));
 		m_fSteering -= STEERING_VALUE;
 	}
 	m_fSteering += (0.0f - m_fSteering) * 0.08f;
@@ -197,7 +189,7 @@ void CVehicle::UpdateSpeedMeter()
 		m_measureCounter = 0;
 		m_measurePos = transform->GetWPos();
 	}
-	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
+	//m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
 	m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
 }
 

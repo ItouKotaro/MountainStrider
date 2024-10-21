@@ -35,7 +35,7 @@ void CGameScene::Init()
 	GameObject* pFloor = new GameObject;
 	pFloor->transform->Translate(0.0f, 0.0f, -2000.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(5000.0f, 50.0f, 5000.0f), D3DXVECTOR3(0.0f, -50.0f, 0.0f));
-	pFloor->AddComponent<CRigidBody>()->GetCollision()->SetMass(0.0f);
+	//pFloor->AddComponent<CRigidBody>()->GetCollision()->SetMass(0.0f);
 	pFloor->AddComponent<CField>();
 	pFloor->GetComponent<CField>()->Set(10000.0f, 10000.0f);
 
