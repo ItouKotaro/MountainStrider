@@ -33,7 +33,7 @@ void CGameScene::Init()
 
 	// 地面を作成
 	GameObject* pFloor = new GameObject;
-	pFloor->transform->Translate(0.0f, -60.0f, -2000.0f);
+	pFloor->transform->Translate(0.0f, 0.0f, -2000.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(5000.0f, 50.0f, 5000.0f), D3DXVECTOR3(0.0f, -50.0f, 0.0f));
 	pFloor->AddComponent<CRigidBody>()->GetCollision()->SetMass(0.0f);
 	pFloor->AddComponent<CField>();
@@ -41,9 +41,9 @@ void CGameScene::Init()
 
 	// バイクの生成
 	m_pBike = new GameObject;
-	m_pBike->AddComponent<CRaycastVehicle>();
-	m_pBike->transform->Translate(0.0f, 30.0f, 0.0f);
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
+
+	m_pBike->AddComponent<CVehicle>();
 
 	m_pCamera->SetParent(m_pBike);
 
@@ -70,7 +70,7 @@ void CGameScene::Update()
 	//m_pCamera->transform->SetQuaternion(m_pBike->transform->GetQuaternion());
 	//m_pCamera->transform->SetPos(m_pBike->transform->GetWPos() + D3DXVECTOR3(0.0f, 20.0f, 30.0f));
 
-	m_pCamera->GetComponent<CCamera>()->SetPosR(m_pBike->transform->GetWPos());
+	//m_pCamera->GetComponent<CCamera>()->SetPosR(m_pBike->transform->GetWPos());
 
 	//if (INPUT_INSTANCE->onTrigger("space"))
 	//{

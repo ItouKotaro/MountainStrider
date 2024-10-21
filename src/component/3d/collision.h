@@ -39,6 +39,7 @@ public:
 	CPoint2PointConstraint();
 	void Uninit() override;
 	void SetConstraint(btRigidBody* rb1, btRigidBody* rb2, const D3DXVECTOR3& pivotInA, const D3DXVECTOR3& pivotInB);
+	btPoint2PointConstraint* GetPoint2Point() { return m_p2p; }
 private:
 	btPoint2PointConstraint* m_p2p;
 };

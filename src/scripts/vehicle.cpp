@@ -8,42 +8,52 @@
 #include "component/3d/collision.h"
 #include "component/3d/mesh.h"
 #include "component/2d/text.h"
+#include "benlib.h"
+
+const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
+const float CVehicle::STEERING_VALUE = 0.5f;
 
 //=============================================================
 // [CVehicle] 初期化
 //=============================================================
 void CVehicle::Init()
 {
+	// 変数の初期化
+	m_fEngineForce = 0.0f;
+	m_measureCounter = 0;
+	m_measurePos = transform->GetWPos();
+
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 5.0f, 20.0f));
 	gameObject->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\body.x");
-	CCollision::GetCollision(gameObject)->SetMass(10.0f);
+	CCollision::GetCollision(gameObject)->SetMass(40.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// ハンドル
 	m_pHandle = new GameObject;
 	m_pHandle->SetParent(gameObject);
-	m_pHandle->transform->Translate(0.0f, 8.0f, -25.0f);
+	m_pHandle->transform->Rotate(0.0f, D3DX_PI, 0.0f);
+	m_pHandle->transform->Translate(0.0f, 4.0f, 10.0f);
 	m_pHandle->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\handle.x");
 
 	// 前輪の生成
 	m_pFrontTire = new GameObject;
-	m_pFrontTire->transform->Translate(0.0f, -30.0f, -45.0f);
-	m_pFrontTire->AddComponent<CCylinderCollider>(16.0f, 2.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pFrontTire->transform->Translate(0.0f, -18.0f, -30.0f);
+	m_pFrontTire->AddComponent<CCylinderCollider>(10.0f, 2.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
-	CCollision::GetCollision(m_pFrontTire)->SetMass(5.0f);
+	CCollision::GetCollision(m_pFrontTire)->SetMass(10.0f);
 	CCollision::GetCollision(m_pFrontTire)->SetFriction(1110);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// 後輪の生成
 	m_pBackTire = new GameObject;
-	m_pBackTire->transform->Translate(0.0f, -30.0f, 23.0f);
-	m_pBackTire->AddComponent<CCylinderCollider>(16.0f, 2.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pBackTire->transform->Translate(0.0f, -18.0f, 23.0f);
+	m_pBackTire->AddComponent<CCylinderCollider>(10.0f, 2.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
-	CCollision::GetCollision(m_pBackTire)->SetMass(5.0f);
+	CCollision::GetCollision(m_pBackTire)->SetMass(10.0f);
 	CCollision::GetCollision(m_pBackTire)->SetFriction(1110);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
@@ -69,42 +79,28 @@ void CVehicle::Init()
 
 	// ドライブエンジン
 	pBackHinge->enableMotor(3, true);
-	pBackHinge->setMaxMotorForce(3, 20000);
+	pBackHinge->setMaxMotorForce(3, 12000);
 	pBackHinge->setTargetVelocity(3, 0);
 
 	// ステアリングエンジン
-	pBackHinge->enableMotor(5, true);
-	pBackHinge->setMaxMotorForce(5, 30000);
-	pBackHinge->setTargetVelocity(5, 0);
+	pFrontHinge->enableMotor(5, true);
+	pFrontHinge->setMaxMotorForce(5, 5000);
+	pFrontHinge->setTargetVelocity(5, 0);
 
 	// パラメーター設定
-	pBackHinge->setParam(BT_CONSTRAINT_CFM, 0.15f, 2);
-	pBackHinge->setParam(BT_CONSTRAINT_ERP, 0.35f, 2);
-	pBackHinge->setDamping(2, 1.0);
-	pBackHinge->setStiffness(2, 40.0);
+	pFrontHinge->setParam(BT_CONSTRAINT_CFM, 0.15f, 2);
+	pFrontHinge->setParam(BT_CONSTRAINT_ERP, 0.35f, 2);
+	pFrontHinge->setDamping(2, 1.0);
+	pFrontHinge->setStiffness(2, 40.0);
 
-	pFrontHinge->setUpperLimit(0.0f);
-	pFrontHinge->setLowerLimit(0.0f);
+	pFrontHinge->setUpperLimit(D3DX_PI * 0.04f);
+	pFrontHinge->setLowerLimit(-D3DX_PI * 0.04f);
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
 
-	// 車体の設定
-	btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
-	pBodyRB->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
-	//pBodyRB->setCenterOfMassTransform(btTransform::getIdentity());
-	//pBodyRB->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
-	//pBodyRB->setAngularFactor(btVector3(1.0f, 1.0f, 0.0f));
 
-
-	//// 前輪の回転設定
-	//auto pRotationalFront = pFrontHinge->getRotationalLimitMotor(0);
-	//pRotationalFront->m_enableMotor = true;
-	//pRotationalFront->m_hiLimit = btRadians(600);
-	//pRotationalFront->m_maxMotorForce = 500000;
-
-	//// 後輪の回転設定
-	//auto pRotationalBack = pBackHinge->getRotationalLimitMotor(0);
-	//pRotationalBack->m_enableMotor = true;
+	m_pSpeedText = new GameObject;
+	m_pSpeedText->AddComponent<CText>();
 }
 
 //=============================================================
@@ -120,32 +116,90 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
+	float ang = CCollision::GetCollision(gameObject)->GetRigidBody()->getAngularVelocity().getZ();
+	//m_body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+
+	btQuaternion current_orientation = CCollision::GetCollision(gameObject)->GetRigidBody()->getOrientation();
+
+	btVector3 axis(0, 0, 1);
+	btScalar angle = 0.1;
+	btQuaternion target_orientation(axis, angle);
+
+	btQuaternion delta = target_orientation * current_orientation.inverse();
+
+	// Get Euler angles
+	float x, y, z;
+	delta.getEulerZYX(z, y, x);
+
+	// Feed torque into control function (see accepted answer)
+	btVector3 local_torque = btVector3(x, y, z) * 10.0f;
+
+	// Transform torque to world space
+	btVector3 world_torque = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getBasis() * local_torque;
+
+	CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(world_torque);
+
+
+	//m_pSupport->GetComponent<CPoint2PointConstraint>()->GetPoint2Point()->setPivotA(
+	//	btVector3(m_pSupport->transform->GetWPos().x, m_pSupport->transform->GetWPos().y, m_pSupport->transform->GetWPos().z)
+	//);
+	//m_pSupport->GetComponent<CPoint2PointConstraint>()->GetPoint2Point()->setPivotB(
+	//	btVector3(m_pSupport->transform->GetWPos().x, m_pSupport->transform->GetWPos().y - 40.0f, m_pSupport->transform->GetWPos().z)
+	//);
+
+	// 2軸ヒンジを取得する
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 
-	if (INPUT_INSTANCE->onPress("space"))
+	// 速度を計算する
+	UpdateSpeedMeter();
+
+	// アクセル
+	if (INPUT_INSTANCE->onInput("accel"))
 	{
-		pBackHinge->setTargetVelocity(3, 1000.0f);
+		m_fEngineForce += ENGINEFORCE_VALUE;
 	}
+	m_fEngineForce += (0.0f - m_fEngineForce) * 0.002f;
+	pBackHinge->setTargetVelocity(3, m_fEngineForce);
+
+
+	btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
 	if (INPUT_INSTANCE->onPress("p"))
 	{
-		btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
 		pBodyRB->setAngularFactor(btVector3(1.0f, 1.0f, 1.0f));
 	}
 
 	if (INPUT_INSTANCE->onPress("a"))
 	{
-		btVector3 power = btVector3(0.0f, 0.0f, 2000.0f);
-		CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(power);
+		//pBodyRB->applyTorqueImpulse(btVector3(sinf(0.0f) * 3000.0f, 0.0f, cosf(0.0f) * 3000.0f));
+		m_fSteering += STEERING_VALUE;
 	}
 	if (INPUT_INSTANCE->onPress("d"))
 	{
-		btVector3 power = btVector3(0.0f, 0.0f, -2000.0f);
-		CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(power);
+		//pBodyRB->applyTorqueImpulse(btVector3(sinf(0.0f) * -3000.0f, 0.0f, cosf(0.0f) * -3000.0f));
+		m_fSteering -= STEERING_VALUE;
 	}
+	m_fSteering += (0.0f - m_fSteering) * 0.08f;
+
+	pFrontHinge->setTargetVelocity(5, m_fSteering);
 }
 
-
+//=============================================================
+// [CVehicle] 速度計測
+//=============================================================
+void CVehicle::UpdateSpeedMeter()
+{
+	m_measureCounter++;
+	if (m_measureCounter >= 60)
+	{
+		float fDistance = Benlib::PosDistance(transform->GetWPos(), m_measurePos);
+		m_fSpeed = fDistance / 2.0f;
+		m_measureCounter = 0;
+		m_measurePos = transform->GetWPos();
+	}
+	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
+	m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
+}
 
 
 
@@ -166,11 +220,7 @@ void CRaycastVehicle::Init()
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	m_body = gameObject->GetComponent<CRigidBody>()->GetRigidBody();
-	m_body->setGravity(btVector3(0.0f, -30.0f, 0.0f));
-	
-	//gameObject->AddComponent<CHingeConstraint>()->SetConstraint(
-	//	m_body, D3DXVECTOR3(0.0f, 50.0f, 0.0f), {0.0f, 1.0f, 0.0f}
-	//);
+	m_body->setGravity(btVector3(0.0f, -40.0f, 0.0f));
 
 	// レイキャスター
 	m_raycaster = new btDefaultVehicleRaycaster(&pDynamicsWorld);
@@ -185,7 +235,7 @@ void CRaycastVehicle::Init()
 		{ 0.0f, -18.0f, 25.0f },
 		{0.0f, -1.0f, 0.0f},
 		{-1.0f, 0.0f, 0.0f},
-		1.6f,
+		2.6f,
 		10.0f,
 		m_tuning,
 		true
@@ -194,7 +244,7 @@ void CRaycastVehicle::Init()
 		{ 0.0f, -18.0f, -25.0f },
 		{ 0.0f, -1.0f, 0.0f },
 		{ -1.0f, 0.0f, 0.0f },
-		1.6f,
+		2.6f,
 		10.0f,
 		m_tuning,
 		false
@@ -248,7 +298,7 @@ void CRaycastVehicle::Update()
 {
 	// トルク
 	float ang = m_body->getAngularVelocity().getZ();
-	m_body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+	//m_body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
 	m_body->applyTorque(btVector3(ang * -1000000.0f * sinf(transform->GetRotY() - D3DX_PI), 0.0f, ang * -1000000.0f * cosf(transform->GetRotY() - D3DX_PI)));
 	m_vehicle->applyEngineForce(4000.0f, 1);
 
@@ -285,13 +335,13 @@ void CRaycastVehicle::Update()
 void CRaycastVehicle::UpdateRay()
 {
 	btCollisionWorld::ClosestRayResultCallback RayCallback(
-		btVector3(transform->GetPos().x, transform->GetPos().y, transform->GetPos().z),
-		btVector3(transform->GetPos().x, transform->GetPos().y - 20.0f, transform->GetPos().z)
+		btVector3(transform->GetPos().x, transform->GetPos().y + 2.0f, transform->GetPos().z),
+		btVector3(transform->GetPos().x, transform->GetPos().y - 20.0f, transform->GetPos().z - 25.0f)
 	);
 
 	// Perform raycast
-	CPhysics::GetDynamicsWorld().rayTest(btVector3(transform->GetPos().x, transform->GetPos().y, transform->GetPos().z),
-		btVector3(transform->GetPos().x, transform->GetPos().y - 20.0f, transform->GetPos().z),
+	CPhysics::GetDynamicsWorld().rayTest(btVector3(transform->GetPos().x, transform->GetPos().y + 2.0f, transform->GetPos().z),
+		btVector3(transform->GetPos().x, transform->GetPos().y - 20.0f, transform->GetPos().z - 25.0f),
 		RayCallback
 	);
 	if (RayCallback.hasHit())
