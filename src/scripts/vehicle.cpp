@@ -117,27 +117,7 @@ void CVehicle::Uninit()
 void CVehicle::Update()
 {
 	float ang = transform->GetRotZ();
-	//CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
-
-	//btQuaternion current_orientation = CCollision::GetCollision(gameObject)->GetRigidBody()->getOrientation();
-	//btVector3 axis(0, 0, 1);
-	//btScalar angle = 0.1;
-	//btQuaternion target_orientation(axis, angle);
-	//btQuaternion delta = target_orientation * current_orientation.inverse();
-	//float x, y, z;
-	//delta.getEulerZYX(z, y, x);
-	//btVector3 local_torque = btVector3(x, y, z) * 1.0f;
-	//btVector3 world_torque = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getBasis() * local_torque;
-
 	CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(btVector3(sinf(transform->GetWRotY()) * ang * ang * -2000.0f, 0.0f, cosf(transform->GetWRotY()) * ang * ang * -2000.0f));
-
-	//m_pSpeedText->GetComponent<CText>()->SetText(std::to_string(y));
-	//m_pSupport->GetComponent<CPoint2PointConstraint>()->GetPoint2Point()->setPivotA(
-	//	btVector3(m_pSupport->transform->GetWPos().x, m_pSupport->transform->GetWPos().y, m_pSupport->transform->GetWPos().z)
-	//);
-	//m_pSupport->GetComponent<CPoint2PointConstraint>()->GetPoint2Point()->setPivotB(
-	//	btVector3(m_pSupport->transform->GetWPos().x, m_pSupport->transform->GetWPos().y - 40.0f, m_pSupport->transform->GetWPos().z)
-	//);
 
 	// 2Ž²ƒqƒ“ƒW‚ðŽæ“¾‚·‚é
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
