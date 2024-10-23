@@ -11,7 +11,6 @@
 #include "component/3d/collision.h"
 #include "component/3d/field.h"
 #include "scripts/vehicle.h"
-#include "DTL.hpp"
 
 //=============================================================
 // [CGameScene] 初期化
@@ -54,24 +53,6 @@ void CGameScene::Init()
 		pBench->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\player.x");
 		pBench->transform->SetPos(rand() % 10000 - 5000, -30.0f, rand() % 10000 - 5000);
 	}
-
-	using shape_t = std::uint_fast8_t;
-	std::array<std::array<shape_t, 33>, 33> matrix{ {} };
-
-	dtl::shape::PerlinSolitaryIsland<shape_t>(0.8f, 0.45f, 6.0f, 6, 200).draw(matrix, 33, 33);
-	//dtl::shape::DiamondSquareAverageCornerIsland<shape_t>(20, 80, 60).create(matrix);
-
-	std::string sMatrix = "";
-	for (int h = 0; h < 33; h++)
-	{
-		for (int w = 0; w < 33; w++)
-		{
-			sMatrix += std::to_string(matrix[w][h]) + ", ";
-		}
-		sMatrix += "\n";
-	}
-
-	std::cout << sMatrix;
 }
 
 //=============================================================

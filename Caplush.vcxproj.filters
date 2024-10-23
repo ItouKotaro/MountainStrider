@@ -67,6 +67,12 @@
     <Filter Include="ヘッダー ファイル\component\other">
       <UniqueIdentifier>{05511f29-1a82-456d-ba38-2277cc39ecba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\utility">
+      <UniqueIdentifier>{2f3de637-2181-429f-8a07-c2c9712edfa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\utility">
+      <UniqueIdentifier>{8260be47-793d-42a7-a7b9-9ff7a88f70cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -191,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="src\internal\util.cpp">
       <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utility\noise.cpp">
+      <Filter>ソース ファイル\utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="src\internal\util.h">
       <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utility\noise.h">
+      <Filter>ヘッダー ファイル\utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

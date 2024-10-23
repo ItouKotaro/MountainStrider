@@ -52,4 +52,4 @@ using json = nlohmann::json;
 #pragma comment(lib, "xinput.lib")		// ジョイパッド処理に必要
 #pragma comment(lib, "Shlwapi.lib")	// ファイルの存在確認
 
-#endif // !_PCH_H_
+#endif // !_PCH_H_ 
