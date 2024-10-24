@@ -102,9 +102,9 @@ void CVehicle::Init()
 	pBackHinge->setLowerLimit(0.0f);
 
 
-	m_pSpeedText = new GameObject;
-	m_pSpeedText->AddComponent<CText>();
-	m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
+	//m_pSpeedText = new GameObject;
+	//m_pSpeedText->AddComponent<CText>();
+	//m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
 }
 
 //=============================================================
@@ -178,7 +178,7 @@ void CVehicle::UpdateSpeedMeter()
 	}
 
 	// 状況を表示する
-	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
+	//m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
 }
 
 

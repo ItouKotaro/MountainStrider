@@ -47,7 +47,10 @@ void CText::InitLoadFont()
 void CText::Init()
 {
     // スプライトを作成する
-    D3DXCreateSprite(CRenderer::GetInstance()->GetDevice(), &m_pSprite);
+    if (FAILED(D3DXCreateSprite(CRenderer::GetInstance()->GetDevice(), &m_pSprite)))
+    { // 失敗時
+        std::cout << "失敗";
+    }
 
     // 初期設定
     m_fontName = "MS ゴシック";
@@ -65,13 +68,6 @@ void CText::Init()
 //=============================================================
 void CText::Uninit()
 {
-    // スプライトの破棄
-    if (m_pSprite != nullptr)
-    {
-        m_pSprite->Release();
-        m_pSprite = nullptr;
-    }
-
     // テキストデータの破棄
     for (int i = 0; i < (int)m_textInfos.size(); i++)
     {
@@ -83,6 +79,13 @@ void CText::Uninit()
         }
     }
     m_textInfos.clear();
+
+    // スプライトの破棄
+    if (m_pSprite != nullptr)
+    {
+        m_pSprite->Release();
+        m_pSprite = nullptr;
+    }
 }
 
 //=============================================================

@@ -25,6 +25,9 @@ void CMeshField::Init()
 //=============================================================
 void CMeshField::Uninit()
 {
+	m_sizeX = 0;
+	m_sizeY = 0;
+
 	// 頂点バッファを破棄する
 	if (m_pVtxBuff != nullptr)
 	{
@@ -80,6 +83,9 @@ void CMeshField::Draw()
 void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 {
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();		// デバイスを取得
+
+	// 終了
+	this->Uninit();
 
 	// 入力された数値が有効か
 	if (!(x > 0 && y > 0))
@@ -139,6 +145,9 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		pVtx++; // ポインタを進める
 	}
 
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+
 	// インデックスバッファをロック
 	WORD* pIdx;
 	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
@@ -174,5 +183,19 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 //=============================================================
 void CMeshField::SetHeight(const int& x, const int& y, const float& height)
 {
+	if (0 <= x && x <= m_sizeX &&
+		0 <= y && y <= m_sizeY)
+	{
+		VERTEX_3D* pVtx;
 
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		pVtx += x + (m_sizeX + 1) * y;
+
+		// 指定の頂点を
+		pVtx->pos = pVtx->pos + D3DXVECTOR3(0.0f, height, 0.0f);
+
+		// 頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+	}
 }

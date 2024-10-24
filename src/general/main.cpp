@@ -191,7 +191,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_ESCAPE:
-			nID = MessageBox(hWnd, "終了しますか？", "確認", MB_YESNO); //終了メッセージ
+   			nID = MessageBox(hWnd, "終了しますか？", "確認", MB_YESNO); //終了メッセージ
 			if (nID == IDYES)
 			{ // 「はい」を選択したとき
 				DestroyWindow(hWnd); //ウィンドウを破棄

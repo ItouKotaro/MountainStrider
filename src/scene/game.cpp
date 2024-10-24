@@ -61,8 +61,8 @@ void CGameScene::Init()
 
 	// メッシュフィールド
 	GameObject* pMeshField = new GameObject;
-	pMeshField->AddComponent<CMeshField>()->Create(1, 1, 20.0f);
-	pMeshField->transform->Translate(0.0f, -10.0f, 0.0f);
+	pMeshField->AddComponent<CMeshField>()->Create(249, 249, 20.0f);
+	pMeshField->GetComponent<CMeshField>()->SetHeight(10, 10, 50.0f);
 }
 
 //=============================================================
