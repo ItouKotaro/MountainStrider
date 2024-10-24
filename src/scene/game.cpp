@@ -10,7 +10,12 @@
 #include "component/3d/mesh.h"
 #include "component/3d/collision.h"
 #include "component/3d/field.h"
+#include "component/3d/meshfield.h"
 #include "scripts/vehicle.h"
+#include "utility/noise.h"
+#include <fstream>
+#include <DTL.hpp>
+#include "DTL/Storage/FilePNG.hpp"
 
 //=============================================================
 // [CGameScene] 初期化
@@ -35,9 +40,9 @@ void CGameScene::Init()
 	GameObject* pFloor = new GameObject;
 	pFloor->transform->Translate(0.0f, 0.0f, -2000.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(5000.0f, 50.0f, 5000.0f), D3DXVECTOR3(0.0f, -50.0f, 0.0f));
-	//pFloor->AddComponent<CRigidBody>()->GetCollision()->SetMass(0.0f);
-	pFloor->AddComponent<CField>();
-	pFloor->GetComponent<CField>()->Set(10000.0f, 10000.0f);
+	pFloor->AddComponent<CRigidBody>()->GetCollision()->SetMass(0.0f);
+	//pFloor->AddComponent<CField>();
+	//pFloor->GetComponent<CField>()->Set(10000.0f, 10000.0f);
 
 	// バイクの生成
 	m_pBike = new GameObject;
@@ -53,6 +58,11 @@ void CGameScene::Init()
 		pBench->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\player.x");
 		pBench->transform->SetPos(rand() % 10000 - 5000, -30.0f, rand() % 10000 - 5000);
 	}
+
+	// メッシュフィールド
+	GameObject* pMeshField = new GameObject;
+	pMeshField->AddComponent<CMeshField>()->Create(1, 1, 20.0f);
+	pMeshField->transform->Translate(0.0f, -10.0f, 0.0f);
 }
 
 //=============================================================
@@ -67,6 +77,45 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
+	if (INPUT_INSTANCE->onTrigger("o"))
+	{
+		std::array<std::array<int, 250>, 250> matrix{ {} };
+		dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.5f, 3, 80).draw(matrix);
+
+		dtl::storage::FilePNG<int>("file_sample.png", 3).write(matrix, [](const int value, unsigned char* const color) {
+			if (value < 20)
+			{
+				color[0] = 41;
+				color[1] = 40;
+				color[2] = 159;
+			}
+			else if (value < 40)
+			{
+				color[0] = 101;
+				color[1] = 163;
+				color[2] = 56;
+			}
+			else if (value < 60)
+			{
+				color[0] = 223;
+				color[1] = 203;
+				color[2] = 140;
+			}
+			else if (value < 80)
+			{
+				color[0] = 9;
+				color[1] = 100;
+				color[2] = 5;
+			}
+			else
+			{
+				color[0] = 164;
+				color[1] = 143;
+				color[2] = 50;
+			}
+			});
+	}
+
 	//m_pCamera->transform->SetQuaternion(m_pBike->transform->GetQuaternion());
 	//m_pCamera->transform->SetPos(m_pBike->transform->GetWPos() + D3DXVECTOR3(0.0f, 20.0f, 30.0f));
 

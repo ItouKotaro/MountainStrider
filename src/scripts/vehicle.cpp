@@ -26,9 +26,12 @@ void CVehicle::Init()
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 5.0f, 20.0f));
 	gameObject->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\body.x");
-	CCollision::GetCollision(gameObject)->SetMass(40.0f);
+	CCollision::GetCollision(gameObject)->SetMass(50.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
+
+	// バイクの軸固定
+	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
 
 	// ハンドル
 	m_pHandle = new GameObject;
@@ -44,7 +47,7 @@ void CVehicle::Init()
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
 	CCollision::GetCollision(m_pFrontTire)->SetMass(10.0f);
-	CCollision::GetCollision(m_pFrontTire)->SetFriction(1110);
+	CCollision::GetCollision(m_pFrontTire)->SetFriction(100);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// 後輪の生成
@@ -54,7 +57,7 @@ void CVehicle::Init()
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
 	CCollision::GetCollision(m_pBackTire)->SetMass(10.0f);
-	CCollision::GetCollision(m_pBackTire)->SetFriction(1110);
+	CCollision::GetCollision(m_pBackTire)->SetFriction(100);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// ヒンジの設定
@@ -79,7 +82,7 @@ void CVehicle::Init()
 
 	// ドライブエンジン
 	pBackHinge->enableMotor(3, true);
-	pBackHinge->setMaxMotorForce(3, 12000);
+	pBackHinge->setMaxMotorForce(3, 25000);
 	pBackHinge->setTargetVelocity(3, 0);
 
 	// ステアリングエンジン
@@ -93,8 +96,8 @@ void CVehicle::Init()
 	pFrontHinge->setDamping(2, 1.0);
 	pFrontHinge->setStiffness(2, 40.0);
 
-	pFrontHinge->setUpperLimit(D3DX_PI * 0.03f);
-	pFrontHinge->setLowerLimit(-D3DX_PI * 0.03f);
+	pFrontHinge->setUpperLimit(D3DX_PI * 0.07f);
+	pFrontHinge->setLowerLimit(-D3DX_PI * 0.07f);
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
 
@@ -116,8 +119,9 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
-	float ang = transform->GetRotZ();
-	CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(btVector3(sinf(transform->GetWRotY()) * ang * ang * -2000.0f, 0.0f, cosf(transform->GetWRotY()) * ang * ang * -2000.0f));
+	// 起き上がる方向にトルクを加える
+	//float ang = transform->GetRotZ();
+	//CCollision::GetCollision(gameObject)->GetRigidBody()->applyTorque(btVector3(sinf(transform->GetWRotY()) * ang * ang * -2000.0f, 0.0f, cosf(transform->GetWRotY()) * ang * ang * -2000.0f));
 
 	// 2軸ヒンジを取得する
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
@@ -134,13 +138,14 @@ void CVehicle::Update()
 	m_fEngineForce += (0.0f - m_fEngineForce) * 0.002f;
 	pBackHinge->setTargetVelocity(3, m_fEngineForce);
 
-
+	// 軸の固定解除
 	btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
 	if (INPUT_INSTANCE->onPress("p"))
 	{
 		pBodyRB->setAngularFactor(btVector3(1.0f, 1.0f, 1.0f));
 	}
 
+	// 方向転換
 	if (INPUT_INSTANCE->onPress("a"))
 	{
 		pBodyRB->applyTorqueImpulse(btVector3(sinf(transform->GetRotY()) * 500.0f, 0.0f, cosf(transform->GetRotY()) * 500.0f));
@@ -161,6 +166,7 @@ void CVehicle::Update()
 //=============================================================
 void CVehicle::UpdateSpeedMeter()
 {
+	// 60フレーム毎でKm/hに換算
 	m_measureCounter++;
 	if (m_measureCounter >= 60)
 	{
@@ -169,7 +175,9 @@ void CVehicle::UpdateSpeedMeter()
 		m_measureCounter = 0;
 		m_measurePos = transform->GetWPos();
 	}
-	//m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
+
+	// 状況を表示する
+	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
 	m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
 }
 

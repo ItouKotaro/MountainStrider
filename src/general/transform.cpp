@@ -173,6 +173,7 @@ D3DXMATRIX& Transform::GetMatrix()
 	D3DXVECTOR3 rotation = GetRot();
 	D3DXMatrixRotationQuaternion(&mtxRot, &m_rotation);
 	D3DXMatrixMultiply(&m_mtx, &m_mtx, &mtxRot);
+	//31 32 33‚Å‘O•û•ûŒü‚ðŽæ“¾‚Å‚«‚é
 
 	// ˆÊ’u‚ð”½‰f
 	D3DXVECTOR3 position = GetPos();

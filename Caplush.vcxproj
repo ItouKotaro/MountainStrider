@@ -101,7 +101,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\DTL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\DTL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
@@ -149,7 +149,7 @@
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Pch.h</ForcedIncludeFiles>
       <LanguageStandard>Default</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\DTL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <Optimization>Disabled</Optimization>
@@ -174,7 +174,7 @@
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Pch.h</ForcedIncludeFiles>
       <LanguageStandard>Default</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\DTL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -202,6 +202,7 @@
     <ClCompile Include="src\component\3d\light.cpp" />
     <ClCompile Include="src\component\3d\line.cpp" />
     <ClCompile Include="src\component\3d\mesh.cpp" />
+    <ClCompile Include="src\component\3d\meshfield.cpp" />
     <ClCompile Include="src\component\3d\motion.cpp" />
     <ClCompile Include="src\component\3d\movement_space.cpp" />
     <ClCompile Include="src\component\3d\particle.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="src\component\3d\light.h" />
     <ClInclude Include="src\component\3d\line.h" />
     <ClInclude Include="src\component\3d\mesh.h" />
+    <ClInclude Include="src\component\3d\meshfield.h" />
     <ClInclude Include="src\component\3d\motion.h" />
     <ClInclude Include="src\component\3d\movement_space.h" />
     <ClInclude Include="src\component\3d\particle.h" />
