@@ -60,9 +60,9 @@ void CGameScene::Init()
 	}
 
 	// メッシュフィールド
-	GameObject* pMeshField = new GameObject;
-	pMeshField->AddComponent<CMeshField>()->Create(249, 249, 20.0f);
-	pMeshField->GetComponent<CMeshField>()->SetHeight(10, 10, 50.0f);
+	m_pField = new GameObject;
+	m_pField->AddComponent<CMeshField>()->Create(249, 249, 20.0f);
+	m_pField->transform->Translate(0.0f, -100.0f, 0.0f);
 }
 
 //=============================================================
@@ -80,7 +80,7 @@ void CGameScene::Update()
 	if (INPUT_INSTANCE->onTrigger("o"))
 	{
 		std::array<std::array<int, 250>, 250> matrix{ {} };
-		dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.5f, 3, 80).draw(matrix);
+		dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.0f, 6, 100).draw(matrix);
 
 		dtl::storage::FilePNG<int>("file_sample.png", 3).write(matrix, [](const int value, unsigned char* const color) {
 			if (value < 20)
@@ -114,6 +114,18 @@ void CGameScene::Update()
 				color[2] = 50;
 			}
 			});
+
+		// 地形を変更する
+		for (int x = 0; x < 250; x++)
+		{
+			for (int y = 0; y < 250; y++)
+			{
+				m_pField->GetComponent<CMeshField>()->SetHeight(x, y, matrix[x][y]);
+			}
+		}
+
+		// テクスチャを適用する
+		m_pField->GetComponent<CMeshField>()->SetTexture("file_sample.png");
 	}
 
 	//m_pCamera->transform->SetQuaternion(m_pBike->transform->GetQuaternion());

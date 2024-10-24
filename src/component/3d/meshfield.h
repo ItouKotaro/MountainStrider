@@ -17,6 +17,9 @@ public:
 	void Uninit() override;
 	void Draw() override;
 
+	void BindTexture(LPDIRECT3DTEXTURE9 texture) { m_pTexture = texture; }
+	void SetTexture(const std::string& sPath);
+
 	// メッシュフィールドを用意する
 	void Create(const int& x, const int& y, const float& spaceSize);
 
@@ -26,6 +29,7 @@ public:
 private:
 	int m_sizeX;
 	int m_sizeY;
+	float m_sizeSpace;
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファ
 	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	// インデックスバッファ

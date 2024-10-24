@@ -21,6 +21,7 @@ public:
 private:
 	GameObject* m_pCamera;	// カメラ
 	GameObject* m_pBike;
+	GameObject* m_pField;		// フィールド
 };
 
 #endif // !_GAME_H_

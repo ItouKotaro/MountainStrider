@@ -6,6 +6,7 @@
 //=============================================================
 #include "meshfield.h"
 #include "renderer.h"
+#include "internal/data_manager.h"
 
 //=============================================================
 // [CMeshField] 初期化
@@ -15,6 +16,7 @@ void CMeshField::Init()
 	// 変数の初期化
 	m_sizeX = 0;
 	m_sizeY = 0;
+	m_sizeSpace = 0.0f;
 	m_pVtxBuff = nullptr;
 	m_pIdxBuff = nullptr;
 	m_pTexture = nullptr;
@@ -78,6 +80,14 @@ void CMeshField::Draw()
 }
 
 //=============================================================
+// [CMeshField] テクスチャ設定
+//=============================================================
+void CMeshField::SetTexture(const std::string& sPath)
+{
+	BindTexture(CDataManager::GetInstance()->RefTexture(sPath)->GetTexture());
+}
+
+//=============================================================
 // [CMeshField] 作成
 //=============================================================
 void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
@@ -95,6 +105,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 
 	m_sizeX = x;
 	m_sizeY = y;
+	m_sizeSpace = spaceSize;
 		
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(
@@ -140,7 +151,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
 		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[0].tex = D3DXVECTOR2((nCntVertex % (x + 1) + 1) / (m_sizeX + 1), (nVertexLine + 1) / (m_sizeY + 1));
 
 		pVtx++; // ポインタを進める
 	}
@@ -188,12 +199,17 @@ void CMeshField::SetHeight(const int& x, const int& y, const float& height)
 	{
 		VERTEX_3D* pVtx;
 
+		// インデックスを算出
+		int nIndex = x + (m_sizeX + 1) * y;
+		int nLine = (nIndex - nIndex % (m_sizeX + 1)) / (m_sizeX + 1);
+
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-		pVtx += x + (m_sizeX + 1) * y;
+		pVtx += nIndex;
 
-		// 指定の頂点を
-		pVtx->pos = pVtx->pos + D3DXVECTOR3(0.0f, height, 0.0f);
+		// 指定の頂点を変更する
+		D3DXVECTOR3 defPos = D3DXVECTOR3(m_sizeSpace * (nIndex % (m_sizeX + 1)), 0.0f, -m_sizeSpace * nLine);
+		pVtx->pos = defPos + D3DXVECTOR3(0.0f, height, 0.0f);
 
 		// 頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();
