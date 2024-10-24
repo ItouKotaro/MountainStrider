@@ -202,7 +202,7 @@
       <Filter>ソース ファイル\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\component\3d\meshfield.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\component\3d</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -336,7 +336,7 @@
       <Filter>ヘッダー ファイル\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\component\3d\meshfield.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\component\3d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
