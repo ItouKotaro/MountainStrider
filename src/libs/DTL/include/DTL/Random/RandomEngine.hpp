@@ -21,13 +21,13 @@
 
 namespace dtl {
 	inline namespace random {
-		int seed;
+		static int seed;
 	}
 }
 
-//#ifndef DTL_RANDOM_INIT_SEED
+#ifndef DTL_RANDOM_INIT_SEED
 #define DTL_RANDOM_INIT_SEED (dtl::random::seed) /*::std::random_device()()*/
-//#endif
+#endif
 
 #ifndef DTL_RANDOM_ENGINE
 #define DTL_RANDOM_ENGINE ::dtl::random::RandClassMT::random_engine

@@ -26,8 +26,24 @@ public:
 	void Rotate(float x, float y, float z) {
 		D3DXVECTOR3 axis;
 		D3DXQUATERNION q;
-		D3DXQuaternionRotationYawPitchRoll(&q, y, x, z);
+
+		// Y
+		axis = { 0.0f, 1.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&q, &axis, y);
 		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
+
+		// X
+		axis = { 1.0f, 0.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&q, &axis, x);
+		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
+
+		// Z
+		axis = { 0.0f, 0.0f, 1.0f };
+		D3DXQuaternionRotationAxis(&q, &axis, z);
+		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
+
+		//D3DXQuaternionRotationYawPitchRoll(&q, y, x, z);
+		//D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
 	}
 	void Rotate(D3DXVECTOR3 rot) {
 		Rotate(rot.x, rot.y, rot.z);
@@ -83,6 +99,7 @@ public:
 	void SetPos(float x, float y) { SetPos(x, y, m_position.z);  }
 	void SetPos(D3DXVECTOR2 position) { SetPos(position.x, position.y, m_position.z); }
 	void SetQuaternion(D3DXQUATERNION quaternion) { m_rotation = quaternion; }
+	void MultiplyQuaternion(D3DXQUATERNION quaternion) { D3DXQuaternionMultiply(&m_rotation, &m_rotation, &quaternion); }
 	void SetRot(float x, float y, float z);
 	void SetRot(D3DXVECTOR3 rotation) { SetRot(rotation.x, rotation.y, rotation.z); }
 	void SetRot(float fAngle) { SetRot(m_rotation.x, m_rotation.y, fAngle); }

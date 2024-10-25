@@ -15,7 +15,7 @@
 #include "utility/noise.h"
 #include <fstream>
 #include <DTL.hpp>
-#include "DTL/Storage/FilePNG.hpp"
+//#include "DTL/Storage/FilePNG.hpp"
 
 //=============================================================
 // [CGameScene] 初期化
@@ -61,7 +61,7 @@ void CGameScene::Init()
 
 	// メッシュフィールド
 	m_pField = new GameObject;
-	m_pField->AddComponent<CMeshField>()->Create(249, 249, 20.0f);
+	m_pField->AddComponent<CMeshField>()->Create(249, 249, 1.0f);
 	m_pField->transform->Translate(0.0f, -100.0f, -100.0f);
 }
 
@@ -77,70 +77,70 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
-	if (INPUT_INSTANCE->onTrigger("o"))
-	{
-		std::array<std::array<int, 250>, 250> matrix{ {} };
-		dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.0f, 6, 100).draw(matrix);
-
-		dtl::storage::FilePNG<int>("file_sample.png", 3).write(matrix, [](const int value, unsigned char* const color) {
-			if (value < 20)
-			{
-				color[0] = 41;
-				color[1] = 40;
-				color[2] = 159;
-			}
-			else if (value < 40)
-			{
-				color[0] = 101;
-				color[1] = 163;
-				color[2] = 56;
-			}
-			else if (value < 60)
-			{
-				color[0] = 223;
-				color[1] = 203;
-				color[2] = 140;
-			}
-			else if (value < 80)
-			{
-				color[0] = 9;
-				color[1] = 100;
-				color[2] = 5;
-			}
-			else
-			{
-				color[0] = 164;
-				color[1] = 143;
-				color[2] = 50;
-			}
-			});
-
-		// 地形を変更する
-		for (int x = 0; x < 250; x++)
-		{
-			for (int y = 0; y < 250; y++)
-			{
-				m_pField->GetComponent<CMeshField>()->SetHeight(x, y, matrix[x][y] * 20.0f);
-			}
-		}
-
-		// テクスチャを適用する
-		m_pField->GetComponent<CMeshField>()->SetTexture("file_sample.png");
-	}
-
-	//m_pCamera->transform->SetQuaternion(m_pBike->transform->GetQuaternion());
-	//m_pCamera->transform->SetPos(m_pBike->transform->GetWPos() + D3DXVECTOR3(0.0f, 20.0f, 30.0f));
-
-	//m_pCamera->GetComponent<CCamera>()->SetPosR(m_pBike->transform->GetWPos());
-
-	//if (INPUT_INSTANCE->onTrigger("space"))
+	//if (INPUT_INSTANCE->onTrigger("o"))
 	//{
-	//	GameObject* pObj = new GameObject();
-	//	pObj->transform->Translate(0.0f, 10.0f, 0.0f);
-	//	pObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
-	//	pObj->AddComponent<CSphereCollider>(10.0f);
-	//	pObj->AddComponent<CRigidBody>();
+	//	std::array<std::array<int, 250>, 250> matrix{ {} };
+	//	dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.0f, 6, 100).draw(matrix);
+	//	//dtl::random::seed = 10;
+	//	dtl::storage::FilePNG<int>("file_sample.png", 3).write(matrix, [](const int value, unsigned char* const color) {
+	//		if (value < 20)
+	//		{
+	//			color[0] = 41;
+	//			color[1] = 40;
+	//			color[2] = 159;
+	//		}
+	//		else if (value < 40)
+	//		{
+	//			color[0] = 101;
+	//			color[1] = 163;
+	//			color[2] = 56;
+	//		}
+	//		else if (value < 60)
+	//		{
+	//			color[0] = 223;
+	//			color[1] = 203;
+	//			color[2] = 140;
+	//		}
+	//		else if (value < 80)
+	//		{
+	//			color[0] = 9;
+	//			color[1] = 100;
+	//			color[2] = 5;
+	//		}
+	//		else
+	//		{
+	//			color[0] = 164;
+	//			color[1] = 143;
+	//			color[2] = 50;
+	//		}
+	//		});
+
+	//	// 地形を変更する
+	//	for (int x = 0; x < 250; x++)
+	//	{
+	//		for (int y = 0; y < 250; y++)
+	//		{
+	//			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, matrix[x][y]);
+	//		}
+	//	}
+
+	//	// テクスチャを適用する
+	//	m_pField->GetComponent<CMeshField>()->SetTexture("file_sample.png");
 	//}
+
+	////m_pCamera->transform->SetQuaternion(m_pBike->transform->GetQuaternion());
+	////m_pCamera->transform->SetPos(m_pBike->transform->GetWPos() + D3DXVECTOR3(0.0f, 20.0f, 30.0f));
+
+	////m_pCamera->GetComponent<CCamera>()->SetPosR(m_pBike->transform->GetWPos());
+
+	////if (INPUT_INSTANCE->onTrigger("space"))
+	////{
+	////	GameObject* pObj = new GameObject();
+	////	pObj->transform->Translate(0.0f, 10.0f, 0.0f);
+	////	pObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
+	////	pObj->AddComponent<CSphereCollider>(10.0f);
+	////	pObj->AddComponent<CRigidBody>();
+	////}
 }
 
 //=============================================================

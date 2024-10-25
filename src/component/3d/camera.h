@@ -30,15 +30,17 @@ public:
 	float m_fClippingPlanesFar;				// クリップ距離（遠い）
 
 	// カメラの設定
-	void SetCamera();																			// カメラの設定
-	void SetPosR(const D3DXVECTOR3& posR) { m_posR = posR; }		// 注視点の設定
-	D3DXVECTOR3 GetPosR() { return m_posR; }									// 注視点の取得
-	void SetParallel(const bool& isParallel) { m_bParallel = isParallel; }		// 平行投影の設定
-	bool GetParallel() { return m_bParallel; }											// 平行投影状態の取得
-	void SetVisible(const bool& isVisible) { m_bVisible = isVisible; }			// 表示の設定
-	bool GetVisible() { return m_bVisible; }											// 表示の取得
-	void SetAmbient(const float& fAmbient) { m_fAmbient = fAmbient; }// 明るさの設定
-	float GetAmbient() { return m_fAmbient; }										// 明るさの取得
+	void SetCamera();																						// カメラの設定
+	void SetPosR(const D3DXVECTOR3& posR) { m_posR = posR; }					// 注視点の設定
+	D3DXVECTOR3 GetPosR() { return m_posR; }												// 注視点の取得
+	void SetParallel(const bool& isParallel) { m_bParallel = isParallel; }					// 平行投影の設定
+	bool GetParallel() { return m_bParallel; }														// 平行投影状態の取得
+	void SetVisible(const bool& isVisible) { m_bVisible = isVisible; }						// 表示の設定
+	bool GetVisible() { return m_bVisible; }														// 表示の取得
+	void SetAmbient(const float& fAmbient) { m_fAmbient = fAmbient; }			// 明るさの設定
+	float GetAmbient() { return m_fAmbient; }													// 明るさの取得
+	void SetCustomPosR(const bool& enabled) { m_bCustomPosR = enabled; }	// カスタム注視点の設定
+	bool GetCustomPosR() { return m_bCustomPosR; }										// カスタム注視点の取得
 
 	// ビューポート設定
 	void SetViewportPosition(float x, float y) {
@@ -58,6 +60,7 @@ private:
 	D3DXCOLOR m_backColor;				// 背景色
 	D3DXVECTOR3 m_vecU;					// 上向きベクトル
 	D3DXVECTOR3 m_posR;					// 注視点
+	bool m_bCustomPosR;					// カスタム注視点
 	float m_fLength;							// 視点と注視点の長さ
 	D3DXMATRIX m_mtxProjection;		// プロジェクションマトリックス
 	D3DXMATRIX m_mtxView;				// ビューマトリックス

@@ -31,7 +31,7 @@ void CMovementSpace::Update()
 		INPUT_INSTANCE->onPress("s") ||
 		INPUT_INSTANCE->onPress("d"))
 	{
-		float fAngle = GetMoveAngle();  // 角度取得
+		float fAngle = -GetMoveAngle() + transform->GetRotY() + D3DX_PI * 0.5f;  // 角度取得
 		transform->Translate(sinf(fAngle) * m_fSpeed, 0.0f, cosf(fAngle) * m_fSpeed);
 	}
 
@@ -56,7 +56,7 @@ void CMovementSpace::Update()
 
 	//--------------------------------------------------------
 	// 視点の位置を変更（左クリック）
-	transform->Rotate(LeftClickMove.y * m_fMouseSpeed, LeftClickMove.x * m_fMouseSpeed, 0.0f);
+	transform->Rotate(LeftClickMove.y * m_fMouseSpeed, -LeftClickMove.x * m_fMouseSpeed, 0.0f);
 }
 
 //=============================================================
@@ -131,18 +131,18 @@ float CMovementSpace::GetMoveAngle()
 	{
 		fMoveY += 1.0f;
 	}
-	else if (INPUT_INSTANCE->onPress("s"))
+	if (INPUT_INSTANCE->onPress("s"))
 	{
 		fMoveY += -1.0f;
 	}
-	else if (INPUT_INSTANCE->onPress("a"))
+	if (INPUT_INSTANCE->onPress("a"))
 	{
 		fMoveX += -1.0f;
 	}
-	else if (INPUT_INSTANCE->onPress("d"))
+	if (INPUT_INSTANCE->onPress("d"))
 	{
 		fMoveX += 1.0f;
 	}
 
-	return atan2f(fMoveY, fMoveX) - D3DX_PI * 0.5f;
+	return atan2f(fMoveY, fMoveX);
 }

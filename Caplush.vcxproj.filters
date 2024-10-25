@@ -204,6 +204,9 @@
     <ClCompile Include="src\component\3d\meshfield.cpp">
       <Filter>ソース ファイル\component\3d</Filter>
     </ClCompile>
+    <ClCompile Include="src\scene\mt_debug.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -337,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="src\component\3d\meshfield.h">
       <Filter>ヘッダー ファイル\component\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\mt_debug.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -24,6 +24,7 @@ void CCamera::Init()
 	SetViewportSize((float)CRenderer::SCREEN_WIDTH, (float)CRenderer::SCREEN_HEIGHT);
 	m_bParallel = false;
 	m_bVisible = true;
+	m_bCustomPosR = false;
 	m_fAmbient = 0.8f;
 
 	// スカイボックスの初期化
@@ -50,10 +51,13 @@ void CCamera::Uninit()
 //=============================================================
 void CCamera::Update()
 {
-	D3DXMATRIX rotMtx = transform->GetRotationMatrix();
-	m_posR = { 0.0f, 0.0f, m_fLength };
-	D3DXVec3TransformCoord(&m_posR, &m_posR, &rotMtx);
-	m_posR += transform->GetWPos();
+	if (!m_bCustomPosR)
+	{
+		D3DXMATRIX rotMtx = transform->GetRotationMatrix();
+		m_posR = { 0.0f, 0.0f, m_fLength };
+		D3DXVec3TransformCoord(&m_posR, &m_posR, &rotMtx);
+		m_posR += transform->GetWPos();
+	}
 
 	// Z回転（上向きベクトル）
 	//D3DXVECTOR3 defUp = { 0.0f, 1.0f, 0.0f };

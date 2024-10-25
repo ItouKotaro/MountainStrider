@@ -15,6 +15,8 @@
 #include "game.h"
 #include "result.h"
 
+#include "mt_debug.h"
+
 //=============================================================
 // [CStartScene] ‰Šú‰»
 //=============================================================
@@ -28,8 +30,10 @@ void CStartScene::Init()
 	pSceneManager->RegistScene<CGameScene>("game");
 	pSceneManager->RegistScene<CResultScene>("result");
 
+	pSceneManager->RegistScene<CMountainDebug>("debug_mt");
+
 	// ƒV[ƒ“‚ÌÄ¶
-	pSceneManager->SetScene("title");
+	pSceneManager->SetScene("debug_mt");
 }
 
 //=============================================================
