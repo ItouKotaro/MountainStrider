@@ -120,7 +120,7 @@ void CGameScene::Update()
 		{
 			for (int y = 0; y < 250; y++)
 			{
-				m_pField->GetComponent<CMeshField>()->SetHeight(x, y, matrix[x][y]);
+				m_pField->GetComponent<CMeshField>()->SetHeight(x, y, matrix[x][y] * 20.0f);
 			}
 		}
 

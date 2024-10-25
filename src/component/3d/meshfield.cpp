@@ -117,7 +117,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 
 	// インデックスバッファの生成
 	pDevice->CreateIndexBuffer(
-		sizeof(WORD) * ((2 * x + 2) * y + (y - 1) * 2),
+		sizeof(WORD) * ((2 * x + 2) * y + (y - 1) * 2 + 1),
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -175,9 +175,6 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 			pIdx += 2;
 			nCounter += 2;
 		}
-
-		if (nCntIdxHeight == y - 1)
-			break;
 
 		// 折り返し
 		pIdx[0] = (x + 1) * (nCntIdxHeight + 1) - 1;
