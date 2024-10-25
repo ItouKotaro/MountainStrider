@@ -62,7 +62,7 @@ void CGameScene::Init()
 	// メッシュフィールド
 	m_pField = new GameObject;
 	m_pField->AddComponent<CMeshField>()->Create(249, 249, 20.0f);
-	m_pField->transform->Translate(0.0f, -100.0f, 0.0f);
+	m_pField->transform->Translate(0.0f, -100.0f, -100.0f);
 }
 
 //=============================================================

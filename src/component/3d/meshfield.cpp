@@ -73,9 +73,9 @@ void CMeshField::Draw()
 		D3DPT_TRIANGLESTRIP,
 		0,
 		0,
-		(2 * m_sizeX + 2) * m_sizeY + (m_sizeY - 1) * 2,
+		(m_sizeX + 1) * (m_sizeY + 1),
 		0,
-		(m_sizeX * 2) * m_sizeY + ((m_sizeY - 2) * 2 + 2) * 4
+		((m_sizeX + 1) * 2) * (m_sizeY + 1)
 	);
 }
 
@@ -164,6 +164,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
 
 	// インデックスの設定
+	int nCounter = 0;
 	for (int nCntIdxHeight = 0; nCntIdxHeight < y; nCntIdxHeight++)
 	{
 		for (int nCntIdxWidth = 0; nCntIdxWidth < (x + 1); nCntIdxWidth++)
@@ -172,16 +173,22 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 			pIdx[1] = nCntIdxWidth + (x + 1) * nCntIdxHeight;
 
 			pIdx += 2;
+			nCounter += 2;
 		}
+
+		if (nCntIdxHeight == y - 1)
+			break;
 
 		// 折り返し
 		pIdx[0] = (x + 1) * (nCntIdxHeight + 1) - 1;
 		pIdx += 1;
+		nCounter++;
 
 		if (nCntIdxHeight != y - 1)
 		{
-			pIdx[1] = (x + 1) * (nCntIdxHeight + 2);
+			pIdx[0] = (x + 1) * (nCntIdxHeight + 2);
 			pIdx += 1;
+			nCounter++;
 		}
 	}
 
