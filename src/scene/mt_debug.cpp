@@ -10,6 +10,8 @@
 #include "component/3d/movement_space.h"
 #include "component/3d/light.h"
 #include "component/3d/meshfield.h"
+#include "component/3d/mesh.h"
+#include "component/3d/collision.h"
 
 #include <DTL.hpp>
 #include "DTL/Storage/FilePNG.hpp"
@@ -34,8 +36,16 @@ void CMountainDebug::Init()
 
 	// メッシュフィールド
 	m_pField = new GameObject;
-	m_pField->AddComponent<CMeshField>()->Create(249, 249, 1.0f);
-	m_pField->transform->Translate(0.0f, -100.0f, -100.0f);
+	m_pField->AddComponent<CMeshField>()->Create(249, 249, 2.0f);
+	m_pField->transform->Translate(0.0f, -300.0f, 0.0f);
+	m_pField->AddComponent<CBoxCollider>(D3DXVECTOR3(300.0f, 1.0f, 300.0f));
+
+	// sihyou
+	GameObject* pOrigin = new GameObject;
+	pOrigin->transform->Translate(0.0f, -300.0f, 0.0f);
+	pOrigin->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\player.x");
+
+
 
 	GameObject* pSLight = new GameObject;
 	pSLight->AddComponent<CLight>()->SetIntensity(500.0f);
@@ -57,7 +67,7 @@ void CMountainDebug::Update()
 	if (INPUT_INSTANCE->onTrigger("o"))
 	{
 		std::array<std::array<int, 250>, 250> matrix{ {} };
-		dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.0f, 6, 100).draw(matrix);
+		dtl::shape::PerlinSolitaryIsland<int>(0.6f, 0.4f, 6.0f, 6, 500).draw(matrix);
 		dtl::random::seed = 12;
 
 		dtl::storage::FilePNG<int>("file_sample.png", 3).write(matrix, [](const int value, unsigned char* const color) {
@@ -104,6 +114,7 @@ void CMountainDebug::Update()
 
 		// テクスチャを適用する
 		m_pField->GetComponent<CMeshField>()->SetTexture("file_sample.png");
+		//m_pField->GetComponent<CMeshField>()->CalcVertexNormals();
 	}
 }
 

@@ -140,9 +140,11 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		}
 
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(spaceSize * (nCntVertex % (x + 1)),
+		pVtx[0].pos = D3DXVECTOR3(
+			spaceSize * (nCntVertex % (x + 1)) - (spaceSize * m_sizeX) / 2,
 			0.0f,
-			-spaceSize * nVertexLine);
+			-spaceSize * nVertexLine + (spaceSize * m_sizeX) / 2
+		);
 
 		// 法線ベクトルの設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -212,7 +214,11 @@ void CMeshField::SetHeight(const int& x, const int& y, const float& height)
 		pVtx += nIndex;
 
 		// 指定の頂点を変更する
-		D3DXVECTOR3 defPos = D3DXVECTOR3(m_sizeSpace * (nIndex % (m_sizeX + 1)), 0.0f, -m_sizeSpace * nLine);
+		D3DXVECTOR3 defPos = D3DXVECTOR3(
+			m_sizeSpace * (nIndex % (m_sizeX + 1)) - (m_sizeSpace * m_sizeX) / 2,
+			0.0f,
+			-m_sizeSpace * nLine + (m_sizeSpace * m_sizeX) / 2
+		);
 		pVtx->pos = defPos + D3DXVECTOR3(0.0f, height, 0.0f);
 
 		// 頂点バッファをアンロックする
