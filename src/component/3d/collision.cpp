@@ -463,7 +463,7 @@ void CConeCollider::Init()
 	// コリジョンの更新
 	pCollision->UpdateCollision();
 }
-
+#include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 //=============================================================
 // [CConeCollider] シェイプに追加する
 //=============================================================

@@ -233,6 +233,7 @@
     <ClCompile Include="src\scene\result.cpp" />
     <ClCompile Include="src\scene\start_scene.cpp" />
     <ClCompile Include="src\scene\title.cpp" />
+    <ClCompile Include="src\scripts\terrain.cpp" />
     <ClCompile Include="src\scripts\vehicle.cpp" />
     <ClCompile Include="src\utility\noise.cpp" />
   </ItemGroup>
@@ -280,6 +281,7 @@
     <ClInclude Include="src\scene\result.h" />
     <ClInclude Include="src\scene\start_scene.h" />
     <ClInclude Include="src\scene\title.h" />
+    <ClInclude Include="src\scripts\terrain.h" />
     <ClInclude Include="src\scripts\vehicle.h" />
     <ClInclude Include="src\utility\noise.h" />
   </ItemGroup>

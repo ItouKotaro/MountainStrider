@@ -19,7 +19,6 @@ public:
 	void Draw() override;			// •`‰æ
 private:
 	GameObject* m_pCamera;
-	GameObject* m_pField;
 };
 
 #endif // !_MOUNTAIN_DEBUG_H_

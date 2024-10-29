@@ -54,6 +54,15 @@ void CMovementSpace::Update()
 		return;
 	}
 
+	if (INPUT_INSTANCE->onPress("space"))
+	{
+		transform->Translate(0.0f, 10.0f, 0.0f);
+	}
+	if (INPUT_INSTANCE->onPress("lshift"))
+	{
+		transform->Translate(0.0f, -10.0f, 0.0f);
+	}
+
 	//--------------------------------------------------------
 	// 視点の位置を変更（左クリック）
 	transform->Rotate(LeftClickMove.y * m_fMouseSpeed, -LeftClickMove.x * m_fMouseSpeed, 0.0f);

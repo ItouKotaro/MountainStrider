@@ -7,6 +7,7 @@
 #include "meshfield.h"
 #include "renderer.h"
 #include "internal/data_manager.h"
+#include "component/3d/line.h"
 
 //=============================================================
 // [CMeshField] 初期化
@@ -153,7 +154,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
 		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2((nCntVertex % (x + 1)) / (x + 1), (nVertexLine) / (y + 1));
+		pVtx[0].tex = D3DXVECTOR2((nCntVertex % (x + 1)) / static_cast<float>((x + 1)), (nVertexLine) / static_cast<float>((y + 1)));
 
 		pVtx++; // ポインタを進める
 	}
@@ -171,21 +172,21 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 	{
 		for (int nCntIdxWidth = 0; nCntIdxWidth < (x + 1); nCntIdxWidth++)
 		{
-			pIdx[0] = (x + nCntIdxWidth) + 1 + ((x + 1) * nCntIdxHeight);
-			pIdx[1] = nCntIdxWidth + (x + 1) * nCntIdxHeight;
+			pIdx[0] = static_cast<WORD>((x + nCntIdxWidth) + 1 + ((x + 1) * nCntIdxHeight));
+			pIdx[1] = static_cast<WORD>(nCntIdxWidth + (x + 1) * nCntIdxHeight);
 
 			pIdx += 2;
 			nCounter += 2;
 		}
 
 		// 折り返し
-		pIdx[0] = (x + 1) * (nCntIdxHeight + 1) - 1;
+		pIdx[0] = static_cast<WORD>((x + 1) * (nCntIdxHeight + 1) - 1);
 		pIdx += 1;
 		nCounter++;
 
 		if (nCntIdxHeight != y - 1)
 		{
-			pIdx[0] = (x + 1) * (nCntIdxHeight + 2);
+			pIdx[0] = static_cast<WORD>((x + 1) * (nCntIdxHeight + 2));
 			pIdx += 1;
 			nCounter++;
 		}
@@ -224,4 +225,90 @@ void CMeshField::SetHeight(const int& x, const int& y, const float& height)
 		// 頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();
 	}
+}
+
+//=============================================================
+// [CMeshField] 法線を正しい向きにリセットする
+//=============================================================
+void CMeshField::ResetNormals()
+{
+	// 頂点バッファをロック
+	VERTEX_3D* pVtx;
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// インデックスバッファをロック
+	WORD* pIdx;
+	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	// 頂点の法線をリセットする
+	for (int i = 0; i < (m_sizeX + 1) * (m_sizeY + 1); i++)
+	{
+		pVtx[i].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	}
+
+	// インデックスバッファを参照し法線の向きを求める
+	for (int i = 0; i < (2 * m_sizeX + 2) * m_sizeY + (m_sizeY - 1) * 2 + 1; i+=3)
+	{
+		// インデックスを取得する
+		int nIdx1 = static_cast<int>(pIdx[i]);
+		int nIdx2 = static_cast<int>(pIdx[i+1]);
+		int nIdx3 = static_cast<int>(pIdx[i+2]);
+
+		// それぞれのインデックスの頂点座標を取得する
+		D3DXVECTOR3 vtxPos1 = pVtx[nIdx1].pos;
+		D3DXVECTOR3 vtxPos2 = pVtx[nIdx2].pos;
+		D3DXVECTOR3 vtxPos3 = pVtx[nIdx3].pos;
+
+		// 法線の方向を計算する
+		D3DXVECTOR3 vec1 = vtxPos2 - vtxPos1;
+		D3DXVECTOR3 vec2 = vtxPos3 - vtxPos1;
+		D3DXVECTOR3 normal = { 0.0f, 0.0f, 0.0f };
+		D3DXVec3Cross(&normal, &vec1, &vec2);
+		D3DXVec3Normalize(&normal, &normal);
+		normal = { fabsf(normal.x), fabsf(normal.y), fabsf(normal.z) };
+
+		// 頂点の法線に加算する
+		pVtx[nIdx1].nor += normal;
+		pVtx[nIdx2].nor += normal;
+		pVtx[nIdx3].nor += normal;
+	}
+
+	// 頂点の法線を正規化する
+	for (int i = 0; i < (m_sizeX + 1) * (m_sizeY + 1); i++)
+	{
+		D3DXVECTOR3 nor = pVtx[i].nor;
+		D3DXVec3Normalize(&nor, &nor);
+		pVtx[i].nor = nor;
+	}
+
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+
+	// インデックスバッファをアンロック
+	m_pIdxBuff->Unlock();
+}
+
+//=============================================================
+// [CMeshField] 法線を表示する
+//=============================================================
+void CMeshField::ShowNormals(GameObject* pLineObj)
+{
+	VERTEX_3D* pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntVertex = 0; nCntVertex < (m_sizeX + 1) * (m_sizeY + 1); nCntVertex++)
+	{
+		pLineObj->AddComponent<CLine>()->SetLine(
+			pVtx[0].pos + transform->GetWPos(),
+			pVtx[0].pos + pVtx[0].nor * 15.0f + transform->GetWPos(),
+			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+			);
+
+		pVtx++;
+	}
+
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
 }

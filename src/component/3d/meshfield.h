@@ -26,6 +26,12 @@ public:
 	// 指定の位置の高さを変更する
 	void SetHeight(const int& x, const int& y, const float& height);
 
+	// 法線を適切な向きに変更する
+	void ResetNormals();
+
+	// 法線を表示する
+	void ShowNormals(GameObject* pLineObj);
+
 private:
 	int m_sizeX;
 	int m_sizeY;

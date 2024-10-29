@@ -207,6 +207,9 @@
     <ClCompile Include="src\scene\mt_debug.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\terrain.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -343,6 +346,9 @@
     </ClInclude>
     <ClInclude Include="src\scene\mt_debug.h">
       <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\terrain.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
