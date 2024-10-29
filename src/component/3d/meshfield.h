@@ -29,13 +29,21 @@ public:
 	// 法線を適切な向きに変更する
 	void ResetNormals();
 
+	// データを取得します
+	std::vector<D3DXVECTOR3>& GetVertices() { return m_vertices; }
+	std::vector<int>& GetIndices() { return m_indices; }
+	int GetNumFaces() { return (m_sizeX * 2) * m_sizeY; }
+
 	// 法線を表示する
 	void ShowNormals(GameObject* pLineObj);
 
 private:
-	int m_sizeX;
-	int m_sizeY;
-	float m_sizeSpace;
+	int m_sizeX;				// Xの面数
+	int m_sizeY;				// Yの面数
+	float m_sizeSpace;		// 間隔
+
+	std::vector<D3DXVECTOR3> m_vertices;	// 頂点データ
+	std::vector<int> m_indices;						// インデックスデータ
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファ
 	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	// インデックスバッファ

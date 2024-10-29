@@ -115,6 +115,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
 		NULL);
+	m_vertices.resize((x + 1) * (y + 1));
 
 	// インデックスバッファの生成
 	pDevice->CreateIndexBuffer(
@@ -124,6 +125,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		D3DPOOL_MANAGED,
 		&m_pIdxBuff,
 		NULL);
+	m_indices.resize((2 * x + 2) * y + (y - 1) * 2 + 1);
 
 	// 構成変数
 	VERTEX_3D* pVtx;
@@ -146,6 +148,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 			0.0f,
 			-spaceSize * nVertexLine + (spaceSize * m_sizeX) / 2
 		);
+		m_vertices[nCntVertex] = pVtx[0].pos;
 
 		// 法線ベクトルの設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -175,18 +178,23 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 			pIdx[0] = static_cast<WORD>((x + nCntIdxWidth) + 1 + ((x + 1) * nCntIdxHeight));
 			pIdx[1] = static_cast<WORD>(nCntIdxWidth + (x + 1) * nCntIdxHeight);
 
+			m_indices[nCounter] = pIdx[0];
+			m_indices[nCounter + 1] = pIdx[1];
+
 			pIdx += 2;
 			nCounter += 2;
 		}
 
 		// 折り返し
 		pIdx[0] = static_cast<WORD>((x + 1) * (nCntIdxHeight + 1) - 1);
+		m_indices[nCounter] = pIdx[0];
 		pIdx += 1;
 		nCounter++;
 
 		if (nCntIdxHeight != y - 1)
 		{
 			pIdx[0] = static_cast<WORD>((x + 1) * (nCntIdxHeight + 2));
+			m_indices[nCounter] = pIdx[0];
 			pIdx += 1;
 			nCounter++;
 		}
@@ -221,6 +229,7 @@ void CMeshField::SetHeight(const int& x, const int& y, const float& height)
 			-m_sizeSpace * nLine + (m_sizeSpace * m_sizeX) / 2
 		);
 		pVtx->pos = defPos + D3DXVECTOR3(0.0f, height, 0.0f);
+		m_vertices[nIndex] = pVtx->pos;
 
 		// 頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();

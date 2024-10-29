@@ -59,6 +59,14 @@ void CMountainDebug::Update()
 		pTerrain->AddComponent<CTerrain>();
 		pTerrain->GetComponent<CTerrain>()->Generate();
 	}
+
+	if (INPUT_INSTANCE->onTrigger("b"))
+	{
+		GameObject* pBall = new GameObject;
+		pBall->AddComponent<CSphereCollider>(10.0f);
+		pBall->AddComponent<CRigidBody>();
+		pBall->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\bench.x");
+	}
 }
 
 //=============================================================
