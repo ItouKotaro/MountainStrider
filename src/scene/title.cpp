@@ -22,11 +22,11 @@ void CTitleScene::Init()
 	pBG->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH), static_cast<float>(CRenderer::SCREEN_HEIGHT));
 
 	// テキスト
-	GameObject* pText = new GameObject;
-	pText->AddComponent<CText>();
-	pText->GetComponent<CText>()->SetText("<color=0,0,0><size=200>ゲーム名");
-	pText->GetComponent<CText>()->SetAlign(CText::ALIGN::CENTER);
-	pText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2, 120.0f);
+	GameObject* pLogo = new GameObject;
+	pLogo->transform->SetSize(600.0f, 600.0f);
+	pLogo->AddComponent<CPolygon>();
+	pLogo->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\logo.png");
+	pLogo->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2 - 300.0f, 0.0f);
 
 	// 選択肢を生成する
 	for (int i = 0; i < SELECT::MAX; i++)

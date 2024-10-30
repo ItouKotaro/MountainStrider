@@ -18,6 +18,7 @@ void CMeshField::Init()
 	m_sizeX = 0;
 	m_sizeY = 0;
 	m_sizeSpace = 0.0f;
+	m_loopTex = 1;
 	m_pVtxBuff = nullptr;
 	m_pIdxBuff = nullptr;
 	m_pTexture = nullptr;
@@ -86,6 +87,40 @@ void CMeshField::Draw()
 void CMeshField::SetTexture(const std::string& sPath)
 {
 	BindTexture(CDataManager::GetInstance()->RefTexture(sPath)->GetTexture());
+}
+
+//=============================================================
+// [CMeshField] テクスチャのループ数設定
+//=============================================================
+void CMeshField::SetLoopTexture(const int& num)
+{
+	if (num > 0)
+	{
+		m_loopTex = num;
+
+		// 構成変数
+		VERTEX_3D* pVtx;
+		int nVertexLine = -1;	// 現在の列
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		for (int nCntVertex = 0; nCntVertex < (m_sizeX + 1) * (m_sizeY + 1); nCntVertex++)
+		{
+			// 次の列に移動する
+			if (nCntVertex % (m_sizeX + 1) == 0)
+			{
+				nVertexLine++; // 次の行に進める
+			}
+
+			pVtx[0].tex = D3DXVECTOR2((nCntVertex % (m_sizeX + 1)) / static_cast<float>((m_sizeX + 1)) * m_loopTex, (nVertexLine) / static_cast<float>((m_sizeY + 1)) * m_loopTex);
+
+			pVtx++;
+		}
+
+		// 頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+	}
 }
 
 //=============================================================

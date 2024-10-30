@@ -55,7 +55,7 @@ void CMountainDebug::Update()
 	if (INPUT_INSTANCE->onTrigger("o"))
 	{
 		GameObject* pTerrain = new GameObject;
-		pTerrain->transform->Translate(0.0f, -500.0f, 0.0f);
+		pTerrain->transform->Translate(0.0f, -200.0f, 0.0f);
 		pTerrain->AddComponent<CTerrain>();
 		pTerrain->GetComponent<CTerrain>()->Generate();
 	}
@@ -63,8 +63,9 @@ void CMountainDebug::Update()
 	if (INPUT_INSTANCE->onTrigger("b"))
 	{
 		GameObject* pBall = new GameObject;
-		pBall->AddComponent<CSphereCollider>(10.0f);
+		pBall->AddComponent<CSphereCollider>(2.0f);
 		pBall->AddComponent<CRigidBody>();
+		CCollision::GetCollision(pBall)->SetMass(500.0f);
 		pBall->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\bench.x");
 	}
 }

@@ -18,7 +18,7 @@ void CTerrain::Init()
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
 	m_pField->SetParent(gameObject);
-	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, 10.0f);
+	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, 100.0f);
 
 	m_indices = nullptr;
 	m_vertices = nullptr;
@@ -66,7 +66,8 @@ void CTerrain::Generate()
 	CCollision::Create(m_pField);
 
 	// 高度マップを生成する
-	dtl::shape::DiamondSquareAverageIsland<int>(5, 100, 0).draw(m_terrainHeight);
+	dtl::shape::PerlinSolitaryIsland<int>(0.5f, 0.45f, 6.0f, 6, 200).draw(m_terrainHeight);
+	//dtl::shape::DiamondSquareAverageIsland<int>(5, 140, 0).draw(m_terrainHeight);
 
 	// メッシュの高さを変更する
 	for (int x = 0; x < TERRAIN_SIZE; x++)
@@ -76,7 +77,9 @@ void CTerrain::Generate()
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, m_terrainHeight[x][y]);
 		}
 	}
-	m_pField->GetComponent<CMeshField>()->ResetNormals();
+	m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
+	m_pField->GetComponent<CMeshField>()->SetLoopTexture(10);
+	//m_pField->GetComponent<CMeshField>()->ResetNormals();
 
 	// インデックス情報を格納する
 	std::vector<int>& indices = m_pField->GetComponent<CMeshField>()->GetIndices();
@@ -98,7 +101,7 @@ void CTerrain::Generate()
 
 	// メッシュデータを作成する
 	m_pMeshData = new btTriangleIndexVertexArray(
-		m_pField->GetComponent<CMeshField>()->GetNumFaces(),
+		(TERRAIN_SIZE) * (TERRAIN_SIZE) * 2- TERRAIN_SIZE / 2,
 		m_indices,
 		sizeof(int),
 		static_cast<int>(m_pField->GetComponent<CMeshField>()->GetVertices().size()),

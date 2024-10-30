@@ -17,7 +17,7 @@ public:
 	void Uninit();
 	void Generate();
 
-	static const int TERRAIN_SIZE = 150;
+	static const int TERRAIN_SIZE = 100;
 private:
 	std::array<std::array<int, TERRAIN_SIZE>, TERRAIN_SIZE> m_terrainHeight;
 	int* m_indices;

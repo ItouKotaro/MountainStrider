@@ -15,6 +15,7 @@
 #include "utility/noise.h"
 #include <fstream>
 #include <DTL.hpp>
+#include "scripts/terrain.h"
 //#include "DTL/Storage/FilePNG.hpp"
 
 //=============================================================
@@ -37,13 +38,9 @@ void CGameScene::Init()
 	CD3DLight::SetDefaultD3DLight(pLight);
 
 	// 地面を作成
-	GameObject* pFloor = new GameObject;
-	pFloor->transform->Translate(0.0f, 0.0f, -2000.0f);
-	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(5000.0f, 50.0f, 5000.0f), D3DXVECTOR3(0.0f, -50.0f, 0.0f));
-	pFloor->AddComponent<CRigidBody>()->GetCollision()->SetMass(0.0f);
-	//pFloor->AddComponent<CField>();
-	//pFloor->GetComponent<CField>()->Set(10000.0f, 10000.0f);
-
+	m_pField = new GameObject;
+	m_pField->AddComponent<CTerrain>()->Generate();
+	m_pField->transform->Translate(0.0f, -200.0f, 0.0f);
 	// バイクの生成
 	m_pBike = new GameObject;
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
@@ -51,18 +48,6 @@ void CGameScene::Init()
 	m_pBike->AddComponent<CVehicle>();
 
 	m_pCamera->SetParent(m_pBike);
-
-	for (int i = 0; i < 1000; i++)
-	{
-		GameObject* pBench = new GameObject;
-		pBench->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\player.x");
-		pBench->transform->SetPos(rand() % 10000 - 5000, -30.0f, rand() % 10000 - 5000);
-	}
-
-	// メッシュフィールド
-	m_pField = new GameObject;
-	m_pField->AddComponent<CMeshField>()->Create(249, 249, 1.0f);
-	m_pField->transform->Translate(0.0f, -100.0f, -100.0f);
 }
 
 //=============================================================

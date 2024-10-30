@@ -19,6 +19,7 @@ public:
 
 	void BindTexture(LPDIRECT3DTEXTURE9 texture) { m_pTexture = texture; }
 	void SetTexture(const std::string& sPath);
+	void SetLoopTexture(const int& num);
 
 	// メッシュフィールドを用意する
 	void Create(const int& x, const int& y, const float& spaceSize);
@@ -40,6 +41,7 @@ public:
 private:
 	int m_sizeX;				// Xの面数
 	int m_sizeY;				// Yの面数
+	int m_loopTex;			// テクスチャのループ数
 	float m_sizeSpace;		// 間隔
 
 	std::vector<D3DXVECTOR3> m_vertices;	// 頂点データ
