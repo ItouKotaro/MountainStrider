@@ -22,8 +22,9 @@ void CTerrain::Init()
 
 	m_indices = nullptr;
 	m_vertices = nullptr;
-	m_pMeshData = nullptr;
-	m_pMeshCollision = nullptr;
+	m_terrainData = nullptr;
+	//m_pMeshData = nullptr;
+	//m_pMeshCollision = nullptr;
 }
 
 //=============================================================
@@ -42,16 +43,26 @@ void CTerrain::Uninit()
 		delete[] m_vertices;
 		m_vertices = nullptr;
 	}
-	if (m_pMeshData != nullptr)
+	if (m_terrainData != nullptr)
 	{
-		delete m_pMeshData;
-		m_pMeshData = nullptr;
+		delete[] m_terrainData;
+		m_terrainData = nullptr;
 	}
-	if (m_pMeshCollision != nullptr)
+	if (m_terrainShape != nullptr)
 	{
-		delete m_pMeshCollision;
-		m_pMeshCollision = nullptr;
+		delete m_terrainShape;
+		m_terrainShape = nullptr;
 	}
+	//if (m_pMeshData != nullptr)
+	//{
+	//	delete m_pMeshData;
+	//	m_pMeshData = nullptr;
+	//}
+	//if (m_pMeshCollision != nullptr)
+	//{
+	//	delete m_pMeshCollision;
+	//	m_pMeshCollision = nullptr;
+	//}
 }
 
 //=============================================================
@@ -77,38 +88,55 @@ void CTerrain::Generate()
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, m_terrainHeight[x][y]);
 		}
 	}
+
+	// テクスチャを生成する
 	m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
 	m_pField->GetComponent<CMeshField>()->SetLoopTexture(10);
-	//m_pField->GetComponent<CMeshField>()->ResetNormals();
 
-	// インデックス情報を格納する
-	std::vector<int>& indices = m_pField->GetComponent<CMeshField>()->GetIndices();
-	m_indices = new int[indices.size()];
-	for (unsigned int i = 0; i < indices.size(); i++)
+	//// インデックス情報を格納する
+	//std::vector<int>& indices = m_pField->GetComponent<CMeshField>()->GetIndices();
+	//m_indices = new int[indices.size()];
+	//for (unsigned int i = 0; i < indices.size(); i++)
+	//{
+	//	m_indices[i] = indices[i];
+	//}
+
+	//// 頂点情報を格納する
+	//std::vector<D3DXVECTOR3>& vertices = m_pField->GetComponent<CMeshField>()->GetVertices();
+	//m_vertices = new float[vertices.size() * 3];
+	//for (unsigned int i = 0; i < vertices.size(); i++)
+	//{
+	//	m_vertices[i * 3] = vertices[i].x;
+	//	m_vertices[i * 3 + 1] = vertices[i].y;
+	//	m_vertices[i * 3 + 2] = vertices[i].z;
+	//}
+
+	//// メッシュデータを作成する
+	//m_pMeshData = new btTriangleIndexVertexArray(
+	//	(TERRAIN_SIZE) * (TERRAIN_SIZE) * 2- TERRAIN_SIZE / 2,
+	//	m_indices,
+	//	sizeof(int),
+	//	static_cast<int>(m_pField->GetComponent<CMeshField>()->GetVertices().size()),
+	//	m_vertices,
+	//	sizeof(D3DXVECTOR3));
+
+	//// コリジョンを生成する
+	//m_pMeshCollision = new btConvexTriangleMeshShape(m_pMeshData, true);
+	//CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_pMeshCollision);
+
+
+	// 地形情報を格納する
+	m_terrainData = new btScalar[TERRAIN_SIZE * TERRAIN_SIZE];
+	for (int x = 0; x < TERRAIN_SIZE; x++)
 	{
-		m_indices[i] = indices[i];
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = static_cast<btScalar>(m_terrainHeight[x][y]);
+		}
 	}
 
-	// 頂点情報を格納する
-	std::vector<D3DXVECTOR3>& vertices = m_pField->GetComponent<CMeshField>()->GetVertices();
-	m_vertices = new float[vertices.size() * 3];
-	for (unsigned int i = 0; i < vertices.size(); i++)
-	{
-		m_vertices[i * 3] = vertices[i].x;
-		m_vertices[i * 3 + 1] = vertices[i].y;
-		m_vertices[i * 3 + 2] = vertices[i].z;
-	}
-
-	// メッシュデータを作成する
-	m_pMeshData = new btTriangleIndexVertexArray(
-		(TERRAIN_SIZE) * (TERRAIN_SIZE) * 2- TERRAIN_SIZE / 2,
-		m_indices,
-		sizeof(int),
-		static_cast<int>(m_pField->GetComponent<CMeshField>()->GetVertices().size()),
-		m_vertices,
-		sizeof(D3DXVECTOR3));
-
-	// コリジョンを生成する
-	m_pMeshCollision = new btConvexTriangleMeshShape(m_pMeshData, true);
-	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_pMeshCollision);
+	// HeightfieldTerrainShapeを作成する
+	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, 0, 1, 1, PHY_FLOAT, false);
+	m_terrainShape->setLocalScaling(btVector3(100.0f, 1.0f, 100.0f));
+	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 }

@@ -41,6 +41,8 @@ void CGameScene::Init()
 	m_pField = new GameObject;
 	m_pField->AddComponent<CTerrain>()->Generate();
 	m_pField->transform->Translate(0.0f, -200.0f, 0.0f);
+	m_pField->AddComponent<CBoxCollider>(D3DXVECTOR3(1000.0f, 1.0f, 1000.0f));
+
 	// バイクの生成
 	m_pBike = new GameObject;
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
