@@ -18,16 +18,14 @@ public:
 	void Uninit();
 	void Generate();
 
-	static const int TERRAIN_SIZE = 10;
+	static const int TERRAIN_SIZE = 100;
 private:
 	std::array<std::array<int, TERRAIN_SIZE>, TERRAIN_SIZE> m_terrainHeight;
 	int* m_indices;
 	float* m_vertices;
 
 	GameObject* m_pField;
-	//btStridingMeshInterface* m_pMeshData;
-	//btConvexTriangleMeshShape* m_pMeshCollision;
-	btScalar* m_terrainData;
+	float* m_terrainData;
 	btHeightfieldTerrainShape* m_terrainShape;
 };
 

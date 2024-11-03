@@ -62,11 +62,7 @@ void CMountainDebug::Update()
 
 	if (INPUT_INSTANCE->onTrigger("b"))
 	{
-		GameObject* pBall = new GameObject;
-		pBall->AddComponent<CSphereCollider>(2.0f);
-		pBall->AddComponent<CRigidBody>();
-		CCollision::GetCollision(pBall)->SetMass(500.0f);
-		pBall->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\bench.x");
+		GameObject::LoadPrefab("data\\PREFAB\\bench.pref");
 	}
 }
 
