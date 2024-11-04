@@ -27,14 +27,14 @@ public:
 		D3DXVECTOR3 axis;
 		D3DXQUATERNION q;
 
-		// Y
-		axis = { 0.0f, 1.0f, 0.0f };
-		D3DXQuaternionRotationAxis(&q, &axis, y);
-		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
-
 		// X
 		axis = { 1.0f, 0.0f, 0.0f };
 		D3DXQuaternionRotationAxis(&q, &axis, x);
+		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
+
+		// Y
+		axis = { 0.0f, 1.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&q, &axis, y);
 		D3DXQuaternionMultiply(&m_rotation, &m_rotation, &q);
 
 		// Z

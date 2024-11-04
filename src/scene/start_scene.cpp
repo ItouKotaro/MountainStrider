@@ -33,8 +33,8 @@ void CStartScene::Init()
 	pSceneManager->RegistScene<CMountainDebug>("debug_mt");
 
 	// ƒV[ƒ“‚ÌÄ¶
-	//pSceneManager->SetScene("title");
-	pSceneManager->SetScene("debug_mt");
+	pSceneManager->SetScene("title");
+	//pSceneManager->SetScene("debug_mt");
 }
 
 //=============================================================

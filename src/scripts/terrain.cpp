@@ -18,7 +18,7 @@ void CTerrain::Init()
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
 	m_pField->SetParent(gameObject);
-	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, 100.0f);
+	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, 1000.0f);
 
 	m_indices = nullptr;
 	m_vertices = nullptr;
@@ -94,6 +94,6 @@ void CTerrain::Generate()
 
 	// HeightfieldTerrainShapeを作成する
 	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -1000, 1000, 1, PHY_FLOAT, false);
-	m_terrainShape->setLocalScaling(btVector3(100.0f, 1.0f, 100.0f));
+	m_terrainShape->setLocalScaling(btVector3(1000.0f, 1.0f, 1000.0f));
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 }

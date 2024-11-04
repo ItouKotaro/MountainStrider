@@ -16,6 +16,7 @@
 #include <fstream>
 #include <DTL.hpp>
 #include "scripts/terrain.h"
+#include "scripts/camera_move.h"
 //#include "DTL/Storage/FilePNG.hpp"
 
 //=============================================================
@@ -29,9 +30,6 @@ void CGameScene::Init()
 	m_pCamera->AddComponent<CCamera>();
 	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 	m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
-	m_pCamera->transform->Translate(100.0f, 10.0f, -50.0f);
-	m_pCamera->transform->Rotate(0.0f, -0.8f, 0.0f);
-	//m_pCamera->transform->Translate(0.0f, 10.0f, -10.0f);
 
 	// ライトを作成
 	GameObject* pLight = new GameObject();
@@ -40,16 +38,15 @@ void CGameScene::Init()
 	// 地面を作成
 	m_pField = new GameObject;
 	m_pField->AddComponent<CTerrain>()->Generate();
-	m_pField->transform->Translate(0.0f, -200.0f, 0.0f);
-	m_pField->AddComponent<CBoxCollider>(D3DXVECTOR3(1000.0f, 1.0f, 1000.0f));
+	m_pField->transform->Translate(0.0f, -250.0f, 0.0f);
 
 	// バイクの生成
 	m_pBike = new GameObject;
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
-
 	m_pBike->AddComponent<CVehicle>();
 
-	m_pCamera->SetParent(m_pBike);
+	// カメラの移動設定を行う
+	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
 }
 
 //=============================================================

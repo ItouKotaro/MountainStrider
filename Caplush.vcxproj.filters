@@ -210,6 +210,9 @@
     <ClCompile Include="src\scripts\terrain.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\camera_move.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -348,6 +351,9 @@
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\terrain.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\camera_move.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
