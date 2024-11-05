@@ -22,14 +22,14 @@ void CCameraMove::Update()
 	// カメラの目標地点を計算する
 	D3DXVECTOR3 objectivePos;
 	objectivePos = pTargetTrans->GetWPos();
-	objectivePos += {sinf(pTargetTrans->GetWRotY()) * -100.0f, 80.0f, cosf(pTargetTrans->GetWRotY()) * -100.0f};
+	objectivePos += {sinf(pTargetTrans->GetWRotY()) * -150.0f, 50.0f, cosf(pTargetTrans->GetWRotY()) * -150.0f};
 
 	// 目標地点に移動する
 	transform->SetPos(objectivePos);
 
 	
 	// 回転
-	transform->SetRot(0.5f, pTargetTrans->GetWRotY(), 0.0f);
+	transform->SetRot(0.4f, pTargetTrans->GetWRotY(), 0.0f);
 }
 
 //=============================================================
