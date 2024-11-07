@@ -38,6 +38,10 @@ void CMountainDebug::Init()
 	GameObject* pSLight = new GameObject;
 	pSLight->AddComponent<CLight>()->SetIntensity(500.0f);
 	pSLight->transform->Translate(0.0f, 100.0f, 0.0f);
+
+	GameObject* pFloor = new GameObject;
+	pFloor->transform->Translate(0.0f, -500.0f, 0.0f);
+	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(500.0f, 2.0f, 500.0f));
 }
 
 //=============================================================

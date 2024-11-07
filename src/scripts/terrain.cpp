@@ -6,9 +6,11 @@
 //=============================================================
 #include "terrain.h"
 #include "component/3d/meshfield.h"
+#include "component/3d/line.h"
 #include <DTL.hpp>
 
 // 静的メンバ変数の初期化
+const float CTerrain::TERRAIN_SCALE = 100.0f;
 
 //=============================================================
 // [CTerrain] 初期化
@@ -18,11 +20,15 @@ void CTerrain::Init()
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
 	m_pField->SetParent(gameObject);
-	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, 1000.0f);
+	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
 
-	m_indices = nullptr;
-	m_vertices = nullptr;
 	m_terrainData = nullptr;
+
+	// 障害物を登録する
+	CProdTree* prodTree = new CProdTree();
+	prodTree->SetChance(10);
+	prodTree->SetAdjacentRate<CProdTree>(1.5f);
+	RegisterProduces(prodTree);
 }
 
 //=============================================================
@@ -30,17 +36,25 @@ void CTerrain::Init()
 //=============================================================
 void CTerrain::Uninit()
 {
+	UninitTerrain();
+
+	for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+	{
+		if (m_natureProduces[i] != nullptr)
+		{
+			delete m_natureProduces[i];
+			m_natureProduces[i] = nullptr;
+		}
+	}
+	m_natureProduces.clear();
+}
+
+//=============================================================
+// [CTerrain] 地形の終了処理
+//=============================================================
+void CTerrain::UninitTerrain()
+{
 	CCollision::RemoveCollision(m_pField);
-	if (m_indices != nullptr)
-	{
-		delete[] m_indices;
-		m_indices = nullptr;
-	}
-	if (m_vertices != nullptr)
-	{
-		delete[] m_vertices;
-		m_vertices = nullptr;
-	}
 
 	if (m_terrainData != nullptr)
 	{
@@ -60,7 +74,7 @@ void CTerrain::Uninit()
 void CTerrain::Generate()
 {
 	// 終了する
-	this->Uninit();
+	this->UninitTerrain();
 
 	// コリジョンを作成する
 	CCollision::Create(m_pField);
@@ -74,7 +88,7 @@ void CTerrain::Generate()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, m_terrainHeight[x][y]);
+			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, static_cast<float>(m_terrainHeight[x][y]));
 		}
 	}
 
@@ -93,7 +107,137 @@ void CTerrain::Generate()
 	}
 
 	// HeightfieldTerrainShapeを作成する
-	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -1000, 1000, 1, PHY_FLOAT, false);
-	m_terrainShape->setLocalScaling(btVector3(1000.0f, 1.0f, 1000.0f));
+	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -3 * TERRAIN_SCALE, 3 * TERRAIN_SCALE, 1, PHY_FLOAT, false);
+	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
+
+	// 生成物を生成する
+	for (int i = 0; i < 5; i++)
+	{
+		GenerateProduces();
+	}
+}
+
+//=============================================================
+// [CTerrain] 生成物の登録
+//=============================================================
+void CTerrain::RegisterProduces(CNatureProduces* pNatureProduce)
+{
+	// もう既に登録されていないかを確認する
+	for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+	{
+		if (m_natureProduces[i] == pNatureProduce)
+		{ // 一致するとき
+			return;
+		}
+	}
+
+	// 登録する
+	m_natureProduces.push_back(pNatureProduce);
+}
+
+//=============================================================
+// [CTerrain] 生成物の登録
+//=============================================================
+void CTerrain::GenerateProduces()
+{
+	for (int nTryCount = 0; nTryCount < 1; nTryCount++)
+	{
+		// ランダムで位置を決める
+		D3DXVECTOR3 generatePos;
+		generatePos = {
+			rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f,
+			0.0f,
+			rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f
+		};
+
+		// 生成物を決定する
+		CNatureProduces* pSelectProduce = nullptr;
+		int nAllChance = 0;		// すべての確率
+		for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+		{
+			nAllChance += static_cast<int>(m_natureProduces[i]->GetChance() * m_natureProduces[i]->GetAdjacentRate(generatePos));
+		}
+		int nRandValue = rand() % nAllChance;	// ランダム値
+		int nMinChance = 0;								// チャンス範囲の最小値
+		int nMaxChance = 0;								// チャンス範囲の最大値
+		for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+		{
+			nMaxChance = nMinChance + m_natureProduces[i]->GetChance();
+			if (nMinChance <= nRandValue && nRandValue < nMaxChance)
+			{ // 範囲内のとき
+				pSelectProduce = m_natureProduces[i];
+				break;
+			}
+			nMinChance += m_natureProduces[i]->GetChance();
+		}
+
+		if (pSelectProduce == nullptr)
+		{ // 生成物が決定しなかったとき（例外）
+			continue;
+		}
+
+		// レイポイントの位置を決める
+		D3DXVECTOR3 rayPoint[4];
+		rayPoint[0].x = -pSelectProduce->GetSize().x / 2;
+		rayPoint[0].z = -pSelectProduce->GetSize().y / 2;
+		rayPoint[1].x = pSelectProduce->GetSize().x / 2;
+		rayPoint[1].z = -pSelectProduce->GetSize().y / 2;
+		rayPoint[2].x = -pSelectProduce->GetSize().x / 2;
+		rayPoint[2].z = pSelectProduce->GetSize().y / 2;
+		rayPoint[3].x = pSelectProduce->GetSize().x / 2;
+		rayPoint[3].z = pSelectProduce->GetSize().y / 2;
+
+		// 生成座標に移動する
+		for (int i = 0; i < 4; i++)
+		{
+			rayPoint[i] += generatePos;
+		}
+
+		// レイを飛ばす
+		bool bReached = true;
+		GameObject* pLine = new GameObject();
+		for (int i = 0; i < 4; i++)
+		{
+			btVector3 Start = btVector3(rayPoint[i].x, 3000.0f, rayPoint[i].z);
+			btVector3 End = btVector3(rayPoint[i].x, -3000.0f, rayPoint[i].z);
+
+			pLine->AddComponent<CLine>()->SetLine(
+				{Start.getX(), Start.getY(), Start.getZ() },
+				{ End.getX(), End.getY(), End.getZ() });
+
+			btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+			CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+			if (RayCallback.hasHit())
+			{ // ヒットしたとき
+				if (RayCallback.m_collisionObject != CCollision::GetCollision(m_pField)->GetGhostObject())
+				{ // 地面に接触しなかったとき
+					bReached = false;
+					break;
+				}
+			}
+		}
+
+		// すべてのレイが地面に到達したとき
+		if (bReached)
+		{
+			// 中心にレイを飛ばして設置高度を取得する
+			btVector3 Start = btVector3(generatePos.x, 3000.0f, generatePos.z);
+			btVector3 End = btVector3(generatePos.x, -3000.0f, generatePos.z);
+
+			btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+			CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+			if (RayCallback.hasHit())
+			{ // ヒットしたとき
+				// ヒットしたYの高さを設置位置にする
+				generatePos.y = RayCallback.m_hitPointWorld.getY() + pSelectProduce->GetOffsetY();
+
+				// オブジェクトを設置する
+				pSelectProduce->Generate(Transform(generatePos));
+
+				// ループを抜ける
+				break;
+			}
+		}
+	}
 }
