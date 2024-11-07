@@ -58,15 +58,24 @@ void CMountainDebug::Update()
 {
 	if (INPUT_INSTANCE->onTrigger("o"))
 	{
-		GameObject* pTerrain = new GameObject;
-		pTerrain->transform->Translate(0.0f, -200.0f, 0.0f);
-		pTerrain->AddComponent<CTerrain>();
-		pTerrain->GetComponent<CTerrain>()->Generate();
+		m_pTerrain = new GameObject;
+		m_pTerrain->transform->Translate(0.0f, -200.0f, 0.0f);
+		m_pTerrain->AddComponent<CTerrain>();
+		m_pTerrain->GetComponent<CTerrain>()->Generate();
 	}
 
 	if (INPUT_INSTANCE->onTrigger("b"))
 	{
 		GameObject::LoadPrefab("data\\PREFAB\\bench.pref");
+	}
+
+	// ¶¬•¨‚ð¶¬‚·‚é
+	if (INPUT_INSTANCE->onTrigger("h"))
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			m_pTerrain->GetComponent<CTerrain>()->GenerateProduces();
+		}
 	}
 }
 

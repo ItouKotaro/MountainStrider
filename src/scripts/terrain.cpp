@@ -6,7 +6,6 @@
 //=============================================================
 #include "terrain.h"
 #include "component/3d/meshfield.h"
-#include "component/3d/line.h"
 #include <DTL.hpp>
 
 // ê√ìIÉÅÉìÉoïœêîÇÃèâä˙âª
@@ -27,7 +26,7 @@ void CTerrain::Init()
 	// è·äQï®Çìoò^Ç∑ÇÈ
 	CProdTree* prodTree = new CProdTree();
 	prodTree->SetChance(10);
-	prodTree->SetAdjacentRate<CProdTree>(1.5f);
+	prodTree->SetAdjacentRate<CProdTree>(6.0f);
 	RegisterProduces(prodTree);
 }
 
@@ -111,6 +110,9 @@ void CTerrain::Generate()
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
+	// ê›íËÇµÇΩÉVÉFÅ[ÉvÇìKópÇ∑ÇÈ
+	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
+
 	// ê∂ê¨ï®Çê∂ê¨Ç∑ÇÈ
 	for (int i = 0; i < 5; i++)
 	{
@@ -137,7 +139,7 @@ void CTerrain::RegisterProduces(CNatureProduces* pNatureProduce)
 }
 
 //=============================================================
-// [CTerrain] ê∂ê¨ï®ÇÃìoò^
+// [CTerrain] ê∂ê¨ï®ÇÃê∂ê¨
 //=============================================================
 void CTerrain::GenerateProduces()
 {
@@ -196,15 +198,10 @@ void CTerrain::GenerateProduces()
 
 		// ÉåÉCÇîÚÇŒÇ∑
 		bool bReached = true;
-		GameObject* pLine = new GameObject();
 		for (int i = 0; i < 4; i++)
 		{
 			btVector3 Start = btVector3(rayPoint[i].x, 3000.0f, rayPoint[i].z);
 			btVector3 End = btVector3(rayPoint[i].x, -3000.0f, rayPoint[i].z);
-
-			pLine->AddComponent<CLine>()->SetLine(
-				{Start.getX(), Start.getY(), Start.getZ() },
-				{ End.getX(), End.getY(), End.getZ() });
 
 			btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 			CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);

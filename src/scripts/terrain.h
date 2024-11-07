@@ -20,6 +20,9 @@ public:
 	void Uninit();
 	void Generate();
 
+	// ¶¬•¨‚ğ¶¬‚·‚é
+	void GenerateProduces();
+
 	static const int TERRAIN_SIZE = 10;
 	static const float TERRAIN_SCALE;
 private:
@@ -27,8 +30,6 @@ private:
 
 	// ¶¬•¨‚ğ“o˜^‚·‚é
 	void RegisterProduces(CNatureProduces* pNatureProduce);
-	// ¶¬•¨‚ğ¶¬‚·‚é
-	void GenerateProduces();
 
 	std::array<std::array<int, TERRAIN_SIZE>, TERRAIN_SIZE> m_terrainHeight;	// ’nŒ`î•ñ
 
