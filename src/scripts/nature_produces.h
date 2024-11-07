@@ -19,25 +19,16 @@ struct AdjacentRate
 	float rate;						// 確率
 };
 
-// ゲームオブジェクト追跡用コンポーネント
-class CProduceTag : public Component
-{
-public:
-	CProduceTag(const std::string& className) { m_className = className; }
-	std::string GetName() { return m_className; }
-private:
-	std::string m_className;
-};
-
 // 自然の産物（基底）
 class CNatureProduces
 {
 public:
-	CNatureProduces(const std::string& path, const D3DXVECTOR2& size, const float& offsetY)
+	CNatureProduces(const std::string& path, const D3DXVECTOR2& size, const float& offsetY = 0.0f, const float& adjacentDistance = 100.0f)
 	{
 		m_path = path;
 		m_size = size;
 		m_offsetY = offsetY;
+		m_adjacentDistance = adjacentDistance;
 	}
 
 	// オブジェクトの生成
@@ -54,7 +45,9 @@ public:
 	void SetChance(const int& chance) { m_chance = chance; }
 	// 確率倍率を取得する
 	float GetAdjacentRate(const D3DXVECTOR3& pos);
-	// 隣接倍率の設定
+	// 隣接距離の設定
+	void SetAdjacentDistance(const float& distance) { m_adjacentDistance = distance; }
+	// 生成物ごとの隣接倍率の設定
 	template<class T> void SetAdjacentRate(const float& rate)
 	{
 		// 既にクラスが登録されていないか
@@ -73,6 +66,19 @@ public:
 		adjacent.rate = rate;
 		m_adjacentRates.push_back(adjacent);
 	}
+	// 生成物のクラスの倍率を取得する
+	float GetAdjacentObjectRate(const std::string& className)
+	{
+		for (unsigned int i = 0; i < m_adjacentRates.size(); i++)
+		{
+			if (m_adjacentRates[i].className == className)
+			{ // 一致するとき
+				return m_adjacentRates[i].rate;
+			}
+		}
+		// 見つからなかったとき
+		return 1.0f;
+	}
 
 protected:
 	std::string m_path;		// 設置プレハブのパス
@@ -82,11 +88,22 @@ protected:
 	// 確率
 	unsigned int m_chance;										// 標準確率（整数）
 	std::vector<AdjacentRate> m_adjacentRates;		// 隣接確率リスト
+	float m_adjacentDistance;									// 隣接距離
 };
 
+// ゲームオブジェクト追跡用コンポーネント
+class CProduceTag : public Component
+{
+public:
+	CProduceTag(CNatureProduces* natureProduce) { m_natureProduce = natureProduce; }
+	CNatureProduces* GetNatureProduce() { return m_natureProduce; }
+private:
+	CNatureProduces* m_natureProduce;
+};
 
 // --------------------------------- 障害物 ---------------------------------
 
+// 木
 class CProdTree : public CNatureProduces
 {
 public:

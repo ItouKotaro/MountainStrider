@@ -9,7 +9,7 @@
 #include <DTL.hpp>
 
 // Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
-const float CTerrain::TERRAIN_SCALE = 100.0f;
+const float CTerrain::TERRAIN_SCALE = 300.0f;
 
 //=============================================================
 // [CTerrain] ‰Šú‰»
@@ -26,7 +26,7 @@ void CTerrain::Init()
 	// áŠQ•¨‚ğ“o˜^‚·‚é
 	CProdTree* prodTree = new CProdTree();
 	prodTree->SetChance(10);
-	prodTree->SetAdjacentRate<CProdTree>(6.0f);
+	prodTree->SetAdjacentRate<CProdTree>(1.5f);
 	RegisterProduces(prodTree);
 }
 
@@ -114,7 +114,8 @@ void CTerrain::Generate()
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
-	for (int i = 0; i < 5; i++)
+	srand((unsigned int)clock());
+	for (int i = 0; i < 25; i++)
 	{
 		GenerateProduces();
 	}
@@ -143,7 +144,7 @@ void CTerrain::RegisterProduces(CNatureProduces* pNatureProduce)
 //=============================================================
 void CTerrain::GenerateProduces()
 {
-	for (int nTryCount = 0; nTryCount < 1; nTryCount++)
+	for (int nTryCount = 0; nTryCount < 500; nTryCount++)
 	{
 		// ƒ‰ƒ“ƒ_ƒ€‚ÅˆÊ’u‚ğŒˆ‚ß‚é
 		D3DXVECTOR3 generatePos;
