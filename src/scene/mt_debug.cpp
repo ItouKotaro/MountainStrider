@@ -35,9 +35,9 @@ void CMountainDebug::Init()
 	GameObject* pLight = new GameObject;
 	CD3DLight::SetDefaultD3DLight(pLight);
 
-	GameObject* pSLight = new GameObject;
-	pSLight->AddComponent<CLight>()->SetIntensity(500.0f);
-	pSLight->transform->Translate(0.0f, 100.0f, 0.0f);
+	//GameObject* pSLight = new GameObject;
+	//pSLight->AddComponent<CLight>()->SetIntensity(500.0f);
+	//pSLight->transform->Translate(0.0f, 100.0f, 0.0f);
 
 	GameObject* pFloor = new GameObject;
 	pFloor->transform->Translate(0.0f, -500.0f, 0.0f);
@@ -69,14 +69,7 @@ void CMountainDebug::Update()
 		GameObject::LoadPrefab("data\\PREFAB\\bench.pref");
 	}
 
-	// ¶¬•¨‚ð¶¬‚·‚é
-	if (INPUT_INSTANCE->onTrigger("h"))
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			m_pTerrain->GetComponent<CTerrain>()->GenerateProduces();
-		}
-	}
+
 }
 
 //=============================================================

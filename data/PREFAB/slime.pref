@@ -1,0 +1,187 @@
+{
+    "motion": {
+        "jump": {
+            "0": {
+                "keys": {
+                    "10": {
+                        "position": [
+                            0.0,
+                            -7.099999904632568,
+                            0.0
+                        ],
+                        "rotation": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.5,
+                            0.10000000149011612,
+                            1.5
+                        ]
+                    },
+                    "30": {
+                        "position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "rotation": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                }
+            },
+            "loop": false,
+            "max_frame": 30
+        }
+    },
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\SLIME\\body.x",
+            "name": "body",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "trigger": false
+        },
+        "1": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\SLIME\\eye.x",
+            "name": "eye",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    3.700000047683716,
+                    -10.199999809265137
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        },
+        "2": {
+            "collision": [
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        100.0,
+                        39.599998474121094,
+                        100.0
+                    ],
+                    "type": "box"
+                }
+            ],
+            "friction": 1.0,
+            "model": "none",
+            "name": "Search",
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": true
+        }
+    },
+    "parent": {
+        "0": -1,
+        "1": 0,
+        "2": -1
+    },
+    "prefab": {
+        "collision": [
+            {
+                "offset": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    10.0,
+                    10.0,
+                    10.0
+                ],
+                "type": "box"
+            }
+        ],
+        "friction": 1.0,
+        "mass": 10.0,
+        "name": "Slime",
+        "rigidbody": true,
+        "tag": "Enemy",
+        "transform": {
+            "position": [
+                0.0,
+                4.800000190734863,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": false
+    }
+}

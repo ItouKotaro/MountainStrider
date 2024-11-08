@@ -10,14 +10,16 @@
 //=============================================================
 // [CNatureProduces] 生成する
 //=============================================================
-void CNatureProduces::Generate(const Transform& transform)
+GameObject* CNatureProduces::Generate(const Transform& transform)
 {
 	// パスの入力チェック
-	if (m_path.empty()) return;
+	if (m_path.empty()) return nullptr;
 
 	// プレハブを生成する
 	GameObject* pGenerateObj = GameObject::LoadPrefab(m_path, transform);
 	pGenerateObj->AddComponent<CProduceTag>(this);	// 追跡タグ
+
+	return pGenerateObj;
 }
 
 //=============================================================
@@ -34,9 +36,9 @@ float CNatureProduces::GetAdjacentRate(const D3DXVECTOR3& pos)
 	{
 		if (Benlib::PosDistance(pos, pAdjacentObj[i]->transform->GetWPos()) <= m_adjacentDistance)
 		{ // 範囲内のとき
-			_rate *= GetAdjacentObjectRate(typeid(*pAdjacentObj[i]->GetNatureProduce()).name()); // <-ここで判別されない問題あり
+			_rate *= GetAdjacentObjectRate(pAdjacentObj[i]->GetNatureProduce()->GetProduceName());
 		}
 	}
 
-	return 1.0f;
+	return _rate;
 }

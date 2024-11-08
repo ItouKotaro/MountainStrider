@@ -24,10 +24,18 @@ void CTerrain::Init()
 	m_terrainData = nullptr;
 
 	// 障害物を登録する
+
+	// 木
 	CProdTree* prodTree = new CProdTree();
 	prodTree->SetChance(10);
-	prodTree->SetAdjacentRate<CProdTree>(1.5f);
+	prodTree->SetAdjacentRate("tree", 10.0f);
 	RegisterProduces(prodTree);
+
+	// フェンス
+	CProdFence* prodFence = new CProdFence();
+	prodFence->SetChance(0);
+	prodFence->SetAdjacentRate("fence", 100.0f);
+	RegisterProduces(prodFence);
 }
 
 //=============================================================
@@ -78,6 +86,31 @@ void CTerrain::Generate()
 	// コリジョンを作成する
 	CCollision::Create(m_pField);
 
+	// 地形データを生成する
+	GenerateTerrain();
+
+	// HeightfieldTerrainShapeを作成する
+	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -3 * TERRAIN_SCALE, 3 * TERRAIN_SCALE, 1, PHY_FLOAT, false);
+	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
+	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
+
+	// 設定したシェープを適用する
+	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
+
+	// 生成物を生成する
+	srand((unsigned int)clock());
+	for (int i = 0; i < 300; i++)
+	{
+		GenerateProduces();
+	}
+
+}
+
+//=============================================================
+// [CTerrain] 地形の生成
+//=============================================================
+void CTerrain::GenerateTerrain()
+{
 	// 高度マップを生成する
 	dtl::shape::PerlinSolitaryIsland<int>(0.5f, 0.45f, 6.0f, 6, 300, -200).draw(m_terrainHeight);
 	//dtl::shape::DiamondSquareAverageIsland<int>(0, 50, 0).draw(m_terrainHeight);
@@ -96,28 +129,13 @@ void CTerrain::Generate()
 	m_pField->GetComponent<CMeshField>()->SetLoopTexture(10);
 
 	// 地形情報を格納する
-	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE] ;
+	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];
 	for (int x = 0; x < TERRAIN_SIZE; x++)
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
 			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = static_cast<float>(m_terrainHeight[x][y]);
 		}
-	}
-
-	// HeightfieldTerrainShapeを作成する
-	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -3 * TERRAIN_SCALE, 3 * TERRAIN_SCALE, 1, PHY_FLOAT, false);
-	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
-	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
-
-	// 設定したシェープを適用する
-	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
-
-	// 生成物を生成する
-	srand((unsigned int)clock());
-	for (int i = 0; i < 25; i++)
-	{
-		GenerateProduces();
 	}
 }
 

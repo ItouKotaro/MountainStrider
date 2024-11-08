@@ -20,13 +20,16 @@ public:
 	void Uninit();
 	void Generate();
 
-	// ¶¬•¨‚ğ¶¬‚·‚é
-	void GenerateProduces();
-
 	static const int TERRAIN_SIZE = 10;
 	static const float TERRAIN_SCALE;
 private:
 	void UninitTerrain();
+
+	// ’nŒ`‚ğ¶¬‚·‚é
+	void GenerateTerrain();
+
+	// ¶¬•¨‚ğ¶¬‚·‚é
+	void GenerateProduces();
 
 	// ¶¬•¨‚ğ“o˜^‚·‚é
 	void RegisterProduces(CNatureProduces* pNatureProduce);
