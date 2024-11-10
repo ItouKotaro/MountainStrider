@@ -9,7 +9,7 @@
 #include <DTL.hpp>
 
 // 静的メンバ変数の初期化
-const float CTerrain::TERRAIN_SCALE = 300.0f;
+const float CTerrain::TERRAIN_SCALE = 30.0f;
 
 //=============================================================
 // [CTerrain] 初期化
@@ -126,7 +126,8 @@ void CTerrain::GenerateTerrain()
 
 	// テクスチャを生成する
 	m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
-	m_pField->GetComponent<CMeshField>()->SetLoopTexture(10);
+	m_pField->GetComponent<CMeshField>()->SetLoopTexture(100);
+	m_pField->GetComponent<CMeshField>()->ResetNormals();
 
 	// 地形情報を格納する
 	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];

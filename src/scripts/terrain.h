@@ -20,7 +20,7 @@ public:
 	void Uninit();
 	void Generate();
 
-	static const int TERRAIN_SIZE = 10;
+	static const int TERRAIN_SIZE = 100;
 	static const float TERRAIN_SCALE;
 private:
 	void UninitTerrain();
