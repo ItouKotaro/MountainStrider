@@ -28,6 +28,9 @@ private:
 	// ’nŒ`‚ğ¶¬‚·‚é
 	void GenerateTerrain();
 
+	// R“¹‚ğ¶¬‚·‚é
+	void GenerateRoad();
+
 	// ¶¬•¨‚ğ¶¬‚·‚é
 	void GenerateProduces();
 

@@ -38,12 +38,13 @@ void CGameScene::Init()
 	// 地面を作成
 	m_pField = new GameObject;
 	m_pField->AddComponent<CTerrain>()->Generate();
-	m_pField->transform->Translate(0.0f, -250.0f, 0.0f);
+	m_pField->transform->Translate(0.0f, -200.0f, 0.0f);
 
 	// バイクの生成
 	m_pBike = new GameObject;
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_pBike->AddComponent<CVehicle>();
+	//m_pBike->transform->Translate(0.0f, 500.0f, 0.0f);
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);

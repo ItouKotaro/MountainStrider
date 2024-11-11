@@ -9,7 +9,7 @@
 #include <DTL.hpp>
 
 // 静的メンバ変数の初期化
-const float CTerrain::TERRAIN_SCALE = 30.0f;
+const float CTerrain::TERRAIN_SCALE = 100.0f;
 
 //=============================================================
 // [CTerrain] 初期化
@@ -30,7 +30,7 @@ void CTerrain::Init()
 	prodTree->SetChance(10);
 	prodTree->SetAdjacentRate("tree", 10.0f);
 	RegisterProduces(prodTree);
-
+	
 	// フェンス
 	CProdFence* prodFence = new CProdFence();
 	prodFence->SetChance(0);
@@ -90,7 +90,7 @@ void CTerrain::Generate()
 	GenerateTerrain();
 
 	// HeightfieldTerrainShapeを作成する
-	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -3 * TERRAIN_SCALE, 3 * TERRAIN_SCALE, 1, PHY_FLOAT, false);
+	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
@@ -115,6 +115,9 @@ void CTerrain::GenerateTerrain()
 	dtl::shape::PerlinSolitaryIsland<int>(0.5f, 0.45f, 6.0f, 6, 300, -200).draw(m_terrainHeight);
 	//dtl::shape::DiamondSquareAverageIsland<int>(0, 50, 0).draw(m_terrainHeight);
 
+	// 山道を生成する
+
+
 	// メッシュの高さを変更する
 	for (int x = 0; x < TERRAIN_SIZE; x++)
 	{
@@ -138,6 +141,14 @@ void CTerrain::GenerateTerrain()
 			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = static_cast<float>(m_terrainHeight[x][y]);
 		}
 	}
+}
+
+//=============================================================
+// [CTerrain] 山道の生成
+//=============================================================
+void CTerrain::GenerateRoad()
+{
+
 }
 
 //=============================================================
@@ -250,7 +261,7 @@ void CTerrain::GenerateProduces()
 				generatePos.y = RayCallback.m_hitPointWorld.getY() + pSelectProduce->GetOffsetY();
 
 				// オブジェクトを設置する
-				pSelectProduce->Generate(Transform(generatePos));
+				pSelectProduce->Generate(Transform(generatePos))->SetParent(gameObject);
 
 				// ループを抜ける
 				break;
