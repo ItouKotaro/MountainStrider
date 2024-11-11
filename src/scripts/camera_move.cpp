@@ -36,7 +36,6 @@ void CCameraMove::Update()
 	// –Ú•W’n“_‚ÉˆÚ“®‚·‚é
 	transform->SetPos(objectivePos);
 
-	
 	// ‰ñ“]
 	transform->SetRot(0.15f, pTargetTrans->GetWRotY(), 0.0f);
 }

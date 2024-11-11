@@ -25,7 +25,7 @@ void CVehicle::Init()
 
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 10.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
-	CCollision::GetCollision(gameObject)->SetMass(400.0f);
+	CCollision::GetCollision(gameObject)->SetMass(450.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
@@ -87,7 +87,7 @@ void CVehicle::Init()
 
 	// ドライブエンジン
 	pBackHinge->enableMotor(3, true);
-	pBackHinge->setMaxMotorForce(3, 150000);
+	pBackHinge->setMaxMotorForce(3, 250000);
 	pBackHinge->setTargetVelocity(3, 0);
 
 	// ステアリングエンジン
@@ -134,7 +134,7 @@ void CVehicle::Update()
 {
 	// 起き上がる方向にトルクを加える
 	float ang = transform->GetWRotZ();
-	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(sinf(transform->GetWRotY()) * -ang * 0.4f, 0.0f, cosf(transform->GetWRotY()) * -ang * 0.4f));
+	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(sinf(transform->GetWRotY()) * -ang * 0.6f, 0.0f, cosf(transform->GetWRotY()) * -ang * 0.6f));
 	//CCollision::GetCollision(m_pFrontTire)->GetRigidBody()->applyTorque(btVector3(sinf(transform->GetWRotY() + D3DX_PI) * ang * -100.0f, 0.0f, cosf(transform->GetWRotY() + D3DX_PI) * ang * -100.0f));
 	//CCollision::GetCollision(m_pBackTire)->GetRigidBody()->applyTorque(btVector3(sinf(transform->GetWRotY() + D3DX_PI) * ang * -100.0f, 0.0f, cosf(transform->GetWRotY() + D3DX_PI) * ang * -100.0f));
 
@@ -164,12 +164,12 @@ void CVehicle::Update()
 	// 方向転換
 	if (INPUT_INSTANCE->onPress("a"))
 	{
-		pBodyRB->setAngularVelocity(btVector3(sinf(transform->GetRotY()) * 0.6f, 0.0f, cosf(transform->GetRotY()) * 0.6f));
+		pBodyRB->setAngularVelocity(btVector3(sinf(transform->GetRotY()) * 0.8f, 0.0f, cosf(transform->GetRotY()) * 0.8f));
 		m_fSteering += STEERING_VALUE;
 	}
 	if (INPUT_INSTANCE->onPress("d"))
 	{
-		pBodyRB->setAngularVelocity(btVector3(sinf(transform->GetRotY()) * -0.6f, 0.0f, cosf(transform->GetRotY()) * -0.6f));
+		pBodyRB->setAngularVelocity(btVector3(sinf(transform->GetRotY()) * -0.8f, 0.0f, cosf(transform->GetRotY()) * -0.8f));
 		m_fSteering -= STEERING_VALUE;
 	}
 	m_fSteering += (0.0f - m_fSteering) * 0.08f;
@@ -193,8 +193,7 @@ void CVehicle::UpdateSpeedMeter()
 	}
 
 	// 状況を表示する
-	//m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
-	m_pSpeedText->GetComponent<CText>()->SetText(std::to_string(transform->GetWRot().z));
+	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
 }
 
 

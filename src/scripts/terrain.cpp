@@ -9,7 +9,7 @@
 #include <DTL.hpp>
 
 // Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
-const float CTerrain::TERRAIN_SCALE = 100.0f;
+const float CTerrain::TERRAIN_SCALE = 300.0f;
 
 //=============================================================
 // [CTerrain] ‰Šú‰»
@@ -99,7 +99,7 @@ void CTerrain::Generate()
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
 	srand((unsigned int)clock());
-	for (int i = 0; i < 300; i++)
+	for (int i = 0; i < 1500; i++)
 	{
 		GenerateProduces();
 	}
@@ -123,6 +123,7 @@ void CTerrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
+			m_terrainHeight[x][y] *= 10.0f;
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, static_cast<float>(m_terrainHeight[x][y]));
 		}
 	}

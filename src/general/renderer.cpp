@@ -13,7 +13,7 @@
 // 変数の初期化
 const int CRenderer::SCREEN_WIDTH = 1920;
 const int CRenderer::SCREEN_HEIGHT = 1080;
-const bool CRenderer::USE_FOG = false;
+const bool CRenderer::USE_FOG = true;
 
 //=============================================================
 // [CRenderer] コンストラクタ
@@ -25,8 +25,8 @@ CRenderer::CRenderer()
 	m_pD3DDevice = nullptr;
 	m_pShadow = nullptr;
 	m_bFullScreen = true;
-	m_fFogStartPos = 200.0f;
-	m_fFogEndPos = 1000.0f;
+	m_fFogStartPos = 2000.0f;
+	m_fFogEndPos = 5000.0f;
 }
 
 //=============================================================

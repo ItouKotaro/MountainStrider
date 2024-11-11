@@ -326,9 +326,14 @@ void CShadow::RenderMesh(CCamera* pCamera, bool bRenderLight)
 
     // メッシュリストを取得する
     vector<CMesh*> pMeshList = Component::GetComponents<CMesh>(false, true);
+    
 
     for (unsigned int nCntModel = 0; nCntModel < pMeshList.size(); nCntModel++)
     {
+        // カメラから近いとき
+        if (Benlib::PosDistance(pMeshList[nCntModel]->transform->GetWPos(), pCamera->transform->GetWPos()) > 4000.0f)
+            continue;
+
         // モデルを取得する
         CMesh* pMesh = pMeshList[nCntModel];
         D3DXMATRIX modelMtx = pMesh->transform->GetMatrix();

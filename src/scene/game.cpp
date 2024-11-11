@@ -17,6 +17,7 @@
 #include <DTL.hpp>
 #include "scripts/terrain.h"
 #include "scripts/camera_move.h"
+#include "benlib.h"
 //#include "DTL/Storage/FilePNG.hpp"
 
 //=============================================================
@@ -38,7 +39,7 @@ void CGameScene::Init()
 	// 地面を作成
 	m_pField = new GameObject;
 	m_pField->AddComponent<CTerrain>()->Generate();
-	m_pField->transform->Translate(0.0f, -200.0f, 0.0f);
+	m_pField->transform->Translate(0.0f, -2000.0f, 1000.0f);
 
 	// バイクの生成
 	m_pBike = new GameObject;
