@@ -281,12 +281,12 @@ void GameObject::Destroy(Component* component)
 //=============================================================
 // [GameObject] コンストラクタ
 //=============================================================
-GameObject::GameObject()
+GameObject::GameObject(const std::string& name, const std::string& tag)
 {
 	m_active = true;
 	m_visible = true;
-	SetName("");
-	SetTag("");
+	SetName(name);
+	SetTag(tag);
 	transform = new Transform();
 	m_bDeathFlag = false;
 

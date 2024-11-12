@@ -216,6 +216,12 @@
     <ClCompile Include="src\scripts\nature_produces.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\status_ui.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\game_manager.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -360,6 +366,12 @@
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\nature_produces.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\status_ui.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\game_manager.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>

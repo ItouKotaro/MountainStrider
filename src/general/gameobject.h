@@ -22,7 +22,7 @@ public:
 	/*
 	@brief ゲームオブジェクトを作成する
 	*/
-	GameObject();
+	GameObject(const std::string& name = "", const std::string& tag = "");
 	~GameObject();
 
 	/*

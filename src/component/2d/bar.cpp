@@ -5,6 +5,7 @@
 //
 //=============================================================
 #include "bar.h"
+#include "renderer.h"
 
 // 静的メンバ変数の初期化
 const float CBar::DEFAULT_BAR_LENGTH = 800.0f;
@@ -151,4 +152,169 @@ void CProgressBar::Update()
 		// 等間隔にバーを配置する
 		m_pBars[i]->transform->SetPos(m_fSpace * 2.0f + (barSize.x + m_fBarSpace) * i, m_fSpace);
 	}
+}
+
+
+//=============================================================
+// [CAdvancedBar] 初期化
+//=============================================================
+void CAdvancedBar::Init()
+{
+	LPDIRECT3DDEVICE9 pDevice; //デバイスへのポインタ
+
+	// デバイスの取得
+	pDevice = CRenderer::GetInstance()->GetDevice();
+
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, nullptr);
+	VERTEX_2D* pVtx; //頂点情報へのポインタ
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	//頂点座標の設定
+	pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	//rhwの設定
+	pVtx[0].rhw = 1.0f;
+	pVtx[1].rhw = 1.0f;
+	pVtx[2].rhw = 1.0f;
+	pVtx[3].rhw = 1.0f;
+
+	//頂点カラー
+	pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+	pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+	pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+	pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+
+	//テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+
+	// 頂点の更新
+	UpdateVertex();
+}
+
+//=============================================================
+// [CAdvancedBar] 終了
+//=============================================================
+void CAdvancedBar::Uninit()
+{
+	//頂点バッファの破棄
+	if (m_pVtxBuff != nullptr)
+	{
+		m_pVtxBuff->Release();
+		m_pVtxBuff = nullptr;
+	}
+}
+
+//=============================================================
+// [CAdvancedBar] 描画
+//=============================================================
+void CAdvancedBar::DrawUI()
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CRenderer::GetInstance()->GetDevice();
+
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_2D);
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, nullptr);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
+		0, //描画する最初の頂点インデックス
+		2); //描画するプリミティブ数
+}
+
+//=============================================================
+// [CAdvancedBar] 頂点の更新
+//=============================================================
+void CAdvancedBar::UpdateVertex()
+{
+	VERTEX_2D* pVtx; //頂点情報へのポインタ
+
+	// 頂点座標を導き出す
+	D3DXVECTOR3 vtxPos[4];
+	switch (m_align)
+	{
+	case CAdvancedBar::LEFT:
+		vtxPos[0] = { 0.0f, -m_fBold / 2, 0.0f };
+		vtxPos[1] = { m_fLength, -m_fBold / 2, 0.0f };
+		vtxPos[2] = { 0.0f, m_fBold / 2, 0.0f };
+		vtxPos[3] = { m_fLength, m_fBold / 2, 0.0f };
+		break;
+	case CAdvancedBar::CENTER:
+		vtxPos[0] = { -m_fLength / 2, -m_fBold / 2, 0.0f };
+		vtxPos[1] = { m_fLength / 2, -m_fBold / 2, 0.0f };
+		vtxPos[2] = { -m_fLength / 2, m_fBold / 2, 0.0f };
+		vtxPos[3] = { m_fLength / 2, m_fBold / 2, 0.0f };
+		break;
+	}
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	//頂点座標の設定
+	pVtx[0].pos = vtxPos[0];
+	pVtx[1].pos = vtxPos[1];
+	pVtx[2].pos = vtxPos[2];
+	pVtx[3].pos = vtxPos[3];
+
+	// バーの長さを変更する
+	pVtx[1].pos.x -= (1.0f - m_fProgress) * m_fLength;
+	pVtx[3].pos.x -= (1.0f - m_fProgress) * m_fLength;
+
+	// 指定位置に移動させる
+	pVtx[0].pos += transform->GetWPos();
+	pVtx[1].pos += transform->GetWPos();
+	pVtx[2].pos += transform->GetWPos();
+	pVtx[3].pos += transform->GetWPos();
+
+	//頂点カラー
+	pVtx[0].col = m_color[0];
+	pVtx[1].col = m_color[1] + m_color[0] * (1.0f - m_fProgress);
+	pVtx[2].col = m_color[2];
+	pVtx[3].col = m_color[3] + m_color[2] * (1.0f - m_fProgress);
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================
+// [CAdvancedBar] 色変更
+//=============================================================
+void CAdvancedBar::SetColor(int index, D3DXCOLOR color)
+{
+	if (0 <= index && index < 4)
+	{
+		m_color[index] = color;
+	}
+
+	// 更新
+	UpdateVertex();
+}
+
+//=============================================================
+// [CAdvancedBar] 進捗度変更
+//=============================================================
+void CAdvancedBar::SetProgress(const float& percent)
+{
+	m_fProgress = percent;
+
+	// 更新
+	UpdateVertex();
 }

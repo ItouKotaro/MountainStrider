@@ -17,6 +17,7 @@
 #include <DTL.hpp>
 #include "scripts/terrain.h"
 #include "scripts/camera_move.h"
+#include "scripts/game_manager.h"
 #include "benlib.h"
 //#include "DTL/Storage/FilePNG.hpp"
 
@@ -45,10 +46,13 @@ void CGameScene::Init()
 	m_pBike = new GameObject;
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_pBike->AddComponent<CVehicle>();
-	//m_pBike->transform->Translate(0.0f, 500.0f, 0.0f);
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
+
+	// ゲームマネージャーを生成する
+	m_pGameManager = new GameObject("GameManager", "Manager");
+	m_pGameManager->AddComponent<CGameManager>();
 }
 
 //=============================================================

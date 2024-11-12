@@ -68,5 +68,45 @@ private:
 	std::vector<GameObject*> m_pBars;
 };
 
+// 高度なバー
+class CAdvancedBar : public Component
+{
+public:
+	CAdvancedBar():m_pVtxBuff(nullptr),m_align(ALIGN::LEFT),m_fBold(50.0f),m_fLength(800.0f),m_fProgress(1.0f)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			m_color[i] = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+	}
+	void Init() override;
+	void Uninit() override;
+	void DrawUI() override;
+
+	// 色変更
+	void SetColor(int index, D3DXCOLOR color);
+	// 進捗度変更
+	void SetProgress(const float& percent);
+	// 進捗度の取得
+	float GetProgress() { return m_fProgress; }
+
+	// 整列
+	enum ALIGN
+	{
+		LEFT,
+		CENTER
+	};
+private:
+	// 頂点更新
+	void UpdateVertex();
+
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点情報
+	ALIGN m_align;											// 整列
+	float m_fBold;											// 太さ
+	float m_fLength;										// 長さ
+	float m_fProgress;										// 進捗度
+	D3DXCOLOR m_color[4];							// 色
+};
+
 
 #endif // !_HP_BAR_H_
