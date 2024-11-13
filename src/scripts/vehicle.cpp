@@ -12,6 +12,8 @@
 
 const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
 const float CVehicle::STEERING_VALUE = 0.5f;
+const float CVehicle::MAX_ENGINEFORCE = 300000.0f;
+const float CVehicle::MAX_STEERING = 50000.0f;
 
 //=============================================================
 // [CVehicle] 初期化
@@ -87,12 +89,12 @@ void CVehicle::Init()
 
 	// ドライブエンジン
 	pBackHinge->enableMotor(3, true);
-	pBackHinge->setMaxMotorForce(3, 300000);
+	pBackHinge->setMaxMotorForce(3, MAX_ENGINEFORCE);
 	pBackHinge->setTargetVelocity(3, 0);
 
 	// ステアリングエンジン
 	pFrontHinge->enableMotor(5, true);
-	pFrontHinge->setMaxMotorForce(5, 50000);
+	pFrontHinge->setMaxMotorForce(5, MAX_STEERING);
 	pFrontHinge->setTargetVelocity(5, 0);
 
 	pFrontHinge->enableSpring(2, true);

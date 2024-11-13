@@ -21,6 +21,8 @@ public:
 
 	static const float ENGINEFORCE_VALUE;		// エンジン力の値
 	static const float STEERING_VALUE;			// ステアリングの値
+	static const float MAX_ENGINEFORCE;			// エンジン力の最大値
+	static const float MAX_STEERING;				// ステアリングの最大値
 private:
 	void UpdateSpeedMeter();
 	GameObject* m_pHandle;
