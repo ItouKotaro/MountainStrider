@@ -13,6 +13,7 @@
 #include "component/3d/mesh.h"
 #include "component/3d/collision.h"
 #include "scripts/terrain.h"
+#include "scripts/vehicle.h"
 
 #include <DTL.hpp>
 #include "DTL/Storage/FilePNG.hpp"
@@ -40,7 +41,7 @@ void CMountainDebug::Init()
 	//pSLight->transform->Translate(0.0f, 100.0f, 0.0f);
 
 	GameObject* pFloor = new GameObject;
-	pFloor->transform->Translate(0.0f, -500.0f, 0.0f);
+	pFloor->transform->Translate(0.0f, -200.0f, 0.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(500.0f, 2.0f, 500.0f));
 }
 
@@ -56,19 +57,21 @@ void CMountainDebug::Uninit()
 //=============================================================
 void CMountainDebug::Update()
 {
-	if (INPUT_INSTANCE->onTrigger("o"))
-	{
-		m_pTerrain = new GameObject;
-		m_pTerrain->transform->Translate(0.0f, -200.0f, 0.0f);
-		m_pTerrain->AddComponent<CTerrain>();
-		m_pTerrain->GetComponent<CTerrain>()->Generate();
-	}
+	//if (INPUT_INSTANCE->onTrigger("o"))
+	//{
+	//	m_pTerrain = new GameObject;
+	//	m_pTerrain->transform->Translate(0.0f, -200.0f, 0.0f);
+	//	m_pTerrain->AddComponent<CTerrain>();
+	//	m_pTerrain->GetComponent<CTerrain>()->Generate();
+	//}
 
+	// ƒoƒCƒN‚ð¶¬‚·‚é
 	if (INPUT_INSTANCE->onTrigger("b"))
 	{
-		GameObject::LoadPrefab("data\\PREFAB\\bench.pref");
+		GameObject* pBike = new GameObject();
+		pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
+		pBike->AddComponent<CVehicle>();
 	}
-
 
 }
 
