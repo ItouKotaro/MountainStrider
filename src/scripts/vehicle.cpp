@@ -10,6 +10,8 @@
 #include "component/2d/text.h"
 #include "benlib.h"
 
+#include "scripts/status_ui.h"
+
 const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
 const float CVehicle::STEERING_VALUE = 0.5f;
 const float CVehicle::MAX_ENGINEFORCE = 300000.0f;
@@ -21,7 +23,6 @@ const float CVehicle::MAX_STEERING = 50000.0f;
 void CVehicle::Init()
 {
 	// 変数の初期化
-	m_fEngineForce = 0.0f;
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
 
@@ -54,7 +55,7 @@ void CVehicle::Init()
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
 	CCollision::GetCollision(m_pFrontTire)->SetMass(60.0f);
-	CCollision::GetCollision(m_pFrontTire)->SetFriction(900);
+	CCollision::GetCollision(m_pFrontTire)->SetFriction(10);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// 後輪の生成
@@ -64,7 +65,7 @@ void CVehicle::Init()
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
 	CCollision::GetCollision(m_pBackTire)->SetMass(40.0f);
-	CCollision::GetCollision(m_pBackTire)->SetFriction(900);
+	CCollision::GetCollision(m_pBackTire)->SetFriction(10);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// ヒンジの設定
@@ -99,10 +100,10 @@ void CVehicle::Init()
 
 	pFrontHinge->enableSpring(2, true);
 	pBackHinge->enableSpring(2, true);
-	pFrontHinge->setStiffness(2, 5.0f);
-	pBackHinge->setStiffness(2, 5.0f);
-	pFrontHinge->setDamping(2, 1.0f);
-	pBackHinge->setDamping(2, 1.0f);
+	pFrontHinge->setStiffness(2, 0.1f);
+	pBackHinge->setStiffness(2, 0.1f);
+	pFrontHinge->setDamping(2, 0.01f);
+	pBackHinge->setDamping(2, 0.01f);
 
 	// パラメーター設定
 	//pFrontHinge->setParam(BT_CONSTRAINT_CFM, -1.0f, 2);
@@ -110,15 +111,20 @@ void CVehicle::Init()
 	//pFrontHinge->setDamping(2, 1.0);
 	//pFrontHinge->setStiffness(2, 80.0);
 
-	pFrontHinge->setUpperLimit(D3DX_PI * 0.1f);
-	pFrontHinge->setLowerLimit(-D3DX_PI * 0.1f);
+	pFrontHinge->setUpperLimit(D3DX_PI * 0.15f);
+	pFrontHinge->setLowerLimit(-D3DX_PI * 0.15f);
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
 
-
+	// 状態テキスト
 	m_pSpeedText = new GameObject;
 	m_pSpeedText->AddComponent<CText>();
 	m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
+
+	// ステータスUI
+	m_pStatusUI = new GameObject("StatusUI", "UI");
+	m_pStatusUI->AddComponent<CStatusUI>();
+
 }
 
 //=============================================================
@@ -136,46 +142,54 @@ void CVehicle::Update()
 {
 	// 起き上がる方向にトルクを加える
 	float ang = transform->GetWRotZ();
-	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(sinf(transform->GetWRotY()) * -ang * 0.6f, 0.0f, cosf(transform->GetWRotY()) * -ang * 0.6f));
-
-	CCollision::GetCollision(gameObject)->GetRigidBody()->applyCentralForce(btVector3(0.0f, -20000.0f, 0.0f));
-
-	// 2軸ヒンジを取得する
-	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
-	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
+	D3DXVECTOR3 angularVelocity = {
+		sinf(transform->GetWRotY()) * -ang * 0.9f,
+		CCollision::GetCollision(gameObject)->GetRigidBody()->getAngularVelocity().getY() * 0.08f,
+		cosf(transform->GetWRotY()) * -ang * 0.9f
+	};
 
 	// 速度を計算する
 	UpdateSpeedMeter();
 
 	// アクセル
+	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	if (INPUT_INSTANCE->onInput("accel"))
 	{
-		m_fEngineForce += ENGINEFORCE_VALUE;
+		pBackHinge->setTargetVelocity(3, ENGINEFORCE_VALUE);
 	}
-	m_fEngineForce += (0.0f - m_fEngineForce) * 0.002f;
-	pBackHinge->setTargetVelocity(3, m_fEngineForce);
-
-	// 軸の固定解除
-	btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
-	if (INPUT_INSTANCE->onPress("p"))
+	else
 	{
-		pBodyRB->setAngularFactor(btVector3(1.0f, 1.0f, 1.0f));
+		pBackHinge->setTargetVelocity(3, 10.0f);
 	}
+	
 
 	// 方向転換
+	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
+	btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
+	float fSteeringVelocity = 0.0f;
 	if (INPUT_INSTANCE->onPress("a"))
 	{
-		pBodyRB->setAngularVelocity(btVector3(sinf(transform->GetRotY()) * 0.8f, 0.0f, cosf(transform->GetRotY()) * 0.8f));
-		m_fSteering += STEERING_VALUE;
+		angularVelocity += {sinf(transform->GetRotY()) * 0.8f, 0.0f, cosf(transform->GetRotY()) * 0.8f};
+		fSteeringVelocity += STEERING_VALUE;
+		
 	}
 	if (INPUT_INSTANCE->onPress("d"))
 	{
-		pBodyRB->setAngularVelocity(btVector3(sinf(transform->GetRotY()) * -0.8f, 0.0f, cosf(transform->GetRotY()) * -0.8f));
-		m_fSteering -= STEERING_VALUE;
+		angularVelocity += {sinf(transform->GetRotY()) * -0.8f, 0.0f, cosf(transform->GetRotY()) * -0.8f};
+		fSteeringVelocity -= STEERING_VALUE;
 	}
-	m_fSteering += (0.0f - m_fSteering) * 0.08f;
+	pFrontHinge->setTargetVelocity(5, fSteeringVelocity);
+	
+	if (INPUT_INSTANCE->onPress("w"))
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI* 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+	}
+	if (INPUT_INSTANCE->onPress("s"))
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+	}
 
-	pFrontHinge->setTargetVelocity(5, m_fSteering);
+	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));
 }
 
 //=============================================================
@@ -194,5 +208,5 @@ void CVehicle::UpdateSpeedMeter()
 	}
 
 	// 状況を表示する
-	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "  |  エンジン: " + std::to_string(m_fEngineForce));
+	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed));
 }

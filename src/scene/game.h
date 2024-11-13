@@ -19,10 +19,10 @@ public:
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
 private:
-	GameObject* m_pCamera;	// カメラ
-	GameObject* m_pBike;
-	GameObject* m_pField;		// フィールド
-	GameObject* m_pGameManager;
+	GameObject* m_pCamera;		// カメラ
+	GameObject* m_pBike;			// バイク
+	GameObject* m_pField;			// フィールド
+	GameObject* m_pStatusUI;	// ステータスUI
 };
 
 #endif // !_GAME_H_

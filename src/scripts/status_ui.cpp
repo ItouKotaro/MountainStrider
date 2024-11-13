@@ -20,7 +20,7 @@ void CStatusUI::Init()
 
 	// バーの位置を変更する
 	pFuelObj->transform->SetPos(50.0f, 100.0f);
-	pEnduranceObj->transform->SetPos(50.0f, 200.0f);
+	pEnduranceObj->transform->SetPos(50.0f, 150.0f);
 
 	// バーの設定
 	m_pFuelBar->SetColor(0, D3DCOLOR_RGBA(252, 185, 40, 255));

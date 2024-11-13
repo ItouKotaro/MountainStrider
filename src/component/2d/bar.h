@@ -72,7 +72,7 @@ private:
 class CAdvancedBar : public Component
 {
 public:
-	CAdvancedBar():m_pVtxBuff(nullptr),m_align(ALIGN::LEFT),m_fBold(50.0f),m_fLength(800.0f),m_fProgress(1.0f)
+	CAdvancedBar():m_pVtxBuff(nullptr),m_align(ALIGN::LEFT),m_fBold(30.0f),m_fLength(500.0f),m_fProgress(1.0f)
 	{
 		for (int i = 0; i < 4; i++)
 		{
