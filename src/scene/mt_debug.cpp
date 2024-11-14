@@ -15,9 +15,6 @@
 #include "scripts/terrain.h"
 #include "scripts/vehicle.h"
 
-#include <DTL.hpp>
-#include "DTL/Storage/FilePNG.hpp"
-
 //=============================================================
 // [CMountainDebug] ‰Šú‰»
 //=============================================================

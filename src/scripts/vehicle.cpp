@@ -17,7 +17,7 @@ const float CVehicle::STEERING_VALUE = 10.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 10.0f;
 const float CVehicle::MAX_ENGINEFORCE = 300000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
-const float CVehicle::MAX_FUEL = 500.0f;
+const float CVehicle::MAX_FUEL = 5000.0f;
 
 //=============================================================
 // [CVehicle] èâä˙âª

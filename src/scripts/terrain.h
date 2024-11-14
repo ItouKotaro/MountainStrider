@@ -37,8 +37,6 @@ private:
 	// ¶¬•¨‚ğ“o˜^‚·‚é
 	void RegisterProduces(CNatureProduces* pNatureProduce);
 
-	std::array<std::array<int, TERRAIN_SIZE>, TERRAIN_SIZE> m_terrainHeight;	// ’nŒ`î•ñ
-
 	GameObject* m_pField;
 	float* m_terrainData;
 	btHeightfieldTerrainShape* m_terrainShape;

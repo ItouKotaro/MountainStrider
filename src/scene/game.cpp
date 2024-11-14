@@ -41,10 +41,6 @@ void CGameScene::Init()
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
-
-	noise::module::Perlin myModule;
-	double value = myModule.GetValue(1.25, 0.75, 0.50);
-
 }
 
 //=============================================================
