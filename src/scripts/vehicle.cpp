@@ -14,9 +14,10 @@
 
 const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
 const float CVehicle::STEERING_VALUE = 10.0f;
+const float CVehicle::MIN_ENGINEFORCE_VALUE = 10.0f;
 const float CVehicle::MAX_ENGINEFORCE = 300000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
-const float CVehicle::MAX_FUEL = 5000.0f;
+const float CVehicle::MAX_FUEL = 500.0f;
 
 //=============================================================
 // [CVehicle] 初期化
@@ -35,13 +36,11 @@ void CVehicle::Init()
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
 
+	// 車体
 	GameObject* pBodyModel = new GameObject;
 	pBodyModel->SetParent(gameObject);
 	pBodyModel->transform->Translate(0.0f, 25.0f, 0.0f);
 	pBodyModel->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\body.x");
-
-	// バイクの軸固定
-	//gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setAngularFactor(btVector3(1.0f, 1.0f, 0.0f));
 
 	// ハンドル
 	m_pHandle = new GameObject;
@@ -130,7 +129,11 @@ void CVehicle::Init()
 //=============================================================
 void CVehicle::Uninit()
 {
+	// 状態テキストの破棄
+	m_pSpeedText->Destroy();
 
+	// ステータスUIの破棄
+	m_pStatusUI->Destroy();
 }
 
 //=============================================================
@@ -138,11 +141,14 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
+	// 操作処理
+	ControlVehicle();
+
 	// 速度を計算する
 	UpdateSpeedMeter();
 
-	// 操作処理
-	ControlVehicle();
+	// ステータスUIの更新
+	UpdateStatusUI();
 }
 
 //=============================================================
@@ -160,18 +166,24 @@ void CVehicle::ControlVehicle()
 
 	// アクセル
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
-	if (INPUT_INSTANCE->onInput("accel"))
-	{
-		pBackHinge->setTargetVelocity(3, ENGINEFORCE_VALUE);
+	if (m_fFuel > 0.0f)
+	{ // 燃料があるとき
+		// エンジン力を取得する
+		float fEngineForce = INPUT_INSTANCE->onInput("accel") ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
+
+		// タイヤを回転させる
+		pBackHinge->setTargetVelocity(3, fEngineForce);
+
+		// 燃料を減らす
+		m_fFuel -= fEngineForce * 0.01f;
 	}
 	else
-	{
-		pBackHinge->setTargetVelocity(3, 10.0f);
+	{ // 燃料がないとき
+		// タイヤの回転を止める
+		pBackHinge->setTargetVelocity(3, 0.0f);
 	}
-
+	
 	// 方向転換
-	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
-	btRigidBody* pBodyRB = CCollision::GetCollision(gameObject)->GetRigidBody();
 	float fSteeringVelocity = 0.0f;
 	if (INPUT_INSTANCE->onPress("a"))
 	{
@@ -184,6 +196,7 @@ void CVehicle::ControlVehicle()
 		angularVelocity += {sinf(transform->GetRotY()) * -0.8f, 0.0f, cosf(transform->GetRotY()) * -0.8f};
 		fSteeringVelocity -= STEERING_VALUE;
 	}
+	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	pFrontHinge->setTargetVelocity(5, fSteeringVelocity);
 
 	// 傾き調整
@@ -216,5 +229,17 @@ void CVehicle::UpdateSpeedMeter()
 	}
 
 	// 状況を表示する
-	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed));
+	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "| 燃料: " + std::to_string(m_fFuel));
+}
+
+//=============================================================
+// [CVehicle] ステータスUIの更新
+//=============================================================
+void CVehicle::UpdateStatusUI()
+{
+	auto pStatusUI = m_pStatusUI->GetComponent<CStatusUI>();
+
+	// 燃料情報を更新する
+	float fFuelPercent = m_fFuel / MAX_FUEL;
+	pStatusUI->SetFuel(fFuelPercent);
 }

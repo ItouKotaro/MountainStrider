@@ -18,14 +18,18 @@ public:
 	void Uninit() override;
 	void Update() override;
 
-	static const float ENGINEFORCE_VALUE;		// エンジン力の値
-	static const float STEERING_VALUE;			// ステアリングの値
+	static const float ENGINEFORCE_VALUE;			// エンジン力の値
+	static const float MIN_ENGINEFORCE_VALUE;	// エンジン力の最小（アクセルを踏んでいないとき）
+	static const float STEERING_VALUE;				// ステアリングの値
+
 	static const float MAX_ENGINEFORCE;			// エンジン力の最大値
 	static const float MAX_STEERING;				// ステアリングの最大値
 	static const float MAX_FUEL;						// 燃料の最大値
 private:
 	void ControlVehicle();				// 操作
 	void UpdateSpeedMeter();		// スピードの更新
+	void UpdateStatusUI();			// ステータスUIの更新
+
 	GameObject* m_pHandle;		// ハンドル
 	GameObject* m_pFrontTire;	// 前輪
 	GameObject* m_pBackTire;	// 後輪
