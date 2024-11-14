@@ -19,6 +19,8 @@ public:
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
 private:
+	void SpawnBike();				// バイクの生成
+
 	GameObject* m_pCamera;		// カメラ
 	GameObject* m_pBike;			// バイク
 	GameObject* m_pField;			// フィールド

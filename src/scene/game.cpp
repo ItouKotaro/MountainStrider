@@ -32,12 +32,10 @@ void CGameScene::Init()
 	// 地面を作成
 	m_pField = new GameObject;
 	m_pField->AddComponent<CTerrain>()->Generate();
-	m_pField->transform->Translate(0.0f, -2000.0f, 1000.0f);
+	m_pField->transform->Translate(0.0f, 0.0f, 0.0f);
 
 	// バイクの生成
-	m_pBike = new GameObject;
-	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
-	m_pBike->AddComponent<CVehicle>();
+	SpawnBike();
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
@@ -62,4 +60,29 @@ void CGameScene::Update()
 //=============================================================
 void CGameScene::Draw()
 {
+}
+
+//=============================================================
+// [CGameScene] バイクの生成
+//=============================================================
+void CGameScene::SpawnBike()
+{
+	// 中心からレイを打ち、高さを取得する
+	btVector3 Start = btVector3(0.0f, 3000.0f, 0.0f);
+	btVector3 End = btVector3(0.0f, -3000.0f, 0.0f);
+	float hitY = 0.0f;
+
+	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+	if (RayCallback.hasHit())
+	{ // ヒットしたとき
+		hitY = RayCallback.m_hitPointWorld.getY();
+	}
+
+	// バイクを生成する
+	m_pBike = new GameObject;
+	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
+	m_pBike->AddComponent<CVehicle>();
+
+	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
 }

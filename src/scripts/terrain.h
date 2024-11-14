@@ -43,6 +43,17 @@ private:
 
 	// 生成物リスト
 	std::vector<CNatureProduces*> m_natureProduces;
+
+	// 山の色（高度）
+	void AddHeightColor(const float& height, const D3DXCOLOR& color);
+
+	// 高度カラー
+	struct HeightColor
+	{
+		float height;
+		D3DXCOLOR color;
+	};
+	std::vector<HeightColor> m_heightColor;
 };
 
 #endif // !_TERRAIN_H_

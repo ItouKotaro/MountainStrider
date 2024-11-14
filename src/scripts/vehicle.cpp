@@ -55,8 +55,8 @@ void CVehicle::Init()
 	m_pFrontTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
-	CCollision::GetCollision(m_pFrontTire)->SetMass(60.0f);
-	CCollision::GetCollision(m_pFrontTire)->SetFriction(10);
+	CCollision::GetCollision(m_pFrontTire)->SetMass(30.0f);
+	CCollision::GetCollision(m_pFrontTire)->SetFriction(50);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// 後輪の生成
@@ -65,8 +65,8 @@ void CVehicle::Init()
 	m_pBackTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
-	CCollision::GetCollision(m_pBackTire)->SetMass(40.0f);
-	CCollision::GetCollision(m_pBackTire)->SetFriction(10);
+	CCollision::GetCollision(m_pBackTire)->SetMass(30.0f);
+	CCollision::GetCollision(m_pBackTire)->SetFriction(50);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// ヒンジの設定
@@ -102,10 +102,10 @@ void CVehicle::Init()
 	// その他の設定
 	pFrontHinge->enableSpring(2, true);
 	pBackHinge->enableSpring(2, true);
-	pFrontHinge->setStiffness(2, 0.1f);
-	pBackHinge->setStiffness(2, 0.1f);
-	pFrontHinge->setDamping(2, 0.01f);
-	pBackHinge->setDamping(2, 0.01f);
+	pFrontHinge->setStiffness(2, 5.0f);
+	pBackHinge->setStiffness(2, 5.0f);
+	pFrontHinge->setDamping(2, 0.00f);
+	pBackHinge->setDamping(2, 0.00f);
 
 	// 回転制限
 	pFrontHinge->setUpperLimit(D3DX_PI * 0.15f);
@@ -149,6 +149,16 @@ void CVehicle::Update()
 
 	// ステータスUIの更新
 	UpdateStatusUI();
+}
+
+//=============================================================
+// [CVehicle] バイクの操作
+//=============================================================
+void CVehicle::SetPos(const D3DXVECTOR3& pos)
+{
+	gameObject->transform->SetPos(pos);
+	m_pFrontTire->transform->SetPos(pos);
+	m_pBackTire->transform->SetPos(pos);
 }
 
 //=============================================================

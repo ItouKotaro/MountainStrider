@@ -99,7 +99,7 @@ void CTerrain::Generate()
 
 	// 生成物を生成する
 	srand((unsigned int)clock());
-	for (int i = 0; i < 1500; i++)
+	for (int i = 0; i < 2000; i++)
 	{
 		GenerateProduces();
 	}
@@ -113,6 +113,8 @@ void CTerrain::GenerateTerrain()
 {
 	module::Perlin myModule;
 	utils::NoiseMap heightMap;
+
+	myModule.SetSeed((unsigned int)clock());
 
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
@@ -145,7 +147,7 @@ void CTerrain::GenerateTerrain()
 	writer.WriteDestFile();
 
 	// 山道を生成する
-	
+	GenerateRoad();
 
 	// メッシュの高さを変更する
 	for (int x = 0; x < TERRAIN_SIZE; x++)
@@ -157,8 +159,9 @@ void CTerrain::GenerateTerrain()
 	}
 
 	// テクスチャを生成する
-	m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
-	m_pField->GetComponent<CMeshField>()->SetLoopTexture(100);
+	//m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
+	//m_pField->GetComponent<CMeshField>()->SetLoopTexture(100);
+
 	m_pField->GetComponent<CMeshField>()->ResetNormals();
 
 	// 地形情報を格納する
@@ -297,4 +300,16 @@ void CTerrain::GenerateProduces()
 			}
 		}
 	}
+}
+
+//=============================================================
+// [CTerrain] 高度の色を追加する
+//=============================================================
+void CTerrain::AddHeightColor(const float& height, const D3DXCOLOR& color)
+{
+	// データを入れる
+	HeightColor heightColor;
+	heightColor.height = height;
+	heightColor.color = color;
+	m_heightColor.push_back(heightColor);
 }
