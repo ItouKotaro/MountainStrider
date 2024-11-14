@@ -12,6 +12,8 @@
 #include "scripts/terrain.h"
 #include "scripts/camera_move.h"
 
+#include <noise/noise.h>
+
 //=============================================================
 // [CGameScene] 初期化
 //=============================================================
@@ -39,6 +41,10 @@ void CGameScene::Init()
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
+
+	noise::module::Perlin myModule;
+	double value = myModule.GetValue(1.25, 0.75, 0.50);
+
 }
 
 //=============================================================

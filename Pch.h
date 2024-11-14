@@ -43,6 +43,9 @@ class CInputSystem;
 #include "libs/json/json.hpp"
 using json = nlohmann::json;
 
+// libnoise ライブラリ
+#pragma comment(lib, "noise.lib")
+
 // ライブラリのリンク
 #pragma comment(lib, "d3d9.lib")		// 描画処理に必要
 #pragma comment(lib, "d3dx9.lib")		// 拡張ライブラリ
