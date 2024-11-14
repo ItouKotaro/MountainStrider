@@ -16,6 +16,7 @@ const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
 const float CVehicle::STEERING_VALUE = 10.0f;
 const float CVehicle::MAX_ENGINEFORCE = 300000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
+const float CVehicle::MAX_FUEL = 5000.0f;
 
 //=============================================================
 // [CVehicle] 初期化
@@ -25,6 +26,7 @@ void CVehicle::Init()
 	// 変数の初期化
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
+	m_fFuel = MAX_FUEL;
 
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 10.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
@@ -98,6 +100,7 @@ void CVehicle::Init()
 	pFrontHinge->setMaxMotorForce(5, MAX_STEERING);
 	pFrontHinge->setTargetVelocity(5, 0);
 
+	// その他の設定
 	pFrontHinge->enableSpring(2, true);
 	pBackHinge->enableSpring(2, true);
 	pFrontHinge->setStiffness(2, 0.1f);
@@ -105,12 +108,7 @@ void CVehicle::Init()
 	pFrontHinge->setDamping(2, 0.01f);
 	pBackHinge->setDamping(2, 0.01f);
 
-	// パラメーター設定
-	//pFrontHinge->setParam(BT_CONSTRAINT_CFM, -1.0f, 2);
-	//pFrontHinge->setParam(BT_CONSTRAINT_ERP, 0.35f, 2);
-	//pFrontHinge->setDamping(2, 1.0);
-	//pFrontHinge->setStiffness(2, 80.0);
-
+	// 回転制限
 	pFrontHinge->setUpperLimit(D3DX_PI * 0.15f);
 	pFrontHinge->setLowerLimit(-D3DX_PI * 0.15f);
 	pBackHinge->setUpperLimit(0.0f);
@@ -140,6 +138,18 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
+	// 速度を計算する
+	UpdateSpeedMeter();
+
+	// 操作処理
+	ControlVehicle();
+}
+
+//=============================================================
+// [CVehicle] バイクの操作
+//=============================================================
+void CVehicle::ControlVehicle()
+{
 	// 起き上がる方向にトルクを加える
 	float ang = transform->GetWRotZ();
 	D3DXVECTOR3 angularVelocity = {
@@ -147,9 +157,6 @@ void CVehicle::Update()
 		CCollision::GetCollision(gameObject)->GetRigidBody()->getAngularVelocity().getY() * 0.08f,
 		cosf(transform->GetWRotY()) * -ang * 0.9f
 	};
-
-	// 速度を計算する
-	UpdateSpeedMeter();
 
 	// アクセル
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
@@ -161,7 +168,6 @@ void CVehicle::Update()
 	{
 		pBackHinge->setTargetVelocity(3, 10.0f);
 	}
-	
 
 	// 方向転換
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
@@ -171,7 +177,7 @@ void CVehicle::Update()
 	{
 		angularVelocity += {sinf(transform->GetRotY()) * 0.8f, 0.0f, cosf(transform->GetRotY()) * 0.8f};
 		fSteeringVelocity += STEERING_VALUE;
-		
+
 	}
 	if (INPUT_INSTANCE->onPress("d"))
 	{
@@ -179,16 +185,18 @@ void CVehicle::Update()
 		fSteeringVelocity -= STEERING_VALUE;
 	}
 	pFrontHinge->setTargetVelocity(5, fSteeringVelocity);
-	
+
+	// 傾き調整
 	if (INPUT_INSTANCE->onPress("w"))
 	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI* 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
 	}
 	if (INPUT_INSTANCE->onPress("s"))
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
 	}
 
+	// 傾き速度を適用する
 	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));
 }
 
