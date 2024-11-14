@@ -13,7 +13,7 @@
 #include "scripts/status_ui.h"
 
 const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
-const float CVehicle::STEERING_VALUE = 0.5f;
+const float CVehicle::STEERING_VALUE = 10.0f;
 const float CVehicle::MAX_ENGINEFORCE = 300000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
 

@@ -9,7 +9,6 @@
 
 #include "component.h"
 #include "internal/physics.h"
-#include "BulletDynamics/Vehicle/btRaycastVehicle.h"
 
 // 車両
 class CVehicle : public Component
@@ -28,8 +27,6 @@ private:
 	GameObject* m_pHandle;		// ハンドル
 	GameObject* m_pFrontTire;	// 前輪
 	GameObject* m_pBackTire;	// 後輪
-
-	float m_fSteering;					// ステアリング
 
 	// ステータスUI
 	GameObject* m_pStatusUI;
