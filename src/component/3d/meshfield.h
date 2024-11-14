@@ -27,6 +27,9 @@ public:
 	// 指定の位置の高さを変更する
 	void SetHeight(const int& x, const int& y, const float& height);
 
+	// 指定の位置の色を変更する
+	void SetColor(const int& x, const int& y, const D3DXCOLOR& color);
+
 	// 法線を適切な向きに変更する
 	void ResetNormals();
 

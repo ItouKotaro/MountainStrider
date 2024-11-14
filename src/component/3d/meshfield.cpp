@@ -272,6 +272,32 @@ void CMeshField::SetHeight(const int& x, const int& y, const float& height)
 }
 
 //=============================================================
+// [CMeshField] 色を変更する
+//=============================================================
+void CMeshField::SetColor(const int& x, const int& y, const D3DXCOLOR& color)
+{
+	if (0 <= x && x <= m_sizeX &&
+		0 <= y && y <= m_sizeY)
+	{
+		VERTEX_3D* pVtx;
+
+		// インデックスを算出
+		int nIndex = x + (m_sizeX + 1) * y;
+		int nLine = (nIndex - nIndex % (m_sizeX + 1)) / (m_sizeX + 1);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		pVtx += nIndex;
+
+		// 指定の頂点を変更する
+		pVtx->col = color;
+
+		// 頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+	}
+}
+
+//=============================================================
 // [CMeshField] 法線を正しい向きにリセットする
 //=============================================================
 void CMeshField::ResetNormals()
