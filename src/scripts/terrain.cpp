@@ -33,7 +33,7 @@ void CTerrain::Init()
 	
 	// ƒtƒFƒ“ƒX
 	CProdFence* prodFence = new CProdFence();
-	prodFence->SetChance(0);
+	prodFence->SetChance(1);
 	prodFence->SetAdjacentRate("fence", 100.0f);
 	RegisterProduces(prodFence);
 
