@@ -47,6 +47,9 @@ private:
 	// 山の色（高度）
 	void AddHeightColor(const float& height, const D3DXCOLOR& color);
 
+	// 指定の高度の色を取得する
+	D3DXCOLOR GetHeightColor(const float& height);
+
 	// 高度カラー
 	struct HeightColor
 	{

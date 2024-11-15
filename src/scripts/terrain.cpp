@@ -36,6 +36,10 @@ void CTerrain::Init()
 	prodFence->SetChance(0);
 	prodFence->SetAdjacentRate("fence", 100.0f);
 	RegisterProduces(prodFence);
+
+	// 高度カラーを設定する
+	AddHeightColor(120.0f, D3DCOLOR_RGBA(56, 201, 93, 255));
+	AddHeightColor(-120.0f, D3DCOLOR_RGBA(5, 97, 29, 255));
 }
 
 //=============================================================
@@ -149,21 +153,6 @@ void CTerrain::GenerateTerrain()
 	// 山道を生成する
 	GenerateRoad();
 
-	// メッシュの高さを変更する
-	for (int x = 0; x < TERRAIN_SIZE; x++)
-	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
-		{
-			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, heightMap.GetValue(x, y) * 1000.0f);
-		}
-	}
-
-	// テクスチャを生成する
-	//m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
-	//m_pField->GetComponent<CMeshField>()->SetLoopTexture(100);
-
-	m_pField->GetComponent<CMeshField>()->ResetNormals();
-
 	// 地形情報を格納する
 	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];
 	for (int x = 0; x < TERRAIN_SIZE; x++)
@@ -173,6 +162,28 @@ void CTerrain::GenerateTerrain()
 			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 1000.0f;
 		}
 	}
+
+	// メッシュ情報を変更する
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			float height = m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE];
+
+			// 高さを設定する
+			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, height);
+
+			// 色を設定する
+			m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetHeightColor(height));
+
+		}
+	}
+
+	// テクスチャを生成する
+	//m_pField->GetComponent<CMeshField>()->SetTexture("data\\TEXTURE\\ground.png");
+	//m_pField->GetComponent<CMeshField>()->SetLoopTexture(100);
+
+	m_pField->GetComponent<CMeshField>()->ResetNormals();
 }
 
 //=============================================================
@@ -312,4 +323,66 @@ void CTerrain::AddHeightColor(const float& height, const D3DXCOLOR& color)
 	heightColor.height = height;
 	heightColor.color = color;
 	m_heightColor.push_back(heightColor);
+}
+
+//=============================================================
+// [CTerrain] 高度の色を取得する
+//=============================================================
+D3DXCOLOR CTerrain::GetHeightColor(const float& height)
+{
+	if (m_heightColor.size() <= 0)
+	{ // 高度カラーが無いときは白を返す
+		return D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	// 高い 色を取得
+	D3DXCOLOR highColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	float highHeight = 0.0f;
+	bool foundHighHeight = false;
+	for (unsigned int i = 0; i < m_heightColor.size(); i++)
+	{
+		if (height < m_heightColor[i].height &&
+			(!foundHighHeight | highHeight > m_heightColor[i].height))
+		{
+			highColor = m_heightColor[i].color;
+			highHeight = m_heightColor[i].height;
+			foundHighHeight = true;
+		}
+	}
+
+	// 低い 色を取得
+	D3DXCOLOR lowColor = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	float lowHeight = 0.0f;
+	bool foundLowHeight = false;
+	for (unsigned int i = 0; i < m_heightColor.size(); i++)
+	{
+		if (height > m_heightColor[i].height &&
+			(!foundLowHeight | lowHeight < m_heightColor[i].height))
+		{
+			lowColor = m_heightColor[i].color;
+			lowHeight = m_heightColor[i].height;
+			foundLowHeight = true;
+		}
+	}
+
+	// 両方見つからなかったときの処理
+	if (!foundHighHeight & !foundLowHeight)
+	{
+		return D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	// 片方のみ見つかったときの処理
+	if (foundHighHeight ^ foundLowHeight)
+	{
+		return foundHighHeight ? highColor : lowColor;
+	}
+
+	// 高さの範囲から現在位置の割合を計算する
+	float currentPercent = (height - lowHeight) / (highHeight - lowHeight);
+
+	// 割合から色を計算する
+	D3DXCOLOR color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	color = highColor * currentPercent + lowColor * (1.0f - currentPercent);
+
+	return color;
 }

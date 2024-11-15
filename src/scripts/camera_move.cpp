@@ -20,7 +20,7 @@ void CCameraMove::Update()
 	Transform* pTargetTrans = m_pTarget->transform;
 
 	// 回転
-	transform->SetRot(/*pTargetTrans->GetRotX() * 0.8f*/ + 0.5f, pTargetTrans->GetWRotY(), 0.0f);
+	transform->SetRot(/*pTargetTrans->GetRotX() * 0.8f +*/ 0.3f, pTargetTrans->GetWRotY(), 0.0f);
 
 	// カメラの目標地点を計算する
 	D3DXVECTOR3 objectivePos;
