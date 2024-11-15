@@ -494,6 +494,17 @@ GameObject* GameObject::LoadPrefab(const std::string& sPath, Transform transform
 					// 高さ
 					pCapsuleCol->SetHeight(jPrefab["prefab"]["collision"][i]["height"]);
 				}
+				else if (sCollisionType == "cylinder")
+				{ // 円柱のとき
+					pCol = pPrefabObject->AddComponent<CCylinderCollider>();
+					CCylinderCollider* pCylinderCol = (CCylinderCollider*)pCol;
+
+					// 半径
+					pCylinderCol->SetRadius(jPrefab["prefab"]["collision"][i]["radius"]);
+
+					// 高さ
+					pCylinderCol->SetHeight(jPrefab["prefab"]["collision"][i]["height"]);
+				}
 
 				// ---------------------------------------------------
 				// 全般設定
@@ -518,9 +529,6 @@ GameObject* GameObject::LoadPrefab(const std::string& sPath, Transform transform
 						});
 				}
 			}
-
-			// コリジョンを更新する
-			//CCollision::GetCollision(pPrefabObject)->UpdateCollision();
 		}
 	}
 	else
@@ -636,6 +644,17 @@ GameObject* GameObject::LoadPrefab(const std::string& sPath, Transform transform
 						// 高さ
 						pCapsuleCol->SetHeight(jCol[nCntCol]["height"]);
 					}
+					else if (sCollisionType == "cylinder")
+					{ // 円柱のとき
+						pCol = pObject->AddComponent<CCylinderCollider>();
+						CCylinderCollider* pCylinderCol = (CCylinderCollider*)pCol;
+
+						// 半径
+						pCylinderCol->SetRadius(jCol[nCntCol]["radius"]);
+
+						// 高さ
+						pCylinderCol->SetHeight(jCol[nCntCol]["height"]);
+					}
 
 					// ---------------------------------------------------
 					// 全般設定
@@ -660,9 +679,6 @@ GameObject* GameObject::LoadPrefab(const std::string& sPath, Transform transform
 							});
 					}
 				}
-
-				// コリジョンを更新する
-				//CCollision::GetCollision(pObject)->UpdateCollision();
 			}
 
 			// オブジェクト情報を保持する
