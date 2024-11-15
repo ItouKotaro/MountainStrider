@@ -38,8 +38,11 @@ void CTerrain::Init()
 	RegisterProduces(prodFence);
 
 	// 高度カラーを設定する
-	AddHeightColor(120.0f, D3DCOLOR_RGBA(56, 201, 93, 255));
-	AddHeightColor(-120.0f, D3DCOLOR_RGBA(5, 97, 29, 255));
+	AddHeightColor(120.0f, D3DCOLOR_RGBA(11, 112, 0, 255));
+	AddHeightColor(-1000.0f, D3DCOLOR_RGBA(50, 166, 8, 255));
+
+	// 傾斜カラーを設定する
+	AddSlantColor(300.0f, 500.0f, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f), 0.6f);
 }
 
 //=============================================================
@@ -103,7 +106,7 @@ void CTerrain::Generate()
 
 	// 生成物を生成する
 	srand((unsigned int)clock());
-	for (int i = 0; i < 2000; i++)
+	for (int i = 0; i < 5000; i++)
 	{
 		GenerateProduces();
 	}
@@ -159,7 +162,7 @@ void CTerrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 1000.0f;
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 1500.0f;
 		}
 	}
 
@@ -168,14 +171,13 @@ void CTerrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			float height = m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE];
+			float height = GetVertexHeight(x, y);
 
 			// 高さを設定する
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, height);
 
 			// 色を設定する
-			m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetHeightColor(height));
-
+			m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetVertexColor(x, y));
 		}
 	}
 
@@ -192,6 +194,19 @@ void CTerrain::GenerateTerrain()
 void CTerrain::GenerateRoad()
 {
 
+}
+
+//=============================================================
+// [CTerrain] 頂点の高さを取得する
+//=============================================================
+float CTerrain::GetVertexHeight(const int& x, const int& y)
+{
+	if (0 <= x && x < TERRAIN_SIZE &&
+		0 <= y && y < TERRAIN_SIZE)
+	{
+		return m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE];
+	}
+	return 0.0f;
 }
 
 //=============================================================
@@ -326,6 +341,20 @@ void CTerrain::AddHeightColor(const float& height, const D3DXCOLOR& color)
 }
 
 //=============================================================
+// [CTerrain] 傾斜の色を追加する
+//=============================================================
+void CTerrain::AddSlantColor(const float& minHeight, const float& maxHeight, const D3DXCOLOR& color, const float& rate)
+{
+	// データを入れる
+	SlantColor slantColor;
+	slantColor.minHeight = minHeight;
+	slantColor.maxHeight = maxHeight;
+	slantColor.color = color;
+	slantColor.rate = rate;
+	m_slantColor.push_back(slantColor);
+}
+
+//=============================================================
 // [CTerrain] 高度の色を取得する
 //=============================================================
 D3DXCOLOR CTerrain::GetHeightColor(const float& height)
@@ -385,4 +414,45 @@ D3DXCOLOR CTerrain::GetHeightColor(const float& height)
 	color = highColor * currentPercent + lowColor * (1.0f - currentPercent);
 
 	return color;
+}
+
+//=============================================================
+// [CTerrain] 高度の色を取得する
+//=============================================================
+D3DXCOLOR CTerrain::GetVertexColor(const float& x, const float& y)
+{
+	// 高度を取得する
+	float height = GetVertexHeight(x, y);
+
+	// 指定位置からの最大高度を求める
+	float positiveHeight = 0.0f;
+	for (int vx = -1; vx < 2; vx++)
+	{
+		for (int vy = -1; vy < 2; vy++)
+		{
+			if (0 <= x + vx && x + vx < TERRAIN_SIZE &&
+				0 <= y + vy && y + vy < TERRAIN_SIZE)
+			{
+				positiveHeight = positiveHeight < fabsf(height - GetVertexHeight(x + vx, y + vy)) ? fabsf(height - GetVertexHeight(x + vx, y + vy)) : positiveHeight;
+			}
+		}
+	}
+
+	// 範囲内の傾斜カラーを取得する
+	D3DXCOLOR slantColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	float slantRate = 0.0f;
+	for (unsigned int i = 0; i < m_slantColor.size(); i++)
+	{
+		if (m_slantColor[i].minHeight <= positiveHeight &&
+			m_slantColor[i].maxHeight >= positiveHeight)
+		{ // 範囲内が見つかったとき
+			slantColor = m_slantColor[i].color;
+			slantRate = m_slantColor[i].rate;
+			break;
+		}
+	}
+
+	// 結果の色を計算する
+	D3DXCOLOR result = GetHeightColor(height) * (1.0f - slantRate) + slantColor * slantRate;
+	return result;
 }

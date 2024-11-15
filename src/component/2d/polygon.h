@@ -15,11 +15,11 @@ class CPolygon : public Component
 public:
 	CPolygon();
 	CPolygon(std::string sTexPath);
-	~CPolygon() override;
-	void Init() override;
-	void Uninit() override;
-	void Update() override;
-	void DrawUI() override;
+	virtual ~CPolygon() override;
+	virtual void Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void DrawUI() override;
 	void SetColor(const D3DXCOLOR& color);
 	D3DXCOLOR GetColor() { return m_color; }
 	void SetAnchorPoint(const D3DXVECTOR2& anchorPoint) { m_anchorPoint = anchorPoint; }
