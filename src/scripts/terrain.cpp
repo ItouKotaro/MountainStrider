@@ -52,6 +52,7 @@ void Terrain::Init()
 //=============================================================
 void Terrain::Uninit()
 {
+	// 地形の破棄
 	UninitTerrain();
 
 	// 登録生成物を解放する
@@ -469,9 +470,6 @@ void ProducesManager::AddProduce(const Transform& transform, CNatureProduces* pN
 //=============================================================
 void ProducesManager::Uninit()
 {
-	// 生成配置物データを破棄する
-	m_managedProduces.clear();
-
 	// 生成したゲームオブジェクトを破棄する
 	for (unsigned int i = 0; i < m_managedGameObjects.size(); i++)
 	{
@@ -496,7 +494,6 @@ void ProducesManager::Uninit()
 //=============================================================
 // [ProducesManager] 更新
 //=============================================================
-static int ccc = 0;
 void ProducesManager::Update(const D3DXVECTOR3& pos)
 {
 	for (unsigned int i = 0; i < m_managedProduces.size(); i++)
@@ -550,12 +547,10 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 		{ // 生成範囲外のとき
 			if (m_managedProduces[i]->managedGameObject != nullptr)
 			{
-				ccc++;
-
-				//// ゲームオブジェクトを非アクティブにする
+				// ゲームオブジェクトを非アクティブにする
   				m_managedProduces[i]->managedGameObject->gameObject->SetActive(false);
 
-				//// 設置オブジェクトから除外する
+				// 設置オブジェクトから除外する
 				m_managedProduces[i]->managedGameObject = nullptr;
 			}
 		}

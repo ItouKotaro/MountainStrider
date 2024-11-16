@@ -20,7 +20,7 @@ btAlignedObjectArray<btCollisionShape*> CPhysics::m_collisionShapes;
 CPhysicsDebugDraw* CPhysics::m_debugDraw = nullptr;
 
 // 設定
-constexpr bool COLLISION_WIREFRAME = true;
+constexpr bool COLLISION_WIREFRAME = false;
 
 //=============================================================
 // [CPhysicsDebugDraw] コンストラクタ
