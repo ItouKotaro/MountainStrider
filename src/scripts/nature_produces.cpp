@@ -17,7 +17,6 @@ GameObject* CNatureProduces::Generate(const Transform& transform)
 
 	// プレハブを生成する
 	GameObject* pGenerateObj = GameObject::LoadPrefab(m_path, transform);
-	pGenerateObj->AddComponent<CProduceTag>(this);	// 追跡タグ
 
 	return pGenerateObj;
 }
@@ -31,14 +30,14 @@ float CNatureProduces::GetAdjacentRate(const D3DXVECTOR3& pos)
 	float _rate = 1.0f;
 
 	// 付近にあるオブジェクトを取得し、倍率を導き出す
-	std::vector<CProduceTag*> pAdjacentObj = Component::GetComponents<CProduceTag>();
-	for (unsigned int i = 0; i < pAdjacentObj.size(); i++)
-	{
-		if (Benlib::PosDistance(pos, pAdjacentObj[i]->transform->GetWPos()) <= m_adjacentDistance)
-		{ // 範囲内のとき
-			_rate *= GetAdjacentObjectRate(pAdjacentObj[i]->GetNatureProduce()->GetProduceName());
-		}
-	}
+	//std::vector<CProduceTag*> pAdjacentObj = Component::GetComponents<CProduceTag>();
+	//for (unsigned int i = 0; i < pAdjacentObj.size(); i++)
+	//{
+	//	if (Benlib::PosDistance(pos, pAdjacentObj[i]->transform->GetWPos()) <= m_adjacentDistance)
+	//	{ // 範囲内のとき
+	//		_rate *= GetAdjacentObjectRate(pAdjacentObj[i]->GetNatureProduce()->GetProduceName());
+	//	}
+	//}
 
 	return _rate;
 }

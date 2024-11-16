@@ -5,8 +5,11 @@
 // 
 //=============================================================
 #include "game.h"
+#include "manager.h"
+
 #include "component/3d/camera.h"
 #include "component/3d/light.h"
+#include "component/2d/text.h"
 
 #include "scripts/vehicle.h"
 #include "scripts/terrain.h"
@@ -30,15 +33,19 @@ void CGameScene::Init()
 	CD3DLight::SetDefaultD3DLight(pLight);
 
 	// 地面を作成
-	m_pField = new GameObject;
-	m_pField->AddComponent<CTerrain>()->Generate();
-	m_pField->transform->Translate(0.0f, 0.0f, 0.0f);
+	m_pTerrain = new Terrain();
+	m_pTerrain->Init();
+	m_pTerrain->Generate();
 
 	// バイクの生成
 	SpawnBike();
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
+
+
+	m_pFPS = new GameObject("FPS");
+	m_pFPS->AddComponent<CText>();
 }
 
 //=============================================================
@@ -46,6 +53,12 @@ void CGameScene::Init()
 //=============================================================
 void CGameScene::Uninit()
 {
+	if (m_pTerrain != nullptr)
+	{
+		m_pTerrain->Uninit();
+		delete m_pTerrain;
+		m_pTerrain = nullptr;
+	}
 }
 
 //=============================================================
@@ -53,6 +66,11 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
+	// FPSを更新する
+	m_pFPS->GetComponent<CText>()->SetText("FPS: " + std::to_string(CManager::GetInstance()->GetFPS()));
+
+	// 地形を更新する
+	m_pTerrain->Update(m_pBike->transform->GetWPos());
 }
 
 //=============================================================

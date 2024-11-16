@@ -9,6 +9,7 @@
 
 #include "scene.h"
 #include "internal/physics.h"
+#include "scripts/terrain.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -21,10 +22,13 @@ public:
 private:
 	void SpawnBike();				// バイクの生成
 
+	Terrain* m_pTerrain;
+
 	GameObject* m_pCamera;		// カメラ
 	GameObject* m_pBike;			// バイク
-	GameObject* m_pField;			// フィールド
 	GameObject* m_pStatusUI;	// ステータスUI
+
+	GameObject* m_pFPS;
 };
 
 #endif // !_GAME_H_

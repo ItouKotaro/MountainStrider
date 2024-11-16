@@ -5,23 +5,25 @@
 //
 //=============================================================
 #include "terrain.h"
+#include "benlib.h"
+
 #include "component/3d/meshfield.h"
 using namespace noise;
 
 // 静的メンバ変数の初期化
-const float CTerrain::TERRAIN_SCALE = 300.0f;
+const float Terrain::TERRAIN_SCALE = 300.0f;
 
 //=============================================================
-// [CTerrain] 初期化
+// [Terrain] 初期化
 //=============================================================
-void CTerrain::Init()
+void Terrain::Init()
 {
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
-	m_pField->SetParent(gameObject);
 	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
 
 	m_terrainData = nullptr;
+	m_producesManager = new ProducesManager();
 
 	// 障害物を登録する
 
@@ -46,27 +48,45 @@ void CTerrain::Init()
 }
 
 //=============================================================
-// [CTerrain] 終了
+// [Terrain] 終了
 //=============================================================
-void CTerrain::Uninit()
+void Terrain::Uninit()
 {
 	UninitTerrain();
 
-	for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+	// 登録生成物を解放する
+	for (unsigned int i = 0; i < m_registerNatureProduces.size(); i++)
 	{
-		if (m_natureProduces[i] != nullptr)
+		if (m_registerNatureProduces[i] != nullptr)
 		{
-			delete m_natureProduces[i];
-			m_natureProduces[i] = nullptr;
+			delete m_registerNatureProduces[i];
+			m_registerNatureProduces[i] = nullptr;
 		}
 	}
-	m_natureProduces.clear();
+	m_registerNatureProduces.clear();
+
+	// 生成物管理を解放する
+	if (m_producesManager != nullptr)
+	{
+		m_producesManager->Uninit();
+		delete m_producesManager;
+		m_producesManager = nullptr;
+	}
 }
 
 //=============================================================
-// [CTerrain] 地形の終了処理
+// [Terrain] 更新
 //=============================================================
-void CTerrain::UninitTerrain()
+void Terrain::Update(const D3DXVECTOR3& pos)
+{
+	// 生成物を更新する
+	m_producesManager->Update(pos);
+}
+
+//=============================================================
+// [Terrain] 地形の終了処理
+//=============================================================
+void Terrain::UninitTerrain()
 {
 	CCollision::RemoveCollision(m_pField);
 
@@ -83,9 +103,9 @@ void CTerrain::UninitTerrain()
 }
 
 //=============================================================
-// [CTerrain] 生成
+// [Terrain] 生成
 //=============================================================
-void CTerrain::Generate()
+void Terrain::Generate()
 {
 	// 終了する
 	this->UninitTerrain();
@@ -106,7 +126,7 @@ void CTerrain::Generate()
 
 	// 生成物を生成する
 	srand((unsigned int)clock());
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		GenerateProduces();
 	}
@@ -114,9 +134,9 @@ void CTerrain::Generate()
 }
 
 //=============================================================
-// [CTerrain] 地形の生成
+// [Terrain] 地形の生成
 //=============================================================
-void CTerrain::GenerateTerrain()
+void Terrain::GenerateTerrain()
 {
 	module::Perlin myModule;
 	utils::NoiseMap heightMap;
@@ -162,17 +182,17 @@ void CTerrain::GenerateTerrain()
 }
 
 //=============================================================
-// [CTerrain] 山道の生成
+// [Terrain] 山道の生成
 //=============================================================
-void CTerrain::GenerateRoad()
+void Terrain::GenerateRoad()
 {
 
 }
 
 //=============================================================
-// [CTerrain] 頂点の高さを取得する
+// [Terrain] 頂点の高さを取得する
 //=============================================================
-float CTerrain::GetVertexHeight(const int& x, const int& y)
+float Terrain::GetVertexHeight(const int& x, const int& y)
 {
 	if (0 <= x && x < TERRAIN_SIZE &&
 		0 <= y && y < TERRAIN_SIZE)
@@ -183,27 +203,27 @@ float CTerrain::GetVertexHeight(const int& x, const int& y)
 }
 
 //=============================================================
-// [CTerrain] 生成物の登録
+// [Terrain] 生成物の登録
 //=============================================================
-void CTerrain::RegisterProduces(CNatureProduces* pNatureProduce)
+void Terrain::RegisterProduces(CNatureProduces* pNatureProduce)
 {
 	// もう既に登録されていないかを確認する
-	for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+	for (unsigned int i = 0; i < m_registerNatureProduces.size(); i++)
 	{
-		if (m_natureProduces[i] == pNatureProduce)
+		if (m_registerNatureProduces[i] == pNatureProduce)
 		{ // 一致するとき
 			return;
 		}
 	}
 
 	// 登録する
-	m_natureProduces.push_back(pNatureProduce);
+	m_registerNatureProduces.push_back(pNatureProduce);
 }
 
 //=============================================================
-// [CTerrain] 生成物の生成
+// [Terrain] 生成物の生成
 //=============================================================
-void CTerrain::GenerateProduces()
+void Terrain::GenerateProduces()
 {
 	for (int nTryCount = 0; nTryCount < 500; nTryCount++)
 	{
@@ -218,22 +238,22 @@ void CTerrain::GenerateProduces()
 		// 生成物を決定する
 		CNatureProduces* pSelectProduce = nullptr;
 		int nAllChance = 0;		// すべての確率
-		for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+		for (unsigned int i = 0; i < m_registerNatureProduces.size(); i++)
 		{
-			nAllChance += static_cast<int>(m_natureProduces[i]->GetChance() * m_natureProduces[i]->GetAdjacentRate(generatePos));
+			nAllChance += static_cast<int>(m_registerNatureProduces[i]->GetChance() * m_registerNatureProduces[i]->GetAdjacentRate(generatePos));
 		}
 		int nRandValue = rand() % nAllChance;	// ランダム値
 		int nMinChance = 0;								// チャンス範囲の最小値
 		int nMaxChance = 0;								// チャンス範囲の最大値
-		for (unsigned int i = 0; i < m_natureProduces.size(); i++)
+		for (unsigned int i = 0; i < m_registerNatureProduces.size(); i++)
 		{
-			nMaxChance = nMinChance + m_natureProduces[i]->GetChance();
+			nMaxChance = nMinChance + m_registerNatureProduces[i]->GetChance();
 			if (nMinChance <= nRandValue && nRandValue < nMaxChance)
 			{ // 範囲内のとき
-				pSelectProduce = m_natureProduces[i];
+				pSelectProduce = m_registerNatureProduces[i];
 				break;
 			}
-			nMinChance += m_natureProduces[i]->GetChance();
+			nMinChance += m_registerNatureProduces[i]->GetChance();
 		}
 
 		if (pSelectProduce == nullptr)
@@ -292,7 +312,7 @@ void CTerrain::GenerateProduces()
 				generatePos.y = RayCallback.m_hitPointWorld.getY() + pSelectProduce->GetOffsetY();
 
 				// オブジェクトを設置する
-				pSelectProduce->Generate(Transform(generatePos))->SetParent(gameObject);
+				m_producesManager->AddProduce(Transform(generatePos), pSelectProduce);
 
 				// ループを抜ける
 				break;
@@ -302,9 +322,9 @@ void CTerrain::GenerateProduces()
 }
 
 //=============================================================
-// [CTerrain] 高度の色を追加する
+// [Terrain] 高度の色を追加する
 //=============================================================
-void CTerrain::AddHeightColor(const float& height, const D3DXCOLOR& color)
+void Terrain::AddHeightColor(const float& height, const D3DXCOLOR& color)
 {
 	// データを入れる
 	HeightColor heightColor;
@@ -314,9 +334,9 @@ void CTerrain::AddHeightColor(const float& height, const D3DXCOLOR& color)
 }
 
 //=============================================================
-// [CTerrain] 傾斜の色を追加する
+// [Terrain] 傾斜の色を追加する
 //=============================================================
-void CTerrain::AddSlantColor(const float& minHeight, const float& maxHeight, const D3DXCOLOR& color, const float& rate)
+void Terrain::AddSlantColor(const float& minHeight, const float& maxHeight, const D3DXCOLOR& color, const float& rate)
 {
 	// データを入れる
 	SlantColor slantColor;
@@ -328,9 +348,9 @@ void CTerrain::AddSlantColor(const float& minHeight, const float& maxHeight, con
 }
 
 //=============================================================
-// [CTerrain] 高度の色を取得する
+// [Terrain] 高度の色を取得する
 //=============================================================
-D3DXCOLOR CTerrain::GetHeightColor(const float& height)
+D3DXCOLOR Terrain::GetHeightColor(const float& height)
 {
 	if (m_heightColor.size() <= 0)
 	{ // 高度カラーが無いときは白を返す
@@ -344,7 +364,7 @@ D3DXCOLOR CTerrain::GetHeightColor(const float& height)
 	for (unsigned int i = 0; i < m_heightColor.size(); i++)
 	{
 		if (height < m_heightColor[i].height &&
-			(!foundHighHeight | highHeight > m_heightColor[i].height))
+			(!foundHighHeight || highHeight > m_heightColor[i].height))
 		{
 			highColor = m_heightColor[i].color;
 			highHeight = m_heightColor[i].height;
@@ -359,7 +379,7 @@ D3DXCOLOR CTerrain::GetHeightColor(const float& height)
 	for (unsigned int i = 0; i < m_heightColor.size(); i++)
 	{
 		if (height > m_heightColor[i].height &&
-			(!foundLowHeight | lowHeight < m_heightColor[i].height))
+			(!foundLowHeight || lowHeight < m_heightColor[i].height))
 		{
 			lowColor = m_heightColor[i].color;
 			lowHeight = m_heightColor[i].height;
@@ -390,9 +410,9 @@ D3DXCOLOR CTerrain::GetHeightColor(const float& height)
 }
 
 //=============================================================
-// [CTerrain] 高度の色を取得する
+// [Terrain] 高度の色を取得する
 //=============================================================
-D3DXCOLOR CTerrain::GetVertexColor(const float& x, const float& y)
+D3DXCOLOR Terrain::GetVertexColor(const int& x, const int& y)
 {
 	// 高度を取得する
 	float height = GetVertexHeight(x, y);
@@ -428,4 +448,116 @@ D3DXCOLOR CTerrain::GetVertexColor(const float& x, const float& y)
 	// 結果の色を計算する
 	D3DXCOLOR result = GetHeightColor(height) * (1.0f - slantRate) + slantColor * slantRate;
 	return result;
+}
+
+
+//=============================================================
+// [ProducesManager] 生成物の配置情報を追加する
+//=============================================================
+void ProducesManager::AddProduce(const Transform& transform, CNatureProduces* pNatureProduce)
+{
+	// 管理データに追加する
+	ManagedProduce* managedProduce = new ManagedProduce;
+	managedProduce->transform = transform;
+	managedProduce->natureProduce = pNatureProduce;
+	managedProduce->managedGameObject = nullptr;
+	m_managedProduces.push_back(managedProduce);
+}
+
+//=============================================================
+// [ProducesManager] 終了
+//=============================================================
+void ProducesManager::Uninit()
+{
+	// 生成配置物データを破棄する
+	m_managedProduces.clear();
+
+	// 生成したゲームオブジェクトを破棄する
+	for (unsigned int i = 0; i < m_managedGameObjects.size(); i++)
+	{
+		if (m_managedGameObjects[i] != nullptr)
+		{
+			m_managedGameObjects[i]->gameObject->Destroy();
+			delete m_managedGameObjects[i];
+			m_managedGameObjects[i] = nullptr;
+		}
+	}
+
+	for (unsigned int i = 0; i < m_managedProduces.size(); i++)
+	{
+		if (m_managedProduces[i] != nullptr)
+		{
+			delete m_managedProduces[i];
+			m_managedProduces[i] = nullptr;
+		}
+	}
+}
+
+//=============================================================
+// [ProducesManager] 更新
+//=============================================================
+static int ccc = 0;
+void ProducesManager::Update(const D3DXVECTOR3& pos)
+{
+	for (unsigned int i = 0; i < m_managedProduces.size(); i++)
+	{
+		if (Benlib::PosDistance(pos, m_managedProduces[i]->transform.GetWPos()) < 3500.0f)
+		{ // 生成範囲内のとき
+
+			if (m_managedProduces[i]->managedGameObject != nullptr)
+			{ // すでに設置済みのとき
+				continue;
+			}
+
+			// オブジェクトが余っていないか
+			bool findVacancy = false;
+			for (unsigned int n = 0; n < m_managedGameObjects.size(); n++)
+			{
+				if (!m_managedGameObjects[n]->gameObject->GetActive() &&
+					m_managedProduces[i]->natureProduce == m_managedGameObjects[n]->natureProduce)
+				{ // 同じ種類の生成物で非アクティブのとき
+
+					// ゲームオブジェクトのトランスフォームを適用する
+					m_managedGameObjects[n]->gameObject->transform->SetPos(m_managedProduces[i]->transform.GetPos());
+					m_managedGameObjects[n]->gameObject->transform->SetQuaternion(m_managedProduces[i]->transform.GetQuaternion());
+					m_managedGameObjects[n]->gameObject->transform->SetScale(m_managedProduces[i]->transform.GetScale());
+
+					// ゲームオブジェクトをアクティブにする
+					m_managedGameObjects[n]->gameObject->SetActive(true);
+
+					// 設置情報にゲームオブジェクト情報を設定する
+					m_managedProduces[i]->managedGameObject = m_managedGameObjects[n];
+
+					findVacancy = true;
+					break;
+				}
+			}
+			if (findVacancy)
+			{ // 見つかったとき
+				continue;	// 次へ
+			}
+
+			// 余りが見つからなかったとき（新規作成）
+			ManagedGameObject* managedGameObject = new ManagedGameObject;
+			managedGameObject->gameObject = m_managedProduces[i]->natureProduce->Generate(m_managedProduces[i]->transform);
+			managedGameObject->natureProduce = m_managedProduces[i]->natureProduce;
+			m_managedGameObjects.push_back(managedGameObject);
+
+			// 設置情報にゲームオブジェクト情報を設定する
+			m_managedProduces[i]->managedGameObject = managedGameObject;
+		}
+		else
+		{ // 生成範囲外のとき
+			if (m_managedProduces[i]->managedGameObject != nullptr)
+			{
+				ccc++;
+
+				//// ゲームオブジェクトを非アクティブにする
+  				m_managedProduces[i]->managedGameObject->gameObject->SetActive(false);
+
+				//// 設置オブジェクトから除外する
+				m_managedProduces[i]->managedGameObject = nullptr;
+			}
+		}
+	}
 }

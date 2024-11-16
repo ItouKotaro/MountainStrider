@@ -12,18 +12,54 @@
 #include "component.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 
+// 生成物管理（必要最低限のゲームオブジェクトで管理する）
+// 詳細: 同じ生成物で使われていない場合はゲームオブジェクトを使い回す
+class ProducesManager
+{
+public:
+	// 生成物データを追加する
+	void AddProduce(const Transform& transform, CNatureProduces* pNatureProduce);
+	// 破棄
+	void Uninit();
+	// 更新
+	void Update(const D3DXVECTOR3& pos);
+private:
+	// ゲームオブジェクトデータ
+	struct ManagedGameObject
+	{
+		GameObject* gameObject;
+		CNatureProduces* natureProduce;
+	};
+
+	// 生成物管理データ（配置情報）
+	struct ManagedProduce
+	{
+		Transform transform;
+		CNatureProduces* natureProduce;
+		ManagedGameObject* managedGameObject;	// 配置ゲームオブジェクト
+	};
+
+	std::vector<ManagedProduce*> m_managedProduces;				// 管理されている生成配置物
+	std::vector<ManagedGameObject*> m_managedGameObjects;	// 管理されているゲームオブジェクト
+};
+
 // 地形
-class CTerrain : public Component
+class Terrain
 {
 public:
 	void Init();
 	void Uninit();
+	void Update(const D3DXVECTOR3& pos);
 	void Generate();
 
 	static const int TERRAIN_SIZE = 100;
 	static const float TERRAIN_SCALE;
 private:
 	void UninitTerrain();
+
+	GameObject* m_pField;									// メッシュフィールド
+	float* m_terrainData;										// 高度データ
+	btHeightfieldTerrainShape* m_terrainShape;	// 地形コリジョンシェイプ
 
 	// 頂点の高さを取得する
 	float GetVertexHeight(const int& x, const int& y);
@@ -37,12 +73,9 @@ private:
 	// 生成物を登録する
 	void RegisterProduces(CNatureProduces* pNatureProduce);
 
-	GameObject* m_pField;
-	float* m_terrainData;
-	btHeightfieldTerrainShape* m_terrainShape;
-
-	// 生成物リスト
-	std::vector<CNatureProduces*> m_natureProduces;
+	std::vector<CNatureProduces*> m_registerNatureProduces;		// 生成物リスト（登録）
+	ProducesManager* m_producesManager;									// 生成物管理
+	
 
 	// 高度カラーを追加する
 	void AddHeightColor(const float& height, const D3DXCOLOR& color);
@@ -51,7 +84,7 @@ private:
 	// 指定の高度の色を取得する
 	D3DXCOLOR GetHeightColor(const float& height);
 	// 指定の位置の色を取得する
-	D3DXCOLOR GetVertexColor(const float& x, const float& y);
+	D3DXCOLOR GetVertexColor(const int& x, const int& y);
 
 	// 高度カラー
 	struct HeightColor

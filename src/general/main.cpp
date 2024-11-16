@@ -22,10 +22,6 @@
 #define _NEW new
 #endif // FIND_MEM_LEAKS
 
-
-// グローバル変数
-CManager* g_pManager = nullptr;
-
 //=============================================================
 // メイン関数
 //=============================================================
@@ -92,8 +88,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	UpdateWindow(hWnd);						// クライアント領域を更新
 
 	// マネージャーの生成・初期化
-	g_pManager = new CManager();
-	g_pManager->Init(hInstance, hWnd, TRUE);
+	CManager::GetInstance()->Init(hInstance, hWnd, TRUE);
 
 	// 分解能を設定
 	timeBeginPeriod(1);
@@ -126,7 +121,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 			if ((dwCurrentTime - dwFPSLastTime) >= 500)
 			{ // 0.5秒経過毎
 				// FPSを計測
-				g_pManager->SetFPS((dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime));
+				CManager::GetInstance()->SetFPS((dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime));
 				dwFPSLastTime = dwCurrentTime;							// 計測した時刻を記録
 				dwFrameCount = 0;												// フレームカウントをクリア
 			}
@@ -135,16 +130,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 			{ // 60分の1秒経過
 
 				// デルタタイムを設定する
-				g_pManager->SetDeltaTime((dwCurrentTime - dwExecLastTime) * 0.001f);
+				CManager::GetInstance()->SetDeltaTime((dwCurrentTime - dwExecLastTime) * 0.001f);
 
 				//処理開始時刻
 				dwExecLastTime = dwCurrentTime;
 
 				// 更新処理
-				g_pManager->Update();
+				CManager::GetInstance()->Update();
 
 				// 描画処理
-				g_pManager->Draw();
+				CManager::GetInstance()->Draw();
 
 				// シーンの変更処理
 				CSceneManager::GetInstance()->ChangingScene();
@@ -153,7 +148,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				GameObject::DestroyDeathFlag();
 
 				// マウスホイール値を初期化
-				g_pManager->SetMouseWheel(0);
+				CManager::GetInstance()->SetMouseWheel(0);
 				
 				dwFrameCount++; // フレームカウントを加算
 			}
@@ -164,12 +159,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	timeEndPeriod(1);
 
 	// マネージャーの終了・解放
-	g_pManager->Uninit();
-	if (g_pManager != nullptr)
-	{
-		delete g_pManager;
-		g_pManager = nullptr;
-	}
+	CManager::GetInstance()->Uninit();
 
 	// ウィンドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
@@ -221,7 +211,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	case WM_MOUSEWHEEL:
 		// マウスホイールの移動量を取得
-		g_pManager->SetMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
+		CManager::GetInstance()->SetMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
 		return 0;
 		break;
 

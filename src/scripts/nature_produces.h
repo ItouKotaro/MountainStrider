@@ -19,7 +19,7 @@ struct AdjacentRate
 	float rate;						// 確率
 };
 
-// 自然の産物（基底）
+// 生成物（基底）
 class CNatureProduces
 {
 public:
@@ -95,23 +95,13 @@ protected:
 	float m_adjacentDistance;									// 隣接距離
 };
 
-// ゲームオブジェクト追跡用コンポーネント
-class CProduceTag : public Component
-{
-public:
-	CProduceTag(CNatureProduces* natureProduce) { m_natureProduce = natureProduce; }
-	CNatureProduces* GetNatureProduce() { return m_natureProduce; }
-private:
-	CNatureProduces* m_natureProduce;
-};
-
 // --------------------------------- 障害物 ---------------------------------
 
 // 木
 class CProdTree : public CNatureProduces
 {
 public:
-	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree.pref", {10.0f, 10.0f}, 0.0f) {}
+	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 0.0f) {}
 };
 
 // フェンス

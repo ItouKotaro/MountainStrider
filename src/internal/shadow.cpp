@@ -330,10 +330,6 @@ void CShadow::RenderMesh(CCamera* pCamera, bool bRenderLight)
 
     for (unsigned int nCntModel = 0; nCntModel < pMeshList.size(); nCntModel++)
     {
-        // ƒJƒƒ‰‚©‚ç‹ß‚¢‚Æ‚«
-        if (Benlib::PosDistance(pMeshList[nCntModel]->transform->GetWPos(), pCamera->transform->GetWPos()) > 4000.0f)
-            continue;
-
         // ƒ‚ƒfƒ‹‚ðŽæ“¾‚·‚é
         CMesh* pMesh = pMeshList[nCntModel];
         D3DXMATRIX modelMtx = pMesh->transform->GetMatrix();
