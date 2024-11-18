@@ -20,6 +20,7 @@ public:
 private:
 	GameObject* m_pCamera;
 	GameObject* m_pTerrain;
+	GameObject* m_pGhostTest;
 };
 
 #endif // !_MOUNTAIN_DEBUG_H_

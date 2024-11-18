@@ -26,6 +26,8 @@ public:
 	// 更新
 	void Update(const D3DXVECTOR3& pos);
 private:
+	void UpdateGameObjects(const D3DXVECTOR3& pos);
+
 	// ゲームオブジェクトデータ
 	struct ManagedGameObject
 	{
@@ -43,6 +45,8 @@ private:
 
 	std::vector<ManagedProduce*> m_managedProduces;				// 管理されている生成配置物
 	std::vector<ManagedGameObject*> m_managedGameObjects;	// 管理されているゲームオブジェクト
+
+	GameObject* m_pVehicle;		// バイク格納
 
 	// デバッグ用
 	GameObject* m_pNumObj;	// オブジェクトの総数テキスト

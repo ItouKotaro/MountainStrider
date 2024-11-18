@@ -98,7 +98,7 @@ void CGameScene::SpawnBike()
 	}
 
 	// バイクを生成する
-	m_pBike = new GameObject;
+	m_pBike = new GameObject("Vehicle");
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_pBike->AddComponent<CVehicle>();
 

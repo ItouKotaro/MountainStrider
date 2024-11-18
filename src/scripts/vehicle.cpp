@@ -28,6 +28,7 @@ void CVehicle::Init()
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
 	m_fFuel = MAX_FUEL;
+	
 
 	// ƒoƒCƒN‚ð¶¬‚·‚é
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(5.0f, 10.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));

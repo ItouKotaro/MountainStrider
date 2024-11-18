@@ -260,6 +260,9 @@ void GameObject::DestroyDeathFlag()
 //=============================================================
 void GameObject::Destroy(Component* component)
 {
+	if (component == nullptr)
+		return;
+
 	for (int i = 0; i < (int)m_components.size(); i++)
 	{
 		if (m_components[i] == component)

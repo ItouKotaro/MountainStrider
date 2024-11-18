@@ -9,6 +9,8 @@
 #include <fstream>
 
 #include "component/3d/meshfield.h"
+#include "scripts/vehicle.h"
+#include "component/3d/collision.h"
 using namespace noise;
 
 #include "component/2d/text.h"
@@ -644,7 +646,21 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 	// デバッグ用
 	m_pNumObj->GetComponent<CText>()->SetText("生成物総数: " + std::to_string(m_managedGameObjects.size()));
 
+	// バイクの取得
+	if (m_pVehicle == nullptr)
+	{
+		m_pVehicle = GameObject::Find("Vehicle");
+	}
 
+	// ゲームオブジェクトの更新
+	UpdateGameObjects(pos);
+}
+
+//=============================================================
+// [ProducesManager] ゲームオブジェクトの更新
+//=============================================================
+void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
+{
 	for (unsigned int i = 0; i < m_managedProduces.size(); i++)
 	{
 		if (Benlib::PosDistance(pos, m_managedProduces[i]->transform.GetWPos()) < 3500.0f)
@@ -652,6 +668,29 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 
 			if (m_managedProduces[i]->managedGameObject != nullptr)
 			{ // すでに設置済みのとき
+				std::vector<GameObject*>& pOverlappingObj = CCollision::GetCollision(m_managedProduces[i]->managedGameObject->gameObject)->GetOverlappingGameObjects();
+				for (unsigned int n = 0; n < pOverlappingObj.size(); n++)
+				{
+					if (m_pVehicle == pOverlappingObj[n])
+					{ // バイクと衝突したとき
+						// オブジェクトを破棄する
+						for (unsigned int u = 0; u < m_managedGameObjects.size(); u++)
+						{
+							if (m_managedGameObjects[u]->gameObject == m_managedProduces[i]->managedGameObject->gameObject)
+							{
+								// ゲームオブジェクトの管理を破棄する
+								ManagedGameObject* pManagedGameObj = m_managedGameObjects[u];
+								m_managedGameObjects.erase(m_managedGameObjects.begin() + u);
+								delete pManagedGameObj;
+							}
+						}
+
+						// ゲームオブジェクトと配置情報を破棄
+						m_managedProduces[i]->managedGameObject->gameObject->Destroy();
+						m_managedProduces.erase(m_managedProduces.begin() + i);
+						break;
+					}
+				}
 				continue;
 			}
 
@@ -662,7 +701,6 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 				if (!m_managedGameObjects[n]->gameObject->GetActive() &&
 					m_managedProduces[i]->natureProduce == m_managedGameObjects[n]->natureProduce)
 				{ // 同じ種類の生成物で非アクティブのとき
-
 					// ゲームオブジェクトのトランスフォームを適用する
 					m_managedGameObjects[n]->gameObject->transform->SetPos(m_managedProduces[i]->transform.GetPos());
 					m_managedGameObjects[n]->gameObject->transform->SetQuaternion(m_managedProduces[i]->transform.GetQuaternion());
@@ -688,6 +726,10 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 			managedGameObject->gameObject = m_managedProduces[i]->natureProduce->Generate(m_managedProduces[i]->transform);
 			managedGameObject->natureProduce = m_managedProduces[i]->natureProduce;
 
+			// コリジョンを変更する
+			managedGameObject->gameObject->Destroy(managedGameObject->gameObject->GetComponent<CRigidBody>());
+			CCollision::GetCollision(managedGameObject->gameObject)->IsTrigger(true);
+
 			if (managedGameObject->gameObject != nullptr)
 			{ // ゲームオブジェクトが正常に生成されたとき
 				m_managedGameObjects.push_back(managedGameObject);
@@ -709,7 +751,7 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 			if (m_managedProduces[i]->managedGameObject != nullptr)
 			{
 				// ゲームオブジェクトを非アクティブにする
-  				m_managedProduces[i]->managedGameObject->gameObject->SetActive(false);
+				m_managedProduces[i]->managedGameObject->gameObject->SetActive(false);
 
 				// 設置オブジェクトから除外する
 				m_managedProduces[i]->managedGameObject = nullptr;
