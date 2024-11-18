@@ -65,7 +65,7 @@
             }
         ],
         "friction": 1.0,
-        "mass": 10.0,
+        "mass": 250.0,
         "name": "Prefab",
         "rigidbody": false,
         "tag": "",
