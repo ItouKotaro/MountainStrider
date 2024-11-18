@@ -169,9 +169,9 @@ void CVehicle::ControlVehicle()
 	// 起き上がる方向にトルクを加える
 	float ang = transform->GetWRotZ();
 	D3DXVECTOR3 angularVelocity = {
-		sinf(transform->GetWRotY()) * -ang * 0.3f,
+		sinf(transform->GetWRotY()) * -ang * 0.5f,
 		0.0f,
-		cosf(transform->GetWRotY()) * -ang * 0.3f
+		cosf(transform->GetWRotY()) * -ang * 0.5f
 	};
 
 	// アクセル

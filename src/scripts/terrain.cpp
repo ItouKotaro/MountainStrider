@@ -6,9 +6,13 @@
 //=============================================================
 #include "terrain.h"
 #include "benlib.h"
+#include <fstream>
 
 #include "component/3d/meshfield.h"
 using namespace noise;
+
+#include "component/2d/text.h"
+#include "renderer.h"
 
 // 静的メンバ変数の初期化
 const float Terrain::TERRAIN_SCALE = 300.0f;
@@ -24,6 +28,7 @@ void Terrain::Init()
 
 	m_terrainData = nullptr;
 	m_producesManager = new ProducesManager();
+	m_producesManager->Init();
 
 	// 障害物を登録する
 
@@ -151,9 +156,6 @@ void Terrain::GenerateTerrain()
 	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 5.0);
 	heightMapBuilder.Build();
 
-	// 山道を生成する
-	GenerateRoad();
-
 	// 地形情報を格納する
 	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];
 	for (int x = 0; x < TERRAIN_SIZE; x++)
@@ -179,15 +181,146 @@ void Terrain::GenerateTerrain()
 		}
 	}
 
+	// 法線をリセットする
 	m_pField->GetComponent<CMeshField>()->ResetNormals();
+
+	// 道を生成する
+	GenerateRoad();
 }
 
 //=============================================================
-// [Terrain] 山道の生成
+// [Terrain] 道の生成
 //=============================================================
 void Terrain::GenerateRoad()
 {
+	// 現在位置情報変数
+	int currentX = TERRAIN_SIZE / 2;
+	int currentY = TERRAIN_SIZE / 2;
+	float currentHeight = GetVertexHeight(currentX, currentY);
 
+	// ルート配列の初期化
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			m_routeData[x][y] = false;
+		}
+	}
+	m_routeData[currentX][currentY] = true;
+
+	// 経路計算に使う構造体
+	struct RouteData
+	{
+		int x;				// X
+		int y;				// Y
+		float height;	// 高度
+		int point;		// ポイント（低いと優先）
+	};
+
+	// 経路アルゴリズム
+	while (1)
+	{
+		//--------------------------------------------------------------------
+		// 経路条件
+
+		// 周辺の高さ情報を取得する
+		std::vector<RouteData> aroundRouteData;
+		for (int x = 0; x < 3; x++)
+		{
+			for (int y = 0; y < 3; y++)
+			{
+				if (!(x == 1 && y == 1))
+				{ // 中心以外
+					RouteData data;
+					data.x = currentX - 1 + x;
+					data.y = currentY - 1 + y;
+					data.height = GetVertexHeight(currentX - 1 + x, currentY - 1 + y);
+					aroundRouteData.push_back(data);
+				}
+			}
+		}
+
+		// 高低差でポイントを加算する
+		std::sort(aroundRouteData.begin(), aroundRouteData.end(),
+			[currentHeight](RouteData& com1, RouteData& com2) {return fabsf(com1.height - currentHeight) < fabsf(com2.height - currentHeight); }
+		);
+		for (unsigned int i = 0; i < aroundRouteData.size(); i++)
+		{
+			// 高低差順にポイントを加算する
+			aroundRouteData[i].point += i;
+
+			if (aroundRouteData[i].height < currentHeight)
+			{ // 現在高度より低いときポイントを引く
+				aroundRouteData[i].point -= 3;
+			}
+		}
+
+		// さらに周辺に道が存在するときポイントを加算する
+		for (unsigned int i = 0; i < aroundRouteData.size(); i++)
+		{
+			for (int x = -1; x < 2; x++)
+			{
+				for (int y = -1; y < 2; y++)
+				{
+					// 除外リスト
+					if ((x == 1 && y == 1) ||
+						(x == currentX && y == currentY))
+					{ // 中央と現在位置
+						continue;	// スキップ
+					}
+
+					if (aroundRouteData[i].x + x >= 0 && aroundRouteData[i].y + y > 0)
+					{
+						if (m_routeData[aroundRouteData[i].x + x][aroundRouteData[i].y + y])
+						{ // 周辺に存在するとき
+							aroundRouteData[i].point += 5;
+						}
+					}
+				}
+			}
+		}
+
+
+		// 周辺データをポイントを昇順でソートする
+		std::sort(aroundRouteData.begin(), aroundRouteData.end(),
+			[](RouteData& com1, RouteData& com2) {return com1.point < com2.point;}
+		);
+
+		// 最も緩やかな方向に道を伸ばす
+		for (unsigned int i = 0; i < aroundRouteData.size(); i++)
+		{
+			if (!m_routeData[aroundRouteData[i].x][aroundRouteData[i].y])
+			{ // 経路になっていないとき
+				m_routeData[aroundRouteData[i].x][aroundRouteData[i].y] = true;
+				currentX = aroundRouteData[i].x;
+				currentY = aroundRouteData[i].y;
+
+				// ファイルに経路データを書き出す
+				std::ofstream outputRoute("route.txt");
+				for (int y = 0; y < TERRAIN_SIZE; y++)
+				{
+					for (int x = 0; x < TERRAIN_SIZE; x++)
+					{
+						char mark = m_routeData[x][y] ? '#' : 'X';
+						outputRoute << mark;
+					}
+					outputRoute << std::endl;
+				}
+				outputRoute.close();
+				break;
+			}
+		}
+
+		//--------------------------------------------------------------------
+		// 終了条件
+
+		// 山の周りにたどり着いたとき
+		if (currentX == 0 || currentX == TERRAIN_SIZE - 1 ||
+			currentY == 0 || currentY == TERRAIN_SIZE - 1)
+		{
+			break;	// 終了
+		}
+	}
 }
 
 //=============================================================
@@ -466,6 +599,18 @@ void ProducesManager::AddProduce(const Transform& transform, CNatureProduces* pN
 }
 
 //=============================================================
+// [ProducesManager] 初期化
+//=============================================================
+void ProducesManager::Init()
+{
+	m_pNumObj = new GameObject("TerrainNumObj");
+	m_pNumObj->AddComponent<CText>();
+	m_pNumObj->GetComponent<CText>()->SetFontSize(80);
+	m_pNumObj->GetComponent<CText>()->SetAlign(CText::ALIGN::RIGHT);
+	m_pNumObj->transform->SetPos(CRenderer::SCREEN_WIDTH - 50.0f, 30.0f);
+}
+
+//=============================================================
 // [ProducesManager] 終了
 //=============================================================
 void ProducesManager::Uninit()
@@ -496,6 +641,10 @@ void ProducesManager::Uninit()
 //=============================================================
 void ProducesManager::Update(const D3DXVECTOR3& pos)
 {
+	// デバッグ用
+	m_pNumObj->GetComponent<CText>()->SetText("生成物総数: " + std::to_string(m_managedGameObjects.size()));
+
+
 	for (unsigned int i = 0; i < m_managedProduces.size(); i++)
 	{
 		if (Benlib::PosDistance(pos, m_managedProduces[i]->transform.GetWPos()) < 3500.0f)
@@ -538,7 +687,19 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 			ManagedGameObject* managedGameObject = new ManagedGameObject;
 			managedGameObject->gameObject = m_managedProduces[i]->natureProduce->Generate(m_managedProduces[i]->transform);
 			managedGameObject->natureProduce = m_managedProduces[i]->natureProduce;
-			m_managedGameObjects.push_back(managedGameObject);
+
+			if (managedGameObject->gameObject != nullptr)
+			{ // ゲームオブジェクトが正常に生成されたとき
+				m_managedGameObjects.push_back(managedGameObject);
+			}
+			else
+			{ // ゲームオブジェクトの生成に失敗したとき
+				if (managedGameObject != nullptr)
+				{
+					delete managedGameObject;
+					managedGameObject = nullptr;
+				}
+			}
 
 			// 設置情報にゲームオブジェクト情報を設定する
 			m_managedProduces[i]->managedGameObject = managedGameObject;

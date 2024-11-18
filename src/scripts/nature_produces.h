@@ -101,7 +101,8 @@ protected:
 class CProdTree : public CNatureProduces
 {
 public:
-	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 0.0f) {}
+	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree.pref", { 10.0f, 10.0f }, 0.0f) {}
+	//CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 0.0f) {}
 };
 
 // ƒtƒFƒ“ƒX

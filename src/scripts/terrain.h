@@ -19,6 +19,8 @@ class ProducesManager
 public:
 	// 生成物データを追加する
 	void AddProduce(const Transform& transform, CNatureProduces* pNatureProduce);
+	// 初期化
+	void Init();
 	// 破棄
 	void Uninit();
 	// 更新
@@ -41,6 +43,9 @@ private:
 
 	std::vector<ManagedProduce*> m_managedProduces;				// 管理されている生成配置物
 	std::vector<ManagedGameObject*> m_managedGameObjects;	// 管理されているゲームオブジェクト
+
+	// デバッグ用
+	GameObject* m_pNumObj;	// オブジェクトの総数テキスト
 };
 
 // 地形
@@ -75,6 +80,7 @@ private:
 
 	std::vector<CNatureProduces*> m_registerNatureProduces;		// 生成物リスト（登録）
 	ProducesManager* m_producesManager;									// 生成物管理
+	bool m_routeData[TERRAIN_SIZE][TERRAIN_SIZE];
 	
 
 	// 高度カラーを追加する
