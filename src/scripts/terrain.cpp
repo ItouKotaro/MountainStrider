@@ -676,7 +676,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 						// オブジェクトを破棄する
 						for (unsigned int u = 0; u < m_managedGameObjects.size(); u++)
 						{
-							if (m_managedGameObjects[u]->gameObject == m_managedProduces[i]->managedGameObject->gameObject)
+							if (m_managedGameObjects[u] == m_managedProduces[i]->managedGameObject)
 							{
 								// ゲームオブジェクトの管理を破棄する
 								ManagedGameObject* pManagedGameObj = m_managedGameObjects[u];
