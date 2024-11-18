@@ -31,7 +31,7 @@ void CVehicle::Init()
 	
 
 	// バイクを生成する
-	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(3.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
+	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(6.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
 	CCollision::GetCollision(gameObject)->SetMass(400.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
@@ -170,9 +170,9 @@ void CVehicle::ControlVehicle()
 	// 起き上がる方向にトルクを加える
 	float ang = transform->GetWRotZ();
 	D3DXVECTOR3 angularVelocity = {
-		sinf(transform->GetWRotY()) * -ang * 0.5f,
+		sinf(transform->GetWRotY()) * -ang * 0.7f,
 		0.0f,
-		cosf(transform->GetWRotY()) * -ang * 0.5f
+		cosf(transform->GetWRotY()) * -ang * 0.7f
 	};
 
 	// アクセル

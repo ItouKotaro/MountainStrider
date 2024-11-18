@@ -10,6 +10,7 @@
 
 #include "component/3d/meshfield.h"
 #include "scripts/vehicle.h"
+#include "scripts/wreckage.h"
 #include "component/3d/collision.h"
 using namespace noise;
 
@@ -686,7 +687,8 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 						}
 
 						// ゲームオブジェクトと配置情報を破棄
-						m_managedProduces[i]->managedGameObject->gameObject->Destroy();
+						m_managedProduces[i]->managedGameObject->gameObject->AddComponent<CRigidBody>();
+						m_managedProduces[i]->managedGameObject->gameObject->AddComponent<CWreckage>();
 						m_managedProduces.erase(m_managedProduces.begin() + i);
 						break;
 					}
