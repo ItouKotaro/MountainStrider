@@ -26,16 +26,17 @@ const int GameObject::DEFAULT_PRIORITY = 6;
 void GameObject::UpdateAll()
 {
 	// 更新処理を行う
-	for (int nCntObj = 0; nCntObj < (int)m_gameObjects.size(); nCntObj++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[nCntObj]->GetActive())
+		if ((*itr)->GetActive())
 		{ // アクティブのとき
-
 			// コンポーネントの更新処理を行う
-			for (int i = 0; i < (int)m_gameObjects[nCntObj]->m_components.size(); i++)
+			for (auto itrComp = (*itr)->m_components.begin(); itrComp != (*itr)->m_components.end(); itrComp++)
 			{
-				if (m_gameObjects[nCntObj]->m_components[i]->enabled)
-					m_gameObjects[nCntObj]->m_components[i]->Update();
+				if ((*itrComp)->enabled)
+				{
+					(*itrComp)->Update();
+				}
 			}
 		}
 	}
@@ -46,17 +47,18 @@ void GameObject::UpdateAll()
 //=============================================================
 void GameObject::BeforeDrawAll()
 {
-	// オブジェクト描画前処理を行う
-	for (int nCntObj = 0; nCntObj < (int)m_gameObjects.size(); nCntObj++)
+	// 更新処理を行う
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[nCntObj]->GetActive() && m_gameObjects[nCntObj]->GetVisible())
+		if ((*itr)->GetActive() && (*itr)->GetVisible())
 		{ // アクティブのとき
-
 			// コンポーネントのオブジェクト描画前処理を行う
-			for (int i = 0; i < (int)m_gameObjects[nCntObj]->m_components.size(); i++)
+			for (auto itrComp = (*itr)->m_components.begin(); itrComp != (*itr)->m_components.end(); itrComp++)
 			{
-				if (m_gameObjects[nCntObj]->m_components[i]->enabled)
-					m_gameObjects[nCntObj]->m_components[i]->BeforeDraw();
+				if ((*itrComp)->enabled)
+				{
+					(*itrComp)->BeforeDraw();
+				}
 			}
 		}
 	}
@@ -67,17 +69,18 @@ void GameObject::BeforeDrawAll()
 //=============================================================
 void GameObject::DrawAll()
 {
-	// オブジェクト描画処理を行う
-	for (int nCntObj = 0; nCntObj < (int)m_gameObjects.size(); nCntObj++)
+	// 描画処理を行う
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[nCntObj]->GetActive() && m_gameObjects[nCntObj]->GetVisible())
+		if ((*itr)->GetActive() && (*itr)->GetVisible())
 		{ // アクティブのとき
-
-			// コンポーネントのオブジェクト描画処理を行う
-			for (int i = 0; i < (int)m_gameObjects[nCntObj]->m_components.size(); i++)
+			// コンポーネントの描画処理を行う
+			for (auto itrComp = (*itr)->m_components.begin(); itrComp != (*itr)->m_components.end(); itrComp++)
 			{
-				if (m_gameObjects[nCntObj]->m_components[i]->enabled)
-					m_gameObjects[nCntObj]->m_components[i]->Draw();
+				if ((*itrComp)->enabled)
+				{
+					(*itrComp)->Draw();
+				}
 			}
 		}
 	}
@@ -89,16 +92,17 @@ void GameObject::DrawAll()
 void GameObject::DrawUIAll()
 {
 	// UI描画処理を行う
-	for (int nCntObj = 0; nCntObj < (int)m_gameObjects.size(); nCntObj++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[nCntObj]->GetActive() && m_gameObjects[nCntObj]->GetVisible())
+		if ((*itr)->GetActive() && (*itr)->GetVisible())
 		{ // アクティブのとき
-
 			// コンポーネントのUI描画処理を行う
-			for (int i = 0; i < (int)m_gameObjects[nCntObj]->m_components.size(); i++)
+			for (auto itrComp = (*itr)->m_components.begin(); itrComp != (*itr)->m_components.end(); itrComp++)
 			{
-				if (m_gameObjects[nCntObj]->m_components[i]->enabled)
-					m_gameObjects[nCntObj]->m_components[i]->DrawUI();
+				if ((*itrComp)->enabled)
+				{
+					(*itrComp)->DrawUI();
+				}
 			}
 		}
 	}
@@ -109,11 +113,11 @@ void GameObject::DrawUIAll()
 //=============================================================
 GameObject* GameObject::Find(const std::string& name)
 {
-	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i]->GetName() == name)
+		if ((*itr)->GetName() == name)
 		{	// 見つかったとき
-			return m_gameObjects[i];
+			return *itr;
 		}
 	}
 	return nullptr;
@@ -124,11 +128,11 @@ GameObject* GameObject::Find(const std::string& name)
 //=============================================================
 GameObject* GameObject::Find(const std::string& name, const std::string& tag)
 {
-	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i]->GetName() == name && m_gameObjects[i]->GetTag() == tag)
+		if ((*itr)->GetName() == name && (*itr)->GetTag() == tag)
 		{	// 見つかったとき
-			return m_gameObjects[i];
+			return *itr;
 		}
 	}
 	return nullptr;
@@ -140,14 +144,14 @@ GameObject* GameObject::Find(const std::string& name, const std::string& tag)
 std::vector<GameObject*> GameObject::GetChildren(const bool& includeTreeChildren)
 {
 	std::vector<GameObject*> pChildren;
-	for (int i = 0; i < (int)m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i]->transform->GetParent() == this->transform)
+		if ((*itr)->transform->GetParent() == this->transform)
 		{ // 子のとき
-			pChildren.push_back(m_gameObjects[i]);
+			pChildren.push_back(*itr);
 
 			// 子の子を取得する
-			std::vector<GameObject*> pChildrenInChildren = m_gameObjects[i]->GetChildren(true);
+			std::vector<GameObject*> pChildrenInChildren = (*itr)->GetChildren(true);
 			for (int n = 0; n < (int)pChildrenInChildren.size(); n++)
 			{
 				pChildren.push_back(pChildrenInChildren[n]);
@@ -166,11 +170,11 @@ GameObject* GameObject::FindNameChildren(const std::string& sName)
 	std::vector<GameObject*> pChildren = GetChildren();
 
 	// 探す
-	for (int i = 0; i < (int)pChildren.size(); i++)
+	for (auto itr = pChildren.begin(); itr != pChildren.end(); itr++)
 	{
-		if (pChildren[i]->GetName() == sName)
+		if ((*itr)->GetName() == sName)
 		{ // 名前が一致したとき
-			return pChildren[i];
+			return *itr;
 		}
 	}
 
@@ -187,11 +191,11 @@ GameObject* GameObject::FindTagChildren(const std::string& sTag)
 	std::vector<GameObject*> pChildren = GetChildren();
 
 	// 探す
-	for (int i = 0; i < (int)pChildren.size(); i++)
+	for (auto itr = pChildren.begin(); itr != pChildren.end(); itr++)
 	{
-		if (pChildren[i]->GetTag() == sTag)
+		if ((*itr)->GetTag() == sTag)
 		{ // タグが一致したとき
-			return pChildren[i];
+			return *itr;
 		}
 	}
 
@@ -213,9 +217,9 @@ void GameObject::Destroy(const bool& includeChild)
 	if (includeChild)
 	{
 		std::vector<GameObject*> pChildren = this->GetChildren();
-		for (unsigned int i = 0; i < pChildren.size(); i++)
+		for (auto itr = pChildren.begin(); itr != pChildren.end(); itr++)
 		{
-			pChildren[i]->Destroy(true);
+			(*itr)->Destroy(true);
 		}
 	}
 }
@@ -225,17 +229,17 @@ void GameObject::Destroy(const bool& includeChild)
 //=============================================================
 void GameObject::DestroyAll(bool bIncludeNot)
 {
-	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
 		if (bIncludeNot)
 		{ // すべてのオブジェクトを破棄する
-			m_gameObjects[i]->Destroy();
+			(*itr)->Destroy();
 		}
 		else
 		{ // NotDestroyのタグが付いている場合はスルーする
-			if (m_gameObjects[i]->GetTag() != TAG_NODESTROY)
+			if ((*itr)->GetTag() != TAG_NODESTROY)
 			{ // タグがつけられていない場合
-				m_gameObjects[i]->Destroy();
+				(*itr)->Destroy();
 			}
 		}
 	}
@@ -246,7 +250,8 @@ void GameObject::DestroyAll(bool bIncludeNot)
 //=============================================================
 void GameObject::DestroyDeathFlag()
 {
-	for (int i = static_cast<int>(m_gameObjects.size()) - 1; i >= 0; i--)
+	unsigned int test = m_gameObjects.size();
+	for (int i = test - 1; i >= 0; i--)
 	{
 		if (m_gameObjects[i]->m_bDeathFlag)
 		{ // 死亡フラグがついているとき
@@ -263,13 +268,13 @@ void GameObject::Destroy(Component* component)
 	if (component == nullptr)
 		return;
 
-	for (int i = 0; i < (int)m_components.size(); i++)
+	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 	{
-		if (m_components[i] == component)
+		if (*itr == component)
 		{
 			// 終了処理
-			m_components[i]->Uninit();
-			m_components.erase(m_components.begin() + i);
+			(*itr)->Uninit();
+			m_components.erase(itr);
 			
 			if (component != nullptr)
 			{
@@ -306,53 +311,53 @@ GameObject::GameObject(const std::string& name, const std::string& tag)
 GameObject::~GameObject()
 {
 	// ゲームオブジェクト消失イベント
-	for (int nCntObj = 0; nCntObj < (int)m_gameObjects.size(); nCntObj++)
+	for (auto itrGameObj = m_gameObjects.begin(); itrGameObj != m_gameObjects.end(); itrGameObj++)
 	{
-		if (m_gameObjects[nCntObj] == this) { continue; }
+		if (*itrGameObj == this) { continue; }
 
 		// コンポーネントのイベント処理を行う
-		for (int i = 0; i < (int)m_gameObjects[nCntObj]->m_components.size(); i++)
+		for (auto itrComp = (*itrGameObj)->m_components.begin(); itrComp != (*itrGameObj)->m_components.end(); itrComp++)
 		{
-			if (m_gameObjects[nCntObj]->m_components[i] != nullptr)
+			if (*itrComp != nullptr)
 			{
-				m_gameObjects[nCntObj]->m_components[i]->OnDestroyOtherObject(this);
+				(*itrComp)->OnDestroyOtherObject(this);
 			}
 		}
 	}
 
 	// 含まれるコンポーネントを削除する
-	for (int i = 0; i < (int)m_components.size(); i++)
+	for (auto itrComp = m_components.begin(); itrComp != m_components.end(); itrComp++)
 	{
-		if (m_components[i] != nullptr)
+		if (*itrComp != nullptr)
 		{
 			// コンポーネント消失イベント
-			for (int nCntObj = 0; nCntObj < (int)m_gameObjects.size(); nCntObj++)
+			for (auto itrGameObj = m_gameObjects.begin(); itrGameObj != m_gameObjects.end(); itrGameObj++)
 			{
-				if (m_gameObjects[nCntObj] == this) { continue; }
+				if (*itrGameObj == this) { continue; }
 				// コンポーネントのイベント処理を行う
-				for (int n = 0; n < (int)m_gameObjects[nCntObj]->m_components.size(); n++)
+				for (auto itrObjComp = (*itrGameObj)->m_components.begin(); itrObjComp != (*itrGameObj)->m_components.end(); itrObjComp++)
 				{
-					if (m_gameObjects[nCntObj]->m_components[n] != nullptr)
+					if (*itrObjComp != nullptr)
 					{
-						m_gameObjects[nCntObj]->m_components[n]->OnDestroyOtherComponent(m_components[i]);
+						(*itrObjComp)->OnDestroyOtherComponent(*itrComp);
 					}
 				}
 			}
 
-			m_components[i]->Uninit();
-			delete m_components[i];
-			m_components[i] = nullptr;
+			(*itrComp)->Uninit();
+			delete *itrComp;
+			*itrComp = nullptr;
 		}
 	}
 
 	// このオブジェクトを親として設定しているオブジェクトの解除
-	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i] == this) { continue; }
+		if (*itr == this) { continue; }
 
-		if (m_gameObjects[i]->transform->GetParent() == transform)
+		if ((*itr)->transform->GetParent() == transform)
 		{
-			m_gameObjects[i]->transform->SetParent(nullptr);		// 親状態の解除
+			(*itr)->transform->SetParent(nullptr);		// 親状態の解除
 		}
 	}
 
@@ -370,11 +375,11 @@ GameObject::~GameObject()
 	CCollision::RemoveCollision(this);
 
 	// ゲームオブジェクトの登録を解除する
-	for (int i = 0; i < (int)m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i] == this)
+		if (*itr == this)
 		{
-			m_gameObjects.erase(m_gameObjects.begin() + i);
+			m_gameObjects.erase(itr);
 			break;
 		}
 	}
@@ -399,9 +404,9 @@ void GameObject::SetPriority(int nPriority)
 //=============================================================
 bool GameObject::IsExist(GameObject* pGameObject)
 {
-	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i] == pGameObject)
+		if (*itr == pGameObject)
 		{	// 存在しているとき
 			return true;
 		}

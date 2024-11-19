@@ -96,11 +96,11 @@ public:
 	@return GameObject : 親のゲームオブジェクト
 	*/
 	GameObject* GetParent() {
-		for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+		for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 		{
-			if (m_gameObjects[i]->transform == this->transform->GetParent())
+			if ((*itr)->transform == this->transform->GetParent())
 			{ // 親と一致するとき
-				return m_gameObjects[i];
+				return *itr;
 			}
 		}
 		return nullptr;
@@ -174,16 +174,17 @@ public:
 	@param[in] includeChild : 子クラスを含めるか
 	*/
 	template<class T> inline T* GetComponent(const bool& includeChild = false) {
-		for (unsigned int i = 0; i < m_components.size(); i++) {
+		for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
+		{
 			if (includeChild)
 			{ // 子を含むとき
-				if (T* pComp = dynamic_cast<T*>(m_components[i]))
-					return (T*)m_components[i];
+				if (T* pComp = dynamic_cast<T*>(*itr))
+					return (T*)*itr;
 			}
 			else
 			{ // 子を含まないとき
-				if (typeid(T) == typeid(*m_components[i]))
-					return (T*)m_components[i];
+				if (typeid(T) == typeid(**itr))
+					return (T*)*itr;
 			}
 		}
 		return nullptr;
@@ -195,17 +196,17 @@ public:
 	*/
 	template<class T> inline std::vector<T*> GetComponents(const bool& includeChild = false) {
 		std::vector<T*> result;
-		for (unsigned int i = 0; i < m_components.size(); i++)
+		for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 		{
 			if (includeChild)
 			{ // 子を含むとき
-				if (T* pComp = dynamic_cast<T*>(m_components[i]))
-					result.push_back((T*)m_components[i]);
+				if (T* pComp = dynamic_cast<T*>(*itr))
+					result.push_back((T*)*itr);
 			}
 			else
 			{ // 子を含まないとき
-				if (typeid(T) == typeid(*m_components[i]))
-					result.push_back((T*)m_components[i]);
+				if (typeid(T) == typeid(**itr))
+					result.push_back((T*)*itr);
 			}
 		}
 		return result;

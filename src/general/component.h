@@ -22,11 +22,11 @@ public:
 		m_pComponents.push_back(this);
 	}
 	virtual ~Component() {
-		for (int i = 0; i < (int)m_pComponents.size(); i++)
+		for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
 		{
-			if (m_pComponents.at(i) == this)
+			if (*itr == this)
 			{
-				m_pComponents.erase(m_pComponents.begin() + i);
+				SAFE_ERASE(m_pComponents, itr)
 				break;
 			}
 		}
@@ -99,10 +99,10 @@ public:
 	*/
 	static std::vector<Component*> GetComponents(bool bOnlyActive = false) {
 		std::vector<Component*> result;
-		for (int i = 0; i < (int)m_pComponents.size(); i++)
+		for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
 		{
-			if (!bOnlyActive || (bOnlyActive && m_pComponents.at(i)->enabled && m_pComponents.at(i)->gameObject->GetActive()))
-				result.push_back(m_pComponents.at(i));
+			if (!bOnlyActive || (bOnlyActive && (*itr)->enabled && (*itr)->gameObject->GetActive()))
+				result.push_back(*itr);
 		}
 		return result;
 	}
@@ -114,22 +114,22 @@ public:
 	*/
 	template<class T> static std::vector<T*> GetComponents(const bool& includeChild = false, const bool& bOnlyActive = false) {
 		std::vector<T*> result;
-		for (int i = 0; i < (int)m_pComponents.size(); i++)
+		for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
 		{
 			if (includeChild)
 			{ // Žq‚ðŠÜ‚Þ‚Æ‚«
-				if (T* pComp = dynamic_cast<T*>(m_pComponents.at(i)))
+				if (T* pComp = dynamic_cast<T*>(*itr))
 				{
-					if (!bOnlyActive || (bOnlyActive && m_pComponents.at(i)->enabled && m_pComponents.at(i)->gameObject->GetActive()))
-						result.push_back((T*)m_pComponents.at(i));
+					if (!bOnlyActive || (bOnlyActive && (*itr)->enabled && (*itr)->gameObject->GetActive()))
+						result.push_back((T*)*itr);
 				}
 			}
 			else
 			{ // Žq‚ðŠÜ‚Ü‚È‚¢‚Æ‚«
-				if (typeid(T) == typeid(*m_pComponents.at(i)))
+				if (typeid(T) == typeid(**itr))
 				{
-					if (!bOnlyActive || (bOnlyActive && m_pComponents.at(i)->enabled && m_pComponents.at(i)->gameObject->GetActive()))
-						result.push_back((T*)m_pComponents.at(i));
+					if (!bOnlyActive || (bOnlyActive && (*itr)->enabled && (*itr)->gameObject->GetActive()))
+						result.push_back((T*)*itr);
 				}
 			}
 		}

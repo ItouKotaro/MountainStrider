@@ -14,9 +14,9 @@ std::vector<Component*> Component::m_pComponents;
 //=============================================================
 bool Component::IsExist(Component* pComponent)
 {
-	for (unsigned int i = 0; i < m_pComponents.size(); i++)
+	for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
 	{
-		if (m_pComponents[i] == pComponent)
+		if (*itr == pComponent)
 		{	// ‘¶Ý‚µ‚Ä‚¢‚é‚Æ‚«
 			return true;
 		}
