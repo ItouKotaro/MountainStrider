@@ -675,14 +675,15 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 					if (m_pVehicle == pOverlappingObj[n])
 					{ // バイクと衝突したとき
 						// オブジェクトを破棄する
+						ManagedGameObject* pManagedGameObj = nullptr;
 						for (unsigned int u = 0; u < m_managedGameObjects.size(); u++)
 						{
 							if (m_managedGameObjects[u] == m_managedProduces[i]->managedGameObject)
 							{
 								// ゲームオブジェクトの管理を破棄する
-								ManagedGameObject* pManagedGameObj = m_managedGameObjects[u];
+								pManagedGameObj = m_managedGameObjects[u];
 								m_managedGameObjects.erase(m_managedGameObjects.begin() + u);
-								delete pManagedGameObj;
+								break;
 							}
 						}
 
@@ -690,6 +691,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 						m_managedProduces[i]->managedGameObject->gameObject->AddComponent<CRigidBody>();
 						m_managedProduces[i]->managedGameObject->gameObject->AddComponent<CWreckage>();
 						m_managedProduces.erase(m_managedProduces.begin() + i);
+						delete pManagedGameObj;
 						break;
 					}
 				}

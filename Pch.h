@@ -24,6 +24,7 @@
 #include "Xinput.h"
 #include "input_system.h"
 #include "gameobject.h"
+#include "benlib.h"
 class CInputSystem;
 #define INPUT_INSTANCE	(CInputSystem::GetInstance())
 
