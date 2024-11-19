@@ -662,36 +662,40 @@ void ProducesManager::Update(const D3DXVECTOR3& pos)
 //=============================================================
 void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 {
-	for (unsigned int i = 0; i < m_managedProduces.size(); i++)
+	for (auto itrManagedProduces = m_managedProduces.begin(); itrManagedProduces != m_managedProduces.end(); itrManagedProduces++)
 	{
-		if (Benlib::PosDistance(pos, m_managedProduces[i]->transform.GetWPos()) < 3500.0f)
+		if (Benlib::PosDistance(pos, (*itrManagedProduces)->transform.GetWPos()) < 3500.0f)
 		{ // 生成範囲内のとき
 
-			if (m_managedProduces[i]->managedGameObject != nullptr)
+			if ((*itrManagedProduces)->managedGameObject != nullptr)
 			{ // すでに設置済みのとき
-				std::vector<GameObject*>& pOverlappingObj = CCollision::GetCollision(m_managedProduces[i]->managedGameObject->gameObject)->GetOverlappingGameObjects();
-				for (unsigned int n = 0; n < pOverlappingObj.size(); n++)
+				std::vector<GameObject*>& pOverlappingObj = CCollision::GetCollision((*itrManagedProduces)->managedGameObject->gameObject)->GetOverlappingGameObjects();
+				for (auto itrOverlappingObj = pOverlappingObj.begin(); itrOverlappingObj != pOverlappingObj.end(); itrOverlappingObj++)
 				{
-					if (m_pVehicle == pOverlappingObj[n])
+					if (m_pVehicle == *itrOverlappingObj)
 					{ // バイクと衝突したとき
 						// オブジェクトを破棄する
 						ManagedGameObject* pManagedGameObj = nullptr;
-						for (unsigned int u = 0; u < m_managedGameObjects.size(); u++)
+						for (auto itrManagedGameObj = m_managedGameObjects.begin(); itrManagedGameObj != m_managedGameObjects.end(); itrManagedGameObj++)
 						{
-							if (m_managedGameObjects[u] == m_managedProduces[i]->managedGameObject)
+							if (*itrManagedGameObj == (*itrManagedProduces)->managedGameObject)
 							{
 								// ゲームオブジェクトの管理を破棄する
-								pManagedGameObj = m_managedGameObjects[u];
-								m_managedGameObjects.erase(m_managedGameObjects.begin() + u);
+								pManagedGameObj = *itrManagedGameObj;
+								SAFE_ERASE(m_managedGameObjects, itrManagedGameObj)
 								break;
 							}
 						}
 
 						// ゲームオブジェクトと配置情報を破棄
-						m_managedProduces[i]->managedGameObject->gameObject->AddComponent<CRigidBody>();
-						m_managedProduces[i]->managedGameObject->gameObject->AddComponent<CWreckage>();
-						m_managedProduces.erase(m_managedProduces.begin() + i);
+						(*itrManagedProduces)->managedGameObject->gameObject->AddComponent<CRigidBody>();
+						(*itrManagedProduces)->managedGameObject->gameObject->AddComponent<CWreckage>();
+
+						// 破棄
 						delete pManagedGameObj;
+						delete (*itrManagedProduces);
+						SAFE_ERASE(m_managedProduces, itrManagedProduces)
+
 						break;
 					}
 				}
@@ -700,21 +704,21 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 
 			// オブジェクトが余っていないか
 			bool findVacancy = false;
-			for (unsigned int n = 0; n < m_managedGameObjects.size(); n++)
+			for (auto itrManagedGameObj = m_managedGameObjects.begin(); itrManagedGameObj != m_managedGameObjects.end(); itrManagedGameObj++)
 			{
-				if (!m_managedGameObjects[n]->gameObject->GetActive() &&
-					m_managedProduces[i]->natureProduce == m_managedGameObjects[n]->natureProduce)
+				if (!(*itrManagedGameObj)->gameObject->GetActive() &&
+					(*itrManagedProduces)->natureProduce == (*itrManagedGameObj)->natureProduce)
 				{ // 同じ種類の生成物で非アクティブのとき
 					// ゲームオブジェクトのトランスフォームを適用する
-					m_managedGameObjects[n]->gameObject->transform->SetPos(m_managedProduces[i]->transform.GetPos());
-					m_managedGameObjects[n]->gameObject->transform->SetQuaternion(m_managedProduces[i]->transform.GetQuaternion());
-					m_managedGameObjects[n]->gameObject->transform->SetScale(m_managedProduces[i]->transform.GetScale());
+					(*itrManagedGameObj)->gameObject->transform->SetPos((*itrManagedProduces)->transform.GetPos());
+					(*itrManagedGameObj)->gameObject->transform->SetQuaternion((*itrManagedProduces)->transform.GetQuaternion());
+					(*itrManagedGameObj)->gameObject->transform->SetScale((*itrManagedProduces)->transform.GetScale());
 
 					// ゲームオブジェクトをアクティブにする
-					m_managedGameObjects[n]->gameObject->SetActive(true);
+					(*itrManagedGameObj)->gameObject->SetActive(true);
 
 					// 設置情報にゲームオブジェクト情報を設定する
-					m_managedProduces[i]->managedGameObject = m_managedGameObjects[n];
+					(*itrManagedProduces)->managedGameObject = (*itrManagedGameObj);
 
 					findVacancy = true;
 					break;
@@ -727,8 +731,8 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 
 			// 余りが見つからなかったとき（新規作成）
 			ManagedGameObject* managedGameObject = new ManagedGameObject;
-			managedGameObject->gameObject = m_managedProduces[i]->natureProduce->Generate(m_managedProduces[i]->transform);
-			managedGameObject->natureProduce = m_managedProduces[i]->natureProduce;
+			managedGameObject->gameObject = (*itrManagedProduces)->natureProduce->Generate((*itrManagedProduces)->transform);
+			managedGameObject->natureProduce = (*itrManagedProduces)->natureProduce;
 
 			// コリジョンを変更する
 			managedGameObject->gameObject->Destroy(managedGameObject->gameObject->GetComponent<CRigidBody>());
@@ -748,17 +752,17 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 			}
 
 			// 設置情報にゲームオブジェクト情報を設定する
-			m_managedProduces[i]->managedGameObject = managedGameObject;
+			(*itrManagedProduces)->managedGameObject = managedGameObject;
 		}
 		else
 		{ // 生成範囲外のとき
-			if (m_managedProduces[i]->managedGameObject != nullptr)
+			if ((*itrManagedProduces)->managedGameObject != nullptr)
 			{
 				// ゲームオブジェクトを非アクティブにする
-				m_managedProduces[i]->managedGameObject->gameObject->SetActive(false);
+				(*itrManagedProduces)->managedGameObject->gameObject->SetActive(false);
 
 				// 設置オブジェクトから除外する
-				m_managedProduces[i]->managedGameObject = nullptr;
+				(*itrManagedProduces)->managedGameObject = nullptr;
 			}
 		}
 	}
