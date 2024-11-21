@@ -14,6 +14,7 @@
 #include "scripts/vehicle.h"
 #include "scripts/terrain.h"
 #include "scripts/camera_move.h"
+#include "scripts/result/result_camera.h"
 
 #include <noise/noise.h>
 
@@ -43,7 +44,7 @@ void CGameScene::Init()
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
-
+	m_pCamera->AddComponent<ResultCamera>();
 
 	m_pFPS = new GameObject("FPS");
 	m_pFPS->AddComponent<CText>();
@@ -71,11 +72,13 @@ void CGameScene::Update()
 	m_pFPS->GetComponent<CText>()->SetText("FPS: " + std::to_string(CManager::GetInstance()->GetFPS()));
 
 	// 地形を更新する
-	m_pTerrain->Update(m_pBike->transform->GetWPos());
+	m_pTerrain->Update(m_pCamera->transform->GetWPos());
 
-	if (m_isGameOvered && INPUT_INSTANCE->onTrigger("enter"))
-	{
-		CSceneManager::GetInstance()->SetScene("title");
+	// リザルトカメラ
+	if (!m_isGameOvered)
+	{ // 未ゲームオーバー時
+		// カメラの情報を記録する
+		m_pCamera->GetComponent<ResultCamera>()->RecordData();
 	}
 }
 
@@ -122,6 +125,10 @@ void CGameScene::onGameOver()
 		gameoverText->AddComponent<CText>()->SetText("<size=250><color=255,0,0>GAMEOVER");
 		gameoverText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		gameoverText->transform->SetPos(CRenderer::SCREEN_WIDTH, 500.0f);
+
+		// リザルトカメラを起動する
+		m_pCamera->GetComponent<ResultCamera>()->Play();
+		m_pCamera->GetComponent<CCameraMove>()->enabled = false;
 
 		m_isGameOvered = true;
 	}

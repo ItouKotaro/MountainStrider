@@ -79,6 +79,12 @@
     <Filter Include="ヘッダー ファイル\scripts\item">
       <UniqueIdentifier>{8d05bf41-6636-41fe-a012-f636e4fbf307}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\scripts\result">
+      <UniqueIdentifier>{5b2ae7c5-b5dc-4a50-9d05-e363d1b345d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scripts\result">
+      <UniqueIdentifier>{03345850-7366-4e2e-b9f9-f950219bd42b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -230,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="src\scripts\item\fuel_tank.cpp">
       <Filter>ソース ファイル\scripts\item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\result\result_camera.cpp">
+      <Filter>ソース ファイル\scripts\result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -385,6 +394,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\item\fuel_tank.h">
       <Filter>ヘッダー ファイル\scripts\item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\result\result_camera.h">
+      <Filter>ヘッダー ファイル\scripts\result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
