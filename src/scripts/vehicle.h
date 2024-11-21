@@ -18,6 +18,7 @@ public:
 	void Uninit() override;
 	void Update() override;
 	void SetPos(const D3DXVECTOR3& pos);
+	void AddDamage(const float& value);
 
 	static const float ENGINEFORCE_VALUE;			// エンジン力の値
 	static const float MIN_ENGINEFORCE_VALUE;	// エンジン力の最小（アクセルを踏んでいないとき）
@@ -26,6 +27,7 @@ public:
 	static const float MAX_ENGINEFORCE;			// エンジン力の最大値
 	static const float MAX_STEERING;				// ステアリングの最大値
 	static const float MAX_FUEL;						// 燃料の最大値
+	static const float MAX_ENDURANCE;			// 耐久値の最大値
 private:
 	void ControlVehicle();				// 操作
 	void UpdateSpeedMeter();		// スピードの更新
@@ -35,7 +37,8 @@ private:
 	GameObject* m_pFrontTire;	// 前輪
 	GameObject* m_pBackTire;	// 後輪
 
-	float m_fFuel;						// 燃料
+	float m_fuel;						// 燃料
+	float m_endurance;				// 耐久値
 
 	// ステータスUI
 	GameObject* m_pStatusUI;

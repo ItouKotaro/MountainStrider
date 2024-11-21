@@ -23,14 +23,19 @@ struct AdjacentRate
 class CNatureProduces
 {
 public:
-	CNatureProduces(const std::string& name, const std::string& path, const D3DXVECTOR2& size, const float& offsetY = 0.0f, const float& adjacentDistance = 100.0f)
+	CNatureProduces(const std::string& name, const std::string& path, const D3DXVECTOR2& size, const float& damage = 0.0f, const float& offsetY = 0.0f, const float& adjacentDistance = 100.0f)
 	{
 		m_produceName = name;
 		m_path = path;
 		m_size = size;
+		m_damage = damage;
 		m_offsetY = offsetY;
 		m_adjacentDistance = adjacentDistance;
 	}
+
+	// バイクとヒットしたときのイベント
+	virtual void onHit(GameObject* gameObject) {}
+
 
 	// オブジェクトの生成
 	GameObject* Generate(const Transform& transform);
@@ -41,6 +46,8 @@ public:
 	float GetOffsetY() { return m_offsetY; }
 	// 産物名の取得
 	std::string GetProduceName() { return m_produceName; }
+	// ダメージ量の取得
+	float GetDamage() { return m_damage; }
 
 	// 確率を取得する
 	unsigned int GetChance() { return m_chance; }
@@ -88,6 +95,7 @@ protected:
 	D3DXVECTOR2 m_size;			// サイズ（XZ）
 	float m_offsetY;						// Yのオフセット
 	std::string m_produceName;	// 産物名
+	float m_damage;					// ダメージ量（ヒット時）
 
 	// 確率
 	unsigned int m_chance;										// 標準確率（整数）
@@ -101,14 +109,14 @@ protected:
 class CProdTree : public CNatureProduces
 {
 public:
-	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 0.0f) {}
+	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 10.0f) {}
 };
 
 // フェンス
 class CProdFence : public CNatureProduces
 {
 public:
-	CProdFence() : CNatureProduces("fence", "data\\PREFAB\\fence.pref", { 10.0f, 10.0f }, 0.0f) {}
+	CProdFence() : CNatureProduces("fence", "data\\PREFAB\\fence.pref", { 10.0f, 10.0f }, 10.0f) {}
 };
 
 #endif // !_NATURE_PRODUCES_H_

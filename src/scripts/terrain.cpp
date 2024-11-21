@@ -691,10 +691,16 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 						(*itrManagedProduces)->managedGameObject->gameObject->AddComponent<CRigidBody>();
 						(*itrManagedProduces)->managedGameObject->gameObject->AddComponent<CWreckage>();
 
+						// ヒットイベントを実行
+						(*itrManagedProduces)->natureProduce->onHit((*itrManagedProduces)->managedGameObject->gameObject);
+
+						// バイクにダメージを与える
+						m_pVehicle->GetComponent<CVehicle>()->AddDamage((*itrManagedProduces)->natureProduce->GetDamage());
+
 						// 破棄
 						delete pManagedGameObj;
 						delete (*itrManagedProduces);
-						SAFE_ERASE(m_managedProduces, itrManagedProduces)
+						SAFE_ERASE(m_managedProduces, itrManagedProduces);
 
 						break;
 					}

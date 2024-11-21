@@ -15,15 +15,19 @@
 class CGameScene : public CScene
 {
 public:
+	CGameScene() : m_isGameOvered(false) {}
 	void Init() override;			// 初期化
 	void Uninit() override;			// 終了
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
+
+	void onGameOver();			// ゲームオーバー処理
 private:
 	void SpawnBike();				// バイクの生成
 
-	Terrain* m_pTerrain;
+	bool m_isGameOvered;		// ゲームオーバー済みか
 
+	Terrain* m_pTerrain;				// 地形
 	GameObject* m_pCamera;		// カメラ
 	GameObject* m_pBike;			// バイク
 	GameObject* m_pStatusUI;	// ステータスUI

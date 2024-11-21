@@ -45,10 +45,24 @@
                     0.0
                 ],
                 "type": "cylinder"
+            },
+            {
+                "offset": [
+                    0.0,
+                    90.80000305175781,
+                    0.0
+                ],
+                "radius": 30.700000762939453,
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "type": "sphere"
             }
         ],
         "friction": 1.0,
-        "mass": 10.0,
+        "mass": 120.0,
         "name": "tree00",
         "rigidbody": false,
         "tag": "",

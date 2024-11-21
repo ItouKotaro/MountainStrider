@@ -71,6 +71,11 @@ void CGameScene::Update()
 
 	// 地形を更新する
 	m_pTerrain->Update(m_pBike->transform->GetWPos());
+
+	if (m_isGameOvered && INPUT_INSTANCE->onTrigger("enter"))
+	{
+		CSceneManager::GetInstance()->SetScene("title");
+	}
 }
 
 //=============================================================
@@ -103,4 +108,20 @@ void CGameScene::SpawnBike()
 	m_pBike->AddComponent<CVehicle>();
 
 	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
+}
+
+//=============================================================
+// [CGameScene] ゲームオーバー時の処理
+//=============================================================
+void CGameScene::onGameOver()
+{
+	if (!m_isGameOvered)
+	{ // 1回のみの処理
+		GameObject* gameoverText = new GameObject;
+		gameoverText->AddComponent<CText>()->SetText("<size=250><color=255,0,0>GAMEOVER");
+		gameoverText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		gameoverText->transform->SetPos(CRenderer::SCREEN_WIDTH, 500.0f);
+
+		m_isGameOvered = true;
+	}
 }
