@@ -27,6 +27,7 @@ void CGameScene::Init()
 	m_pCamera->AddComponent<CCamera>();
 	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 	m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
+	m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
 
 	// ライトを作成
 	GameObject* pLight = new GameObject("Light");

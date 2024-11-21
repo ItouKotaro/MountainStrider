@@ -9,7 +9,7 @@
 #include <fstream>
 
 // Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
-const float CSkybox::SKYBOX_SIZE = 600.0f;
+const float CSkybox::SKYBOX_SIZE = 10.0f;
 
 //=============================================================
 // [CSkybox] ‰Šú‰»

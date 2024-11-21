@@ -19,6 +19,7 @@ public:
 	void Update() override;
 	void SetPos(const D3DXVECTOR3& pos);
 	void AddDamage(const float& value);
+	void AddFuel(const float& value);
 
 	static const float ENGINEFORCE_VALUE;			// エンジン力の値
 	static const float MIN_ENGINEFORCE_VALUE;	// エンジン力の最小（アクセルを踏んでいないとき）

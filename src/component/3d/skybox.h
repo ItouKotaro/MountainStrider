@@ -7,8 +7,6 @@
 #ifndef _SKY_BOX_H_
 #define _SKY_BOX_H_
 
-#include "component.h"
-
 // スカイボックス
 class CSkybox
 {

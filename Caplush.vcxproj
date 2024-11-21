@@ -238,6 +238,7 @@
     <ClCompile Include="src\scene\start_scene.cpp" />
     <ClCompile Include="src\scene\title.cpp" />
     <ClCompile Include="src\scripts\camera_move.cpp" />
+    <ClCompile Include="src\scripts\item\fuel_tank.cpp" />
     <ClCompile Include="src\scripts\nature_produces.cpp" />
     <ClCompile Include="src\scripts\status_ui.cpp" />
     <ClCompile Include="src\scripts\terrain.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="src\scene\start_scene.h" />
     <ClInclude Include="src\scene\title.h" />
     <ClInclude Include="src\scripts\camera_move.h" />
+    <ClInclude Include="src\scripts\item\fuel_tank.h" />
     <ClInclude Include="src\scripts\nature_produces.h" />
     <ClInclude Include="src\scripts\status_ui.h" />
     <ClInclude Include="src\scripts\terrain.h" />

@@ -73,6 +73,12 @@
     <Filter Include="ヘッダー ファイル\utility">
       <UniqueIdentifier>{8260be47-793d-42a7-a7b9-9ff7a88f70cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scripts\item">
+      <UniqueIdentifier>{51d3fa83-b484-40d5-a5dc-16440f608909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts\item">
+      <UniqueIdentifier>{8d05bf41-6636-41fe-a012-f636e4fbf307}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -221,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="src\scripts\wreckage.cpp">
       <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\item\fuel_tank.cpp">
+      <Filter>ソース ファイル\scripts\item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -373,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\wreckage.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\item\fuel_tank.h">
+      <Filter>ヘッダー ファイル\scripts\item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
