@@ -1,0 +1,113 @@
+{
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\items\\fuel_tank.x",
+            "name": "model",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        },
+        "1": {
+            "collision": [
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 19.899999618530273,
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "type": "sphere"
+                }
+            ],
+            "friction": 1.0,
+            "model": "none",
+            "name": "Pickup",
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": true
+        }
+    },
+    "parent": {
+        "0": -1,
+        "1": -1
+    },
+    "prefab": {
+        "collision": [
+            {
+                "offset": [
+                    0.0,
+                    2.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    19.399999618530273,
+                    26.200000762939453,
+                    10.0
+                ],
+                "type": "box"
+            }
+        ],
+        "friction": 1.0,
+        "mass": 10.0,
+        "name": "FuelTank",
+        "rigidbody": true,
+        "tag": "Item",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": false
+    }
+}
