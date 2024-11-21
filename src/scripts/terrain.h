@@ -25,6 +25,9 @@ public:
 	void Uninit();
 	// 更新
 	void Update(const D3DXVECTOR3& pos);
+
+	// 指定位置の周囲のオブジェクトを取得する
+	float GetNearProduces(const std::string& name , const D3DXVECTOR3& pos, const float& range);
 private:
 	void UpdateGameObjects(const D3DXVECTOR3& pos);
 
@@ -60,6 +63,7 @@ public:
 	void Uninit();
 	void Update(const D3DXVECTOR3& pos);
 	void Generate();
+	ProducesManager* GetProducesManager() { return m_producesManager; }
 
 	static const int TERRAIN_SIZE = 100;
 	static const float TERRAIN_SCALE;

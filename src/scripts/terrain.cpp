@@ -773,3 +773,20 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 		}
 	}
 }
+
+//=============================================================
+// [ProducesManager] ‹ß‚­‚Ì¶¬•¨‚ðŽæ“¾‚·‚é
+//=============================================================
+float ProducesManager::GetNearProduces(const std::string& name, const D3DXVECTOR3& pos, const float& range)
+{
+	float rate = 1.0f;
+	for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
+	{
+		if (Benlib::PosDistance((*itr)->transform.GetPos(), pos) < range)
+		{ // ”ÍˆÍ“à‚ÌŽž
+			rate *= (*itr)->natureProduce->GetAdjacentObjectRate(name);
+		}
+	}
+
+	return rate;
+}

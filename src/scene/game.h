@@ -22,6 +22,7 @@ public:
 	void Draw() override;			// 描画
 
 	void onGameOver();			// ゲームオーバー処理
+	Terrain* GetTerrain() { return m_pTerrain; }
 private:
 	void SpawnBike();				// バイクの生成
 

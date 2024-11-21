@@ -20,7 +20,7 @@ const float CVehicle::STEERING_VALUE = 10.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 10.0f;
 const float CVehicle::MAX_ENGINEFORCE = 600000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
-const float CVehicle::MAX_FUEL = 2000.0f;
+const float CVehicle::MAX_FUEL = 1000.0f;
 const float CVehicle::MAX_ENDURANCE = 100.0f;
 
 //=============================================================
@@ -154,6 +154,12 @@ void CVehicle::Update()
 
 	// ステータスUIの更新
 	UpdateStatusUI();
+
+	// ゲームオーバー処理
+	if (m_fuel <= 0.0f)
+	{ // 燃料が無くなったとき
+		static_cast<CGameScene*>(CSceneManager::GetInstance()->GetCurrentScene()->pScene)->onGameOver();
+	}
 }
 
 //=============================================================

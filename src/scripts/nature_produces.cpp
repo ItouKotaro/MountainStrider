@@ -6,6 +6,7 @@
 //=============================================================
 #include "nature_produces.h"
 #include "benlib.h"
+#include "scene/game.h"
 
 //=============================================================
 // [CNatureProduces] 生成する
@@ -26,18 +27,14 @@ GameObject* CNatureProduces::Generate(const Transform& transform)
 //=============================================================
 float CNatureProduces::GetAdjacentRate(const D3DXVECTOR3& pos)
 {
-	// 倍率変数
-	float _rate = 1.0f;
+	// 地形の取得
+	auto pProducesManager = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain()->GetProducesManager();
+	
+	float rate = 1.0f;
 
-	// 付近にあるオブジェクトを取得し、倍率を導き出す
-	//std::vector<CProduceTag*> pAdjacentObj = Component::GetComponents<CProduceTag>();
-	//for (unsigned int i = 0; i < pAdjacentObj.size(); i++)
-	//{
-	//	if (Benlib::PosDistance(pos, pAdjacentObj[i]->transform->GetWPos()) <= m_adjacentDistance)
-	//	{ // 範囲内のとき
-	//		_rate *= GetAdjacentObjectRate(pAdjacentObj[i]->GetNatureProduce()->GetProduceName());
-	//	}
-	//}
-
-	return _rate;
+#ifndef _DEBUG
+	rate = pProducesManager->GetNearProduces(m_produceName, pos, m_adjacentDistance);
+#endif // _DEBUG
+			
+	return rate;
 }
