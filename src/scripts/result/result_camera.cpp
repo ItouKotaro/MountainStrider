@@ -6,7 +6,7 @@
 //=============================================================
 #include "result_camera.h"
 
-const int ResultCamera::RECORD_COUNT = 100;		// 記録頻度
+const int ResultCamera::RECORD_COUNT = 60;		// 記録頻度
 
 //=============================================================
 // [ResultCamera] 初期化
@@ -42,7 +42,13 @@ void ResultCamera::Update()
 		m_pCamera->transform->Translate(m_moving * m_fade);
 
 		// 回転量を決める
+		D3DXQUATERNION objective_q;
+		D3DXQUATERNION current_q = m_pCamera->transform->GetWQuaternion();
+		D3DXQuaternionSlerp(&objective_q, &current_q, &rec.rot, (1.0f - m_fade));
+		m_pCamera->transform->SetQuaternion(objective_q);
 
+		// フェード
+		m_fade *= 0.998f;
 
 		// カウンター処理
 		if (Benlib::PosDistance(m_pCamera->transform->GetWPos(), rec.pos) < 50.0f)
@@ -58,9 +64,6 @@ void ResultCamera::Update()
 			// 移動量を決める
 			m_moving = (m_records[m_recIdx].pos - m_pCamera->transform->GetWPos()) / 60;
 		}
-
-		// フェード
-		m_fade *= 0.98f;
 	}
 }
 
