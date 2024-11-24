@@ -43,28 +43,6 @@ void GameObject::UpdateAll()
 }
 
 //=============================================================
-// ゲームオブジェクトの描画前処理（メッシュより先に実行される）
-//=============================================================
-void GameObject::BeforeDrawAll()
-{
-	// 更新処理を行う
-	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
-	{
-		if ((*itr)->GetActive() && (*itr)->GetVisible())
-		{ // アクティブのとき
-			// コンポーネントのオブジェクト描画前処理を行う
-			for (auto itrComp = (*itr)->m_components.begin(); itrComp != (*itr)->m_components.end(); itrComp++)
-			{
-				if ((*itrComp)->enabled)
-				{
-					(*itrComp)->BeforeDraw();
-				}
-			}
-		}
-	}
-}
-
-//=============================================================
 // ゲームオブジェクトの描画処理
 //=============================================================
 void GameObject::DrawAll()
@@ -79,7 +57,9 @@ void GameObject::DrawAll()
 			{
 				if ((*itrComp)->enabled)
 				{
+					(*itrComp)->BeforeDraw();
 					(*itrComp)->Draw();
+					(*itrComp)->AfterDraw();
 				}
 			}
 		}
@@ -101,7 +81,9 @@ void GameObject::DrawUIAll()
 			{
 				if ((*itrComp)->enabled)
 				{
+					(*itrComp)->BeforeDrawUI();
 					(*itrComp)->DrawUI();
+					(*itrComp)->AfterDrawUI();
 				}
 			}
 		}
@@ -250,8 +232,8 @@ void GameObject::DestroyAll(bool bIncludeNot)
 //=============================================================
 void GameObject::DestroyDeathFlag()
 {
-	unsigned int test = m_gameObjects.size();
-	for (int i = test - 1; i >= 0; i--)
+	int idx = static_cast<int>(m_gameObjects.size());
+	for (int i = idx - 1; i >= 0; i--)
 	{
 		if (m_gameObjects[i]->m_bDeathFlag)
 		{ // 死亡フラグがついているとき

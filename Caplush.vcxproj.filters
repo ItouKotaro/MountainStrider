@@ -240,6 +240,9 @@
     <ClCompile Include="src\scripts\result\result_camera.cpp">
       <Filter>ソース ファイル\scripts\result</Filter>
     </ClCompile>
+    <ClCompile Include="src\general\render_buffer.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -397,6 +400,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\result\result_camera.h">
       <Filter>ヘッダー ファイル\scripts\result</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\render_buffer.h">
+      <Filter>ヘッダー ファイル\general</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

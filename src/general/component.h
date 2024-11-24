@@ -52,15 +52,33 @@ public:
 
 	/*
 	@brief オブジェクト描画前処理
-	@details オブジェクト描画前に呼ばれるイベント（メッシュ描画より先）
+	@details オブジェクト描画前に呼ばれるイベント
 	*/
 	virtual void BeforeDraw() {}
+
+	/*
+	@brief オブジェクト描画後処理
+	@details オブジェクト描画後に呼ばれるイベント
+	*/
+	virtual void AfterDraw() {}
 
 	/*
 	@brief オブジェクト描画処理
 	@details オブジェクト描画の際に呼ばれるイベント
 	*/
 	virtual void Draw() {}
+
+	/*
+	@brief UI描画前処理
+	@details UI描画前に呼ばれるイベント
+	*/
+	virtual void BeforeDrawUI() {}
+
+	/*
+	@brief UI描画後処理
+	@details UI描画後に呼ばれるイベント
+	*/
+	virtual void AfterDrawUI() {}
 
 	/*
 	@brief UI描画処理

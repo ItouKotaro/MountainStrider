@@ -6,14 +6,11 @@
 //=============================================================
 #include "renderer.h"
 #include "gameobject.h"
-#include "component/3d/camera.h"
-#include "component/3d/render_texture.h"
-#include "component/other/render_objects_texture.h"
 
 // 変数の初期化
 const int CRenderer::SCREEN_WIDTH = 1920;
 const int CRenderer::SCREEN_HEIGHT = 1080;
-const bool CRenderer::USE_FOG = true;
+const bool CRenderer::USE_FOG = false;
 
 //=============================================================
 // [CRenderer] コンストラクタ
@@ -25,8 +22,8 @@ CRenderer::CRenderer()
 	m_pD3DDevice = nullptr;
 	m_pShadow = nullptr;
 	m_bFullScreen = true;
-	m_fFogStartPos = 2000.0f;
-	m_fFogEndPos = 5000.0f;
+	m_fFogStartPos = 200.0f;
+	m_fFogEndPos = 1000.0f;
 }
 
 //=============================================================
@@ -120,7 +117,6 @@ HRESULT CRenderer::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		m_pD3DDevice->SetRenderState(D3DRS_FOGEND, *(DWORD*)(&m_fFogEndPos));
 	}
 
-
 	return S_OK;
 }
 
@@ -136,6 +132,15 @@ void CRenderer::Uninit()
 		delete m_pShadow;
 		m_pShadow = nullptr;
 	}
+
+	// レンダーバッファの破棄
+	for (auto itr = m_renderBuffers.begin(); itr != m_renderBuffers.end(); itr++)
+	{
+		(*itr)->Uninit();
+		delete* itr;
+		*itr = nullptr;
+	}
+	m_renderBuffers.clear();
 
 	// Direct3Dデバイスの破棄
 	if (m_pD3DDevice != nullptr)
@@ -172,112 +177,28 @@ void CRenderer::Update()
 //=============================================================
 void CRenderer::Draw()
 {
-	// 描画開始
-	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
-	{ // 描画開始が成功した場合
-
-		// 画面クリア（バッファクリア＆Zバッファクリア）
-		m_pD3DDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
-
-		// カメラのコンポーネントを取得する
-		std::vector<CCamera*> cameraComponents = Component::GetComponents<CCamera>(false, true);
-
-		for (unsigned int nCntCamera = 0; nCntCamera < cameraComponents.size(); nCntCamera++)
-		{
-			// カメラを取得
-			CCamera* pCamera = cameraComponents.at(nCntCamera);
-
-			if (!pCamera->GetVisible())
-			{
-				continue;	// 表示しないときは処理をスキップ
-			}
-
-			// 画面クリア（バッファクリア＆Zバッファクリア）
-			m_pD3DDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), pCamera->GetColor(), 1.0f, 0);
-
-			// カメラをセット
-			pCamera->SetCamera();
-			pCamera->GetSkybox()->Draw();
-
-			// オブジェクト描画前処理
-			GameObject::BeforeDrawAll();
-
-			// 3Dオブジェクトの描画（影使用時）
-			if (CShadow::USE_SHADOW)
-			{
-				m_pShadow->Draw(pCamera);
-			}
-
-			// ゲームオブジェクトの描画処理
-			GameObject::DrawAll();
+	for (auto itr = m_renderBuffers.begin(); itr != m_renderBuffers.end(); itr++)
+	{
+		if (!(*itr)->enabled)
+		{ // 無効のとき
+			continue;
 		}
 
-		// ゲームオブジェクトのUI描画処理
-		GameObject::DrawUIAll();
+		// ターゲットの変更
+		(*itr)->ChangeTarget();
 
-		// 描画終了
-		m_pD3DDevice->EndScene();
-	}
-
-	// レンダーテクスチャ --------------------------------------------------------------------------------------------------------------------
-
-	// コンポーネントを取得する
-	std::vector<CRenderTexture*> renderComponents = Component::GetComponents<CRenderTexture>(false, true);
-
-	// 前回の設定として保存しておく
-	LPDIRECT3DSURFACE9 pBeforeBufferSurface;
-	LPDIRECT3DSURFACE9 pBeforeDepthSurface;
-	m_pD3DDevice->GetRenderTarget(0, &pBeforeBufferSurface);
-	m_pD3DDevice->GetDepthStencilSurface(&pBeforeDepthSurface);
-
-	for (unsigned int nCntRender = 0; nCntRender < renderComponents.size(); nCntRender++)
-	{
-		if (renderComponents[nCntRender]->BeginRender())
+		if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 		{
-			// カメラを取得
-			CCamera* pCamera = renderComponents[nCntRender]->GetTargetCamera();
+			// 描画
+			(*itr)->Render();
 
-			// 画面クリア（バッファクリア＆Zバッファクリア）
-			m_pD3DDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), pCamera->GetColor(), 1.0f, 0);
-
-			// カメラをセット
-			pCamera->SetCamera();
-			pCamera->GetSkybox()->Draw();
-
-			// オブジェクト描画前処理
-			GameObject::BeforeDrawAll();
-
-			// 3Dオブジェクトの描画（影使用時）
-			if (CShadow::USE_SHADOW)
-			{
-				m_pShadow->Draw(pCamera);
-			}
-
-			// ゲームオブジェクトの描画処理
-			GameObject::DrawAll();
-
-			renderComponents[nCntRender]->EndRender();
+			// 描画終了
+			m_pD3DDevice->EndScene();
 		}
+
+		// バッファ設定のリセット
+		(*itr)->ResetBuffer();
 	}
-
-	// 元の設定に戻す
-	m_pD3DDevice->SetDepthStencilSurface(pBeforeDepthSurface);
-
-	// レンダーオブジェクトテクスチャ ----------------------------------------------------------------------------------------------------------
-
-	// コンポーネントを取得する
-	std::vector<CRenderObjectsTexture*> renderObjectsComponents = Component::GetComponents<CRenderObjectsTexture>(false, true);
-
-	// 描画
-	for (unsigned int nCntRender = 0; nCntRender < renderObjectsComponents.size(); nCntRender++)
-	{
-		renderObjectsComponents[nCntRender]->DrawTexture();
-	}
-
-	// 元のレンダーターゲットを設定する
-	m_pD3DDevice->SetRenderTarget(0, pBeforeBufferSurface);
-
-	// ------------------------------------------------------------------------------------------------------------------------------------
 
 	// バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
@@ -313,5 +234,38 @@ void CRenderer::SetFullScreen(const bool& bFullScreen)
 		SetWindowPos(m_hwnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
 			SWP_FRAMECHANGED | SWP_NOACTIVATE);
 		ShowWindow(m_hwnd, SW_MAXIMIZE);
+	}
+}
+
+//=============================================================
+// [CRenderer] レンダーバッファの取得
+//=============================================================
+RenderBuffer* CRenderer::GetRenderBuffer(const std::string& name)
+{
+	for (auto itr = m_renderBuffers.begin(); itr != m_renderBuffers.end(); itr++)
+	{
+		if ((*itr)->GetName() == name)
+		{
+			return *itr;
+		}
+	}
+	return nullptr;
+}
+
+//=============================================================
+// [CRenderer] レンダーバッファの削除
+//=============================================================
+void CRenderer::RemoveRenderBuffer(const std::string& name)
+{
+	for (auto itr = m_renderBuffers.begin(); itr != m_renderBuffers.end(); itr++)
+	{
+		if ((*itr)->GetName() == name)
+		{
+			RenderBuffer* renderBuffer = *itr;
+			m_renderBuffers.erase(itr);
+			renderBuffer->Uninit();
+			delete renderBuffer;
+			return;
+		}
 	}
 }

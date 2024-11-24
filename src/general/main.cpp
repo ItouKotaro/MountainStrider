@@ -33,7 +33,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	//_CrtSetBreakAlloc(1495);
 #endif
 
-	int nID;
 	DWORD dwCurrentTime;	// 現在時刻
 	DWORD dwExecLastTime;	// 最後に処理した時刻
 	DWORD dwFrameCount;		// フレームカウント
@@ -80,7 +79,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		nullptr,												// 親ウィンドウのハンドル
 		nullptr,												// メニューハンドルまたは子ウィンドウID
 		hInstance,											// インスタンスバンドル
-		nullptr													// ウィンドウ作成データ
+		nullptr												// ウィンドウ作成データ
 	);
 
 	// ウィンドウの表示
@@ -181,15 +180,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_ESCAPE:
-   			nID = MessageBox(hWnd, "終了しますか？", "確認", MB_YESNO); //終了メッセージ
+			nID = MessageBox(hWnd, "終了しますか？", "確認", MB_YESNO); //終了メッセージ
 			if (nID == IDYES)
 			{ // 「はい」を選択したとき
 				DestroyWindow(hWnd); //ウィンドウを破棄
 			}
-			break;
-
-		case VK_F11:
-			//CProcess::ToggleFullscreen();
 			break;
 		}
 		break;

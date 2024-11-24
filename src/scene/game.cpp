@@ -48,6 +48,9 @@ void CGameScene::Init()
 
 	m_pFPS = new GameObject("FPS");
 	m_pFPS->AddComponent<CText>();
+
+	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
+	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
 }
 
 //=============================================================

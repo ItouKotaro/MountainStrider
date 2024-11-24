@@ -107,7 +107,6 @@ public:
 	}
 
 	static void UpdateAll();
-	static void BeforeDrawAll();
 	static void DrawAll();
 	static void DrawUIAll();
 

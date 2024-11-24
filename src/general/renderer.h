@@ -8,6 +8,7 @@
 #define _RENDERER_H_
 
 #include "internal/shadow.h"
+#include "render_buffer.h"
 
 // マクロ定義
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
@@ -29,6 +30,24 @@ public:
 		return &renderer;
 	}
 
+	// レンダーバッファの登録
+	template<class T> T* RegisterRenderBuffer(const std::string& name)
+	{
+		RenderBuffer* findRenderBuffer = GetRenderBuffer(name);
+		if (findRenderBuffer == nullptr)
+		{
+			T* renderBuffer = new T();
+			renderBuffer->SetName(name);
+			m_renderBuffers.push_back(renderBuffer);
+			return renderBuffer;
+		}
+		return static_cast<T*>(findRenderBuffer);
+	}
+	// レンダーバッファの取得
+	RenderBuffer* GetRenderBuffer(const std::string& name);
+	// レンダーバッファの削除
+	void RemoveRenderBuffer(const std::string& name);
+
 	// フルスクリーン
 	bool GetFullScreen() { return m_bFullScreen; }
 	void SetFullScreen(const bool& bFullScreen);
@@ -46,10 +65,14 @@ private:
 	CShadow* m_pShadow;								// 影
 	bool m_bFullScreen;									// フルスクリーン
 
+	// レンダーバッファ
+	std::vector<RenderBuffer*> m_renderBuffers;
+
 	// フォグ
 	float m_fFogStartPos;									// フォグのスタート位置
 	float m_fFogEndPos;									// フォグの終了位置
 };
+
 
 // 頂点情報[2D]の構造体を定義
 typedef struct

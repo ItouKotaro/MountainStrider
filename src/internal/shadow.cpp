@@ -13,7 +13,7 @@
 using namespace std;
 
 // 変数の定義
-const bool CShadow::USE_SHADOW = true;
+const bool CShadow::USE_SHADOW = false;
 const std::string CShadow::SHADOW_VOLUME_PATH = "./data/SHADER/ShadowVolume.fx";		// シャドウボリュームのパス
 const float CShadow::FAR_CLIP = 500.0f;
 const float CShadow::ADJACENCY_EPSILON = 0.0001f;

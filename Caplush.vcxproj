@@ -224,6 +224,7 @@
     <ClCompile Include="src\general\main.cpp" />
     <ClCompile Include="src\general\manager.cpp" />
     <ClCompile Include="src\general\renderer.cpp" />
+    <ClCompile Include="src\general\render_buffer.cpp" />
     <ClCompile Include="src\general\scene.cpp" />
     <ClCompile Include="src\general\transform.cpp" />
     <ClCompile Include="src\general\world_loader.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="src\general\main.h" />
     <ClInclude Include="src\general\manager.h" />
     <ClInclude Include="src\general\renderer.h" />
+    <ClInclude Include="src\general\render_buffer.h" />
     <ClInclude Include="src\general\scene.h" />
     <ClInclude Include="src\general\transform.h" />
     <ClInclude Include="src\general\world_loader.h" />

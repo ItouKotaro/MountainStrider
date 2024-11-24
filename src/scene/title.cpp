@@ -50,6 +50,8 @@ void CTitleScene::Init()
 		m_pSelectObj[i]->GetComponent<CText>()->SetAlign(CText::ALIGN::CENTER);
 		m_pSelectObj[i]->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2, 600.0f + i * 200.0f);
 	}
+
+	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
 }
 
 //=============================================================
