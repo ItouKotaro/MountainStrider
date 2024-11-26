@@ -23,6 +23,9 @@
 //=============================================================
 void CGameScene::Init()
 {
+	// 変数の初期化
+	m_isGameOvered = false;
+
 	// カメラの作成
 	m_pCamera = new GameObject("Camera", "Camera");
 	m_pCamera->AddComponent<CCamera>();
@@ -102,6 +105,11 @@ void CGameScene::Update()
 	{ // ゲームオーバーのとき
 		// リザルトマネージャーの更新
 		m_resultManager->Update();
+
+		if (INPUT_INSTANCE->onTrigger("enter"))
+		{
+			CSceneManager::GetInstance()->ReloadScene();
+		}
 	}
 }
 

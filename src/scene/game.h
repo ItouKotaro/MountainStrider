@@ -16,7 +16,7 @@
 class CGameScene : public CScene
 {
 public:
-	CGameScene() : m_isGameOvered(false) {}
+	CGameScene(){}
 	void Init() override;			// ‰Šú‰»
 	void Uninit() override;			// I—¹
 	void Update() override;		// XV

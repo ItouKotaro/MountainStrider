@@ -21,6 +21,7 @@ CSceneManager::CSceneManager()
 {
 	m_pCurrentScene = nullptr;
 	m_pNextScene = nullptr;
+	m_bReload = false;
 	m_apScene = {};
 }
 
@@ -127,10 +128,37 @@ HRESULT CSceneManager::SetScene(std::string sName, bool bIsDestroy)
 }
 
 //=============================================================
+// [CSceneManager] 現在シーンの再読み込み
+//=============================================================
+void CSceneManager::ReloadScene()
+{
+	m_bReload = true;
+}
+
+//=============================================================
 // [CSceneManager] 前シーンの終了、次シーンの初期化（安全性を守るため、実行しないでください）
 //=============================================================
 void CSceneManager::ChangingScene()
 {
+	// 再読み込み
+	if (m_bReload)
+	{
+		// 現在シーンの終了処理
+		if (m_pCurrentScene != nullptr)
+		{
+			m_pCurrentScene->pScene->Uninit();
+		}
+
+		// すべてのオブジェクトの削除
+		GameObject::DestroyAll();
+		GameObject::DestroyDeathFlag();
+
+		// シーンの初期化
+		m_pCurrentScene->pScene->Init();
+		m_bReload = false;
+		return;
+	}
+
 	if (m_pNextScene == nullptr)
 	{ // 次のシーンに何も入っていないとき
 		return;

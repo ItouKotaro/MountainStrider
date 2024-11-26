@@ -51,6 +51,11 @@ public:
 	HRESULT SetScene(std::string sName, bool bIsDestroy = true);
 
 	/*
+	@brief 現在のシーンの再読み込み
+	*/
+	void ReloadScene();
+
+	/*
 	@brief 前シーンの終了、次シーンの初期化（安全性を守るため、実行しないでください）
 	*/
 	void ChangingScene();
@@ -108,6 +113,7 @@ private:
 	SceneData* m_pCurrentScene;					// 現在のシーン
 	SceneData* m_pNextScene;						// 次のシーン（予定）
 	bool m_bNoDestroy;									// オブジェクトを破棄するか
+	bool m_bReload;										// リロードトリガー
 	std::vector<SceneData*> m_apScene;		// シーン管理
 };
 

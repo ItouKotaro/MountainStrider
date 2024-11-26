@@ -39,9 +39,7 @@ void MountainResultManager::Init()
 	m_mtText->GetComponent<CText>()->SetOutlineSize(5);
 	m_mtText->GetComponent<CText>()->SetText(std::to_string(m_goalCount) + "つ目の山を踏破しました");
 	m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
-	m_mtText->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, 100.0f, 0.0f);
-	m_mtText->transform->SetScale(0.0f);
-	m_mtTextFade = 0.0f;
+	m_mtText->transform->SetPos(-2000.0f, 120.0f, 0.0f);
 
 	// シードテキスト
 	m_seedText = new GameObject("SeedText", "UI");
@@ -106,15 +104,9 @@ void MountainResultManager::Update()
 	switch (m_progState)
 	{
 	case MountainResultManager::P_MT_TEXT:
-		if (m_progCounter < 90)
-		{ // 2: 少し縮む
-			m_mtTextFade += (1.0f - m_mtText->transform->GetScale().x) * 0.02f;
-		}
-		else
-		{ // 1: デカくなる
-			m_mtTextFade += (1.2f - m_mtText->transform->GetScale().x) * 0.02f;
-		}
-		m_mtText->transform->SetScale(m_mtTextFade);
+		m_mtText->transform->SetPos(m_mtText->transform->GetWPos().x +
+			(CRenderer::SCREEN_WIDTH / 2 - m_mtText->transform->GetWPos().x) * 0.08f, 120.0f
+		);
 		break;
 	case MountainResultManager::P_FUEL_TEXT:
 		break;

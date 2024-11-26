@@ -31,7 +31,6 @@ private:
 	int m_progCounter;
 
 	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
-	float m_mtTextFade;
 
 	GameObject* m_bg;				// 背景（ガウスにする予定）
 	GameObject* m_seedText;		// シードテキスト
