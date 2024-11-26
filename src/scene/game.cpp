@@ -36,8 +36,12 @@ void CGameScene::Init()
 
 	// 地面を作成
 	m_pTerrain = new Terrain();
+	m_pTerrain->SetSeed((unsigned int)clock());
 	m_pTerrain->Init();
 	m_pTerrain->Generate();
+
+	// リザルトマネージャーの生成
+	m_resultManager = new MountainResultManager(this);
 
 	// バイクの生成
 	SpawnBike();
@@ -58,11 +62,20 @@ void CGameScene::Init()
 //=============================================================
 void CGameScene::Uninit()
 {
+	// 地形の破棄
 	if (m_pTerrain != nullptr)
 	{
 		m_pTerrain->Uninit();
 		delete m_pTerrain;
 		m_pTerrain = nullptr;
+	}
+
+	// リザルトマネージャーの破棄
+	if (m_resultManager != nullptr)
+	{
+		m_resultManager->Uninit();
+		delete m_resultManager;
+		m_resultManager = nullptr;
 	}
 }
 
@@ -82,6 +95,13 @@ void CGameScene::Update()
 	{ // 未ゲームオーバー時
 		// カメラの情報を記録する
 		m_pCamera->GetComponent<ResultCamera>()->RecordData();
+	}
+
+	// リザルトの更新処理
+	if (m_isGameOvered)
+	{ // ゲームオーバーのとき
+		// リザルトマネージャーの更新
+		m_resultManager->Update();
 	}
 }
 
@@ -124,10 +144,9 @@ void CGameScene::onGameOver()
 {
 	if (!m_isGameOvered)
 	{ // 1回のみの処理
-		GameObject* gameoverText = new GameObject;
-		gameoverText->AddComponent<CText>()->SetText("<size=250><color=255,0,0>GAMEOVER");
-		gameoverText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		gameoverText->transform->SetPos(CRenderer::SCREEN_WIDTH, 500.0f);
+
+		// リザルトマネージャーの初期化
+		m_resultManager->Init();
 
 		// リザルトカメラを起動する
 		m_pCamera->GetComponent<ResultCamera>()->Play();

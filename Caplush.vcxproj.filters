@@ -156,9 +156,6 @@
     <ClCompile Include="src\component\3d\field.cpp">
       <Filter>ソース ファイル\component\3d</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\result.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\internal\audio_manager.cpp">
       <Filter>ソース ファイル\internal</Filter>
     </ClCompile>
@@ -243,6 +240,9 @@
     <ClCompile Include="src\general\render_buffer.cpp">
       <Filter>ソース ファイル\general</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\result\mt_result.cpp">
+      <Filter>ソース ファイル\scripts\result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -316,9 +316,6 @@
     </ClInclude>
     <ClInclude Include="src\component\3d\field.h">
       <Filter>ヘッダー ファイル\component\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\result.h">
-      <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\internal\audio_manager.h">
       <Filter>ヘッダー ファイル\internal</Filter>
@@ -403,6 +400,9 @@
     </ClInclude>
     <ClInclude Include="src\general\render_buffer.h">
       <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\result\mt_result.h">
+      <Filter>ヘッダー ファイル\scripts\result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

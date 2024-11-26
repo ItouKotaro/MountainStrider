@@ -122,6 +122,9 @@ void Terrain::Generate()
 	// コリジョンを作成する
 	CCollision::Create(m_pField);
 
+	// シード値を設定する
+	srand(m_seed);
+
 	// 地形データを生成する
 	GenerateTerrain();
 
@@ -134,7 +137,6 @@ void Terrain::Generate()
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	// 生成物を生成する
-	srand((unsigned int)clock());
 	for (int i = 0; i < 10000; i++)
 	{
 		GenerateProduces();
@@ -150,7 +152,7 @@ void Terrain::GenerateTerrain()
 	module::Perlin myModule;
 	utils::NoiseMap heightMap;
 
-	myModule.SetSeed((unsigned int)clock());
+	myModule.SetSeed(rand());
 
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);

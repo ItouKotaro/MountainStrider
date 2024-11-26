@@ -93,6 +93,16 @@ void CText::Uninit()
 //=============================================================
 void CText::DrawUI()
 {
+    // スケールと回転のマトリックス
+    D3DXMATRIX mtx, mtxScale, mtxRot;
+    D3DXMatrixIdentity(&mtx);
+    D3DXMatrixScaling(&mtxScale, transform->GetWScale().x, transform->GetWScale().y, transform->GetWScale().z);
+    mtxRot = transform->GetRotationMatrix();
+    D3DXMatrixMultiply(&mtx, &mtxScale, &mtxRot);
+
+    // スプライトにマトリックスを適用する
+    m_pSprite->SetTransform(&mtx);
+
     m_pSprite->Begin(D3DXSPRITE_ALPHABLEND);
 
     for (int i = 0; i < (int)m_textInfos.size(); i++)

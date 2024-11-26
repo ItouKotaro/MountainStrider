@@ -89,6 +89,14 @@ public:
 	void SetProgress(const float& percent);
 	// 進捗度の取得
 	float GetProgress() { return m_fProgress; }
+	// 長さの変更
+	void SetLength(const float& length);
+	// 長さの取得
+	float GetLength() { return m_fLength; }
+	// 太さの変更
+	void SetBold(const float& bold);
+	// 太さの取得
+	float GetBold() { return m_fBold; }
 
 	// 整列
 	enum ALIGN
@@ -96,6 +104,11 @@ public:
 		LEFT,
 		CENTER
 	};
+
+	// 整列の変更
+	void SetAlign(const ALIGN& align);
+	// 整列の取得
+	ALIGN GetAlign() { return m_align; }
 private:
 	// 頂点更新
 	void UpdateVertex();

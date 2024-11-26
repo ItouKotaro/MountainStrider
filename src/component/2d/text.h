@@ -48,6 +48,8 @@ public:
 	void SetAlign(const ALIGN& align);
 	void SetAlpha(const float& fAlpha);
 
+	int GetFontSize() { return m_fontSize; }
+
 	static const FontData LoadFonts[];
 	static void InitLoadFont();
 protected:

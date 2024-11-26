@@ -63,6 +63,9 @@ public:
 	void Uninit();
 	void Update(const D3DXVECTOR3& pos);
 	void Generate();
+	void SetSeed(const unsigned int& seed) { m_seed = seed; }
+	unsigned int GetSeed() { return m_seed; }
+
 	ProducesManager* GetProducesManager() { return m_producesManager; }
 
 	static const int TERRAIN_SIZE = 100;
@@ -70,6 +73,7 @@ public:
 private:
 	void UninitTerrain();
 
+	unsigned int m_seed;													// シード値
 	GameObject* m_pField;									// メッシュフィールド
 	float* m_terrainData;										// 高度データ
 	btHeightfieldTerrainShape* m_terrainShape;	// 地形コリジョンシェイプ

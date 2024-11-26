@@ -318,3 +318,36 @@ void CAdvancedBar::SetProgress(const float& percent)
 	// 更新
 	UpdateVertex();
 }
+
+//=============================================================
+// [CAdvancedBar] 長さの変更
+//=============================================================
+void CAdvancedBar::SetLength(const float& length)
+{
+	m_fLength = length;
+
+	// 更新
+	UpdateVertex();
+}
+
+//=============================================================
+// [CAdvancedBar] 太さの変更
+//=============================================================
+void CAdvancedBar::SetBold(const float& bold)
+{
+	m_fBold = bold;
+
+	// 更新
+	UpdateVertex();
+}
+
+//=============================================================
+// [CAdvancedBar] 整列の変更
+//=============================================================
+void CAdvancedBar::SetAlign(const ALIGN& align)
+{
+	m_align = align;
+
+	// 更新
+	UpdateVertex();
+}

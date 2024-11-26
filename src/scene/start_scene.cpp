@@ -13,8 +13,6 @@
 // シーンのインクルード
 #include "title.h"
 #include "game.h"
-#include "result.h"
-
 #include "mt_debug.h"
 
 //=============================================================
@@ -28,7 +26,6 @@ void CStartScene::Init()
 	// シーンの登録
 	pSceneManager->RegistScene<CTitleScene>("title");
 	pSceneManager->RegistScene<CGameScene>("game");
-	pSceneManager->RegistScene<CResultScene>("result");
 
 	pSceneManager->RegistScene<CMountainDebug>("debug_mt");
 

@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "internal/physics.h"
 #include "scripts/terrain.h"
+#include "scripts/result/mt_result.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -26,7 +27,8 @@ public:
 private:
 	void SpawnBike();				// バイクの生成
 
-	bool m_isGameOvered;		// ゲームオーバー済みか
+	bool m_isGameOvered;									// ゲームオーバー済みか
+	MountainResultManager* m_resultManager;		// マウンテンリザルトマネージャー
 
 	Terrain* m_pTerrain;				// 地形
 	GameObject* m_pCamera;		// カメラ
