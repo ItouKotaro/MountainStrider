@@ -171,6 +171,9 @@ void Terrain::GenerateTerrain()
 		}
 	}
 
+	// 道を生成する
+	GenerateRoad();
+
 	// メッシュ情報を変更する
 	for (int x = 0; x < TERRAIN_SIZE; x++)
 	{
@@ -183,14 +186,16 @@ void Terrain::GenerateTerrain()
 
 			// 色を設定する
 			m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetVertexColor(x, y));
+
+			if (m_routeData[x][y])
+			{
+				m_pField->GetComponent<CMeshField>()->SetColor(x, y, D3DCOLOR_RGBA(179, 119, 0, 255));
+			}
 		}
 	}
 
 	// 法線をリセットする
 	m_pField->GetComponent<CMeshField>()->ResetNormals();
-
-	// 道を生成する
-	GenerateRoad();
 }
 
 //=============================================================
