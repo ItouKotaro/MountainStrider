@@ -121,7 +121,7 @@ void CVehicle::Init()
 	// 状態テキスト
 	m_pSpeedText = new GameObject;
 	m_pSpeedText->AddComponent<CText>();
-	m_pSpeedText->GetComponent<CText>()->SetFontSize(50.0f);
+	m_pSpeedText->GetComponent<CText>()->SetFontSize(50);
 
 	// ステータスUI
 	m_pStatusUI = new GameObject("StatusUI", "UI");

@@ -1,6 +1,6 @@
 //=============================================================
 //
-// リザルト [result.h]
+// リザルト [mt_result.h]
 // Author: Ito Kotaro
 // 
 //=============================================================
@@ -20,15 +20,13 @@ public:
 private:
 	enum PROG_STATE
 	{
-		P_MT_TEXT,					// 踏破数テキスト
-		P_FUEL_TEXT,				// 燃料増減テキスト
-		P_FUEL_BAR,					// 燃料バー増減
-		P_ENDURANCE_TEXT,	// 耐久値増減テキスト
-		P_ENDURANCE_BAR,		// 耐久値バー増減
+		P_MTTEXT,					// 踏破数テキスト
+		P_DATA,						// データの表示
+		P_VEHICLE,					// バイクの情報表示
 		P_END
 	};
-	PROG_STATE m_progState;
-	int m_progCounter;
+	PROG_STATE m_progState;	// 結果表示進行度
+	int m_progCounter;				// カウンター
 
 	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
 
@@ -36,6 +34,8 @@ private:
 	GameObject* m_seedText;		// シードテキスト
 	GameObject* m_fuelBar;			// 燃料バー
 	GameObject* m_enduranceBar;	// 耐久値バー
+	GameObject* m_dataView;			// データ表示
+	GameObject* m_terrainImg;
 
 	CGameScene* m_gameScene;
 

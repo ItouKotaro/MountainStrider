@@ -87,6 +87,13 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
+	if (INPUT_INSTANCE->onTrigger("end"))
+	{
+		onGameOver();
+	}
+
+
+
 	// FPSを更新する
 	m_pFPS->GetComponent<CText>()->SetText("FPS: " + std::to_string(CManager::GetInstance()->GetFPS()));
 

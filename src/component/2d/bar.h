@@ -20,6 +20,8 @@ public:
 	CPolygon* GetPolyBG() { return m_pBgObj->GetComponent<CPolygon>(); }
 	CPolygon* GetPolyBar() { return m_pBarObj->GetComponent<CPolygon>(); }
 	void SetProgress(const float& fProgress) { m_fBarProgress = fProgress; }
+	void SetLength(const float& length) { m_fBarLength = length; }
+	void SetBold(const float& bold) { m_fBarBold = bold; }
 
 	static const float DEFAULT_BAR_LENGTH;	// デフォルトのバーの長さ
 	static const float DEFAULT_BAR_BOLD;		// デフォルトのバーの太さ

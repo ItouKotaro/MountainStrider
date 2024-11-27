@@ -243,6 +243,9 @@
     <ClCompile Include="src\scripts\result\mt_result.cpp">
       <Filter>ソース ファイル\scripts\result</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\result\result_data.cpp">
+      <Filter>ソース ファイル\scripts\result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -402,6 +405,9 @@
       <Filter>ヘッダー ファイル\general</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\result\mt_result.h">
+      <Filter>ヘッダー ファイル\scripts\result</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\result\result_data.h">
       <Filter>ヘッダー ファイル\scripts\result</Filter>
     </ClInclude>
   </ItemGroup>
