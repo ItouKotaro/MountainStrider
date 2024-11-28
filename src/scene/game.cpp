@@ -89,6 +89,9 @@ void CGameScene::Uninit()
 		delete m_resultManager;
 		m_resultManager = nullptr;
 	}
+
+	// 走行データをリセットする
+	m_travellingDatas.clear();
 }
 
 //=============================================================
@@ -114,6 +117,12 @@ void CGameScene::Update()
 	{
 		// カメラの情報を記録する
 		m_pCamera->GetComponent<ResultCamera>()->RecordData();
+
+		// 走行データを記録する
+		TravellingData travelling;
+		travelling.pos = m_pBike->transform->GetWPos();
+		travelling.rot = m_pBike->transform->GetWQuaternion();
+		m_travellingDatas.push_back(travelling);
 
 		// 最高速度を記録する
 		int bikeSpeed = static_cast<int>(m_pBike->GetComponent<CVehicle>()->GetSpeed());

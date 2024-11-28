@@ -28,6 +28,14 @@ public:
 private:
 	void SpawnBike();				// バイクの生成
 
+	// 走行データ
+	struct TravellingData
+	{
+		D3DXVECTOR3 pos;
+		D3DXQUATERNION rot;
+	};
+	std::vector<TravellingData> m_travellingDatas;
+
 	bool m_isGameOvered;									// ゲームオーバー済みか
 	MountainResultManager* m_resultManager;		// マウンテンリザルトマネージャー
 

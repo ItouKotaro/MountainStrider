@@ -125,6 +125,7 @@ void MountainResultManager::Init()
 
 	// ‘O‰ñ‚Ìî•ñ‚Æ‚µ‚Ä•Û‘¶
 	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
+	m_beforeEndurance = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance();
 }
 
 //=============================================================
