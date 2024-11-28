@@ -614,11 +614,11 @@ void ProducesManager::AddProduce(const Transform& transform, CNatureProduces* pN
 //=============================================================
 void ProducesManager::Init()
 {
-	m_pNumObj = new GameObject("TerrainNumObj");
-	m_pNumObj->AddComponent<CText>();
-	m_pNumObj->GetComponent<CText>()->SetFontSize(80);
-	m_pNumObj->GetComponent<CText>()->SetAlign(CText::ALIGN::RIGHT);
-	m_pNumObj->transform->SetPos(CRenderer::SCREEN_WIDTH - 50.0f, 30.0f);
+	//m_pNumObj = new GameObject("TerrainNumObj");
+	//m_pNumObj->AddComponent<CText>();
+	//m_pNumObj->GetComponent<CText>()->SetFontSize(80);
+	//m_pNumObj->GetComponent<CText>()->SetAlign(CText::ALIGN::RIGHT);
+	//m_pNumObj->transform->SetPos(CRenderer::SCREEN_WIDTH - 50.0f, 30.0f);
 }
 
 //=============================================================
@@ -653,7 +653,7 @@ void ProducesManager::Uninit()
 void ProducesManager::Update(const D3DXVECTOR3& pos)
 {
 	// デバッグ用
-	m_pNumObj->GetComponent<CText>()->SetText("生成物総数: " + std::to_string(m_managedGameObjects.size()));
+	//m_pNumObj->GetComponent<CText>()->SetText("生成物総数: " + std::to_string(m_managedGameObjects.size()));
 
 	// バイクの取得
 	if (m_pVehicle == nullptr)

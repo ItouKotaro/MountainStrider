@@ -6,6 +6,7 @@
 //=============================================================
 #include "bar.h"
 #include "renderer.h"
+#include "internal/data_manager.h"
 
 // 静的メンバ変数の初期化
 const float CBar::DEFAULT_BAR_LENGTH = 800.0f;
@@ -166,38 +167,49 @@ void CAdvancedBar::Init()
 	pDevice = CRenderer::GetInstance()->GetDevice();
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, nullptr);
-	VERTEX_2D* pVtx; //頂点情報へのポインタ
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBar, nullptr);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBG, nullptr);
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	VERTEX_2D* pVtx = nullptr; //頂点情報へのポインタ
 
-	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < 2; i++)
+	{
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		if (i == 0)
+			m_pVtxBG->Lock(0, 0, (void**)&pVtx, 0);
+		else if (i == 1)
+			m_pVtxBar->Lock(0, 0, (void**)&pVtx, 0);
 
-	//rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
+		//頂点座標の設定
+		pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	//頂点カラー
-	pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-	pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-	pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-	pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+		//rhwの設定
+		pVtx[0].rhw = 1.0f;
+		pVtx[1].rhw = 1.0f;
+		pVtx[2].rhw = 1.0f;
+		pVtx[3].rhw = 1.0f;
 
-	//テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		//頂点カラー
+		pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+		pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+		pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+		pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
-	//頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
+		//テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+		//頂点バッファをアンロックする
+		if (i == 0)
+			m_pVtxBG->Unlock();
+		else if (i == 1)
+			m_pVtxBar->Unlock();
+	}
 
 	// 頂点の更新
 	UpdateVertex();
@@ -209,10 +221,15 @@ void CAdvancedBar::Init()
 void CAdvancedBar::Uninit()
 {
 	//頂点バッファの破棄
-	if (m_pVtxBuff != nullptr)
+	if (m_pVtxBar != nullptr)
 	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = nullptr;
+		m_pVtxBar->Release();
+		m_pVtxBar = nullptr;
+	}
+	if (m_pVtxBG != nullptr)
+	{
+		m_pVtxBG->Release();
+		m_pVtxBG = nullptr;
 	}
 }
 
@@ -225,19 +242,33 @@ void CAdvancedBar::DrawUI()
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CRenderer::GetInstance()->GetDevice();
 
-	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	for (int i = 0; i < 2; i++)
+	{
+		// 頂点バッファをデータストリームに設定
+		if (i == 0)
+			pDevice->SetStreamSource(0, m_pVtxBG, 0, sizeof(VERTEX_2D));
+		else if (i ==1)
+			pDevice->SetStreamSource(0, m_pVtxBar, 0, sizeof(VERTEX_2D));
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
 
-	// テクスチャの設定
-	pDevice->SetTexture(0, nullptr);
+		// テクスチャの設定
+		if (i == 1)
+		{
+			pDevice->SetTexture(0, m_texture);
+		}
+		else
+		{
+			pDevice->SetTexture(0, nullptr);
+		}
+		
 
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
-		0, //描画する最初の頂点インデックス
-		2); //描画するプリミティブ数
+		// ポリゴンの描画
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
+			0, //描画する最初の頂点インデックス
+			2); //描画するプリミティブ数
+	}
 }
 
 //=============================================================
@@ -265,8 +296,11 @@ void CAdvancedBar::UpdateVertex()
 		break;
 	}
 
+	//----------------------------------------------------------------------
+	// バー
+
 	//頂点バッファをロックし、頂点情報へのポインタを取得
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pVtxBar->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
 	pVtx[0].pos = vtxPos[0];
@@ -290,8 +324,41 @@ void CAdvancedBar::UpdateVertex()
 	pVtx[2].col = m_color[2];
 	pVtx[3].col = m_color[3] + m_color[2] * (1.0f - m_fProgress);
 
+	//テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(m_fProgress, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(m_fProgress, 1.0f);
+
 	//頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
+	m_pVtxBar->Unlock();
+
+	//----------------------------------------------------------------------
+	// 背景
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBG->Lock(0, 0, (void**)&pVtx, 0);
+
+	//頂点座標の設定
+	pVtx[0].pos = vtxPos[0];
+	pVtx[1].pos = vtxPos[1];
+	pVtx[2].pos = vtxPos[2];
+	pVtx[3].pos = vtxPos[3];
+
+	// 指定位置に移動させる
+	pVtx[0].pos += transform->GetWPos();
+	pVtx[1].pos += transform->GetWPos();
+	pVtx[2].pos += transform->GetWPos();
+	pVtx[3].pos += transform->GetWPos();
+
+	//頂点カラー
+	pVtx[0].col = m_bgColor;
+	pVtx[1].col = m_bgColor;
+	pVtx[2].col = m_bgColor;
+	pVtx[3].col = m_bgColor;
+
+	//頂点バッファをアンロックする
+	m_pVtxBG->Unlock();
 }
 
 //=============================================================
@@ -303,6 +370,17 @@ void CAdvancedBar::SetColor(int index, D3DXCOLOR color)
 	{
 		m_color[index] = color;
 	}
+
+	// 更新
+	UpdateVertex();
+}
+
+//=============================================================
+// [CAdvancedBar] 背景色変更
+//=============================================================
+void CAdvancedBar::SetBGColor(D3DXCOLOR color)
+{
+	m_bgColor = color;
 
 	// 更新
 	UpdateVertex();
@@ -339,6 +417,19 @@ void CAdvancedBar::SetBold(const float& bold)
 
 	// 更新
 	UpdateVertex();
+}
+
+//=============================================================
+// [CAdvancedBar] テクスチャの設定
+//=============================================================
+void CAdvancedBar::SetTexture(std::string sPath)
+{
+	CDataTexture* pTex = CDataManager::GetInstance()->RefTexture(sPath);
+
+	if (pTex != nullptr)
+	{
+		m_texture = pTex->GetTexture();
+	}
 }
 
 //=============================================================

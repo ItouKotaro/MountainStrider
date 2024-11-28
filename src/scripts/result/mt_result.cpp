@@ -14,9 +14,10 @@
 
 #include "scripts/vehicle.h"
 #include "scripts/result/result_data.h"
+#include "scripts/result/result_view.h"
 
-float MountainResultManager::m_oldFuel = CVehicle::MAX_FUEL;
-float MountainResultManager::m_oldEndurance = CVehicle::MAX_ENDURANCE;
+float MountainResultManager::m_beforeFuel = CVehicle::MAX_FUEL;
+float MountainResultManager::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
 UINT MountainResultManager::m_goalCount = 0;
 std::vector<MountainResultManager::ResultData> MountainResultManager::m_results = {};
 
@@ -47,7 +48,7 @@ void MountainResultManager::Init()
 		m_mtText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 		m_mtText->GetComponent<CText>()->SetFontSize(130);
 		m_mtText->GetComponent<CText>()->SetOutlineColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
-		m_mtText->GetComponent<CText>()->SetOutlineSize(5);
+		m_mtText->GetComponent<CText>()->SetOutlineSize(2);
 		m_mtText->GetComponent<CText>()->SetText(std::to_string(m_goalCount) + "つ目の山を踏破しました");
 		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		m_mtText->transform->SetPos(-2000.0f, 100.0f, 0.0f);
@@ -64,6 +65,35 @@ void MountainResultManager::Init()
 		m_dataView->GetComponent<ResultDataView>()->SetTime(data.time);
 		m_dataView->GetComponent<ResultDataView>()->SetHighSpeed(data.highSpeed);
 		m_dataView->GetComponent<ResultDataView>()->SetAction(data.action);
+	}
+
+	// バイク情報表示
+	{
+		// 燃料
+		m_fuelView = new GameObject("FuelView", "UI");
+		m_fuelView->transform->SetPos(1310.0f, 360.0f);
+		m_fuelView->AddComponent<ResultViewBar>(
+			"燃料",
+			D3DCOLOR_RGBA(232, 44, 44, 255),
+			D3DCOLOR_RGBA(255, 0, 0, 255),
+			D3DCOLOR_RGBA(255, 0, 0, 255)
+			);
+		m_fuelView->GetComponent<ResultViewBar>()->SetValue(
+			static_cast<float>(m_beforeFuel / CVehicle::MAX_FUEL),
+			static_cast<float>(m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel() / CVehicle::MAX_FUEL));
+
+		// 耐久値
+		m_enduranceView = new GameObject("EnduranceView", "UI");
+		m_enduranceView->transform->SetPos(1310.0f, 600.0f);
+		m_enduranceView->AddComponent<ResultViewBar>(
+			"耐久値",
+			D3DCOLOR_RGBA(78, 69, 255, 255),
+			D3DCOLOR_RGBA(75, 67, 224, 255),
+			D3DCOLOR_RGBA(61, 100, 255, 255)
+			);
+		m_enduranceView->GetComponent<ResultViewBar>()->SetValue(
+			static_cast<float>(m_beforeEndurance / CVehicle::MAX_ENDURANCE),
+			static_cast<float>(m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance() / CVehicle::MAX_ENDURANCE));
 	}
 
 	// 地形画像
@@ -83,42 +113,17 @@ void MountainResultManager::Init()
 		m_seedText->transform->SetPos(5.0f, CRenderer::SCREEN_HEIGHT - 50.0f);
 	}
 
-	// 燃料バー
-	{
-		m_fuelBar = new GameObject("FuelBar", "UI");
-		m_fuelBar->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 500.0f);
-		m_fuelBar->AddComponent<CAdvancedBar>();
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetAlign(CAdvancedBar::CENTER);
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetLength(800.0f);
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetBold(50.0f);
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetColor(0, D3DCOLOR_RGBA(252, 185, 40, 255));
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetColor(2, D3DCOLOR_RGBA(252, 185, 40, 255));
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetColor(1, D3DCOLOR_RGBA(255, 0, 0, 255));
-		m_fuelBar->GetComponent<CAdvancedBar>()->SetColor(3, D3DCOLOR_RGBA(255, 0, 0, 255));
-	}
-
-	// 耐久値バー
-	{
-		m_enduranceBar = new GameObject("FuelBar", "UI");
-		m_enduranceBar->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 700.0f);
-		m_enduranceBar->AddComponent<CAdvancedBar>();
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetAlign(CAdvancedBar::CENTER);
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetLength(800.0f);
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetBold(50.0f);
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetColor(0, D3DCOLOR_RGBA(7, 232, 104, 255));
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetColor(2, D3DCOLOR_RGBA(7, 232, 104, 255));
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetColor(1, D3DCOLOR_RGBA(10, 201, 163, 255));
-		m_enduranceBar->GetComponent<CAdvancedBar>()->SetColor(3, D3DCOLOR_RGBA(10, 201, 163, 255));
-	}
-
 	// 背景
 	{
 		m_bg = new GameObject("BG", "UI");
 		m_bg->SetPriority(3);
 		m_bg->AddComponent<CPolygon>();
-		m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+		m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
 		m_bg->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH), static_cast<float>(CRenderer::SCREEN_HEIGHT));
 	}
+
+	// 前回の情報として保存
+	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
 }
 
 //=============================================================
@@ -138,7 +143,7 @@ void MountainResultManager::Update()
 {
 	// 背景のフェード
 	float currentAlpha = m_bg->GetComponent<CPolygon>()->GetColor().a;
-	m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, currentAlpha + (0.2f - currentAlpha) * 0.02f));
+	m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, currentAlpha + (0.5f - currentAlpha) * 0.02f));
 
 	// クリアテキストのアニメーション
 	if (m_progState <= MountainResultManager::P_MTTEXT)
@@ -148,7 +153,21 @@ void MountainResultManager::Update()
 		);
 	}
 
-	// 
+	// バイクの情報を表示
+	if (m_progState == MountainResultManager::P_FUEL)
+	{
+		if (m_progCounter == 80)
+		{
+			m_fuelView->GetComponent<ResultViewBar>()->StartAnim();
+		}
+	}
+	if (m_progState == MountainResultManager::P_ENDURANCE)
+	{
+		if (m_progCounter == 80)
+		{
+			m_enduranceView->GetComponent<ResultViewBar>()->StartAnim();
+		}
+	}
 
 
 	// 次の状態に移行する処理
@@ -156,7 +175,7 @@ void MountainResultManager::Update()
 	if (m_progCounter <= 0 && m_progState != P_END)
 	{
 		m_progState = static_cast<PROG_STATE>(m_progState + 1);	
-		m_progCounter = 60;
+		m_progCounter = 80;
 	}
 }
 
@@ -165,8 +184,8 @@ void MountainResultManager::Update()
 //=============================================================
 void MountainResultManager::Reset()
 {
-	m_oldFuel = CVehicle::MAX_FUEL;
-	m_oldEndurance = CVehicle::MAX_ENDURANCE;
+	m_beforeFuel = CVehicle::MAX_FUEL;
+	m_beforeEndurance = CVehicle::MAX_ENDURANCE;
 	m_goalCount = 0;
 	m_results.clear();
 }

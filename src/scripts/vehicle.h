@@ -23,6 +23,8 @@ public:
 
 	// データ取得
 	float GetSpeed() { return m_fSpeed; }
+	float GetFuel() { return m_fuel; }
+	float GetEndurance() { return m_endurance; }
 
 	static const float ENGINEFORCE_VALUE;			// エンジン力の値
 	static const float MIN_ENGINEFORCE_VALUE;	// エンジン力の最小（アクセルを踏んでいないとき）
@@ -48,7 +50,6 @@ private:
 	GameObject* m_pStatusUI;
 
 	// 速度
-	GameObject* m_pSpeedText;		// 状態テキスト
 	float m_fSpeed;							// 速度
 	int m_measureCounter;				// 計測カウンター
 	D3DXVECTOR3 m_measurePos;	// 計測位置

@@ -74,12 +74,14 @@ private:
 class CAdvancedBar : public Component
 {
 public:
-	CAdvancedBar():m_pVtxBuff(nullptr),m_align(ALIGN::LEFT),m_fBold(30.0f),m_fLength(500.0f),m_fProgress(1.0f)
+	CAdvancedBar():m_pVtxBar(nullptr),m_align(ALIGN::LEFT),m_fBold(30.0f),m_fLength(500.0f),m_fProgress(1.0f),m_texture(nullptr)
 	{
 		for (int i = 0; i < 4; i++)
 		{
 			m_color[i] = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 		}
+
+		m_bgColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	void Init() override;
 	void Uninit() override;
@@ -87,6 +89,8 @@ public:
 
 	// 色変更
 	void SetColor(int index, D3DXCOLOR color);
+	// 背景色変更
+	void SetBGColor(D3DXCOLOR color);
 	// 進捗度変更
 	void SetProgress(const float& percent);
 	// 進捗度の取得
@@ -99,6 +103,8 @@ public:
 	void SetBold(const float& bold);
 	// 太さの取得
 	float GetBold() { return m_fBold; }
+	// テクスチャの設定
+	void SetTexture(std::string sPath);
 
 	// 整列
 	enum ALIGN
@@ -111,16 +117,20 @@ public:
 	void SetAlign(const ALIGN& align);
 	// 整列の取得
 	ALIGN GetAlign() { return m_align; }
-private:
+
 	// 頂点更新
 	void UpdateVertex();
+private:
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBar;	// バー頂点情報
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBG;	// 背景頂点情報
+	LPDIRECT3DTEXTURE9 m_texture;				// テクスチャ
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点情報
 	ALIGN m_align;											// 整列
 	float m_fBold;											// 太さ
 	float m_fLength;										// 長さ
 	float m_fProgress;										// 進捗度
 	D3DXCOLOR m_color[4];							// 色
+	D3DXCOLOR m_bgColor;							// 背景色
 };
 
 

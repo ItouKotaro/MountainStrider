@@ -24,6 +24,7 @@ public:
 
 	void onGameOver();			// ゲームオーバー処理
 	Terrain* GetTerrain() { return m_pTerrain; }
+	GameObject* GetBike() { return m_pBike; }
 private:
 	void SpawnBike();				// バイクの生成
 

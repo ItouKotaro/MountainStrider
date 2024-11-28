@@ -118,11 +118,6 @@ void CVehicle::Init()
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
 
-	// 状態テキスト
-	m_pSpeedText = new GameObject;
-	m_pSpeedText->AddComponent<CText>();
-	m_pSpeedText->GetComponent<CText>()->SetFontSize(50);
-
 	// ステータスUI
 	m_pStatusUI = new GameObject("StatusUI", "UI");
 	m_pStatusUI->AddComponent<CStatusUI>();
@@ -134,9 +129,6 @@ void CVehicle::Init()
 //=============================================================
 void CVehicle::Uninit()
 {
-	// 状態テキストの破棄
-	m_pSpeedText->Destroy();
-
 	// ステータスUIの破棄
 	m_pStatusUI->Destroy();
 }
@@ -272,9 +264,6 @@ void CVehicle::UpdateSpeedMeter()
 		m_measureCounter = 0;
 		m_measurePos = transform->GetWPos();
 	}
-
-	// 状況を表示する
-	m_pSpeedText->GetComponent<CText>()->SetText("速度: " + std::to_string(m_fSpeed) + "| 燃料: " + std::to_string(m_fuel));
 }
 
 //=============================================================

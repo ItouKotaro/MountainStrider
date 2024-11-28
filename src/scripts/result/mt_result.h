@@ -31,8 +31,8 @@ private:
 	enum PROG_STATE
 	{
 		P_MTTEXT,					// 踏破数テキスト
-		P_DATA,						// データの表示
-		P_VEHICLE,					// バイクの情報表示
+		P_FUEL,							// バイクの燃料
+		P_ENDURANCE,				// バイクの耐久値
 		P_END
 	};
 	PROG_STATE m_progState;	// 結果表示進行度
@@ -40,18 +40,19 @@ private:
 
 	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
 
-	GameObject* m_bg;				// 背景（ガウスにする予定）
-	GameObject* m_seedText;		// シードテキスト
-	GameObject* m_fuelBar;			// 燃料バー
-	GameObject* m_enduranceBar;	// 耐久値バー
-	GameObject* m_dataView;			// データ表示
+	GameObject* m_bg;						// 背景（ガウスにする予定）
+	GameObject* m_seedText;				// シードテキスト
+	GameObject* m_dataView;				// データ表示
+	GameObject* m_fuelView;				// 燃料表示
+	GameObject* m_enduranceView;	// 耐久値表示
+
 	GameObject* m_terrainImg;
 
 	CGameScene* m_gameScene;
 
 
-	static float m_oldFuel;			// 前回の燃料
-	static float m_oldEndurance;	// 前回の耐久値
+	static float m_beforeFuel;			// 前回の燃料
+	static float m_beforeEndurance;	// 前回の耐久値
 	static UINT m_goalCount;		// 踏破回数
 	static std::vector<ResultData> m_results;	// 結果
 };
