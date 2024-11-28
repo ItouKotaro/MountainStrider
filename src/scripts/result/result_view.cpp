@@ -78,7 +78,7 @@ void ResultViewBar::Init()
 	m_viewCompare->GetComponent<CText>()->SetAlign(CText::RIGHT);
 	m_viewCompare->GetComponent<CText>()->SetFontSize(30);
 	m_viewCompare->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
-	m_viewCompare->GetComponent<CText>()->SetText("<color=230,230,230>-0%");
+	m_viewCompare->GetComponent<CText>()->SetText("<color=230,230,230>-0.0%");
 }
 
 //=============================================================
@@ -107,18 +107,23 @@ void ResultViewBar::Update()
 	m_viewValue->GetComponent<CText>()->SetText(std::to_string(static_cast<int>(m_viewProgress * 100.0f))+"%");
 
 	// 前回と比較してどうか
-	int compareView = static_cast<int>((m_viewProgress - m_viewBefore) * 100);
+	float compareView = (m_viewProgress - m_viewBefore) * 100;
+	char* compareText = new char[24];
+	sprintf(compareText, "%.1f", fabs(compareView));
+
 	std::string mark = "<color=230,230,230>-";
-	if (compareView < 0)
+	if (compareView <= -0.1f)
 	{ // 下がっている
 		mark = "<color=31,120,255>↓";
 	}
-	else if (compareView > 0)
+	else if (compareView >= 0.1f)
 	{ // 上がっている
 		mark = "<color=255,121,25>↑";
 	}
-	m_viewCompare->GetComponent<CText>()->SetText(mark + std::to_string(abs(compareView)) + "%");
+	m_viewCompare->GetComponent<CText>()->SetText(mark + compareText + "%");
 	
+	// 解放
+	delete[] compareText;
 
 	// カウンターを進める
 	m_animCounter++;

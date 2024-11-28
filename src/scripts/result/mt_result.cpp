@@ -15,6 +15,7 @@
 #include "scripts/vehicle.h"
 #include "scripts/result/result_data.h"
 #include "scripts/result/result_view.h"
+#include "scripts/result/result_terrain.h"
 
 float MountainResultManager::m_beforeFuel = CVehicle::MAX_FUEL;
 float MountainResultManager::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
@@ -99,10 +100,8 @@ void MountainResultManager::Init()
 	// 地形画像
 	{
 		m_terrainImg = new GameObject("TerrainImg", "ResultData");
-		m_terrainImg->AddComponent<CPolygon>();
-		m_terrainImg->GetComponent<CPolygon>()->SetTexture("data\\terrain.bmp");
-		m_terrainImg->transform->SetSize(500.0f, 500.0f);
-		m_terrainImg->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 250.0f, 300.0f);
+		m_terrainImg->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT / 2);
+		m_terrainImg->AddComponent<ResultTerrain>();
 	}
 
 	// シードテキスト

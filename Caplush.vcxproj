@@ -243,6 +243,7 @@
     <ClCompile Include="src\scripts\result\mt_result.cpp" />
     <ClCompile Include="src\scripts\result\result_camera.cpp" />
     <ClCompile Include="src\scripts\result\result_data.cpp" />
+    <ClCompile Include="src\scripts\result\result_terrain.cpp" />
     <ClCompile Include="src\scripts\result\result_view.cpp" />
     <ClCompile Include="src\scripts\status_ui.cpp" />
     <ClCompile Include="src\scripts\terrain.cpp" />
@@ -300,6 +301,7 @@
     <ClInclude Include="src\scripts\result\mt_result.h" />
     <ClInclude Include="src\scripts\result\result_camera.h" />
     <ClInclude Include="src\scripts\result\result_data.h" />
+    <ClInclude Include="src\scripts\result\result_terrain.h" />
     <ClInclude Include="src\scripts\result\result_view.h" />
     <ClInclude Include="src\scripts\status_ui.h" />
     <ClInclude Include="src\scripts\terrain.h" />

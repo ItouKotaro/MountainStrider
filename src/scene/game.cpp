@@ -26,6 +26,7 @@ void CGameScene::Init()
 {
 	// 変数の初期化
 	m_isGameOvered = false;
+	m_travellingCount = 0;
 
 	// カメラの作成
 	m_pCamera = new GameObject("Camera", "Camera");
@@ -119,10 +120,16 @@ void CGameScene::Update()
 		m_pCamera->GetComponent<ResultCamera>()->RecordData();
 
 		// 走行データを記録する
-		TravellingData travelling;
-		travelling.pos = m_pBike->transform->GetWPos();
-		travelling.rot = m_pBike->transform->GetWQuaternion();
-		m_travellingDatas.push_back(travelling);
+		m_travellingCount++;
+		if (m_travellingCount >= 20)
+		{
+			TravellingData travelling;
+			travelling.pos = m_pBike->transform->GetWPos();
+			travelling.rot = m_pBike->transform->GetWQuaternion();
+			m_travellingDatas.push_back(travelling);
+			m_travellingCount = 0;
+		}
+
 
 		// 最高速度を記録する
 		int bikeSpeed = static_cast<int>(m_pBike->GetComponent<CVehicle>()->GetSpeed());

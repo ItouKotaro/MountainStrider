@@ -249,6 +249,9 @@
     <ClCompile Include="src\scripts\result\result_view.cpp">
       <Filter>ソース ファイル\scripts\result</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\result\result_terrain.cpp">
+      <Filter>ソース ファイル\scripts\result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -414,6 +417,9 @@
       <Filter>ヘッダー ファイル\scripts\result</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\result\result_view.h">
+      <Filter>ヘッダー ファイル\scripts\result</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\result\result_terrain.h">
       <Filter>ヘッダー ファイル\scripts\result</Filter>
     </ClInclude>
   </ItemGroup>

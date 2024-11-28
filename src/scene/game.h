@@ -25,8 +25,6 @@ public:
 	void onGameOver();			// ゲームオーバー処理
 	Terrain* GetTerrain() { return m_pTerrain; }
 	GameObject* GetBike() { return m_pBike; }
-private:
-	void SpawnBike();				// バイクの生成
 
 	// 走行データ
 	struct TravellingData
@@ -34,6 +32,11 @@ private:
 		D3DXVECTOR3 pos;
 		D3DXQUATERNION rot;
 	};
+	std::vector<TravellingData>& GetTravellingData() { return m_travellingDatas; }
+private:
+	void SpawnBike();				// バイクの生成
+
+	int m_travellingCount;
 	std::vector<TravellingData> m_travellingDatas;
 
 	bool m_isGameOvered;									// ゲームオーバー済みか
