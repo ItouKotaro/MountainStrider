@@ -73,10 +73,13 @@ public:
 private:
 	void UninitTerrain();
 
-	unsigned int m_seed;													// シード値
+	unsigned int m_seed;										// シード値
 	GameObject* m_pField;									// メッシュフィールド
 	float* m_terrainData;										// 高度データ
 	btHeightfieldTerrainShape* m_terrainShape;	// 地形コリジョンシェイプ
+
+	float m_maxHeight;	// 最高高度
+	float m_minHeight;	// 最低高度
 
 	// 頂点の高さを取得する
 	float GetVertexHeight(const int& x, const int& y);

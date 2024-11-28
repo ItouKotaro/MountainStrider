@@ -104,7 +104,7 @@ void ResultViewBar::Update()
 
 	// 進行度を更新する
 	m_viewBar->GetComponent<CAdvancedBar>()->SetProgress(m_viewProgress);
-	m_viewValue->GetComponent<CText>()->SetText(std::to_string(static_cast<int>(m_viewProgress * 100.0f)));
+	m_viewValue->GetComponent<CText>()->SetText(std::to_string(static_cast<int>(m_viewProgress * 100.0f))+"%");
 
 	// 前回と比較してどうか
 	int compareView = static_cast<int>((m_viewProgress - m_viewBefore) * 100);
@@ -139,5 +139,5 @@ void ResultViewBar::SetValue(const float& before, const float& objective)
 	m_viewProgress = before;
 
 	m_viewBar->GetComponent<CAdvancedBar>()->SetProgress(m_viewBefore);
-	m_viewValue->GetComponent<CText>()->SetText(std::to_string(static_cast<int>(m_viewProgress * 100.0f)));
+	m_viewValue->GetComponent<CText>()->SetText(std::to_string(static_cast<int>(m_viewProgress * 100.0f)) + "%");
 }

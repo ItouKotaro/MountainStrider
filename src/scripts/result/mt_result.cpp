@@ -100,6 +100,7 @@ void MountainResultManager::Init()
 	{
 		m_terrainImg = new GameObject("TerrainImg", "ResultData");
 		m_terrainImg->AddComponent<CPolygon>();
+		m_terrainImg->GetComponent<CPolygon>()->SetTexture("data\\terrain.bmp");
 		m_terrainImg->transform->SetSize(500.0f, 500.0f);
 		m_terrainImg->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 250.0f, 300.0f);
 	}

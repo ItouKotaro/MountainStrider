@@ -48,8 +48,8 @@ void Terrain::Init()
 	RegisterProduces(prodFence);
 
 	// 高度カラーを設定する
-	AddHeightColor(120.0f, D3DCOLOR_RGBA(11, 112, 0, 255));
-	AddHeightColor(-1000.0f, D3DCOLOR_RGBA(50, 166, 8, 255));
+	AddHeightColor(1.0f, D3DCOLOR_RGBA(11, 112, 0, 255));
+	AddHeightColor(-1.0f, D3DCOLOR_RGBA(50, 166, 8, 255));
 
 	// 傾斜カラーを設定する
 	AddSlantColor(300.0f, 500.0f, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f), 0.6f);
@@ -152,8 +152,10 @@ void Terrain::GenerateTerrain()
 	module::Perlin myModule;
 	utils::NoiseMap heightMap;
 
+	// シードを設定する
 	myModule.SetSeed(rand());
 
+	// 地形を生成する
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
@@ -161,15 +163,62 @@ void Terrain::GenerateTerrain()
 	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 5.0);
 	heightMapBuilder.Build();
 
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			heightMap.SetValue(x, y, heightMap.GetValue(x, y) * 1500.0f);
+		}
+	}
+
+	// 画像に書き出す
+	utils::RendererImage renderer;
+	utils::Image image;
+	renderer.SetSourceNoiseMap(heightMap);
+	renderer.SetDestImage(image);
+	renderer.ClearGradient();
+	for (auto itr = m_heightColor.begin(); itr != m_heightColor.end(); itr++)
+	{
+		renderer.AddGradientPoint((*itr).height, utils::Color((*itr).color.r * 255, (*itr).color.g * 255, (*itr).color.b * 255, (*itr).color.a * 255));
+	}
+	renderer.Render();
+
+	// ファイルに書き出す
+	utils::WriterBMP writer;
+	writer.SetSourceImage(image);
+	writer.SetDestFilename("data\\terrain.bmp");
+	writer.WriteDestFile();
+
+
 	// 地形情報を格納する
 	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];
 	for (int x = 0; x < TERRAIN_SIZE; x++)
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 1500.0f;
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y);
 		}
 	}
+
+	// 最低と最高高度を取得する
+	m_minHeight = GetVertexHeight(0, 0);
+	m_maxHeight = GetVertexHeight(0, 0);
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			float value = GetVertexHeight(x, y);
+			if (value < m_minHeight)
+			{
+				m_minHeight = value;
+			}
+			if (value > m_maxHeight)
+			{
+				m_maxHeight = value;
+			}
+		}
+	}
+
 
 	// 道を生成する
 	GenerateRoad();
@@ -502,13 +551,15 @@ D3DXCOLOR Terrain::GetHeightColor(const float& height)
 		return D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
+	float heightNormalize = ((height - m_minHeight) / static_cast<float>(m_maxHeight - m_minHeight) * 2) - 1.0f;
+
 	// 高い 色を取得
 	D3DXCOLOR highColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	float highHeight = 0.0f;
 	bool foundHighHeight = false;
 	for (unsigned int i = 0; i < m_heightColor.size(); i++)
 	{
-		if (height < m_heightColor[i].height &&
+		if (heightNormalize < m_heightColor[i].height &&
 			(!foundHighHeight || highHeight > m_heightColor[i].height))
 		{
 			highColor = m_heightColor[i].color;
@@ -523,7 +574,7 @@ D3DXCOLOR Terrain::GetHeightColor(const float& height)
 	bool foundLowHeight = false;
 	for (unsigned int i = 0; i < m_heightColor.size(); i++)
 	{
-		if (height > m_heightColor[i].height &&
+		if (heightNormalize > m_heightColor[i].height &&
 			(!foundLowHeight || lowHeight < m_heightColor[i].height))
 		{
 			lowColor = m_heightColor[i].color;
@@ -545,7 +596,7 @@ D3DXCOLOR Terrain::GetHeightColor(const float& height)
 	}
 
 	// 高さの範囲から現在位置の割合を計算する
-	float currentPercent = (height - lowHeight) / (highHeight - lowHeight);
+	float currentPercent = (heightNormalize - lowHeight) / (highHeight - lowHeight);
 
 	// 割合から色を計算する
 	D3DXCOLOR color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
