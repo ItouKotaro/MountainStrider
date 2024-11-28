@@ -187,6 +187,7 @@ void Terrain::GenerateTerrain()
 			// 色を設定する
 			m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetVertexColor(x, y));
 
+			// 道があるとき色を変える（仮）
 			if (m_routeData[x][y])
 			{
 				m_pField->GetComponent<CMeshField>()->SetColor(x, y, D3DCOLOR_RGBA(179, 119, 0, 255));

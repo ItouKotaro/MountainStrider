@@ -17,6 +17,16 @@ public:
 	void Init();
 	void Uninit();
 	void Update();
+	void Reset();
+
+	// 結果格納
+	struct ResultData
+	{
+		int time;			// クリア時間
+		int highSpeed;	// 最高速度
+		int action;			// アクション
+	};
+	static void AddResult(ResultData data);
 private:
 	enum PROG_STATE
 	{
@@ -40,11 +50,10 @@ private:
 	CGameScene* m_gameScene;
 
 
-
-
 	static float m_oldFuel;			// 前回の燃料
 	static float m_oldEndurance;	// 前回の耐久値
 	static UINT m_goalCount;		// 踏破回数
+	static std::vector<ResultData> m_results;	// 結果
 };
 
 #endif // !_RESULT_H_

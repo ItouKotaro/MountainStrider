@@ -21,6 +21,9 @@ public:
 	void AddDamage(const float& value);
 	void AddFuel(const float& value);
 
+	// データ取得
+	float GetSpeed() { return m_fSpeed; }
+
 	static const float ENGINEFORCE_VALUE;			// エンジン力の値
 	static const float MIN_ENGINEFORCE_VALUE;	// エンジン力の最小（アクセルを踏んでいないとき）
 	static const float STEERING_VALUE;				// ステアリングの値

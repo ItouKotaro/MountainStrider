@@ -18,6 +18,15 @@
 float MountainResultManager::m_oldFuel = CVehicle::MAX_FUEL;
 float MountainResultManager::m_oldEndurance = CVehicle::MAX_ENDURANCE;
 UINT MountainResultManager::m_goalCount = 0;
+std::vector<MountainResultManager::ResultData> MountainResultManager::m_results = {};
+
+//=============================================================
+// [MountainResultManager] 結果を保存する
+//=============================================================
+void MountainResultManager::AddResult(ResultData data)
+{
+	m_results.push_back(data);
+}
 
 //=============================================================
 // [MountainResultManager] 初期化
@@ -49,10 +58,16 @@ void MountainResultManager::Init()
 		m_dataView = new GameObject("DataView", "UI");
 		m_dataView->AddComponent<ResultDataView>();
 		m_dataView->transform->Translate(60.0f, 350.0f, 0.0f);
+		
+		// 最新データを取得
+		ResultData data = m_results[m_results.size()-1];
+		m_dataView->GetComponent<ResultDataView>()->SetTime(data.time);
+		m_dataView->GetComponent<ResultDataView>()->SetHighSpeed(data.highSpeed);
+		m_dataView->GetComponent<ResultDataView>()->SetAction(data.action);
 	}
 
+	// 地形画像
 	{
-		// 地形画像
 		m_terrainImg = new GameObject("TerrainImg", "ResultData");
 		m_terrainImg->AddComponent<CPolygon>();
 		m_terrainImg->transform->SetSize(500.0f, 500.0f);
@@ -143,4 +158,15 @@ void MountainResultManager::Update()
 		m_progState = static_cast<PROG_STATE>(m_progState + 1);	
 		m_progCounter = 60;
 	}
+}
+
+//=============================================================
+// [MountainResultManager] リセット
+//=============================================================
+void MountainResultManager::Reset()
+{
+	m_oldFuel = CVehicle::MAX_FUEL;
+	m_oldEndurance = CVehicle::MAX_ENDURANCE;
+	m_goalCount = 0;
+	m_results.clear();
 }

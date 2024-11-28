@@ -15,6 +15,7 @@
 #include "scripts/terrain.h"
 #include "scripts/camera_move.h"
 #include "scripts/result/result_camera.h"
+#include "scripts/result/mt_result.h"
 
 #include <noise/noise.h>
 
@@ -53,9 +54,17 @@ void CGameScene::Init()
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
 	m_pCamera->AddComponent<ResultCamera>();
 
+	// FPS表示
 	m_pFPS = new GameObject("FPS");
 	m_pFPS->AddComponent<CText>();
 
+
+	// 開始時間を記録する
+	m_startTime = timeGetTime();
+
+
+
+	// レンダーバッファを登録する
 	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
 	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
 }
@@ -87,7 +96,7 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
-	if (INPUT_INSTANCE->onTrigger("end"))
+	if (INPUT_INSTANCE->onTrigger("@"))
 	{
 		onGameOver();
 	}
@@ -100,11 +109,15 @@ void CGameScene::Update()
 	// 地形を更新する
 	m_pTerrain->Update(m_pCamera->transform->GetWPos());
 
-	// リザルトカメラ
+	// 未ゲームオーバー時
 	if (!m_isGameOvered)
-	{ // 未ゲームオーバー時
+	{
 		// カメラの情報を記録する
 		m_pCamera->GetComponent<ResultCamera>()->RecordData();
+
+		// 最高速度を記録する
+		int bikeSpeed = static_cast<int>(m_pBike->GetComponent<CVehicle>()->GetSpeed());
+		m_highSpeed = m_highSpeed < bikeSpeed ? bikeSpeed : m_highSpeed;
 	}
 
 	// リザルトの更新処理
@@ -160,6 +173,13 @@ void CGameScene::onGameOver()
 	if (!m_isGameOvered)
 	{ // 1回のみの処理
 
+		// リザルトデータの格納
+		MountainResultManager::ResultData data;
+		data.time = (timeGetTime() - m_startTime) / 1000;
+		data.highSpeed = m_highSpeed;
+		data.action = 50;
+		MountainResultManager::AddResult(data);
+
 		// リザルトマネージャーの初期化
 		m_resultManager->Init();
 
@@ -167,6 +187,7 @@ void CGameScene::onGameOver()
 		m_pCamera->GetComponent<ResultCamera>()->Play();
 		m_pCamera->GetComponent<CCameraMove>()->enabled = false;
 
+		// ゲームオーバートリガーを有効にする
 		m_isGameOvered = true;
 	}
 }
