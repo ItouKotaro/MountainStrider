@@ -15,10 +15,10 @@
 #include "scripts/status_ui.h"
 #include "scene/game.h"
 
-const float CVehicle::ENGINEFORCE_VALUE = 80.0f;
+const float CVehicle::ENGINEFORCE_VALUE = 60.0f;
 const float CVehicle::STEERING_VALUE = 10.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 10.0f;
-const float CVehicle::MAX_ENGINEFORCE = 700000.0f;
+const float CVehicle::MAX_ENGINEFORCE = 600000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
 const float CVehicle::MAX_FUEL = 4000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
@@ -33,13 +33,14 @@ void CVehicle::Init()
 	m_measurePos = transform->GetWPos();
 	m_fuel = MAX_FUEL;
 	m_endurance = MAX_ENDURANCE;
+	m_pStatusUI = nullptr;
 
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(6.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
 	CCollision::GetCollision(gameObject)->SetMass(400.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
-	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -150.0f, 0.0f));
+	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
 
 	// 車体
 	GameObject* pBodyModel = new GameObject;
@@ -117,11 +118,6 @@ void CVehicle::Init()
 	pFrontHinge->setLowerLimit(D3DX_PI * -0.06f);
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
-
-	// ステータスUI
-	m_pStatusUI = new GameObject("StatusUI", "UI");
-	m_pStatusUI->AddComponent<CStatusUI>();
-
 }
 
 //=============================================================
@@ -129,8 +125,6 @@ void CVehicle::Init()
 //=============================================================
 void CVehicle::Uninit()
 {
-	// ステータスUIの破棄
-	m_pStatusUI->Destroy();
 }
 
 //=============================================================
@@ -271,13 +265,14 @@ void CVehicle::UpdateSpeedMeter()
 //=============================================================
 void CVehicle::UpdateStatusUI()
 {
-	auto pStatusUI = m_pStatusUI->GetComponent<CStatusUI>();
+	if (m_pStatusUI != nullptr)
+	{
+		// 燃料情報を更新する
+		float fuelPercent = m_fuel / MAX_FUEL;
+		m_pStatusUI->SetFuel(fuelPercent);
 
-	// 燃料情報を更新する
-	float fuelPercent = m_fuel / MAX_FUEL;
-	pStatusUI->SetFuel(fuelPercent);
-
-	// 耐久値情報を更新する
-	float endurancePercent = m_endurance / MAX_ENDURANCE;
-	pStatusUI->SetEndurance(endurancePercent);
+		// 耐久値情報を更新する
+		float endurancePercent = m_endurance / MAX_ENDURANCE;
+		m_pStatusUI->SetEndurance(endurancePercent);
+	}
 }

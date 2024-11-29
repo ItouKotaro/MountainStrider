@@ -28,7 +28,7 @@ private:
 
 	LPDIRECT3DVERTEXBUFFER9 m_travellingVtxBuff;	// í∏ì_èÓïÒ
 	int m_travellingCounter;
-	int m_travellingIdx;
+	unsigned int m_travellingIdx;
 };
 
 #endif // !_RESULT_TERRAIN_H_

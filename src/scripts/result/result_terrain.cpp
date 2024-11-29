@@ -10,7 +10,7 @@
 #include "scripts/terrain.h"
 
 const std::string ResultTerrain::TERRAIN_TEX = "data\\terrain.bmp";
-const int ResultTerrain::SIZE = 500.0f;
+const int ResultTerrain::SIZE = 500;
 const float ResultTerrain::TRAVELLING_POINT_SIZE = 5.0f;
 const int ResultTerrain::TRAVELLING_FRAME = 2;
 const int ResultTerrain::TRAVELLING_ENDFRAME = 120;
@@ -25,7 +25,7 @@ void ResultTerrain::Init()
 
 	// 走行データを取得する
 	auto travellingData = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTravellingData();
-	if (travellingData->size() <= 0)
+	if (travellingData.size() <= 0)
 	{
 		return;
 	}
@@ -72,7 +72,7 @@ void ResultTerrain::Init()
 	m_terrainVtxBuff->Unlock();
 
 	// 走行データに基づいて頂点を生成する
-	unsigned int numData = travellingData->size();
+	unsigned int numData = static_cast<unsigned int>(travellingData.size());
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * numData, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_travellingVtxBuff, nullptr);
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -81,7 +81,7 @@ void ResultTerrain::Init()
 	for (unsigned int i = 0; i < numData; i++)
 	{
 		// 頂点座標の設定
-		D3DXVECTOR3 pos = (travellingData->at(i).pos / static_cast<float>((Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE))) * SIZE;
+		D3DXVECTOR3 pos = (travellingData[i].pos / static_cast<float>((Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE))) * SIZE;
 		pos += transform->GetWPos();
 		pos.z = 0.0f;
 		pVtx[0].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * -0.5f, TRAVELLING_POINT_SIZE * -0.5f, 0.0f) + pos;
@@ -147,7 +147,7 @@ void ResultTerrain::Uninit()
 void ResultTerrain::Update()
 {
 	auto travellingData = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTravellingData();
-	if (travellingData->size() <= 0)
+	if (travellingData.size() <= 0)
 	{
 		return;
 	}
@@ -157,7 +157,7 @@ void ResultTerrain::Update()
 	{ // 走行カウントが達したとき
 		m_travellingIdx++;
 
-		if (m_travellingIdx >= travellingData->size() - 1)
+		if (m_travellingIdx >= travellingData.size() - 1)
 		{ // 最終ポイントのとき
 			m_travellingCounter = TRAVELLING_ENDFRAME;
 		}
@@ -166,7 +166,7 @@ void ResultTerrain::Update()
 			m_travellingCounter = TRAVELLING_FRAME;
 		}
 
-		if (m_travellingIdx >= travellingData->size())
+		if (m_travellingIdx >= travellingData.size())
 		{ // インデックスが最大値に達したとき
 			m_travellingIdx = 0;
 		}
@@ -179,7 +179,7 @@ void ResultTerrain::Update()
 void ResultTerrain::DrawUI()
 {
 	auto travellingData = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTravellingData();
-	if (travellingData->size() <= 0)
+	if (travellingData.size() <= 0)
 	{
 		return;
 	}
@@ -204,7 +204,7 @@ void ResultTerrain::DrawUI()
 
 
 	// 走行データの描画
-	for (int i = 0; i < travellingData->size(); i++)
+	for (unsigned int i = 0; i < travellingData.size(); i++)
 	{
 		// 頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, m_travellingVtxBuff, 0, sizeof(VERTEX_2D));

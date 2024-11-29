@@ -9,6 +9,7 @@
 
 #include "component.h"
 #include "internal/physics.h"
+#include "scripts/status_ui.h"
 
 // 車両
 class CVehicle : public Component
@@ -20,6 +21,7 @@ public:
 	void SetPos(const D3DXVECTOR3& pos);
 	void AddDamage(const float& value);
 	void AddFuel(const float& value);
+	void SetStatusUI(CStatusUI* pStatusUI) { m_pStatusUI = pStatusUI; }
 
 	// データ取得
 	float GetSpeed() { return m_fSpeed; }
@@ -47,7 +49,7 @@ private:
 	float m_endurance;				// 耐久値
 
 	// ステータスUI
-	GameObject* m_pStatusUI;
+	CStatusUI* m_pStatusUI;
 
 	// 速度
 	float m_fSpeed;							// 速度

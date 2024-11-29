@@ -38,12 +38,16 @@ public:
 	const bool GetPause() { return m_bPause; }																// ポーズの取得
 	void SetMouseWheel(const int& nMouseWheel) { m_nMouseWheel = nMouseWheel; }	// マウスホイールの設定（ユーザーの使用禁止）
 	const int GetMouseWheel() { return m_nMouseWheel; }												// マウスホイールの取得
+	void SetCursorPos(POINTS points) { m_cursorPos = points; }										// マウス位置の設定（ユーザーの使用禁止）
+	POINTS GetCursorPos();																								// マウス位置の取得
+	D3DXVECTOR2 GetWindowSize();																				// ウィンドウサイズの取得
 
 	HWND GetHWND() { return m_hwnd; }												// ハンドルの取得
 private:
 	int m_nFPS;												// FPS値
 	float m_fDeltaTime;									// デルタタイム
 	int m_nMouseWheel;									// マウスホイール値
+	POINTS m_cursorPos;								// マウス位置
 	bool m_bPause;											// ポーズ
 	HWND m_hwnd;										// ハンドル
 	CAudioManager* m_pAudioManager;			// オーディオマネージャー

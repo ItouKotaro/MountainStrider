@@ -8,6 +8,7 @@
 
 #include "component/2d/text.h"
 #include "component/2d/polygon.h"
+#include "component/other/button.h"
 #include "renderer.h"
 
 //=============================================================
@@ -26,30 +27,44 @@ void CTitleScene::Init()
 	pLogo->transform->SetSize(600.0f, 600.0f);
 	pLogo->AddComponent<CPolygon>();
 	pLogo->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\logo.png");
-	pLogo->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2 - 300.0f, 0.0f);
+	pLogo->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2 - 300.0f, 50.0f);
 
-	// 選択肢を生成する
-	for (int i = 0; i < SELECT::MAX; i++)
+	// ゲーム開始
 	{
-		// 項目の表示名を格納する
-		std::string sShowName;
-		switch (i)
-		{
-		case SELECT::START:
-			sShowName = "開始";
-			break;
-		case SELECT::EXIT:
-			sShowName = "終了";
-			break;
-		}
+		GameObject* pStartButton = new GameObject("StartMountain");
+		pStartButton->transform->SetSize(500.0f, 140.0f);
+		pStartButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) - 400.0f, 800.0f);
+		pStartButton->AddComponent<ButtonUI>();
+		pStartButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		pStartButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->SetScene("game"); });
 
-		// オブジェクトを生成する
-		m_pSelectObj[i] = new GameObject;
-		m_pSelectObj[i]->AddComponent<CText>();
-		m_pSelectObj[i]->GetComponent<CText>()->SetText("<color=0,0,0>" + sShowName);
-		m_pSelectObj[i]->GetComponent<CText>()->SetAlign(CText::ALIGN::CENTER);
-		m_pSelectObj[i]->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH) / 2, 600.0f + i * 200.0f);
+		GameObject* pStartButtonText = new GameObject();
+		pStartButtonText->SetParent(pStartButton);
+		pStartButtonText->transform->SetPos(250.0f, 30.0f);
+		pStartButtonText->AddComponent<CText>();
+		pStartButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pStartButtonText->GetComponent<CText>()->SetText("<color=0,0,0>開始");
+		pStartButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
+
+	// リスト追加
+	{
+		GameObject* pEndButton = new GameObject("EndMountain");
+		pEndButton->transform->SetSize(500.0f, 140.0f);
+		pEndButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 800.0f);
+		pEndButton->AddComponent<ButtonUI>();
+		pEndButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		pEndButton->GetComponent<ButtonUI>()->setClickEvent([]() { DestroyWindow(CRenderer::GetInstance()->GetHWND()); });
+
+		GameObject* pEndButtonText = new GameObject();
+		pEndButtonText->SetParent(pEndButton);
+		pEndButtonText->transform->SetPos(250.0f, 30.0f);
+		pEndButtonText->AddComponent<CText>();
+		pEndButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pEndButtonText->GetComponent<CText>()->SetText("<color=0,0,0>終了");
+		pEndButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+	}
+
 
 	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
 }
@@ -66,23 +81,6 @@ void CTitleScene::Uninit()
 //=============================================================
 void CTitleScene::Update()
 {
-	// 選択の更新
-	UpdateSelect();
-
-	// 選択したときの処理
-	if (INPUT_INSTANCE->onTrigger("space") ||
-		INPUT_INSTANCE->onTrigger("enter"))
-	{
-		switch (m_select)
-		{
-		case CTitleScene::START:
-			CSceneManager::GetInstance()->SetScene("game");
-			break;
-		case CTitleScene::EXIT:
-			DestroyWindow(CRenderer::GetInstance()->GetHWND());
-			break;
-		}
-	}
 }
 
 //=============================================================
@@ -90,37 +88,4 @@ void CTitleScene::Update()
 //=============================================================
 void CTitleScene::Draw()
 {
-}
-
-
-//=============================================================
-// [CTitleScene] 選択の更新
-//=============================================================
-void CTitleScene::UpdateSelect()
-{
-	// 上選択
-	if (INPUT_INSTANCE->onTrigger("w") ||
-		INPUT_INSTANCE->onTrigger("up"))
-	{
-		if (m_select > 0)
-		{
-			m_select = static_cast<SELECT>(m_select - 1);
-		}
-	}
-
-	// 下選択
-	if (INPUT_INSTANCE->onTrigger("s") ||
-		INPUT_INSTANCE->onTrigger("down"))
-	{
-		if (m_select < SELECT::MAX - 1)
-		{
-			m_select = static_cast<SELECT>(m_select + 1);
-		}
-	}
-
-	// UIの更新
-	for (int i = 0; i < SELECT::MAX; i++)
-	{
-		m_pSelectObj[i]->GetComponent<CText>()->SetAlpha(i == m_select ? 1.0f : 0.2f);
-	}
 }

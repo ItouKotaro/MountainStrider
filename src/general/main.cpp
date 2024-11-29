@@ -6,6 +6,7 @@
 //=============================================================
 #include "main.h"
 #include "manager.h"
+#include <windowsx.h>
 
 // メモリーリーク検出
 #define _CRTDBG_MAP_ALLOC
@@ -172,6 +173,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	int nID;
+	auto hdc = GetDC(hWnd);
 
 	switch (uMsg)
 	{
@@ -202,6 +204,13 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return 0; //イベントをキャンセル
 		}
 
+		break;
+
+	case WM_MOUSEMOVE:
+		POINTS points;
+		points.x = GET_X_LPARAM(lParam);
+		points.y = GET_Y_LPARAM(lParam);
+		CManager::GetInstance()->SetCursorPos(points);
 		break;
 
 	case WM_MOUSEWHEEL:

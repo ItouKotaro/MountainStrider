@@ -156,6 +156,12 @@ void ResultDataView::Update()
 //=============================================================
 void ResultDataView::SetTime(const int& time)
 {
+	if (time == -1)
+	{
+		m_timeDataText->GetComponent<CText>()->SetText("‚È‚µ");
+		return;
+	}
+
 	// •ª‚Æ•b
 	int min = (time - time % 60) / 60;
 	int sec = time % 60;

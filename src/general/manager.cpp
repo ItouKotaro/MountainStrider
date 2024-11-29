@@ -129,3 +129,25 @@ void CManager::Draw()
 	// シーンの描画
 	CSceneManager::GetInstance()->Draw();
 }
+
+//=============================================================
+// [CManager] カーソル座標を取得する
+//=============================================================
+POINTS CManager::GetCursorPos()
+{
+	POINTS points = m_cursorPos;
+	D3DXVECTOR2 rect = GetWindowSize();
+	points.x *= static_cast<float>(CRenderer::SCREEN_WIDTH / rect.x);
+	points.y *= static_cast<float>(CRenderer::SCREEN_HEIGHT / rect.y);
+	return points;
+}
+
+//=============================================================
+// [CManager] ウィンドウサイズ
+//=============================================================
+D3DXVECTOR2 CManager::GetWindowSize()
+{
+	RECT rect;
+	GetWindowRect(CManager::GetInstance()->GetHWND(), &rect);
+	return D3DXVECTOR2(rect.right - rect.left, rect.bottom - rect.top);
+}

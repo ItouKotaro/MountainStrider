@@ -84,13 +84,14 @@ void CCamera::SetCamera()
 	// プロジェクションマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxProjection);
 
+	D3DXVECTOR2 rect = CManager::GetInstance()->GetWindowSize();
 	// プロジェクションマトリックスを作成
 	if (!m_bParallel)
 	{ // 透視投影
 		D3DXMatrixPerspectiveFovLH(
 			&m_mtxProjection,
 			D3DXToRadian(45.0f),
-			(float)CRenderer::SCREEN_WIDTH / (float)CRenderer::SCREEN_HEIGHT,
+			rect.x / rect.y,
 			m_fClippingPlanesNear,
 			m_fClippingPlanesFar);
 	}
@@ -98,8 +99,8 @@ void CCamera::SetCamera()
 	{ // 平行投影
 		D3DXMatrixOrthoLH(
 			&m_mtxProjection,
-			(float)CRenderer::SCREEN_WIDTH,
-			(float)CRenderer::SCREEN_HEIGHT,
+			rect.x,
+			rect.y,
 			m_fClippingPlanesNear,
 			m_fClippingPlanesFar);
 

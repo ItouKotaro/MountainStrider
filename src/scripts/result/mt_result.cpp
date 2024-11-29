@@ -16,6 +16,7 @@
 #include "scripts/result/result_data.h"
 #include "scripts/result/result_view.h"
 #include "scripts/result/result_terrain.h"
+#include "component/other/button.h"
 
 float MountainResultManager::m_beforeFuel = CVehicle::MAX_FUEL;
 float MountainResultManager::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
@@ -33,7 +34,7 @@ void MountainResultManager::AddResult(ResultData data)
 //=============================================================
 // [MountainResultManager] 初期化
 //=============================================================
-void MountainResultManager::Init()
+void MountainResultManager::Init(TYPE type)
 {
 	// 踏破数をインクリメント
 	m_goalCount++;
@@ -50,7 +51,7 @@ void MountainResultManager::Init()
 		m_mtText->GetComponent<CText>()->SetFontSize(130);
 		m_mtText->GetComponent<CText>()->SetOutlineColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 		m_mtText->GetComponent<CText>()->SetOutlineSize(2);
-		m_mtText->GetComponent<CText>()->SetText(std::to_string(m_goalCount) + "つ目の山を踏破しました");
+		m_mtText->GetComponent<CText>()->SetText(type == TYPE_CLEAR ? std::to_string(m_goalCount) + "つ目の山を踏破しました" : "<size=150>GAME OVER");
 		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		m_mtText->transform->SetPos(-2000.0f, 100.0f, 0.0f);
 	}
@@ -100,7 +101,7 @@ void MountainResultManager::Init()
 	// 地形画像
 	{
 		m_terrainImg = new GameObject("TerrainImg", "ResultData");
-		m_terrainImg->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT / 2);
+		m_terrainImg->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT / 2));
 		m_terrainImg->AddComponent<ResultTerrain>();
 	}
 
@@ -120,6 +121,45 @@ void MountainResultManager::Init()
 		m_bg->AddComponent<CPolygon>();
 		m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
 		m_bg->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH), static_cast<float>(CRenderer::SCREEN_HEIGHT));
+	}
+
+	// 次の山へ or 終了
+	{
+		GameObject* pNextButton = new GameObject("NextMountain");
+		pNextButton->transform->SetSize(500.0f, 140.0f);
+		pNextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
+		pNextButton->AddComponent<ButtonUI>();
+		pNextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		if (type == TYPE_CLEAR)
+			pNextButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->ReloadScene(); });
+		else
+			pNextButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->SetScene("title"); });
+
+		GameObject* pNextButtonText = new GameObject();
+		pNextButtonText->SetParent(pNextButton);
+		pNextButtonText->transform->SetPos(250.0f, 35.0f);
+		pNextButtonText->AddComponent<CText>();
+		pNextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pNextButtonText->GetComponent<CText>()->SetText(type == TYPE_CLEAR ? "<color=0,0,0>Next →" : "<color=0,0,0>END");
+		pNextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+	}
+
+	// リスト追加
+	{
+		GameObject* pListButton = new GameObject("NextMountain");
+		pListButton->transform->SetSize(500.0f, 140.0f);
+		pListButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
+		pListButton->AddComponent<ButtonUI>();
+		pListButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+
+		GameObject* pListButtonText = new GameObject();
+		pListButtonText->SetParent(pListButton);
+		pListButtonText->transform->SetPos(250.0f, 35.0f);
+		pListButtonText->AddComponent<CText>();
+		pListButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pListButtonText->GetComponent<CText>()->SetFontSize(80);
+		pListButtonText->GetComponent<CText>()->SetText("<color=0,0,0>リストに追加");
+		pListButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
 
 	// 前回の情報として保存

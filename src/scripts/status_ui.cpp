@@ -64,3 +64,12 @@ void CStatusUI::SetEndurance(const float& percent)
 		m_pEnduranceBar->SetProgress(percent);
 	}
 }
+
+//=============================================================
+// [CStatusUI] •\Ž¦Ý’è
+//=============================================================
+void CStatusUI::SetVisible(const bool& visible)
+{
+	m_pFuelBar->gameObject->SetVisible(visible);
+	m_pEnduranceBar->gameObject->SetVisible(visible);
+}

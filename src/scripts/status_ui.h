@@ -19,6 +19,7 @@ public:
 
 	void SetFuel(const float& percent);
 	void SetEndurance(const float& percent);
+	void SetVisible(const bool& visible);
 private:
 	CAdvancedBar* m_pFuelBar;			// 燃料バー
 	CAdvancedBar* m_pEnduranceBar;	// 耐久値バー

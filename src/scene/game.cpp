@@ -17,6 +17,7 @@
 #include "scripts/camera_move.h"
 #include "scripts/result/result_camera.h"
 #include "scripts/result/mt_result.h"
+#include "scripts/status_ui.h"
 
 #include <noise/noise.h>
 
@@ -31,27 +32,37 @@ void CGameScene::Init()
 	m_travellingDatas.clear();
 
 	// カメラの作成
-	m_pCamera = new GameObject("Camera", "Camera");
-	m_pCamera->AddComponent<CCamera>();
-	m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
-	m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
-	m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
+	{
+		m_pCamera = new GameObject("Camera", "Camera");
+		m_pCamera->AddComponent<CCamera>();
+		m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
+		m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
+		m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
+	}
 
 	// ライトを作成
-	GameObject* pLight = new GameObject("Light");
-	CD3DLight::SetDefaultD3DLight(pLight);
+	{
+		GameObject* pLight = new GameObject("Light");
+		CD3DLight::SetDefaultD3DLight(pLight);
+	}
 
 	// 地面を作成
-	m_pTerrain = new Terrain();
-	m_pTerrain->SetSeed((unsigned int)clock());
-	m_pTerrain->Init();
-	m_pTerrain->Generate();
+	{
+		m_pTerrain = new Terrain();
+		m_pTerrain->SetSeed((unsigned int)clock());
+		m_pTerrain->Init();
+		m_pTerrain->Generate();
+	}
+
 
 	// 奈落
-	m_voidField = new GameObject("Void");
-	m_voidField->AddComponent<CField>();
-	m_voidField->GetComponent<CField>()->Set(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2, Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2);
-	m_voidField->transform->SetPos(0.0f, m_pTerrain->GetMinHeight() - 20.0f, 0.0f);
+	{
+		m_voidField = new GameObject("Void");
+		m_voidField->AddComponent<CField>();
+		m_voidField->GetComponent<CField>()->Set(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2, Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2);
+		m_voidField->transform->SetPos(0.0f, m_pTerrain->GetMinHeight() - 20.0f, 0.0f);
+	}
+
 
 	// リザルトマネージャーの生成
 	m_resultManager = new MountainResultManager(this);
@@ -70,8 +81,6 @@ void CGameScene::Init()
 
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
-
-
 
 	// レンダーバッファを登録する
 	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
@@ -110,8 +119,6 @@ void CGameScene::Update()
 		onGameOver();
 	}
 
-
-
 	// FPSを更新する
 	m_pFPS->GetComponent<CText>()->SetText("FPS: " + std::to_string(CManager::GetInstance()->GetFPS()));
 
@@ -148,11 +155,6 @@ void CGameScene::Update()
 	{ // ゲームオーバーのとき
 		// リザルトマネージャーの更新
 		m_resultManager->Update();
-
-		if (INPUT_INSTANCE->onTrigger("enter"))
-		{
-			CSceneManager::GetInstance()->ReloadScene();
-		}
 	}
 }
 
@@ -184,8 +186,12 @@ void CGameScene::SpawnBike()
 	m_pBike = new GameObject("Vehicle");
 	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_pBike->AddComponent<CVehicle>();
-
 	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
+
+	// ステータスUIを生成
+	m_pStatusUI = new GameObject("StatusUI", "UI");
+	m_pStatusUI->AddComponent<CStatusUI>();
+	m_pBike->GetComponent<CVehicle>()->SetStatusUI(m_pStatusUI->GetComponent<CStatusUI>());
 }
 
 //=============================================================
@@ -195,11 +201,6 @@ void CGameScene::ClearCondition()
 {
 	float terrainLength = static_cast<float>(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE);
 	D3DXVECTOR3 vehiclePos = m_pBike->transform->GetWPos();
-	//if (m_pBike->transform->GetWPos().y < m_pTerrain->GetMinHeight() - 20.0f)
-	//{
-	//	onClear();
-	//}
-
 	if (vehiclePos.x < terrainLength * -0.5f ||
 		vehiclePos.x > terrainLength * 0.5f ||
 		vehiclePos.z < terrainLength * -0.5f ||
@@ -216,16 +217,18 @@ void CGameScene::onGameOver()
 {
 	if (m_endType == ENDTYPE_NONE)
 	{ // 1回のみの処理
+		// ステータスUIを非表示にする
+		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
 		// リザルトデータの格納
 		MountainResultManager::ResultData data;
-		data.time = (timeGetTime() - m_startTime) / 1000;
+		data.time = -1;
 		data.highSpeed = m_highSpeed;
 		data.action = 50;
 		MountainResultManager::AddResult(data);
 
 		// リザルトマネージャーの初期化
-		m_resultManager->Init();
+		m_resultManager->Init(MountainResultManager::TYPE_GAMEOVER);
 
 		// リザルトカメラを起動する
 		m_pCamera->GetComponent<ResultCamera>()->Play();
@@ -243,6 +246,8 @@ void CGameScene::onClear()
 {
 	if (m_endType == ENDTYPE_NONE)
 	{ // 1回のみの処理
+		// ステータスUIを非表示にする
+		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
 		// リザルトデータの格納
 		MountainResultManager::ResultData data;
@@ -252,7 +257,7 @@ void CGameScene::onClear()
 		MountainResultManager::AddResult(data);
 
 		// リザルトマネージャーの初期化
-		m_resultManager->Init();
+		m_resultManager->Init(MountainResultManager::TYPE_CLEAR);
 
 		// リザルトカメラを起動する
 		m_pCamera->GetComponent<ResultCamera>()->Play();

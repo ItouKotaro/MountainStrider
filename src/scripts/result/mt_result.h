@@ -13,8 +13,14 @@ class CGameScene;
 class MountainResultManager
 {
 public:
+	enum TYPE
+	{
+		TYPE_GAMEOVER,
+		TYPE_CLEAR
+	};
+
 	MountainResultManager(CGameScene* scene) { m_gameScene = scene; }
-	void Init();
+	void Init(TYPE type);
 	void Uninit();
 	void Update();
 	void Reset();
