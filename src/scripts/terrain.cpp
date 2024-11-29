@@ -49,6 +49,7 @@ void Terrain::Init()
 
 	// 高度カラーを設定する
 	AddHeightColor(1.0f, D3DCOLOR_RGBA(11, 112, 0, 255));
+	AddHeightColor(0.5f, D3DCOLOR_RGBA(101, 191, 125, 255));
 	AddHeightColor(-1.0f, D3DCOLOR_RGBA(50, 166, 8, 255));
 
 	// 傾斜カラーを設定する

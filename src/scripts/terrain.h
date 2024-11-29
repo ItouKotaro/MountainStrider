@@ -65,6 +65,8 @@ public:
 	void Generate();
 	void SetSeed(const unsigned int& seed) { m_seed = seed; }
 	unsigned int GetSeed() { return m_seed; }
+	float GetMinHeight() { return m_minHeight; }
+	float GetMaxHeight() { return m_maxHeight; }
 
 	ProducesManager* GetProducesManager() { return m_producesManager; }
 

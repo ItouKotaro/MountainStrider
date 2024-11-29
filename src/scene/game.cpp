@@ -10,6 +10,7 @@
 #include "component/3d/camera.h"
 #include "component/3d/light.h"
 #include "component/2d/text.h"
+#include "component/3d/field.h"
 
 #include "scripts/vehicle.h"
 #include "scripts/terrain.h"
@@ -25,8 +26,9 @@
 void CGameScene::Init()
 {
 	// 変数の初期化
-	m_isGameOvered = false;
+	m_endType = ENDTYPE_NONE;
 	m_travellingCount = 0;
+	m_travellingDatas.clear();
 
 	// カメラの作成
 	m_pCamera = new GameObject("Camera", "Camera");
@@ -44,6 +46,12 @@ void CGameScene::Init()
 	m_pTerrain->SetSeed((unsigned int)clock());
 	m_pTerrain->Init();
 	m_pTerrain->Generate();
+
+	// 奈落
+	m_voidField = new GameObject("Void");
+	m_voidField->AddComponent<CField>();
+	m_voidField->GetComponent<CField>()->Set(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2, Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2);
+	m_voidField->transform->SetPos(0.0f, m_pTerrain->GetMinHeight() - 20.0f, 0.0f);
 
 	// リザルトマネージャーの生成
 	m_resultManager = new MountainResultManager(this);
@@ -90,9 +98,6 @@ void CGameScene::Uninit()
 		delete m_resultManager;
 		m_resultManager = nullptr;
 	}
-
-	// 走行データをリセットする
-	m_travellingDatas.clear();
 }
 
 //=============================================================
@@ -114,7 +119,7 @@ void CGameScene::Update()
 	m_pTerrain->Update(m_pCamera->transform->GetWPos());
 
 	// 未ゲームオーバー時
-	if (!m_isGameOvered)
+	if (m_endType == ENDTYPE_NONE)
 	{
 		// カメラの情報を記録する
 		m_pCamera->GetComponent<ResultCamera>()->RecordData();
@@ -130,14 +135,16 @@ void CGameScene::Update()
 			m_travellingCount = 0;
 		}
 
-
 		// 最高速度を記録する
 		int bikeSpeed = static_cast<int>(m_pBike->GetComponent<CVehicle>()->GetSpeed());
 		m_highSpeed = m_highSpeed < bikeSpeed ? bikeSpeed : m_highSpeed;
+
+		// クリア条件
+		ClearCondition();
 	}
 
 	// リザルトの更新処理
-	if (m_isGameOvered)
+	if (m_endType != ENDTYPE_NONE)
 	{ // ゲームオーバーのとき
 		// リザルトマネージャーの更新
 		m_resultManager->Update();
@@ -182,11 +189,32 @@ void CGameScene::SpawnBike()
 }
 
 //=============================================================
+// [CGameScene] クリアの条件
+//=============================================================
+void CGameScene::ClearCondition()
+{
+	float terrainLength = static_cast<float>(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE);
+	D3DXVECTOR3 vehiclePos = m_pBike->transform->GetWPos();
+	//if (m_pBike->transform->GetWPos().y < m_pTerrain->GetMinHeight() - 20.0f)
+	//{
+	//	onClear();
+	//}
+
+	if (vehiclePos.x < terrainLength * -0.5f ||
+		vehiclePos.x > terrainLength * 0.5f ||
+		vehiclePos.z < terrainLength * -0.5f ||
+		vehiclePos.z > terrainLength * 0.5f)
+	{
+		onClear();
+	}
+}
+
+//=============================================================
 // [CGameScene] ゲームオーバー時の処理
 //=============================================================
 void CGameScene::onGameOver()
 {
-	if (!m_isGameOvered)
+	if (m_endType == ENDTYPE_NONE)
 	{ // 1回のみの処理
 
 		// リザルトデータの格納
@@ -204,6 +232,33 @@ void CGameScene::onGameOver()
 		m_pCamera->GetComponent<CCameraMove>()->enabled = false;
 
 		// ゲームオーバートリガーを有効にする
-		m_isGameOvered = true;
+		m_endType = ENDTYPE_GAMEOVER;
+	}
+}
+
+//=============================================================
+// [CGameScene] クリア時の処理
+//=============================================================
+void CGameScene::onClear()
+{
+	if (m_endType == ENDTYPE_NONE)
+	{ // 1回のみの処理
+
+		// リザルトデータの格納
+		MountainResultManager::ResultData data;
+		data.time = (timeGetTime() - m_startTime) / 1000;
+		data.highSpeed = m_highSpeed;
+		data.action = 50;
+		MountainResultManager::AddResult(data);
+
+		// リザルトマネージャーの初期化
+		m_resultManager->Init();
+
+		// リザルトカメラを起動する
+		m_pCamera->GetComponent<ResultCamera>()->Play();
+		m_pCamera->GetComponent<CCameraMove>()->enabled = false;
+
+		// クリアトリガーを有効にする
+		m_endType = ENDTYPE_CLEAR;
 	}
 }

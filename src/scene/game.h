@@ -23,6 +23,7 @@ public:
 	void Draw() override;			// 描画
 
 	void onGameOver();			// ゲームオーバー処理
+	void onClear();					// クリア処理
 	Terrain* GetTerrain() { return m_pTerrain; }
 	GameObject* GetBike() { return m_pBike; }
 
@@ -32,17 +33,25 @@ public:
 		D3DXVECTOR3 pos;
 		D3DXQUATERNION rot;
 	};
-	std::vector<TravellingData>& GetTravellingData() { return m_travellingDatas; }
+	std::vector<TravellingData>* GetTravellingData() { return &m_travellingDatas; }
 private:
 	void SpawnBike();				// バイクの生成
+	void ClearCondition();			// クリア条件
 
 	int m_travellingCount;
 	std::vector<TravellingData> m_travellingDatas;
 
-	bool m_isGameOvered;									// ゲームオーバー済みか
+	enum ENDTYPE
+	{
+		ENDTYPE_NONE,			// なし（通常）
+		ENDTYPE_CLEAR,			// クリア（山踏破）
+		ENDTYPE_GAMEOVER,	// ゲームオーバー
+	};
+	ENDTYPE m_endType;									// 終了理由
 	MountainResultManager* m_resultManager;		// マウンテンリザルトマネージャー
 
 	Terrain* m_pTerrain;				// 地形
+	GameObject* m_voidField;		// 奈落
 	GameObject* m_pCamera;		// カメラ
 	GameObject* m_pBike;			// バイク
 	GameObject* m_pStatusUI;	// ステータスUI
