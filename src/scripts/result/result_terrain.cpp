@@ -11,7 +11,9 @@
 
 const std::string ResultTerrain::TERRAIN_TEX = "data\\terrain.bmp";
 const int ResultTerrain::SIZE = 500.0f;
-const float ResultTerrain::TRAVELLING_POINT_SIZE = 2.0f;
+const float ResultTerrain::TRAVELLING_POINT_SIZE = 5.0f;
+const int ResultTerrain::TRAVELLING_FRAME = 2;
+const int ResultTerrain::TRAVELLING_ENDFRAME = 120;
 //=============================================================
 // [ResultTerrain] 初期化
 //=============================================================
@@ -19,6 +21,7 @@ void ResultTerrain::Init()
 {
 	m_terrainVtxBuff = nullptr;
 	m_texture = nullptr;
+	m_travellingCounter = 0;
 
 	// 走行データを取得する
 	auto travellingData = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTravellingData();
@@ -143,7 +146,31 @@ void ResultTerrain::Uninit()
 //=============================================================
 void ResultTerrain::Update()
 {
+	auto travellingData = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTravellingData();
+	if (travellingData.size() <= 0)
+	{
+		return;
+	}
 
+	m_travellingCounter--;
+	if (m_travellingCounter <= 0)
+	{ // 走行カウントが達したとき
+		m_travellingIdx++;
+
+		if (m_travellingIdx >= travellingData.size() - 1)
+		{ // 最終ポイントのとき
+			m_travellingCounter = TRAVELLING_ENDFRAME;
+		}
+		else
+		{ // 通常
+			m_travellingCounter = TRAVELLING_FRAME;
+		}
+
+		if (m_travellingIdx >= travellingData.size())
+		{ // インデックスが最大値に達したとき
+			m_travellingIdx = 0;
+		}
+	}
 }
 
 //=============================================================
@@ -189,8 +216,11 @@ void ResultTerrain::DrawUI()
 		pDevice->SetTexture(0, nullptr);
 
 		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
-			i * 4, //描画する最初の頂点インデックス
-			2); //描画するプリミティブ数
+		if (i <= m_travellingIdx)
+		{
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
+				i * 4, //描画する最初の頂点インデックス
+				2); //描画するプリミティブ数
+		}
 	}
 }
