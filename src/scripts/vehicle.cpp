@@ -15,7 +15,7 @@
 #include "scripts/status_ui.h"
 #include "scene/game.h"
 
-const float CVehicle::ENGINEFORCE_VALUE = 60.0f;
+const float CVehicle::ENGINEFORCE_VALUE = 40.0f;
 const float CVehicle::STEERING_VALUE = 10.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 10.0f;
 const float CVehicle::MAX_ENGINEFORCE = 600000.0f;
@@ -61,6 +61,7 @@ void CVehicle::Init()
 	m_pFrontTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
+	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
 	CCollision::GetCollision(m_pFrontTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pFrontTire)->SetFriction(900);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
@@ -71,6 +72,7 @@ void CVehicle::Init()
 	m_pBackTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
+	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
 	CCollision::GetCollision(m_pBackTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pBackTire)->SetFriction(900);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
@@ -190,9 +192,9 @@ void CVehicle::ControlVehicle()
 	// 起き上がる方向にトルクを加える
 	float ang = transform->GetWRotZ();
 	D3DXVECTOR3 angularVelocity = {
-		sinf(transform->GetWRotY()) * -ang * 1.5f,
+		sinf(transform->GetWRotY()) * -ang * 1.8f,
 		0.0f,
-		cosf(transform->GetWRotY()) * -ang * 1.5f
+		cosf(transform->GetWRotY()) * -ang * 1.8f
 	};
 
 	// アクセル
@@ -218,13 +220,13 @@ void CVehicle::ControlVehicle()
 	float fSteeringVelocity = 0.0f;
 	if (INPUT_INSTANCE->onPress("a"))
 	{
-		angularVelocity += {sinf(transform->GetRotY()) * 0.8f, 0.0f, cosf(transform->GetRotY()) * 0.8f};
+		angularVelocity += {sinf(transform->GetRotY()) * 1.0f, 0.0f, cosf(transform->GetRotY()) * 1.0f};
 		fSteeringVelocity += STEERING_VALUE;
 
 	}
 	if (INPUT_INSTANCE->onPress("d"))
 	{
-		angularVelocity += {sinf(transform->GetRotY()) * -0.8f, 0.0f, cosf(transform->GetRotY()) * -0.8f};
+		angularVelocity += {sinf(transform->GetRotY()) * -1.0f, 0.0f, cosf(transform->GetRotY()) * -1.0f};
 		fSteeringVelocity -= STEERING_VALUE;
 	}
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
