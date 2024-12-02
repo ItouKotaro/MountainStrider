@@ -110,6 +110,9 @@ void CGameScene::Uninit()
 		delete m_resultManager;
 		m_resultManager = nullptr;
 	}
+
+	// レンダーバッファのカメラをnullにする
+	static_cast<CameraRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(nullptr);
 }
 
 //=============================================================

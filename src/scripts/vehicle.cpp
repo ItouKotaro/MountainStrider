@@ -25,6 +25,9 @@ const float CVehicle::MAX_ENDURANCE = 300.0f;
 const float CVehicle::FLYING_DISTANCE = 120.0f;
 const float CVehicle::GROUND_DISTANCE = 20.0f;
 
+float CVehicle::m_fuel = CVehicle::MAX_FUEL;
+float CVehicle::m_endurance = CVehicle::MAX_ENDURANCE;
+
 //=============================================================
 // [CVehicle] èâä˙âª
 //=============================================================
@@ -33,8 +36,6 @@ void CVehicle::Init()
 	// ïœêîÇÃèâä˙âª
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
-	m_fuel = MAX_FUEL;
-	m_endurance = MAX_ENDURANCE;
 	m_pStatusUI = nullptr;
 
 	// ÉoÉCÉNÇê∂ê¨Ç∑ÇÈ

@@ -54,8 +54,8 @@ private:
 	GameObject* m_pFrontTire;	// ‘O—Ö
 	GameObject* m_pBackTire;	// Œã—Ö
 
-	float m_fuel;							// ”R—¿
-	float m_endurance;				// ‘Ï‹v’l
+	static float m_fuel;							// ”R—¿
+	static float m_endurance;				// ‘Ï‹v’l
 
 	// ’n–Êî•ñ
 	bool m_flying;						// ”ò‚ñ‚Å‚¢‚é
