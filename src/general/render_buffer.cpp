@@ -155,5 +155,22 @@ void CameraRenderBuffer::Render()
 	{
 		m_camera->SetCamera();
 	}
-	RenderBuffer::Render();
+	
+	// デバイスの取得
+	auto device = CRenderer::GetInstance()->GetDevice();
+
+	// 画面クリア（バッファクリア＆Zバッファクリア）
+	device->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+
+	// スカイボックスの描画
+	if (m_camera != nullptr)
+	{
+		m_camera->GetSkybox()->Draw();
+	}
+
+	// ゲームオブジェクトの描画処理
+	GameObject::DrawAll();
+
+	// ゲームオブジェクトのUI描画処理
+	GameObject::DrawUIAll();
 }
