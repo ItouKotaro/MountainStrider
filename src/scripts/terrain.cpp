@@ -457,7 +457,7 @@ void Terrain::GenerateProduces()
 		}
 
 		// レイポイントの位置を決める
-		D3DXVECTOR3 rayPoint[4];
+		D3DXVECTOR3 rayPoint[5];
 		rayPoint[0].x = -pSelectProduce->GetSize().x / 2;
 		rayPoint[0].z = -pSelectProduce->GetSize().y / 2;
 		rayPoint[1].x = pSelectProduce->GetSize().x / 2;
@@ -466,16 +466,18 @@ void Terrain::GenerateProduces()
 		rayPoint[2].z = pSelectProduce->GetSize().y / 2;
 		rayPoint[3].x = pSelectProduce->GetSize().x / 2;
 		rayPoint[3].z = pSelectProduce->GetSize().y / 2;
+		rayPoint[4].x = 0.0f;
+		rayPoint[4].z = 0.0f;
 
 		// 生成座標に移動する
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			rayPoint[i] += generatePos;
 		}
 
 		// レイを飛ばす
 		bool bReached = true;
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			btVector3 Start = btVector3(rayPoint[i].x, 3000.0f, rayPoint[i].z);
 			btVector3 End = btVector3(rayPoint[i].x, -3000.0f, rayPoint[i].z);

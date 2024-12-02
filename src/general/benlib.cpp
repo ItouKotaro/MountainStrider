@@ -45,6 +45,25 @@ D3DXVECTOR3 Benlib::PosRotation(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2
 	return D3DXVECTOR3(sinf(fTargetAngle), cosf(fTargetHeightAngle), cosf(fTargetAngle));
 }
 
+D3DXQUATERNION Benlib::LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2)
+{
+	D3DXVECTOR3 target = pos2 - pos1;
+	D3DXVec3Normalize(&target, &target);
+	D3DXVECTOR3 norm = { 0, 0, 1 };
+	float dot = D3DXVec3Dot(&norm, &target);
+	float theta = acosf(dot);
+	D3DXVECTOR3 cross;
+	D3DXVec3Cross(&cross, &norm, &target);
+	D3DXQUATERNION q;
+	D3DXVec3Normalize(&cross, &cross);
+	theta = theta / (float)2;
+	q.x = cross.x * sinf(theta);
+	q.y = cross.y * sinf(theta);
+	q.z = cross.z * sinf(theta);
+	q.w = cosf(theta);
+	return q;
+}
+
 float Benlib::DegreeToRadian(const int& nDegree)
 {
 	return nDegree * D3DX_PI / (float)180.0f;

@@ -56,6 +56,14 @@ namespace Benlib
 	D3DXVECTOR3 PosRotation(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2);
 
 	/*
+	@brief 座標1から座標2の回転を計算します
+	@param[in] pos1 : 座標1
+	@param[in] pos2 : 座標2
+	@return 回転 (D3DXVECTOR3)
+	*/
+	D3DXQUATERNION LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2);
+
+	/*
 	@brief 角度からラジアンに変換します
 	@param[in] nDegree : 角度
 	@return ラジアン (float)

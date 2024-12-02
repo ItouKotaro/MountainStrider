@@ -47,6 +47,7 @@ private:
 	void SpawnBike();				// バイクの生成
 	void ClearCondition();			// クリア条件
 
+	GameObject* m_groundDistance;
 	int m_travellingCount;
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
 	MountainResultManager* m_resultManager;			// マウンテンリザルトマネージャー

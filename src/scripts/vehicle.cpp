@@ -22,6 +22,8 @@ const float CVehicle::MAX_ENGINEFORCE = 600000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
 const float CVehicle::MAX_FUEL = 4000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
+const float CVehicle::FLYING_DISTANCE = 120.0f;
+const float CVehicle::GROUND_DISTANCE = 20.0f;
 
 //=============================================================
 // [CVehicle] 初期化
@@ -40,7 +42,7 @@ void CVehicle::Init()
 	CCollision::GetCollision(gameObject)->SetMass(400.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
-	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
+	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
 
 	// 車体
 	GameObject* pBodyModel = new GameObject;
@@ -61,7 +63,7 @@ void CVehicle::Init()
 	m_pFrontTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
-	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
+	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
 	CCollision::GetCollision(m_pFrontTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pFrontTire)->SetFriction(900);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
@@ -72,7 +74,7 @@ void CVehicle::Init()
 	m_pBackTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
-	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
+	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
 	CCollision::GetCollision(m_pBackTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pBackTire)->SetFriction(900);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
@@ -135,13 +137,16 @@ void CVehicle::Uninit()
 void CVehicle::Update()
 {
 	// 操作処理
-	ControlVehicle();
+	m_flying ? FlyingControlVehicle() : LandingControlVehicle();
 
 	// 速度を計算する
 	UpdateSpeedMeter();
 
 	// ステータスUIの更新
 	UpdateStatusUI();
+
+	// 地面との距離を更新する
+	UpdateGroundDistance();
 
 	// ゲームオーバー処理
 	if (m_fuel <= 0.0f)
@@ -185,13 +190,14 @@ void CVehicle::AddFuel(const float& value)
 }
 
 //=============================================================
-// [CVehicle] バイクの操作
+// [CVehicle] バイクの操作（地面）
 //=============================================================
-void CVehicle::ControlVehicle()
+void CVehicle::LandingControlVehicle()
 {
 	// 起き上がる方向にトルクを加える
+	D3DXVECTOR3 angularVelocity;
 	float ang = transform->GetWRotZ();
-	D3DXVECTOR3 angularVelocity = {
+	angularVelocity = {
 		sinf(transform->GetWRotY()) * -ang * 1.8f,
 		0.0f,
 		cosf(transform->GetWRotY()) * -ang * 1.8f
@@ -215,6 +221,16 @@ void CVehicle::ControlVehicle()
 		// タイヤの回転を止める
 		pBackHinge->setTargetVelocity(3, 0.0f);
 	}
+
+	// 傾き調整
+	if (INPUT_INSTANCE->onPress("w"))
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+	}
+	if (INPUT_INSTANCE->onPress("s"))
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+	}
 	
 	// 方向転換
 	float fSteeringVelocity = 0.0f;
@@ -232,18 +248,42 @@ void CVehicle::ControlVehicle()
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	pFrontHinge->setTargetVelocity(5, fSteeringVelocity);
 
+	// 傾き速度を適用する
+	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));
+}
+
+//=============================================================
+// [CVehicle] バイクの操作（空中）
+//=============================================================
+void CVehicle::FlyingControlVehicle()
+{
+	// 起き上がる方向にトルクを加える
+	D3DXVECTOR3 angularVelocity;
+
 	// 傾き調整
 	if (INPUT_INSTANCE->onPress("w"))
 	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f};
 	}
 	if (INPUT_INSTANCE->onPress("s"))
 	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
+	}
+
+	// 回転
+	if (INPUT_INSTANCE->onPress("a"))
+	{
+		angularVelocity += {0.0f, -3.5f, 0.0f};
+
+	}
+	if (INPUT_INSTANCE->onPress("d"))
+	{
+		angularVelocity += {0.0f, 3.5f, 0.0f};
 	}
 
 	// 傾き速度を適用する
 	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));
+
 }
 
 //=============================================================
@@ -276,5 +316,40 @@ void CVehicle::UpdateStatusUI()
 		// 耐久値情報を更新する
 		float endurancePercent = m_endurance / MAX_ENDURANCE;
 		m_pStatusUI->SetEndurance(endurancePercent);
+	}
+}
+
+//=============================================================
+// [CVehicle] 地面距離の更新
+//=============================================================
+void CVehicle::UpdateGroundDistance()
+{
+	// 地面との距離を計測する
+	D3DXVECTOR3 vehiclePos = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
+	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y, vehiclePos.z);
+	btVector3 End = Start + btVector3(0.0f, -3000.0f, 0.0f);
+
+	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+	if (RayCallback.hasHit())
+	{ // ヒットしたとき
+		m_groundDistance = Start.getY() - RayCallback.m_hitPointWorld.getY();
+	}
+	else
+	{
+		m_groundDistance = 3000.0f;
+	}
+
+	// 飛んでいるか判定する
+	if (!m_flying && m_groundDistance >= FLYING_DISTANCE)
+	{ // 飛んでいると判定されたとき
+		m_flying = true;
+		m_startFlyingAngle = transform->GetRotY();
+	}
+
+	// 着地したか判断する
+	if (m_flying && m_groundDistance <= GROUND_DISTANCE)
+	{ // 着地したと判断されたとき
+		m_flying = false;
 	}
 }
