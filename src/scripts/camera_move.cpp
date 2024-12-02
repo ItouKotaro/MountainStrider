@@ -35,14 +35,48 @@ void CCameraMove::Update()
 	pCamera->SetPosR(m_pTarget->transform->GetWPos() + D3DXVECTOR3(0.0f, 30.0f, 0.0f));
 
 	// カーソル
-	POINTS cursor = CManager::GetInstance()->GetCursorPos();
-	if (cursor.x != m_oldCursor.x || cursor.y != m_oldCursor.y)
-	{ // 前回の位置と異なるとき
-		m_cameraRot.y += (cursor.x - m_oldCursor.x) * 0.01f;
-		m_cameraRot.x += (cursor.y - m_oldCursor.y) * 0.01f;
-		
-		m_oldCursor = cursor;
+	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
+	{
+		POINT setPoint;
+		setPoint.x = CManager::GetInstance()->GetWindowSize().x / 2;
+		setPoint.y = CManager::GetInstance()->GetWindowSize().y / 2;
+
+		POINTS cursor = CManager::GetInstance()->GetCursorPos();
+		if (cursor.x != setPoint.x || cursor.y != setPoint.y)
+		{ // 前回の位置と異なるとき
+			m_cameraRot.y += (cursor.x - setPoint.x) * 0.002f;
+			m_cameraRot.x += (cursor.y - setPoint.y) * 0.002f;
+
+			// 中心に留める
+			ClientToScreen(CManager::GetInstance()->GetHWND(), &setPoint);
+			SetCursorPos(setPoint.x, setPoint.y);
+		}
 	}
+
+	// コントローラーの情報を取得する
+	auto pGamepadDev = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>();
+	short stickRX = pGamepadDev->GetState().Gamepad.sThumbRX;
+	short stickRY = pGamepadDev->GetState().Gamepad.sThumbRY;
+	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
+	{
+		if (stickRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+		{
+			m_cameraRot.y += -0.02f;
+		}
+		if (stickRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+		{
+			m_cameraRot.y += 0.02f;
+		}
+		if (stickRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+		{
+			m_cameraRot.x += -0.02f;
+		}
+		if (stickRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+		{
+			m_cameraRot.x += 0.02f;
+		}
+	}
+
 
 	// 正規化
 	if (m_cameraRot.x < D3DX_PI * 0.5f + 0.1f)
@@ -58,7 +92,7 @@ void CCameraMove::Update()
 	bool flying = m_pTarget->GetComponent<CVehicle>()->GetFlying();
 
 	// 視点の位置を計算する
-	float distance = 180.0f;
+	float distance = flying ? 250.0f : 180.0f;
 	D3DXVECTOR3 posS = { 0.0f, 0.0f, -distance };
 	D3DXMATRIX mtxY, mtxX, mtxS;
 	D3DXMatrixRotationX(&mtxX, m_cameraRot.x);

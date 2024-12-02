@@ -1,7 +1,7 @@
 {
     "accel":
     {
-        "key": ["space","p:a"],
+        "key": ["space","p:rightthumb"],
         "input": "press"
     }
 }

@@ -200,6 +200,11 @@ void CVehicle::AddFuel(const float& value)
 //=============================================================
 void CVehicle::LandingControlVehicle()
 {
+	// コントローラーの情報を取得する
+	auto pGamepadDev = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>();
+	short stickLX = pGamepadDev->GetState().Gamepad.sThumbLX;
+	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
+
 	// 起き上がる方向にトルクを加える
 	D3DXVECTOR3 angularVelocity;
 	float ang = transform->GetWRotZ();
@@ -214,7 +219,7 @@ void CVehicle::LandingControlVehicle()
 	if (m_fuel > 0.0f)
 	{ // 燃料があるとき
 		// エンジン力を取得する
-		float fEngineForce = INPUT_INSTANCE->onInput("accel") ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
+		float fEngineForce = INPUT_INSTANCE->onInput("accel") || pGamepadDev->GetState().Gamepad.bRightTrigger ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
 
 		// タイヤを回転させる
 		pBackHinge->setTargetVelocity(3, fEngineForce);
@@ -229,24 +234,24 @@ void CVehicle::LandingControlVehicle()
 	}
 
 	// 傾き調整
-	if (INPUT_INSTANCE->onPress("w"))
+	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
 	}
-	if (INPUT_INSTANCE->onPress("s"))
+	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
 	}
 	
 	// 方向転換
 	float fSteeringVelocity = 0.0f;
-	if (INPUT_INSTANCE->onPress("a"))
+	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY()) * 1.0f, 0.0f, cosf(transform->GetRotY()) * 1.0f};
 		fSteeringVelocity += STEERING_VALUE;
 
 	}
-	if (INPUT_INSTANCE->onPress("d"))
+	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY()) * -1.0f, 0.0f, cosf(transform->GetRotY()) * -1.0f};
 		fSteeringVelocity -= STEERING_VALUE;
@@ -266,23 +271,28 @@ void CVehicle::FlyingControlVehicle()
 	// 起き上がる方向にトルクを加える
 	D3DXVECTOR3 angularVelocity;
 
+	// コントローラーの情報を取得する
+	auto pGamepadDev = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>();
+	short stickLX = pGamepadDev->GetState().Gamepad.sThumbLX;
+	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
+
 	// 傾き調整
-	if (INPUT_INSTANCE->onPress("w"))
+	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f};
 	}
-	if (INPUT_INSTANCE->onPress("s"))
+	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
 	}
 
 	// 回転
-	if (INPUT_INSTANCE->onPress("a"))
+	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {0.0f, -3.5f, 0.0f};
 
 	}
-	if (INPUT_INSTANCE->onPress("d"))
+	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {0.0f, 3.5f, 0.0f};
 	}

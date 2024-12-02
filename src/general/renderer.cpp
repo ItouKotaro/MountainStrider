@@ -84,6 +84,7 @@ HRESULT CRenderer::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ƒnƒ“ƒhƒ‹‚Ì‘ã“ü
 	m_hwnd = hWnd;
+	SetFullScreen(true);
 
 	// ‰e‚Ì¶¬
 	if (CShadow::USE_SHADOW)
