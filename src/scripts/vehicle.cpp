@@ -40,6 +40,8 @@ void CVehicle::Init()
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(6.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
 	CCollision::GetCollision(gameObject)->SetMass(400.0f);
+	CCollision::GetCollision(gameObject)->SetFilter(1);
+	CCollision::GetCollision(gameObject)->UseFilter(true);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
@@ -66,6 +68,8 @@ void CVehicle::Init()
 	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
 	CCollision::GetCollision(m_pFrontTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pFrontTire)->SetFriction(900);
+	CCollision::GetCollision(m_pFrontTire)->SetFilter(1);
+	CCollision::GetCollision(m_pFrontTire)->UseFilter(true);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// 後輪の生成
@@ -77,6 +81,8 @@ void CVehicle::Init()
 	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
 	CCollision::GetCollision(m_pBackTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pBackTire)->SetFriction(900);
+	CCollision::GetCollision(m_pBackTire)->SetFilter(1);
+	CCollision::GetCollision(m_pBackTire)->UseFilter(true);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// ヒンジの設定
