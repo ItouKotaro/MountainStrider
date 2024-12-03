@@ -45,7 +45,7 @@ void CVehicle::Init()
 	CCollision::GetCollision(gameObject)->UseFilter(true);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
-	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
+	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -140.0f, 0.0f));
 
 	// ŽÔ‘Ì
 	GameObject* pBodyModel = new GameObject;
@@ -66,7 +66,7 @@ void CVehicle::Init()
 	m_pFrontTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
-	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
+	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
 	CCollision::GetCollision(m_pFrontTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pFrontTire)->SetFriction(900);
 	CCollision::GetCollision(m_pFrontTire)->SetFilter(1);
@@ -79,7 +79,7 @@ void CVehicle::Init()
 	m_pBackTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
-	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -120.0f, 0.0f));
+	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
 	CCollision::GetCollision(m_pBackTire)->SetMass(30.0f);
 	CCollision::GetCollision(m_pBackTire)->SetFriction(900);
 	CCollision::GetCollision(m_pBackTire)->SetFilter(1);

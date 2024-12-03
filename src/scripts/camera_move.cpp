@@ -37,20 +37,35 @@ void CCameraMove::Update()
 	// カーソル
 	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
 	{
-		POINT setPoint;
-		setPoint.x = CManager::GetInstance()->GetWindowSize().x / 2;
-		setPoint.y = CManager::GetInstance()->GetWindowSize().y / 2;
+		// 現在のカーソル位置を取得する
+		POINT cursor = CManager::GetInstance()->GetCursorClientPos();
 
-		POINTS cursor = CManager::GetInstance()->GetCursorPos();
-		if (cursor.x != setPoint.x || cursor.y != setPoint.y)
+		// 前回のカーソル位置と異なるとき
+		if (cursor.x != m_oldCursor.x || cursor.y != m_oldCursor.y)
 		{ // 前回の位置と異なるとき
-			m_cameraRot.y += (cursor.x - setPoint.x) * 0.002f;
-			m_cameraRot.x += (cursor.y - setPoint.y) * 0.002f;
-
-			// 中心に留める
-			ClientToScreen(CManager::GetInstance()->GetHWND(), &setPoint);
-			SetCursorPos(setPoint.x, setPoint.y);
+			m_cameraRot.y += (cursor.x - m_oldCursor.x) * 0.002f;
+			m_cameraRot.x += (cursor.y - m_oldCursor.y) * 0.002f;
 		}
+
+		// ウィンドウ外にマウスが行ったとき
+		if (cursor.x < 1.0f)
+		{
+			CManager::GetInstance()->SetCursorClientPos(CRenderer::SCREEN_WIDTH / 2, cursor.y);
+		}
+		if (cursor.x > CManager::GetInstance()->GetWindowSize().x - 1)
+		{
+			CManager::GetInstance()->SetCursorClientPos(CRenderer::SCREEN_WIDTH / 2, cursor.y);
+		}
+		if (cursor.y < 1.0f)
+		{
+			CManager::GetInstance()->SetCursorClientPos(cursor.y, CRenderer::SCREEN_HEIGHT / 2);
+		}
+		if (cursor.y > CManager::GetInstance()->GetWindowSize().y - 1)
+		{
+			CManager::GetInstance()->SetCursorClientPos(cursor.y, CRenderer::SCREEN_HEIGHT / 2);
+		}
+
+		m_oldCursor = CManager::GetInstance()->GetCursorClientPos();
 	}
 
 	// コントローラーの情報を取得する

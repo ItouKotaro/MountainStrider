@@ -9,6 +9,7 @@
 #include "component/2d/text.h"
 #include "component/2d/polygon.h"
 #include "component/other/button.h"
+#include "scene/game.h"
 #include "renderer.h"
 
 //=============================================================
@@ -36,7 +37,10 @@ void CTitleScene::Init()
 		pStartButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) - 400.0f, 800.0f);
 		pStartButton->AddComponent<ButtonUI>();
 		pStartButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		pStartButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->SetScene("game"); });
+		pStartButton->GetComponent<ButtonUI>()->setClickEvent([]() { 
+			static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->ResetGame();
+			CSceneManager::GetInstance()->SetScene("game");
+			});
 
 		GameObject* pStartButtonText = new GameObject();
 		pStartButtonText->SetParent(pStartButton);

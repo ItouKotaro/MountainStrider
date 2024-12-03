@@ -131,15 +131,33 @@ void CManager::Draw()
 }
 
 //=============================================================
-// [CManager] カーソル座標を取得する
+// [CManager] カーソル位置を取得する
 //=============================================================
-POINTS CManager::GetCursorPos()
+POINT CManager::GetCursorClientPos()
 {
-	POINTS points = m_cursorPos;
+	POINT points;
+	GetCursorPos(&points);
+	ScreenToClient(m_hwnd, &points);
 	D3DXVECTOR2 rect = GetWindowSize();
-	points.x *= static_cast<float>(CRenderer::SCREEN_WIDTH / rect.x);
-	points.y *= static_cast<float>(CRenderer::SCREEN_HEIGHT / rect.y);
+	points.x *= static_cast<float>(CRenderer::SCREEN_WIDTH / (float)rect.x);
+	points.y *= static_cast<float>(CRenderer::SCREEN_HEIGHT / (float)rect.y);
 	return points;
+}
+
+//=============================================================
+// [CManager] カーソル位置を設定する
+//=============================================================
+void CManager::SetCursorClientPos(LONG x, LONG y)
+{
+	POINT point;
+	point.x = x;
+	point.y = y;
+
+	ClientToScreen(m_hwnd, &point);
+	D3DXVECTOR2 rect = GetWindowSize();
+	point.x *= static_cast<float>(rect.x / (float)CRenderer::SCREEN_WIDTH);
+	point.y *= static_cast<float>(rect.y / (float)CRenderer::SCREEN_HEIGHT);
+	SetCursorPos(point.x, point.y);
 }
 
 //=============================================================
@@ -149,5 +167,5 @@ D3DXVECTOR2 CManager::GetWindowSize()
 {
 	RECT rect;
 	GetWindowRect(CManager::GetInstance()->GetHWND(), &rect);
-	return D3DXVECTOR2(rect.right - rect.left, rect.bottom - rect.top);
+	return D3DXVECTOR2(static_cast<float>(rect.right - rect.left), static_cast<float>(rect.bottom - rect.top));
 }

@@ -23,6 +23,12 @@ public:
 	void AddFuel(const float& value);
 	void SetStatusUI(CStatusUI* pStatusUI) { m_pStatusUI = pStatusUI; }
 
+	static void ResetState()
+	{
+		m_fuel = MAX_FUEL;
+		m_endurance = MAX_ENDURANCE;
+	}
+
 	// ÉfÅ[É^éÊìæ
 	float GetSpeed() { return m_fSpeed; }
 	float GetFuel() { return m_fuel; }

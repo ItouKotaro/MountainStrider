@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "scene/game.h"
 #include "scripts/terrain.h"
+#include "component/2d/text.h"
 
 const std::string ResultTerrain::TERRAIN_TEX = "data\\terrain.bmp";
 const int ResultTerrain::SIZE = 500;
@@ -113,6 +114,10 @@ void ResultTerrain::Init()
 
 	// 頂点バッファをアンロックする
 	m_travellingVtxBuff->Unlock();
+
+	m_pDebugText = new GameObject();
+	m_pDebugText->AddComponent<CText>();
+	m_pDebugText->transform->SetPos(0.0f, 500.0f);
 }
 
 //=============================================================
@@ -170,6 +175,8 @@ void ResultTerrain::Update()
 		{ // インデックスが最大値に達したとき
 			m_travellingIdx = 0;
 		}
+
+		m_pDebugText->GetComponent<CText>()->SetText(std::to_string(m_travellingIdx) + " / " + std::to_string(travellingData.size()));
 	}
 }
 

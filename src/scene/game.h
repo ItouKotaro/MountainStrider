@@ -22,6 +22,8 @@ public:
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
 
+	void ResetGame();				// ゲームのリセット
+
 	void onGameOver();			// ゲームオーバー処理
 	void onClear();					// クリア処理
 	Terrain* GetTerrain() { return m_pTerrain; }
@@ -47,7 +49,6 @@ private:
 	void SpawnBike();				// バイクの生成
 	void ClearCondition();			// クリア条件
 
-	GameObject* m_groundDistance;
 	int m_travellingCount;
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
 	MountainResultManager* m_resultManager;			// マウンテンリザルトマネージャー
@@ -57,6 +58,8 @@ private:
 	GameObject* m_pCamera;		// カメラ
 	GameObject* m_pBike;			// バイク
 	GameObject* m_pStatusUI;	// ステータスUI
+
+	GameObject* m_pMapDebug;
 
 	// リザルトデータ用
 	DWORD m_startTime;			// 開始時間

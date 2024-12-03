@@ -23,7 +23,7 @@ public:
 	void Init(TYPE type);
 	void Uninit();
 	void Update();
-	void Reset();
+	static void Reset();
 
 	// Œ‹‰ÊŠi”[
 	struct ResultData

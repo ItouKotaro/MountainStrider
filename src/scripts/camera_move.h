@@ -21,6 +21,7 @@ public:
 private:
 	GameObject* m_pTarget;			// ターゲット
 	D3DXVECTOR3 m_cameraRot;	// 回転
+	POINT m_oldCursor;					// 前回のカーソル位置
 };
 
 #endif // !_CAMERA_MOVE_H_

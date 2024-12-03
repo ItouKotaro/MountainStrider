@@ -78,16 +78,16 @@ void CGameScene::Init()
 	m_pFPS = new GameObject("FPS");
 	m_pFPS->AddComponent<CText>();
 
-	m_groundDistance = new GameObject();
-	m_groundDistance->AddComponent<CText>();
-	m_groundDistance->transform->Translate(0.0f, 80.0f, 0.0f);
-
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
 
 	// レンダーバッファを登録する
 	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
 	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
+
+	m_pMapDebug = new GameObject();
+	m_pMapDebug->AddComponent<CText>();
+	m_pMapDebug->transform->SetPos(0.0f, 200.0f);
 }
 
 //=============================================================
@@ -125,8 +125,6 @@ void CGameScene::Update()
 		onGameOver();
 	}
 
-	m_groundDistance->GetComponent<CText>()->SetText(std::to_string(m_pBike->GetComponent<CVehicle>()->GetGroundDistance()));
-
 	// FPSを更新する
 	m_pFPS->GetComponent<CText>()->SetText("FPS: " + std::to_string(CManager::GetInstance()->GetFPS()));
 
@@ -144,10 +142,12 @@ void CGameScene::Update()
 		if (m_travellingCount >= 20)
 		{
 			TravellingData travelling;
-			travelling.pos = m_pBike->transform->GetWPos();
-			travelling.rot = m_pBike->transform->GetWQuaternion();
+			travelling.pos = m_pCamera->transform->GetWPos();
+			travelling.rot = m_pCamera->transform->GetWQuaternion();
 			m_travellingDatas.push_back(travelling);
 			m_travellingCount = 0;
+
+			m_pMapDebug->GetComponent<CText>()->SetText("Rec: " + std::to_string(m_travellingDatas.size()));
 		}
 
 		// 最高速度を記録する
@@ -171,6 +171,18 @@ void CGameScene::Update()
 //=============================================================
 void CGameScene::Draw()
 {
+}
+
+//=============================================================
+// [CGameScene] ゲームのリセット
+//=============================================================
+void CGameScene::ResetGame()
+{
+	// バイクの燃料と耐久値を回復させる
+	CVehicle::ResetState();
+
+	// リザルトデータのリセット
+	MountainResultManager::Reset();
 }
 
 //=============================================================
@@ -209,10 +221,7 @@ void CGameScene::ClearCondition()
 {
 	float terrainLength = static_cast<float>(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE);
 	D3DXVECTOR3 vehiclePos = m_pBike->transform->GetWPos();
-	if (vehiclePos.x < terrainLength * -0.5f ||
-		vehiclePos.x > terrainLength * 0.5f ||
-		vehiclePos.z < terrainLength * -0.5f ||
-		vehiclePos.z > terrainLength * 0.5f)
+	if (vehiclePos.y < m_pTerrain->GetMinHeight() - 5.0f)
 	{
 		onClear();
 	}
