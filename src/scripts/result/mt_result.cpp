@@ -36,12 +36,25 @@ void MountainResultManager::AddResult(ResultData data)
 //=============================================================
 void MountainResultManager::Init(TYPE type)
 {
+	m_endType = type;
+
 	// 踏破数をインクリメント
 	m_goalCount++;
 
 	// 進捗
 	m_progState = P_MTTEXT;
 	m_progCounter = 120;
+
+	// それぞれの初期化
+	switch (type)
+	{
+	case MountainResultManager::TYPE_GAMEOVER:
+		InitGameOver();
+		break;
+	case MountainResultManager::TYPE_CLEAR:
+		InitClear();
+		break;
+	}
 
 	// クリアテキスト
 	{
@@ -168,6 +181,65 @@ void MountainResultManager::Init(TYPE type)
 }
 
 //=============================================================
+// [MountainResultManager] クリア時の初期化
+//=============================================================
+void MountainResultManager::InitClear()
+{
+	// ショップを生成する
+	m_shopManager = new ShopManager();
+	m_shopManager->Init();
+
+
+}
+
+//=============================================================
+// [MountainResultManager] ゲームオーバー時の初期化
+//=============================================================
+void MountainResultManager::InitGameOver()
+{
+
+}
+
+//=============================================================
+// [MountainResultManager] クリア時の終了処理
+//=============================================================
+void MountainResultManager::UninitClear()
+{
+	// ショップを破棄する
+	if (m_shopManager != nullptr)
+	{
+		m_shopManager->Uninit();
+		delete m_shopManager;
+		m_shopManager = nullptr;
+	}
+}
+
+//=============================================================
+// [MountainResultManager] ゲームオーバー時の終了処理
+//=============================================================
+void MountainResultManager::UninitGameOver()
+{
+
+}
+
+//=============================================================
+// [MountainResultManager] クリア時の更新
+//=============================================================
+void MountainResultManager::UpdateClear()
+{
+	// ショップを更新する
+	m_shopManager->Update();
+}
+
+//=============================================================
+// [MountainResultManager] ゲームオーバー時の更新
+//=============================================================
+void MountainResultManager::UpdateGameOver()
+{
+
+}
+
+//=============================================================
 // [MountainResultManager] 終了
 //=============================================================
 void MountainResultManager::Uninit()
@@ -175,12 +247,42 @@ void MountainResultManager::Uninit()
 	m_mtText->Destroy();
 	m_bg->Destroy();
 
+	// それぞれの終了処理
+	switch (m_endType)
+	{
+	case MountainResultManager::TYPE_GAMEOVER:
+		UninitGameOver();
+		break;
+	case MountainResultManager::TYPE_CLEAR:
+		UninitClear();
+		break;
+	}
 }
 
 //=============================================================
 // [MountainResultManager] 更新
 //=============================================================
 void MountainResultManager::Update()
+{
+	// リザルトアニメーションの更新
+	UpdateResultAnim();
+
+	// それぞれの更新処理
+	switch (m_endType)
+	{
+	case MountainResultManager::TYPE_GAMEOVER:
+		UpdateGameOver();
+		break;
+	case MountainResultManager::TYPE_CLEAR:
+		UpdateClear();
+		break;
+	}
+}
+
+//=============================================================
+// [MountainResultManager] リザルトアニメーションの更新
+//=============================================================
+void MountainResultManager::UpdateResultAnim()
 {
 	// 背景のフェード
 	float currentAlpha = m_bg->GetComponent<CPolygon>()->GetColor().a;
@@ -210,12 +312,11 @@ void MountainResultManager::Update()
 		}
 	}
 
-
 	// 次の状態に移行する処理
 	m_progCounter--;
 	if (m_progCounter <= 0 && m_progState != P_END)
 	{
-		m_progState = static_cast<PROG_STATE>(m_progState + 1);	
+		m_progState = static_cast<PROG_STATE>(m_progState + 1);
 		m_progCounter = 80;
 	}
 }

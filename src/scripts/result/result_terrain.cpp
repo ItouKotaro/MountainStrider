@@ -83,6 +83,7 @@ void ResultTerrain::Init()
 	{
 		// 頂点座標の設定
 		D3DXVECTOR3 pos = (travellingData[i].pos / static_cast<float>((Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE))) * SIZE;
+		pos.y = pos.z;
 		pos += transform->GetWPos();
 		pos.z = 0.0f;
 		pVtx[0].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * -0.5f, TRAVELLING_POINT_SIZE * -0.5f, 0.0f) + pos;
@@ -114,10 +115,6 @@ void ResultTerrain::Init()
 
 	// 頂点バッファをアンロックする
 	m_travellingVtxBuff->Unlock();
-
-	m_pDebugText = new GameObject();
-	m_pDebugText->AddComponent<CText>();
-	m_pDebugText->transform->SetPos(0.0f, 500.0f);
 }
 
 //=============================================================
@@ -175,8 +172,6 @@ void ResultTerrain::Update()
 		{ // インデックスが最大値に達したとき
 			m_travellingIdx = 0;
 		}
-
-		m_pDebugText->GetComponent<CText>()->SetText(std::to_string(m_travellingIdx) + " / " + std::to_string(travellingData.size()));
 	}
 }
 

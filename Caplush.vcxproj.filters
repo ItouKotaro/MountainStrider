@@ -85,6 +85,12 @@
     <Filter Include="ソース ファイル\scripts\result">
       <UniqueIdentifier>{03345850-7366-4e2e-b9f9-f950219bd42b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scripts\shop">
+      <UniqueIdentifier>{3bb41873-cb1e-4cf1-a618-344a3d453f93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts\shop">
+      <UniqueIdentifier>{6e5bb9c3-e773-4959-85be-4de77e973b86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -259,7 +265,7 @@
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
     <ClCompile Include="src\scripts\shop\shop.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scripts\shop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -438,7 +444,7 @@
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\shop\shop.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\scripts\shop</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

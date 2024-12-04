@@ -59,8 +59,6 @@ private:
 	GameObject* m_pBike;			// バイク
 	GameObject* m_pStatusUI;	// ステータスUI
 
-	GameObject* m_pMapDebug;
-
 	// リザルトデータ用
 	DWORD m_startTime;			// 開始時間
 	int m_highSpeed;					// 最高速度

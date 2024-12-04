@@ -168,7 +168,7 @@ void Terrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			heightMap.SetValue(x, y, heightMap.GetValue(x, y) * 1500.0f);
+			heightMap.SetValue(x, y, heightMap.GetValue(x, y) * 1300.0f);
 		}
 	}
 
@@ -180,7 +180,7 @@ void Terrain::GenerateTerrain()
 	renderer.ClearGradient();
 	for (auto itr = m_heightColor.begin(); itr != m_heightColor.end(); itr++)
 	{
-		renderer.AddGradientPoint((*itr).height, utils::Color((*itr).color.r * 255, (*itr).color.g * 255, (*itr).color.b * 255, (*itr).color.a * 255));
+		renderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
 	}
 	renderer.Render();
 

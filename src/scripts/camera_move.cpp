@@ -48,21 +48,12 @@ void CCameraMove::Update()
 		}
 
 		// ウィンドウ外にマウスが行ったとき
-		if (cursor.x < 1.0f)
+		if (cursor.x < 1.0f ||
+			cursor.x > CManager::GetInstance()->GetWindowSize().x - 1 ||
+			cursor.y < 1.0f ||
+			cursor.y > CManager::GetInstance()->GetWindowSize().y - 10.0f)
 		{
-			CManager::GetInstance()->SetCursorClientPos(CRenderer::SCREEN_WIDTH / 2, cursor.y);
-		}
-		if (cursor.x > CManager::GetInstance()->GetWindowSize().x - 1)
-		{
-			CManager::GetInstance()->SetCursorClientPos(CRenderer::SCREEN_WIDTH / 2, cursor.y);
-		}
-		if (cursor.y < 1.0f)
-		{
-			CManager::GetInstance()->SetCursorClientPos(cursor.y, CRenderer::SCREEN_HEIGHT / 2);
-		}
-		if (cursor.y > CManager::GetInstance()->GetWindowSize().y - 1)
-		{
-			CManager::GetInstance()->SetCursorClientPos(cursor.y, CRenderer::SCREEN_HEIGHT / 2);
+			CManager::GetInstance()->SetCursorClientPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT / 2);
 		}
 
 		m_oldCursor = CManager::GetInstance()->GetCursorClientPos();

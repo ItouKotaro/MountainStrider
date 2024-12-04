@@ -1,4 +1,4 @@
-//=============================================================
+﻿//=============================================================
 //
 // ゲームシーン [game.cpp]
 // Author: Ito Kotaro
@@ -84,10 +84,6 @@ void CGameScene::Init()
 	// レンダーバッファを登録する
 	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
 	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
-
-	m_pMapDebug = new GameObject();
-	m_pMapDebug->AddComponent<CText>();
-	m_pMapDebug->transform->SetPos(0.0f, 200.0f);
 }
 
 //=============================================================
@@ -142,12 +138,10 @@ void CGameScene::Update()
 		if (m_travellingCount >= 20)
 		{
 			TravellingData travelling;
-			travelling.pos = m_pCamera->transform->GetWPos();
-			travelling.rot = m_pCamera->transform->GetWQuaternion();
+			travelling.pos = m_pBike->transform->GetWPos();
+			travelling.rot = m_pBike->transform->GetWQuaternion();
 			m_travellingDatas.push_back(travelling);
 			m_travellingCount = 0;
-
-			m_pMapDebug->GetComponent<CText>()->SetText("Rec: " + std::to_string(m_travellingDatas.size()));
 		}
 
 		// 最高速度を記録する

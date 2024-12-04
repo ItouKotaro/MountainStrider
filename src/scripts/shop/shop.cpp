@@ -6,11 +6,15 @@
 //=============================================================
 #include "shop.h"
 
+#include "component/2d/text.h"
+
 //=============================================================
 // [ShopManager] ‰Šú‰»
 //=============================================================
 void ShopManager::Init()
 {
+	m_text = new GameObject();
+	m_text->AddComponent<CText>()->SetText("ƒVƒ‡ƒbƒv");
 
 }
 

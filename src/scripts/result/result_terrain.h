@@ -29,8 +29,6 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 m_travellingVtxBuff;	// í∏ì_èÓïÒ
 	int m_travellingCounter;
 	unsigned int m_travellingIdx;
-
-	GameObject* m_pDebugText;
 };
 
 #endif // !_RESULT_TERRAIN_H_

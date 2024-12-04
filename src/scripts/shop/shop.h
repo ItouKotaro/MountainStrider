@@ -17,7 +17,7 @@ public:
 	void Uninit();
 	void Update();
 private:
-
+	GameObject* m_text;
 };
 
 #endif // !_SHOP_H_
