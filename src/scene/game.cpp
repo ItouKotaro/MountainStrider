@@ -63,10 +63,6 @@ void CGameScene::Init()
 		m_voidField->transform->SetPos(0.0f, m_pTerrain->GetMinHeight() - 20.0f, 0.0f);
 	}
 
-
-	// リザルトマネージャーの生成
-	m_resultManager = new MountainResultManager(this);
-
 	// バイクの生成
 	SpawnBike();
 
@@ -100,11 +96,11 @@ void CGameScene::Uninit()
 	}
 
 	// リザルトマネージャーの破棄
-	if (m_resultManager != nullptr)
+	if (m_result != nullptr)
 	{
-		m_resultManager->Uninit();
-		delete m_resultManager;
-		m_resultManager = nullptr;
+		m_result->Uninit();
+		delete m_result;
+		m_result = nullptr;
 	}
 
 	// レンダーバッファのカメラをnullにする
@@ -155,8 +151,8 @@ void CGameScene::Update()
 	// リザルトの更新処理
 	if (m_endType != ENDTYPE_NONE)
 	{ // ゲームオーバーのとき
-		// リザルトマネージャーの更新
-		m_resultManager->Update();
+		// リザルトの更新
+		m_result->Update();
 	}
 }
 
@@ -165,6 +161,12 @@ void CGameScene::Update()
 //=============================================================
 void CGameScene::Draw()
 {
+	// リザルトの描画処理
+	if (m_endType != ENDTYPE_NONE)
+	{ // ゲームオーバーのとき
+		// リザルトの描画
+		m_result->Draw();
+	}
 }
 
 //=============================================================
@@ -176,7 +178,7 @@ void CGameScene::ResetGame()
 	CVehicle::ResetState();
 
 	// リザルトデータのリセット
-	MountainResultManager::Reset();
+	ResultBase::Reset();
 }
 
 //=============================================================
@@ -232,14 +234,15 @@ void CGameScene::onGameOver()
 		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
 		// リザルトデータの格納
-		MountainResultManager::ResultData data;
+		ResultBase::ResultData data;
 		data.time = -1;
 		data.highSpeed = m_highSpeed;
 		data.action = 50;
-		MountainResultManager::AddResult(data);
+		ResultBase::AddResult(data);
 
-		// リザルトマネージャーの初期化
-		m_resultManager->Init(MountainResultManager::TYPE_GAMEOVER);
+		// ゲームオーバーリザルトの初期化
+		m_result = new GameOverResult(this);
+		m_result->Init();
 
 		// リザルトカメラを起動する
 		m_pCamera->GetComponent<ResultCamera>()->Play();
@@ -261,14 +264,15 @@ void CGameScene::onClear()
 		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
 		// リザルトデータの格納
-		MountainResultManager::ResultData data;
+		ResultBase::ResultData data;
 		data.time = (timeGetTime() - m_startTime) / 1000;
 		data.highSpeed = m_highSpeed;
 		data.action = 50;
-		MountainResultManager::AddResult(data);
+		ResultBase::AddResult(data);
 
-		// リザルトマネージャーの初期化
-		m_resultManager->Init(MountainResultManager::TYPE_CLEAR);
+		// クリアリザルトの初期化
+		m_result = new ClearResult(this);
+		m_result->Init();
 
 		// リザルトカメラを起動する
 		m_pCamera->GetComponent<ResultCamera>()->Play();

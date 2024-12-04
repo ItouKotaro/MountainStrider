@@ -11,20 +11,15 @@
 #include "scripts/shop/shop.h"
 
 class CGameScene;
-class MountainResultManager
+
+// リザルトの基底
+class ResultBase
 {
 public:
-	enum TYPE
-	{
-		TYPE_GAMEOVER,
-		TYPE_CLEAR
-	};
-
-	MountainResultManager(CGameScene* scene) { m_gameScene = scene; }
-	void Init(TYPE type);
-	void Uninit();
-	void Update();
-	static void Reset();
+	virtual void Init() {};
+	virtual void Uninit() {};
+	virtual void Update() {};
+	virtual void Draw() {};
 
 	// 結果格納
 	struct ResultData
@@ -34,15 +29,25 @@ public:
 		int action;			// アクション
 	};
 	static void AddResult(ResultData data);
-private:
-	void InitClear();
-	void InitGameOver();
-	void UninitClear();
-	void UninitGameOver();
-	void UpdateClear();
-	void UpdateGameOver();
-	TYPE m_endType;
+	static void Reset();
+protected:
+	CGameScene* m_gameScene;
+	static float m_beforeFuel;							// 前回の燃料
+	static float m_beforeEndurance;					// 前回の耐久値
+	static UINT m_goalCount;							// 踏破回数
+	static std::vector<ResultData> m_results;	// 結果
+};
 
+// クリア時のリザルト
+class ClearResult : public ResultBase
+{
+public:
+	ClearResult(CGameScene* scene) { m_gameScene = scene; }
+	void Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+private:
 	void UpdateResultAnim();
 	enum PROG_STATE
 	{
@@ -62,14 +67,32 @@ private:
 	GameObject* m_fuelView;				// 燃料表示
 	GameObject* m_enduranceView;	// 耐久値表示
 	GameObject* m_terrainImg;			// 地形画像
-	CGameScene* m_gameScene;		// ゲームシーンの取得
-
-	static float m_beforeFuel;			// 前回の燃料
-	static float m_beforeEndurance;	// 前回の耐久値
-	static UINT m_goalCount;		// 踏破回数
-	static std::vector<ResultData> m_results;	// 結果
 
 	ShopManager* m_shopManager;		// ショップ管理
 };
+
+
+// ゲームオーバー時のリザルト
+class GameOverResult : public ResultBase
+{
+public:
+	GameOverResult(CGameScene* scene) { m_gameScene = scene; }
+	void Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+private:
+	void UpdateResultAnim();
+
+	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
+
+	GameObject* m_bg;						// 背景
+	GameObject* m_seedText;				// シードテキスト
+	GameObject* m_dataView;				// データ表示
+	GameObject* m_fuelView;				// 燃料表示
+	GameObject* m_enduranceView;	// 耐久値表示
+	GameObject* m_terrainImg;			// 地形画像
+};
+
 
 #endif // !_RESULT_H_

@@ -18,26 +18,36 @@
 #include "scripts/result/result_terrain.h"
 #include "component/other/button.h"
 
-float MountainResultManager::m_beforeFuel = CVehicle::MAX_FUEL;
-float MountainResultManager::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
-UINT MountainResultManager::m_goalCount = 0;
-std::vector<MountainResultManager::ResultData> MountainResultManager::m_results = {};
+float ResultBase::m_beforeFuel = CVehicle::MAX_FUEL;
+float ResultBase::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
+UINT ResultBase::m_goalCount = 0;
+std::vector<ResultBase::ResultData> ResultBase::m_results = {};
 
 //=============================================================
-// [MountainResultManager] 結果を保存する
+// [ResultBase] 結果を保存する
 //=============================================================
-void MountainResultManager::AddResult(ResultData data)
+void ResultBase::AddResult(ResultData data)
 {
 	m_results.push_back(data);
 }
 
 //=============================================================
-// [MountainResultManager] 初期化
+// [ResultBase] リセット
 //=============================================================
-void MountainResultManager::Init(TYPE type)
+void ResultBase::Reset()
 {
-	m_endType = type;
+	m_beforeFuel = CVehicle::MAX_FUEL;
+	m_beforeEndurance = CVehicle::MAX_ENDURANCE;
+	m_goalCount = 0;
+	m_results.clear();
+}
 
+
+//=============================================================
+// [ClearResult] 初期化
+//=============================================================
+void ClearResult::Init()
+{
 	// 踏破数をインクリメント
 	m_goalCount++;
 
@@ -45,16 +55,9 @@ void MountainResultManager::Init(TYPE type)
 	m_progState = P_MTTEXT;
 	m_progCounter = 120;
 
-	// それぞれの初期化
-	switch (type)
-	{
-	case MountainResultManager::TYPE_GAMEOVER:
-		InitGameOver();
-		break;
-	case MountainResultManager::TYPE_CLEAR:
-		InitClear();
-		break;
-	}
+	// ショップを生成する
+	m_shopManager = new ShopManager();
+	m_shopManager->Init();
 
 	// クリアテキスト
 	{
@@ -64,7 +67,7 @@ void MountainResultManager::Init(TYPE type)
 		m_mtText->GetComponent<CText>()->SetFontSize(130);
 		m_mtText->GetComponent<CText>()->SetOutlineColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 		m_mtText->GetComponent<CText>()->SetOutlineSize(2);
-		m_mtText->GetComponent<CText>()->SetText(type == TYPE_CLEAR ? std::to_string(m_goalCount) + "つ目の山を踏破しました" : "<size=150>GAME OVER");
+		m_mtText->GetComponent<CText>()->SetText(std::to_string(m_goalCount) + "つ目の山を踏破しました");
 		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		m_mtText->transform->SetPos(-2000.0f, 100.0f, 0.0f);
 	}
@@ -143,17 +146,14 @@ void MountainResultManager::Init(TYPE type)
 		pNextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
 		pNextButton->AddComponent<ButtonUI>();
 		pNextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		if (type == TYPE_CLEAR)
-			pNextButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->ReloadScene(); });
-		else
-			pNextButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->SetScene("title"); });
+		pNextButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->ReloadScene(); });
 
 		GameObject* pNextButtonText = new GameObject();
 		pNextButtonText->SetParent(pNextButton);
 		pNextButtonText->transform->SetPos(250.0f, 35.0f);
 		pNextButtonText->AddComponent<CText>();
 		pNextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pNextButtonText->GetComponent<CText>()->SetText(type == TYPE_CLEAR ? "<color=0,0,0>Next →" : "<color=0,0,0>END");
+		pNextButtonText->GetComponent<CText>()->SetText("<color=0,0,0>Next →");
 		pNextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
 
@@ -181,29 +181,9 @@ void MountainResultManager::Init(TYPE type)
 }
 
 //=============================================================
-// [MountainResultManager] クリア時の初期化
+// [ClearResult] 終了
 //=============================================================
-void MountainResultManager::InitClear()
-{
-	// ショップを生成する
-	m_shopManager = new ShopManager();
-	m_shopManager->Init();
-
-
-}
-
-//=============================================================
-// [MountainResultManager] ゲームオーバー時の初期化
-//=============================================================
-void MountainResultManager::InitGameOver()
-{
-
-}
-
-//=============================================================
-// [MountainResultManager] クリア時の終了処理
-//=============================================================
-void MountainResultManager::UninitClear()
+void ClearResult::Uninit()
 {
 	// ショップを破棄する
 	if (m_shopManager != nullptr)
@@ -215,81 +195,25 @@ void MountainResultManager::UninitClear()
 }
 
 //=============================================================
-// [MountainResultManager] ゲームオーバー時の終了処理
+// [ClearResult] クリア時の更新
 //=============================================================
-void MountainResultManager::UninitGameOver()
-{
-
-}
-
-//=============================================================
-// [MountainResultManager] クリア時の更新
-//=============================================================
-void MountainResultManager::UpdateClear()
+void ClearResult::Update()
 {
 	// ショップを更新する
 	m_shopManager->Update();
 }
 
 //=============================================================
-// [MountainResultManager] ゲームオーバー時の更新
+// [ClearResult] リザルトアニメーションの更新
 //=============================================================
-void MountainResultManager::UpdateGameOver()
-{
-
-}
-
-//=============================================================
-// [MountainResultManager] 終了
-//=============================================================
-void MountainResultManager::Uninit()
-{
-	m_mtText->Destroy();
-	m_bg->Destroy();
-
-	// それぞれの終了処理
-	switch (m_endType)
-	{
-	case MountainResultManager::TYPE_GAMEOVER:
-		UninitGameOver();
-		break;
-	case MountainResultManager::TYPE_CLEAR:
-		UninitClear();
-		break;
-	}
-}
-
-//=============================================================
-// [MountainResultManager] 更新
-//=============================================================
-void MountainResultManager::Update()
-{
-	// リザルトアニメーションの更新
-	UpdateResultAnim();
-
-	// それぞれの更新処理
-	switch (m_endType)
-	{
-	case MountainResultManager::TYPE_GAMEOVER:
-		UpdateGameOver();
-		break;
-	case MountainResultManager::TYPE_CLEAR:
-		UpdateClear();
-		break;
-	}
-}
-
-//=============================================================
-// [MountainResultManager] リザルトアニメーションの更新
-//=============================================================
-void MountainResultManager::UpdateResultAnim()
+void ClearResult::UpdateResultAnim()
 {
 	// 背景のフェード
 	float currentAlpha = m_bg->GetComponent<CPolygon>()->GetColor().a;
 	m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, currentAlpha + (0.5f - currentAlpha) * 0.02f));
 
 	// クリアテキストのアニメーション
-	if (m_progState <= MountainResultManager::P_MTTEXT)
+	if (m_progState <= ClearResult::P_MTTEXT)
 	{
 		m_mtText->transform->SetPos(m_mtText->transform->GetWPos().x +
 			(CRenderer::SCREEN_WIDTH / 2 - m_mtText->transform->GetWPos().x) * 0.08f, 100.0f
@@ -297,14 +221,14 @@ void MountainResultManager::UpdateResultAnim()
 	}
 
 	// バイクの情報を表示
-	if (m_progState == MountainResultManager::P_FUEL)
+	if (m_progState == ClearResult::P_FUEL)
 	{
 		if (m_progCounter == 80)
 		{
 			m_fuelView->GetComponent<ResultViewBar>()->StartAnim();
 		}
 	}
-	if (m_progState == MountainResultManager::P_ENDURANCE)
+	if (m_progState == ClearResult::P_ENDURANCE)
 	{
 		if (m_progCounter == 80)
 		{
@@ -322,12 +246,173 @@ void MountainResultManager::UpdateResultAnim()
 }
 
 //=============================================================
-// [MountainResultManager] リセット
+// [ClearResult] 描画
 //=============================================================
-void MountainResultManager::Reset()
+void ClearResult::Draw()
 {
-	m_beforeFuel = CVehicle::MAX_FUEL;
-	m_beforeEndurance = CVehicle::MAX_ENDURANCE;
-	m_goalCount = 0;
-	m_results.clear();
+
+}
+
+
+
+
+
+//=============================================================
+// [GameOverResult] 初期化
+//=============================================================
+void GameOverResult::Init()
+{
+	// 踏破数をインクリメント
+	m_goalCount++;
+
+	// クリアテキスト
+	{
+		m_mtText = new GameObject("MtClearText", "UI");
+		m_mtText->AddComponent<CText>();
+		m_mtText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		m_mtText->GetComponent<CText>()->SetFontSize(130);
+		m_mtText->GetComponent<CText>()->SetOutlineColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+		m_mtText->GetComponent<CText>()->SetOutlineSize(2);
+		m_mtText->GetComponent<CText>()->SetText("<size=150>GAME OVER");
+		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		m_mtText->transform->SetPos(CRenderer::SCREEN_WIDTH/2, 100.0f, 0.0f);
+	}
+
+	// データ表示
+	{
+		m_dataView = new GameObject("DataView", "UI");
+		m_dataView->AddComponent<ResultDataView>();
+		m_dataView->transform->Translate(60.0f, 350.0f, 0.0f);
+
+		// 最新データを取得
+		ResultData data = m_results[m_results.size() - 1];
+		m_dataView->GetComponent<ResultDataView>()->SetTime(-1);
+		m_dataView->GetComponent<ResultDataView>()->SetHighSpeed(data.highSpeed);
+		m_dataView->GetComponent<ResultDataView>()->SetAction(data.action);
+	}
+
+	// バイク情報表示
+	{
+		// 燃料
+		m_fuelView = new GameObject("FuelView", "UI");
+		m_fuelView->transform->SetPos(1310.0f, 360.0f);
+		m_fuelView->AddComponent<ResultViewBar>(
+			"燃料",
+			D3DCOLOR_RGBA(232, 44, 44, 255),
+			D3DCOLOR_RGBA(255, 0, 0, 255),
+			D3DCOLOR_RGBA(255, 0, 0, 255)
+			);
+		m_fuelView->GetComponent<ResultViewBar>()->SetValue(
+			static_cast<float>(m_beforeFuel / CVehicle::MAX_FUEL),
+			static_cast<float>(m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel() / CVehicle::MAX_FUEL));
+
+		// 耐久値
+		m_enduranceView = new GameObject("EnduranceView", "UI");
+		m_enduranceView->transform->SetPos(1310.0f, 600.0f);
+		m_enduranceView->AddComponent<ResultViewBar>(
+			"耐久値",
+			D3DCOLOR_RGBA(78, 69, 255, 255),
+			D3DCOLOR_RGBA(75, 67, 224, 255),
+			D3DCOLOR_RGBA(61, 100, 255, 255)
+			);
+		m_enduranceView->GetComponent<ResultViewBar>()->SetValue(
+			static_cast<float>(m_beforeEndurance / CVehicle::MAX_ENDURANCE),
+			static_cast<float>(m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance() / CVehicle::MAX_ENDURANCE));
+	}
+
+	// 地形画像
+	{
+		m_terrainImg = new GameObject("TerrainImg", "ResultData");
+		m_terrainImg->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT / 2));
+		m_terrainImg->AddComponent<ResultTerrain>();
+	}
+
+	// シードテキスト
+	{
+		m_seedText = new GameObject("SeedText", "UI");
+		m_seedText->AddComponent<CText>();
+		m_seedText->GetComponent<CText>()->SetFontSize(50);
+		m_seedText->GetComponent<CText>()->SetText("<color=150,150,150>Seed: " + std::to_string(m_gameScene->GetTerrain()->GetSeed()));
+		m_seedText->transform->SetPos(5.0f, CRenderer::SCREEN_HEIGHT - 50.0f);
+	}
+
+	// 背景
+	{
+		m_bg = new GameObject("BG", "UI");
+		m_bg->SetPriority(3);
+		m_bg->AddComponent<CPolygon>();
+		m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
+		m_bg->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH), static_cast<float>(CRenderer::SCREEN_HEIGHT));
+	}
+
+	// 次の山へ or 終了
+	{
+		GameObject* pNextButton = new GameObject("NextMountain");
+		pNextButton->transform->SetSize(500.0f, 140.0f);
+		pNextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
+		pNextButton->AddComponent<ButtonUI>();
+		pNextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		pNextButton->GetComponent<ButtonUI>()->setClickEvent([]() { CSceneManager::GetInstance()->SetScene("title"); });
+
+		GameObject* pNextButtonText = new GameObject();
+		pNextButtonText->SetParent(pNextButton);
+		pNextButtonText->transform->SetPos(250.0f, 35.0f);
+		pNextButtonText->AddComponent<CText>();
+		pNextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pNextButtonText->GetComponent<CText>()->SetText("<color=0,0,0>END");
+		pNextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+	}
+
+	// リスト追加
+	{
+		GameObject* pListButton = new GameObject("NextMountain");
+		pListButton->transform->SetSize(500.0f, 140.0f);
+		pListButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) - 400.0f, 850.0f);
+		pListButton->AddComponent<ButtonUI>();
+		pListButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+
+		GameObject* pListButtonText = new GameObject();
+		pListButtonText->SetParent(pListButton);
+		pListButtonText->transform->SetPos(250.0f, 35.0f);
+		pListButtonText->AddComponent<CText>();
+		pListButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pListButtonText->GetComponent<CText>()->SetFontSize(80);
+		pListButtonText->GetComponent<CText>()->SetText("<color=0,0,0>リストに追加");
+		pListButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+	}
+
+	// 前回の情報として保存
+	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
+	m_beforeEndurance = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance();
+}
+
+//=============================================================
+// [GameOverResult] 終了
+//=============================================================
+void GameOverResult::Uninit()
+{
+}
+
+//=============================================================
+// [GameOverResult] クリア時の更新
+//=============================================================
+void GameOverResult::Update()
+{
+}
+
+//=============================================================
+// [GameOverResult] リザルトアニメーションの更新
+//=============================================================
+void GameOverResult::UpdateResultAnim()
+{
+	// 背景のフェード
+	float currentAlpha = m_bg->GetComponent<CPolygon>()->GetColor().a;
+	m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, currentAlpha + (0.5f - currentAlpha) * 0.02f));
+}
+
+//=============================================================
+// [GameOverResult] 描画
+//=============================================================
+void GameOverResult::Draw()
+{
 }

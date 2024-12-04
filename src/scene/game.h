@@ -51,7 +51,7 @@ private:
 
 	int m_travellingCount;
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
-	MountainResultManager* m_resultManager;			// マウンテンリザルトマネージャー
+	ResultBase* m_result;			// リザルト
 
 	Terrain* m_pTerrain;				// 地形
 	GameObject* m_voidField;		// 奈落
