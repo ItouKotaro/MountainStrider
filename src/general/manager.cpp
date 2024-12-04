@@ -139,8 +139,8 @@ POINT CManager::GetCursorClientPos()
 	GetCursorPos(&points);
 	ScreenToClient(m_hwnd, &points);
 	D3DXVECTOR2 rect = GetWindowSize();
-	points.x *= static_cast<float>(CRenderer::SCREEN_WIDTH / (float)rect.x);
-	points.y *= static_cast<float>(CRenderer::SCREEN_HEIGHT / (float)rect.y);
+	points.y *= static_cast<LONG>(CRenderer::SCREEN_HEIGHT / (float)rect.y);
+	points.x *= static_cast<LONG>(CRenderer::SCREEN_WIDTH / (float)rect.x);
 	return points;
 }
 
@@ -155,8 +155,8 @@ void CManager::SetCursorClientPos(LONG x, LONG y)
 
 	ClientToScreen(m_hwnd, &point);
 	D3DXVECTOR2 rect = GetWindowSize();
-	point.x *= static_cast<float>(rect.x / (float)CRenderer::SCREEN_WIDTH);
-	point.y *= static_cast<float>(rect.y / (float)CRenderer::SCREEN_HEIGHT);
+	point.x *= static_cast<LONG>(rect.x / (float)CRenderer::SCREEN_WIDTH);
+	point.y *= static_cast<LONG>(rect.y / (float)CRenderer::SCREEN_HEIGHT);
 	SetCursorPos(point.x, point.y);
 }
 
