@@ -13,10 +13,11 @@ class ButtonUI : public CPolygon
 {
 public:
 	ButtonUI() : m_onClick(nullptr){}
-	void Init() override { CPolygon::Init(); }
-	void Uninit() override { CPolygon::Uninit(); }
-	void Update() override;
-	void DrawUI() override { CPolygon::DrawUI(); }
+	virtual ~ButtonUI() {}
+	virtual void Init() override { CPolygon::Init(); }
+	virtual void Uninit() override { CPolygon::Uninit(); }
+	virtual void Update() override;
+	virtual void DrawUI() override { CPolygon::DrawUI(); }
 	void setClickEvent(std::function<void(void)> onClick) { m_onClick = onClick; }
 private:
 	std::function<void(void)> m_onClick;
