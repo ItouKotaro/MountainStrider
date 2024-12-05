@@ -186,6 +186,32 @@ GameObject* GameObject::FindTagChildren(const std::string& sTag)
 }
 
 //=============================================================
+// [GameObject] アクティブの取得
+//=============================================================
+bool GameObject::GetActive()
+{
+	GameObject* pParent = GetParent();
+	if (pParent != nullptr)
+	{ // 親が存在するとき
+		return pParent->GetActive();
+	}
+	return m_active;
+}
+
+//=============================================================
+// [GameObject] 表示の取得
+//=============================================================
+bool GameObject::GetVisible()
+{
+	GameObject* pParent = GetParent();
+	if (pParent != nullptr)
+	{ // 親が存在するとき
+		return pParent->GetVisible();
+	}
+	return m_visible;
+}
+
+//=============================================================
 // [GameObject] 削除
 //=============================================================
 void GameObject::Destroy(const bool& includeChild)

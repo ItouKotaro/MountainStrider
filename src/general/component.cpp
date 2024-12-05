@@ -31,8 +31,6 @@ void Component::Sort()
 {
 	// アタッチされているゲームオブジェクトの優先度で比較し、ソートする
 	std::sort(m_pComponents.begin(), m_pComponents.end(), [](Component* com1, Component* com2) {
-		if (com1->gameObject != nullptr && com2->gameObject != nullptr)
-			return com1->gameObject->GetPriority() < com2->gameObject->GetPriority();
-		return false;
+		return com1->gameObject->GetPriority() < com2->gameObject->GetPriority();
 		});
 }

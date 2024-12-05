@@ -59,9 +59,19 @@ private:
 	PROG_STATE m_progState;	// 結果表示進行度
 	int m_progCounter;				// カウンター
 
-	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
+	// ページ
+	enum PAGE
+	{
+		PAGE_RESULT,
+		PAGE_SHOP,
+	};
+	void SwitchPage(PAGE nextPage);
+	PAGE m_page;
 
 	GameObject* m_bg;						// 背景
+
+	GameObject* m_resultPage;
+	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
 	GameObject* m_seedText;				// シードテキスト
 	GameObject* m_dataView;				// データ表示
 	GameObject* m_fuelView;				// 燃料表示

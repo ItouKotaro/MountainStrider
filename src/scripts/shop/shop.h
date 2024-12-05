@@ -10,7 +10,6 @@
 #define _SHOP_H_
 
 #include "component.h"
-#include "component/2d/polygon.h"
 
 // ポイント表示
 class PointView : public Component
@@ -21,8 +20,11 @@ public:
 	void Update() override;
 	void DrawUI() override;
 private:
-	CPolygon* m_pointFrame;
+	LPDIRECT3DVERTEXBUFFER9 m_vtxBuff;	// 頂点情報
+	LPDIRECT3DTEXTURE9 m_texture;			// テクスチャ
 };
+
+// 燃料 or 耐久値 購入画面
 
 // ショップ管理クラス
 class ShopManager
@@ -32,9 +34,10 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void SetVisible(const bool& show) { m_shop->SetVisible(show); }
 private:
-	GameObject* m_text;
-	PointView* m_ptView;
+	GameObject* m_shop;
+	GameObject* m_ptView;
 };
 
 #endif // !_SHOP_H_

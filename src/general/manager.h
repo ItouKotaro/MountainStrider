@@ -38,8 +38,15 @@ public:
 	const bool GetPause() { return m_bPause; }																// ポーズの取得
 	void SetMouseWheel(const int& nMouseWheel) { m_nMouseWheel = nMouseWheel; }	// マウスホイールの設定（ユーザーの使用禁止）
 	const int GetMouseWheel() { return m_nMouseWheel; }												// マウスホイールの取得
-	POINT GetCursorClientPos();																						// カーソル位置の取得
-	void SetCursorClientPos(LONG x, LONG y);																	// カーソル位置の設定
+
+	struct CursorPos
+	{
+		float x;
+		float y;
+	};
+
+	CursorPos GetCursorClientPos();																						// カーソル位置の取得
+	void SetCursorClientPos(float x, float y);																	// カーソル位置の設定
 	D3DXVECTOR2 GetWindowSize();																				// ウィンドウサイズの取得
 
 	HWND GetHWND() { return m_hwnd; }												// ハンドルの取得

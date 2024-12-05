@@ -133,31 +133,51 @@ void CManager::Draw()
 //=============================================================
 // [CManager] カーソル位置を取得する
 //=============================================================
-POINT CManager::GetCursorClientPos()
+CManager::CursorPos CManager::GetCursorClientPos()
 {
 	POINT points;
 	GetCursorPos(&points);
-	ScreenToClient(m_hwnd, &points);
+	
+	// スクリーン上で見た左上の座標を取得する
+	POINT startPos;
+	startPos.x = 0;
+	startPos.y = 0;
+	ClientToScreen(m_hwnd, &startPos);
+
+	CursorPos cPos;
+	cPos.x = points.x - startPos.x;
+	cPos.y = points.y - startPos.y;
+
+
 	D3DXVECTOR2 rect = GetWindowSize();
-	points.y *= static_cast<LONG>(CRenderer::SCREEN_HEIGHT / (float)rect.y);
-	points.x *= static_cast<LONG>(CRenderer::SCREEN_WIDTH / (float)rect.x);
-	return points;
+	cPos.x = static_cast<float>(points.x * (CRenderer::SCREEN_WIDTH / (float)rect.x));
+	cPos.y = static_cast<float>(points.y * (CRenderer::SCREEN_HEIGHT / (float)rect.y));
+	return cPos;
 }
 
 //=============================================================
 // [CManager] カーソル位置を設定する
 //=============================================================
-void CManager::SetCursorClientPos(LONG x, LONG y)
+void CManager::SetCursorClientPos(float x, float y)
 {
-	POINT point;
-	point.x = x;
-	point.y = y;
+	CursorPos cPos;
+	cPos.x = x;
+	cPos.y = y;
 
-	ClientToScreen(m_hwnd, &point);
+	// スクリーン上で見た左上の座標を取得する
+	POINT startPos;
+	startPos.x = 0;
+	startPos.y = 0;
+	ClientToScreen(m_hwnd, &startPos);
+
 	D3DXVECTOR2 rect = GetWindowSize();
-	point.x *= static_cast<LONG>(rect.x / (float)CRenderer::SCREEN_WIDTH);
-	point.y *= static_cast<LONG>(rect.y / (float)CRenderer::SCREEN_HEIGHT);
-	SetCursorPos(point.x, point.y);
+	cPos.x *= static_cast<float>(rect.x / (float)CRenderer::SCREEN_WIDTH);
+	cPos.y *= static_cast<float>(rect.y / (float)CRenderer::SCREEN_HEIGHT);
+
+	cPos.x += startPos.x;
+	cPos.y += startPos.y;
+
+	SetCursorPos(cPos.x, cPos.y);
 }
 
 //=============================================================

@@ -47,13 +47,13 @@ public:
 	@brief ゲームオブジェクトのアクティブ状態を取得する
 	@retval アクティブ=true, 非アクティブ=false
 	*/
-	bool GetActive() { return m_active; }
+	bool GetActive();
 
 	/*
 	@brief ゲームオブジェクトの表示状態を取得する
 	@retval 表示=true, 非表示=false
 	*/
-	bool GetVisible() { return m_visible; }
+	bool GetVisible();
 
 	/*
 	@brief ゲームオブジェクトの名前を設定する

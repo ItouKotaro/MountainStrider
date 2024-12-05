@@ -38,7 +38,7 @@ void CCameraMove::Update()
 	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
 	{
 		// 現在のカーソル位置を取得する
-		POINT cursor = CManager::GetInstance()->GetCursorClientPos();
+		CManager::CursorPos cursor = CManager::GetInstance()->GetCursorClientPos();
 
 		// 前回のカーソル位置と異なるとき
 		if (cursor.x != m_oldCursor.x || cursor.y != m_oldCursor.y)

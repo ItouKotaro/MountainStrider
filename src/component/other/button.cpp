@@ -15,7 +15,7 @@ void ButtonUI::Update()
 	CPolygon::Update();
 
 	// マウス位置の取得
-	POINT mousePos = CManager::GetInstance()->GetCursorClientPos();
+	CManager::CursorPos mousePos = CManager::GetInstance()->GetCursorClientPos();
 	D3DXVECTOR3 wPos = transform->GetWPos();
 
 	if (wPos.x <= mousePos.x && mousePos.x <= wPos.x + transform->GetSize().x &&
