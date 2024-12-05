@@ -166,6 +166,26 @@ void CPolygon::SetColor(const D3DXCOLOR& color)
 }
 
 //=============================================================
+// [CPolygon] 色の設定
+//=============================================================
+void CPolygon::SetColor(const int& idx, const D3DXCOLOR& color)
+{
+	if (0 <= idx && idx < 4)
+	{
+		VERTEX_2D* pVtx; //頂点情報へのポインタ
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		// 頂点カラー
+		pVtx[idx].col = color;
+
+		// 頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+	}
+}
+
+//=============================================================
 // [CPolygon] アニメーション設定
 //=============================================================
 void CPolygon::SetAnim(int nSplit, int nTime)

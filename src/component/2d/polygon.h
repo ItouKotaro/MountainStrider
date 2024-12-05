@@ -21,6 +21,7 @@ public:
 	virtual void Update() override;
 	virtual void DrawUI() override;
 	void SetColor(const D3DXCOLOR& color);
+	void SetColor(const int& idx, const D3DXCOLOR& color);
 	D3DXCOLOR GetColor() { return m_color; }
 	void SetAnchorPoint(const D3DXVECTOR2& anchorPoint) { m_anchorPoint = anchorPoint; }
 	void SetTexture(std::string sPath);
@@ -33,8 +34,8 @@ private:
 	void UpdateVertex();
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点情報
 	LPDIRECT3DTEXTURE9 m_pTexture;			// テクスチャ
-	D3DXCOLOR m_color;								// 色
 	D3DXVECTOR2 m_anchorPoint;					// アンカーポイント
+	D3DXCOLOR m_color;
 
 	// アニメーション
 	int m_nSplit;					// 分割数

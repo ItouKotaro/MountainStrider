@@ -50,6 +50,8 @@ void ShopManager::Init()
 		fuelBG->SetParent(m_fuel);
 		fuelBG->SetPriority(5);
 		fuelBG->AddComponent<CPolygon>()->SetColor(D3DCOLOR_RGBA(201, 24, 0, 255));
+		fuelBG->GetComponent<CPolygon>()->SetColor(1, D3DCOLOR_RGBA(250, 176, 97, 255));
+		fuelBG->GetComponent<CPolygon>()->SetColor(3, D3DCOLOR_RGBA(250, 176, 97, 255));
 		fuelBG->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 280.0f);
 
 		// テキスト
@@ -86,9 +88,36 @@ void ShopManager::Init()
 
 		// 購入ボタン
 		m_fuelButton = new GameObject();
-		m_fuelButton->transform->SetSize(200.0f, 80.0f);
-		m_fuelButton->transform->SetPos(300.0f, 180.0f);
+		m_fuelButton->SetParent(m_fuel);
+		m_fuelButton->transform->SetSize(300.0f, 90.0f);
+		m_fuelButton->transform->SetPos(230.0f, 180.0f);
 		m_fuelButton->AddComponent<ButtonUI>();
+		m_fuelButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\SHOP\\maintenance_buy.png");
+
+		// コストアイコン
+		GameObject* fuelCostIcon = new GameObject();
+		fuelCostIcon->SetParent(m_fuel);
+		fuelCostIcon->transform->SetPos(235.0f, 188.0f);
+		fuelCostIcon->transform->SetSize(40.0f, 40.0f);
+		fuelCostIcon->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\SHOP\\point.png");
+
+		// コスト表示
+		m_fuelCost = new GameObject();
+		m_fuelCost->SetParent(fuelCostIcon);
+		m_fuelCost->transform->SetPos(60.0f, 9.0f);
+		m_fuelCost->AddComponent<CText>()->SetText("5");
+		m_fuelCost->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		m_fuelCost->GetComponent<CText>()->SetFontSize(36);
+		m_fuelCost->GetComponent<CText>()->SetAlign(CText::CENTER);
+
+		// 増加量表示
+		m_fuelButtonText = new GameObject();
+		m_fuelButtonText->SetParent(m_fuelButton);
+		m_fuelButtonText->transform->SetPos(195.0f, 23.0f);
+		m_fuelButtonText->AddComponent<CText>()->SetText("+100");
+		m_fuelButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		m_fuelButtonText->GetComponent<CText>()->SetFontSize(60);
+		m_fuelButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	}
 	
 	// 耐久値
@@ -101,7 +130,9 @@ void ShopManager::Init()
 		GameObject* enduranceBG = new GameObject();
 		enduranceBG->SetParent(m_endurance);
 		enduranceBG->SetPriority(5);
-		enduranceBG->AddComponent<CPolygon>()->SetColor(D3DCOLOR_RGBA(0, 150, 75, 255));
+		enduranceBG->AddComponent<CPolygon>()->SetColor(D3DCOLOR_RGBA(15, 92, 15, 255));
+		enduranceBG->GetComponent<CPolygon>()->SetColor(1, D3DCOLOR_RGBA(24, 184, 90, 255));
+		enduranceBG->GetComponent<CPolygon>()->SetColor(3, D3DCOLOR_RGBA(24, 184, 90, 255));
 		enduranceBG->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 280.0f);
 
 		// テキスト
@@ -135,6 +166,39 @@ void ShopManager::Init()
 		m_enduranceCurrentValue->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 		m_enduranceCurrentValue->GetComponent<CText>()->SetFontSize(40);
 		m_enduranceCurrentValue->GetComponent<CText>()->SetAlign(CText::RIGHT);
+
+		// 購入ボタン
+		m_enduranceButton = new GameObject();
+		m_enduranceButton->SetParent(m_endurance);
+		m_enduranceButton->transform->SetSize(300.0f, 90.0f);
+		m_enduranceButton->transform->SetPos(440.0f, 180.0f);
+		m_enduranceButton->AddComponent<ButtonUI>();
+		m_enduranceButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\SHOP\\maintenance_buy.png");
+
+		// コストアイコン
+		GameObject* enduranceCostIcon = new GameObject();
+		enduranceCostIcon->SetParent(m_endurance);
+		enduranceCostIcon->transform->SetPos(445.0f, 188.0f);
+		enduranceCostIcon->transform->SetSize(40.0f, 40.0f);
+		enduranceCostIcon->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\SHOP\\point.png");
+
+		// コスト表示
+		m_enduranceCost = new GameObject();
+		m_enduranceCost->SetParent(enduranceCostIcon);
+		m_enduranceCost->transform->SetPos(60.0f, 9.0f);
+		m_enduranceCost->AddComponent<CText>()->SetText("5");
+		m_enduranceCost->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		m_enduranceCost->GetComponent<CText>()->SetFontSize(36);
+		m_enduranceCost->GetComponent<CText>()->SetAlign(CText::CENTER);
+
+		// 増加量表示
+		m_enduranceButtonText = new GameObject();
+		m_enduranceButtonText->SetParent(m_enduranceButton);
+		m_enduranceButtonText->transform->SetPos(195.0f, 23.0f);
+		m_enduranceButtonText->AddComponent<CText>()->SetText("+100");
+		m_enduranceButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		m_enduranceButtonText->GetComponent<CText>()->SetFontSize(60);
+		m_enduranceButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	}
 }
 

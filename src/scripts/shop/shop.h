@@ -34,12 +34,16 @@ private:
 	GameObject* m_fuelBar;
 	GameObject* m_fuelCurrentValue;
 	GameObject* m_fuelButton;
+	GameObject* m_fuelCost;
+	GameObject* m_fuelButtonText;
 
 	// ‘Ï‹v’l
 	GameObject* m_endurance;
 	GameObject* m_enduranceBar;
 	GameObject* m_enduranceCurrentValue;
 	GameObject* m_enduranceButton;
+	GameObject* m_enduranceCost;
+	GameObject* m_enduranceButtonText;
 };
 
 #endif // !_SHOP_H_
