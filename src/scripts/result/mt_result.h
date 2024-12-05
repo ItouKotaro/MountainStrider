@@ -30,6 +30,9 @@ public:
 	};
 	static void AddResult(ResultData data);
 	static void Reset();
+
+	static float GetBeforeFuel() { return m_beforeFuel; }
+	static float GetBeforeEndurance() { return m_beforeEndurance; }
 protected:
 	CGameScene* m_gameScene;
 	static float m_beforeFuel;							// ‘O‰ñ‚Ì”R—¿

@@ -376,6 +376,20 @@ void CAdvancedBar::SetColor(int index, D3DXCOLOR color)
 }
 
 //=============================================================
+// [CAdvancedBar] 色変更
+//=============================================================
+void CAdvancedBar::SetColor(D3DXCOLOR color)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		m_color[i] = color;
+	}
+
+	// 更新
+	UpdateVertex();
+}
+
+//=============================================================
 // [CAdvancedBar] 背景色変更
 //=============================================================
 void CAdvancedBar::SetBGColor(D3DXCOLOR color)

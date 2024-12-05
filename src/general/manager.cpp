@@ -150,8 +150,8 @@ CManager::CursorPos CManager::GetCursorClientPos()
 
 
 	D3DXVECTOR2 rect = GetWindowSize();
-	cPos.x = static_cast<float>(points.x * (CRenderer::SCREEN_WIDTH / (float)rect.x));
-	cPos.y = static_cast<float>(points.y * (CRenderer::SCREEN_HEIGHT / (float)rect.y));
+	cPos.x *= static_cast<float>(CRenderer::SCREEN_WIDTH / (float)rect.x);
+	cPos.y *= static_cast<float>(CRenderer::SCREEN_HEIGHT / (float)rect.y);
 	return cPos;
 }
 

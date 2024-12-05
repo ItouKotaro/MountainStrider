@@ -215,7 +215,8 @@ void ClearResult::Update()
 	UpdateResultAnim();
 
 	// ショップを更新する
-	m_shopManager->Update();
+	if (m_page == PAGE_SHOP)
+		m_shopManager->Update();
 }
 
 //=============================================================

@@ -89,6 +89,8 @@ public:
 
 	// 色変更
 	void SetColor(int index, D3DXCOLOR color);
+	// 色変更
+	void SetColor(D3DXCOLOR color);
 	// 背景色変更
 	void SetBGColor(D3DXCOLOR color);
 	// 進捗度変更

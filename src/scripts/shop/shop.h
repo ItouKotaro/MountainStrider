@@ -11,20 +11,7 @@
 
 #include "component.h"
 
-// ポイント表示
-class PointView : public Component
-{
-public:
-	void Init() override;
-	void Uninit() override;
-	void Update() override;
-	void DrawUI() override;
-private:
-	LPDIRECT3DVERTEXBUFFER9 m_vtxBuff;	// 頂点情報
-	LPDIRECT3DTEXTURE9 m_texture;			// テクスチャ
-};
-
-// 燃料 or 耐久値 購入画面
+class CGameScene;
 
 // ショップ管理クラス
 class ShopManager
@@ -35,9 +22,24 @@ public:
 	void Update();
 	void Draw();
 	void SetVisible(const bool& show) { m_shop->SetVisible(show); }
+
+	static const float BAR_SPACE;
 private:
-	GameObject* m_shop;
-	GameObject* m_ptView;
+	GameObject* m_shop;		// ページ管理
+	GameObject* m_ptView;	// 上のフレーム
+	CGameScene* m_gameScene;
+
+	// 燃料
+	GameObject* m_fuel;
+	GameObject* m_fuelBar;
+	GameObject* m_fuelCurrentValue;
+	GameObject* m_fuelButton;
+
+	// 耐久値
+	GameObject* m_endurance;
+	GameObject* m_enduranceBar;
+	GameObject* m_enduranceCurrentValue;
+	GameObject* m_enduranceButton;
 };
 
 #endif // !_SHOP_H_

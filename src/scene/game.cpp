@@ -114,7 +114,7 @@ void CGameScene::Update()
 {
 	if (INPUT_INSTANCE->onTrigger("@"))
 	{
-		onGameOver();
+		onClear();
 	}
 
 	// FPSを更新する
@@ -153,6 +153,9 @@ void CGameScene::Update()
 	{ // ゲームオーバーのとき
 		// リザルトの更新
 		m_result->Update();
+
+		// バイクを無効化する
+		m_pBike->SetActive(false);
 	}
 }
 
