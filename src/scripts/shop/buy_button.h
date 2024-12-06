@@ -9,9 +9,16 @@
 
 #include "component/other/button.h"
 
-class BuyButtonUI
+// çwì¸É{É^Éì
+class BuyButtonUI : public Component
 {
-
+public:
+	void Init() override;
+	void Uninit() override;
+	void Update() override;
+	void DrawUI() override;
+private:
+	
 };
 
 #endif // !_BUY_BUTTON_H_

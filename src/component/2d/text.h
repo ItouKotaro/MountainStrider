@@ -26,6 +26,7 @@ public:
 	{
 		IDirect3DTexture9* pTex;	// 文字のテクスチャ
 		D3DXVECTOR3 pos;			// 文字位置
+		int line;								// 行数
 	};
 
 	// フォントのデータ

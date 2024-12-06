@@ -107,7 +107,7 @@ void CText::DrawUI()
 
     for (int i = 0; i < (int)m_textInfos.size(); i++)
     {
-        D3DXVECTOR3 pos = { transform->GetWPos().x + m_textInfos[i].pos.x, transform->GetWPos().y - m_textInfos[i].pos.y + m_fMaxHeight, 0.0f };
+        D3DXVECTOR3 pos = { transform->GetWPos().x + m_textInfos[i].pos.x, transform->GetWPos().y - m_textInfos[i].pos.y + m_fMaxHeight * m_textInfos[i].line, 0.0f };
         m_pSprite->Draw(m_textInfos[i].pTex, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpha));
     }
 
@@ -405,6 +405,7 @@ void CText::UpdateText()
     int fontSize = m_fontSize;
     D3DXCOLOR fillColor = m_fillColor;
     D3DXCOLOR edgeColor = m_outlineColor;
+    int lineCounter = 1;
     for (int i = 0; i < nTextLength; i++)
     {
         TextInfo textInfo;
@@ -454,6 +455,14 @@ void CText::UpdateText()
             pChar = text.c_str();
         }
 
+        // 改行
+        if (strcmp(&pChar[0], "\n") == 0)
+        {
+            lineCounter++;
+            fTextWidth = 0.0f;
+            continue;
+        }
+
         // フォントテクスチャの生成
         textInfo.pTex = CreateFontTexture(
             m_fontName.c_str(),
@@ -470,6 +479,7 @@ void CText::UpdateText()
 
         // 描画位置を決める
         textInfo.pos = { fTextWidth, (float)strInfo.bottom - (float)strInfo.top, 0.0f };
+        textInfo.line = lineCounter;
         fTextWidth += strInfo.right;
 
         if (m_fMaxHeight < textInfo.pos.y)
