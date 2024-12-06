@@ -10,6 +10,7 @@
 #define _SHOP_H_
 
 #include "component.h"
+#include "shop_items.h"
 
 class CGameScene;
 
@@ -22,12 +23,28 @@ public:
 	void Update();
 	void Draw();
 	void SetVisible(const bool& show) { m_shop->SetVisible(show); }
+	static void AddPoint(const int& point) { m_points += point; }
+
+	// 支払えた時にtrueを返し、失敗すると消費されずにfalseを返します
+	bool PayPoint(const int& cost);
 
 	static const float BAR_SPACE;
 private:
+	void InitTopDisplay();
+
+	static int m_points;				// ポイント
+	int m_viewPoints;				// 表示されているポイント
+	int m_pointsCounter;			// ポイントを更新するカウンター
+
 	GameObject* m_shop;		// ページ管理
 	GameObject* m_ptView;	// 上のフレーム
+	GameObject* m_ptText;		// ポイントテキスト
 	CGameScene* m_gameScene;
+
+	// ショップアイテムの管理
+	FuelItem m_fuelItem;
+	EnduranceItem m_enduranceItem;
+
 
 	// 燃料
 	GameObject* m_fuel;

@@ -21,6 +21,7 @@ public:
 	void SetPos(const D3DXVECTOR3& pos);
 	void AddDamage(const float& value);
 	void AddFuel(const float& value);
+	void AddEndurance(const float& value);
 	void SetStatusUI(CStatusUI* pStatusUI) { m_pStatusUI = pStatusUI; }
 
 	static void ResetState()

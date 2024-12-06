@@ -197,6 +197,14 @@ void CVehicle::AddFuel(const float& value)
 }
 
 //=============================================================
+// [CVehicle] 耐久値を増やす
+//=============================================================
+void CVehicle::AddEndurance(const float& value)
+{
+	m_endurance = m_endurance + value > MAX_ENDURANCE ? MAX_ENDURANCE : m_endurance + value;
+}
+
+//=============================================================
 // [CVehicle] バイクの操作（地面）
 //=============================================================
 void CVehicle::LandingControlVehicle()

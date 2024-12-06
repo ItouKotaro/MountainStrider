@@ -249,6 +249,7 @@
     <ClCompile Include="src\scripts\result\result_view.cpp" />
     <ClCompile Include="src\scripts\shop\buy_button.cpp" />
     <ClCompile Include="src\scripts\shop\shop.cpp" />
+    <ClCompile Include="src\scripts\shop\shop_items.cpp" />
     <ClCompile Include="src\scripts\status_ui.cpp" />
     <ClCompile Include="src\scripts\terrain.cpp" />
     <ClCompile Include="src\scripts\vehicle.cpp" />
@@ -311,6 +312,7 @@
     <ClInclude Include="src\scripts\result\result_view.h" />
     <ClInclude Include="src\scripts\shop\buy_button.h" />
     <ClInclude Include="src\scripts\shop\shop.h" />
+    <ClInclude Include="src\scripts\shop\shop_items.h" />
     <ClInclude Include="src\scripts\status_ui.h" />
     <ClInclude Include="src\scripts\terrain.h" />
     <ClInclude Include="src\scripts\vehicle.h" />
