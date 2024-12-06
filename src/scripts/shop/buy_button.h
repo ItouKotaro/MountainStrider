@@ -18,7 +18,7 @@ public:
 	void Update() override;
 	void DrawUI() override;
 private:
-	
+	LPDIRECT3DVERTEXBUFFER9 m_vtxBuff;	// í∏ì_èÓïÒ
 };
 
 #endif // !_BUY_BUTTON_H_
