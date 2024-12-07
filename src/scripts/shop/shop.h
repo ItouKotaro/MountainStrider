@@ -30,7 +30,7 @@ public:
 
 	static const float BAR_SPACE;
 private:
-	void InitTopDisplay();
+	void InitTopDisplay();			// 燃料と耐久値の購入画面の初期化
 
 	static int m_points;				// ポイント
 	int m_viewPoints;				// 表示されているポイント
