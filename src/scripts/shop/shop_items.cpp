@@ -16,7 +16,7 @@ float ShopItem::m_saleDiscount = 0.0f;
 //=============================================================
 int ShopItem::GetPrice()
 {
-	return m_price * (1.0f - m_discount) * (1.0f - m_saleDiscount);
+	return static_cast<int>(m_price * (1.0f - m_discount) * (1.0f - m_saleDiscount));
 }
 
 //=============================================================
@@ -42,7 +42,7 @@ void FuelItem::onBuy()
 	{
 		if (this->Pay())
 		{ // Žx•¥‚¦‚½Žž
-			pBike->AddFuel(m_amount);
+			pBike->AddFuel(static_cast<float>(m_amount));
 		}
 	}
 }
@@ -62,7 +62,7 @@ void EnduranceItem::onBuy()
 	{
 		if (this->Pay())
 		{ // Žx•¥‚¦‚½Žž
-			pBike->AddEndurance(m_amount);
+			pBike->AddEndurance(static_cast<float>(m_amount));
 		}
 	}
 }

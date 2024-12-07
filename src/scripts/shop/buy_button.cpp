@@ -79,5 +79,21 @@ void BuyButtonUI::Update()
 //=============================================================
 void BuyButtonUI::DrawUI()
 {
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CRenderer::GetInstance()->GetDevice();
 
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, m_vtxBuff, 0, sizeof(VERTEX_2D));
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_2D);
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, m_texture);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
+		0, //描画する最初の頂点インデックス
+		2); //描画するプリミティブ数
 }

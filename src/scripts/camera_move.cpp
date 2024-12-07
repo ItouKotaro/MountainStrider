@@ -53,7 +53,7 @@ void CCameraMove::Update()
 			cursor.y < 1.0f ||
 			cursor.y > CManager::GetInstance()->GetWindowSize().y - 10.0f)
 		{
-			CManager::GetInstance()->SetCursorClientPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT / 2);
+			CManager::GetInstance()->SetCursorClientPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT / 2));
 		}
 
 		m_oldCursor = CManager::GetInstance()->GetCursorClientPos();

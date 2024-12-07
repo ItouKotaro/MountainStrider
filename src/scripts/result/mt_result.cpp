@@ -321,7 +321,7 @@ void GameOverResult::Init()
 		m_mtText->GetComponent<CText>()->SetOutlineSize(2);
 		m_mtText->GetComponent<CText>()->SetText("<size=150>GAME OVER");
 		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		m_mtText->transform->SetPos(CRenderer::SCREEN_WIDTH/2, 100.0f, 0.0f);
+		m_mtText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH/2), 100.0f, 0.0f);
 	}
 
 	// データ表示

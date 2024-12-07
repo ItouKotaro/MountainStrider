@@ -10,6 +10,20 @@
 std::vector<Component*> Component::m_pComponents;
 
 //=============================================================
+// [Component] ゲームオブジェクトにアタッチする
+//=============================================================
+void Component::AttachGameObject(GameObject* attachObj)
+{
+	if (!m_attached)
+	{ // アタッチされていないとき
+		gameObject = attachObj;
+		transform = gameObject->transform;
+		m_attached = true;
+		m_pComponents.push_back(this);
+	}
+}
+
+//=============================================================
 // [Component] 存在するか
 //=============================================================
 bool Component::IsExist(Component* pComponent)

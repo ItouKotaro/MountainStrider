@@ -15,19 +15,22 @@
 class Component
 {
 public:
-	Component() { 
+	Component() {
 		enabled = true;
+		m_attached = false;
 		gameObject = nullptr;
 		transform = nullptr;
-		m_pComponents.push_back(this);
 	}
 	virtual ~Component() {
-		for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
+		if (this->gameObject != nullptr)
 		{
-			if (*itr == this)
+			for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
 			{
-				SAFE_ERASE(m_pComponents, itr)
-				break;
+				if (*itr == this)
+				{
+					SAFE_ERASE(m_pComponents, itr)
+						break;
+				}
 			}
 		}
 	}
@@ -174,6 +177,12 @@ public:
 	}
 
 	/*
+	@brief ゲームオブジェクトにアタッチする
+	@param[in] attachObj : アタッチ先のゲームオブジェクト
+	*/
+	void AttachGameObject(GameObject* attachObj);
+
+	/*
 	@brief コンポーネントのソート
 	*/
 	static void Sort();
@@ -181,13 +190,14 @@ public:
 	// @brief 有効状態か
 	bool enabled;
 
-	// @brief アタッチ先のゲームオブジェクト
-	GameObject* gameObject;
-
 	// @brief アタッチ先のトランスフォーム
 	Transform* transform;
+
+	// @brief アタッチ先のゲームオブジェクト
+	GameObject* gameObject;
 private:
 	static std::vector<Component*> m_pComponents;
+	bool m_attached;	// アタッチ済みか
 };
 
 #endif // !_COMPONENT_H_

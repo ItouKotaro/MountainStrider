@@ -152,8 +152,7 @@ public:
 		T* component = new T(args...);
 
 		// ゲームオブジェクトにアタッチする
-		component->gameObject = this;
-		component->transform = this->transform;
+		component->AttachGameObject(this);
 
 		// コンポーネントを追加する
 		m_components.push_back(component);
