@@ -31,6 +31,7 @@ public:
 	static const float BAR_SPACE;
 private:
 	void InitTopDisplay();			// 燃料と耐久値の購入画面の初期化
+	void RegisterItemList();		// アイテムの登録
 
 	static int m_points;				// ポイント
 	int m_viewPoints;				// 表示されているポイント
@@ -42,9 +43,11 @@ private:
 	CGameScene* m_gameScene;
 
 	// ショップアイテムの管理
-	FuelItem m_fuelItem;
-	EnduranceItem m_enduranceItem;
-
+	FuelItem m_fuelItem;									// 燃料アイテム
+	EnduranceItem m_enduranceItem;				// 耐久値アイテム
+	GameObject* m_shopItems[6];					// ショップアイテム
+	std::vector<ShopItem*> m_itemList;			// アイテムリスト
+	std::vector<ShopItem*> m_perkList;			// パークリスト
 
 	// 燃料
 	GameObject* m_fuel;

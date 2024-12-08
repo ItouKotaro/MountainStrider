@@ -15,9 +15,11 @@
 #include "component/2d/text.h"
 #include "scripts/result/result_view.h"
 #include "component/other/button.h"
+#include "scripts/shop/buy_button.h"
 
 const float ShopManager::BAR_SPACE = 110.0f;
 int ShopManager::m_points = 100;
+
 //=============================================================
 // [ShopManager] 初期化
 //=============================================================
@@ -25,6 +27,9 @@ void ShopManager::Init()
 {
 	m_viewPoints = m_points;
 	m_pointsCounter = 0;
+
+	// アイテムのリスト追加処理
+	RegisterItemList();
 
 	// ゲームシーンの取得
 	m_gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
@@ -51,6 +56,17 @@ void ShopManager::Init()
 	m_ptText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_ptText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_ptText->GetComponent<CText>()->SetFontSize(120);
+
+	// ショップアイテムボタンを作成する
+	for (int i = 0; i < 6; i++)
+	{
+		m_shopItems[i] = new GameObject();
+		m_shopItems[i]->SetParent(m_shop);
+		m_shopItems[i]->AddComponent<BuyButtonUI>(m_itemList[0]);
+		m_shopItems[i]->transform->SetPos(300.0f * i + 40.0f, 400.0f);
+		m_shopItems[i]->transform->Translate(i < 3 ? 0.0f : 60.0f, 0.0f, 0.0f);
+	}
+
 
 	// 燃料と耐久値の購入ディスプレイを初期化する
 	InitTopDisplay();
@@ -170,6 +186,24 @@ void ShopManager::InitTopDisplay()
 //=============================================================
 void ShopManager::Uninit()
 {
+	// アイテムリストとパークリストを破棄する
+	for (auto itr = m_itemList.begin(); itr != m_itemList.end(); itr++)
+	{
+		if (*itr != nullptr)
+		{
+			delete* itr;
+		}
+	}
+	m_itemList.clear();
+
+	for (auto itr = m_perkList.begin(); itr != m_perkList.end(); itr++)
+	{
+		if (*itr != nullptr)
+		{
+			delete* itr;
+		}
+	}
+	m_perkList.clear();
 }
 
 //=============================================================
@@ -204,6 +238,18 @@ void ShopManager::Update()
 //=============================================================
 void ShopManager::Draw()
 {
+}
+
+//=============================================================
+// [ShopManager] アイテムの登録
+//=============================================================
+void ShopManager::RegisterItemList()
+{
+	// アイテムの登録
+	m_itemList.push_back(new FuelTankItem);
+	m_itemList.push_back(new ToolBoxItem);
+
+	// パークの登録
 }
 
 //=============================================================

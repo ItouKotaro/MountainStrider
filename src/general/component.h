@@ -200,4 +200,28 @@ private:
 	bool m_attached;	// アタッチ済みか
 };
 
+
+// 単一で動作するコンポーネント型を提供します
+// 各イベントは自前で呼び出す必要があります
+template<class T> class SingleComponent : public T
+{
+public:
+	// 単一コンポーネント
+	template<typename ...Args> SingleComponent(Args... args) : T(args...)
+	{
+		InitTransform();
+	}
+	~SingleComponent()
+	{
+		delete this->transform;
+		this->transform = nullptr;
+	}
+
+	// 親を設定する
+	void SetParent(GameObject* parent){	this->transform->SetParent(parent->transform);}
+	void SetParent(Transform* parent) { this->transform->SetParent(parent); }
+private:
+	void InitTransform() { this->transform = new Transform(); }
+};
+
 #endif // !_COMPONENT_H_

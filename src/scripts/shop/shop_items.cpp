@@ -30,7 +30,7 @@ bool ShopItem::Pay()
 //=============================================================
 // [FuelItem] w“ü
 //=============================================================
-void FuelItem::onBuy()
+bool FuelItem::onBuy()
 {
 	// ƒQ[ƒ€ƒV[ƒ“‚ğæ“¾‚·‚é
 	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
@@ -43,14 +43,16 @@ void FuelItem::onBuy()
 		if (this->Pay())
 		{ // x•¥‚¦‚½
 			pBike->AddFuel(static_cast<float>(m_amount));
+			return true;
 		}
 	}
+	return false;
 }
 
 //=============================================================
 // [EnduranceItem] w“ü
 //=============================================================
-void EnduranceItem::onBuy()
+bool EnduranceItem::onBuy()
 {
 	// ƒQ[ƒ€ƒV[ƒ“‚ğæ“¾‚·‚é
 	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
@@ -63,6 +65,52 @@ void EnduranceItem::onBuy()
 		if (this->Pay())
 		{ // x•¥‚¦‚½
 			pBike->AddEndurance(static_cast<float>(m_amount));
+			return true;
 		}
 	}
+	return false;
+}
+
+//=============================================================
+// [FuelTankItem] w“ü
+//=============================================================
+bool FuelTankItem::onBuy()
+{
+	// ƒQ[ƒ€ƒV[ƒ“‚ğæ“¾‚·‚é
+	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+
+	// ƒoƒCƒN‚ğæ“¾‚·‚é
+	auto pBike = gameScene->GetBike()->GetComponent<CVehicle>();
+
+	if (pBike->GetFuel() < CVehicle::MAX_FUEL)
+	{
+		if (this->Pay())
+		{ // x•¥‚¦‚½
+			pBike->AddFuel(static_cast<float>(m_amount));
+			return true;
+		}
+	}
+	return false;
+}
+
+//=============================================================
+// [ToolBoxItem] w“ü
+//=============================================================
+bool ToolBoxItem::onBuy()
+{
+	// ƒQ[ƒ€ƒV[ƒ“‚ğæ“¾‚·‚é
+	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+
+	// ƒoƒCƒN‚ğæ“¾‚·‚é
+	auto pBike = gameScene->GetBike()->GetComponent<CVehicle>();
+
+	if (pBike->GetEndurance() < CVehicle::MAX_ENDURANCE)
+	{
+		if (this->Pay())
+		{ // x•¥‚¦‚½
+			pBike->AddEndurance(static_cast<float>(m_amount));
+			return true;
+		}
+	}
+	return false;
 }
