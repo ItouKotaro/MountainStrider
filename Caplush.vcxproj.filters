@@ -237,9 +237,6 @@
     <ClCompile Include="src\scripts\wreckage.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\item\fuel_tank.cpp">
-      <Filter>ソース ファイル\scripts\item</Filter>
-    </ClCompile>
     <ClCompile Include="src\scripts\result\result_camera.cpp">
       <Filter>ソース ファイル\scripts\result</Filter>
     </ClCompile>
@@ -261,9 +258,6 @@
     <ClCompile Include="src\component\other\button.cpp">
       <Filter>ソース ファイル\component\other</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\item_manager.cpp">
-      <Filter>ソース ファイル\scripts</Filter>
-    </ClCompile>
     <ClCompile Include="src\scripts\shop\shop.cpp">
       <Filter>ソース ファイル\scripts\shop</Filter>
     </ClCompile>
@@ -272,6 +266,12 @@
     </ClCompile>
     <ClCompile Include="src\scripts\shop\buy_button.cpp">
       <Filter>ソース ファイル\scripts\shop</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\item\item_manager.cpp">
+      <Filter>ソース ファイル\scripts\item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\item\items.cpp">
+      <Filter>ソース ファイル\scripts\item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -422,9 +422,6 @@
     <ClInclude Include="src\scripts\wreckage.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\item\fuel_tank.h">
-      <Filter>ヘッダー ファイル\scripts\item</Filter>
-    </ClInclude>
     <ClInclude Include="src\scripts\result\result_camera.h">
       <Filter>ヘッダー ファイル\scripts\result</Filter>
     </ClInclude>
@@ -446,9 +443,6 @@
     <ClInclude Include="src\component\other\button.h">
       <Filter>ヘッダー ファイル\component\other</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\item_manager.h">
-      <Filter>ヘッダー ファイル\scripts</Filter>
-    </ClInclude>
     <ClInclude Include="src\scripts\shop\shop.h">
       <Filter>ヘッダー ファイル\scripts\shop</Filter>
     </ClInclude>
@@ -457,6 +451,12 @@
     </ClInclude>
     <ClInclude Include="src\scripts\shop\shop_items.h">
       <Filter>ヘッダー ファイル\scripts\shop</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\item\item_manager.h">
+      <Filter>ヘッダー ファイル\scripts\item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\item\items.h">
+      <Filter>ヘッダー ファイル\scripts\item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

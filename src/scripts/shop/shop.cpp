@@ -241,13 +241,22 @@ void ShopManager::Draw()
 }
 
 //=============================================================
+// [ShopManager] リセット
+//=============================================================
+void ShopManager::Reset()
+{
+	m_points = 10;
+	ShopItem::SetSaleDiscount(0.0f);
+}
+
+//=============================================================
 // [ShopManager] アイテムの登録
 //=============================================================
 void ShopManager::RegisterItemList()
 {
 	// アイテムの登録
-	m_itemList.push_back(new FuelTankItem);
-	m_itemList.push_back(new ToolBoxItem);
+	m_itemList.push_back(new ShopFuelTank);
+	m_itemList.push_back(new ShopToolBox);
 
 	// パークの登録
 }

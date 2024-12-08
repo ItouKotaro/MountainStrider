@@ -23,11 +23,12 @@ public:
 		PERK,
 	};
 
-	ShopItem(const TYPE& type, const std::string& name, const std::string& description, const std::string& texturePath, const int& price) : m_discount(0.0f), m_shopManager(nullptr)
+	ShopItem(const TYPE& type, const int& price, const std::string& name, const std::string& description, const std::string& texturePath, const std::string& detail = "") : m_discount(0.0f), m_shopManager(nullptr)
 	{
 		m_itemType = type;
 		m_itemName = name;
 		m_itemDescription = description;
+		m_detail = detail;
 		m_texturePath = texturePath;
 		m_price = price;
 	}
@@ -54,8 +55,14 @@ public:
 	// 説明を取得する
 	std::string GetDescription() { return m_itemDescription; }
 
+	// 詳細説明を取得する
+	std::string GetDetail() { return m_detail; }
+
 	// テクスチャパスを取得する
 	std::string GetTexturePath() { return m_texturePath; }
+
+	// ショップマネージャーを取得する
+	ShopManager* GetShopManager() { return m_shopManager; }
 
 	// アイテムの種類を取得する
 	TYPE GetType() { return m_itemType; }
@@ -69,6 +76,7 @@ protected:
 	std::string m_itemName;			// 名前
 	std::string m_itemDescription;	// 説明
 	std::string m_texturePath;			// テクスチャパス
+	std::string m_detail;					// 詳細説明
 	TYPE m_itemType;						// アイテムの種類
 
 	// 価格情報
@@ -81,7 +89,7 @@ protected:
 class FuelItem : public ShopItem
 {
 public:
-	FuelItem() : ShopItem(TYPE::ITEM, "燃料", "燃料を回復します", "", 5), m_amount(300) {}
+	FuelItem() : ShopItem(TYPE::ITEM, 5, "燃料", "燃料を回復します", ""), m_amount(300) {}
 	bool onBuy() override;
 	int GetAmount() { return m_amount; }
 private:
@@ -92,7 +100,7 @@ private:
 class EnduranceItem : public ShopItem
 {
 public:
-	EnduranceItem() : ShopItem(TYPE::ITEM, "耐久値", "耐久値を回復します", "", 5), m_amount(50) {}
+	EnduranceItem() : ShopItem(TYPE::ITEM, 5, "耐久値", "耐久値を回復します", ""), m_amount(50) {}
 	bool onBuy() override;
 	int GetAmount() { return m_amount; }
 private:
@@ -102,25 +110,19 @@ private:
 //----------------------------------------------------------------------------------------------------------------------------
 
 // 燃料タンク
-class FuelTankItem : public ShopItem
+class ShopFuelTank : public ShopItem
 {
 public:
-	FuelTankItem() : ShopItem(TYPE::ITEM, "燃料タンク", "燃料を即時回復します", "data\\TEXTURE\\ITEM\\fuel_tank.png", 5), m_amount(300) {}
+	ShopFuelTank() : ShopItem(TYPE::ITEM, 5, "燃料タンク", "燃料を即時回復します", "data\\TEXTURE\\ITEM\\fuel_tank.png", "燃料が+300回復します\n遠回りしたい人におすすめ") {}
 	bool onBuy() override;
-	int GetAmount() { return m_amount; }
-private:
-	int m_amount;	// 増加量
 };
 
 // 工具箱
-class ToolBoxItem : public ShopItem
+class ShopToolBox : public ShopItem
 {
 public:
-	ToolBoxItem() : ShopItem(TYPE::ITEM, "工具箱", "耐久値を即時回復します", "data\\TEXTURE\\ITEM\\toolbox.png", 5), m_amount(100) {}
+	ShopToolBox() : ShopItem(TYPE::ITEM, 5, "工具箱", "耐久値を即時回復します", "data\\TEXTURE\\ITEM\\toolbox.png", "耐久値が+100回復します\nよく衝突事故を起こす人には必須アイテム") {}
 	bool onBuy() override;
-	int GetAmount() { return m_amount; }
-private:
-	int m_amount;	// 増加量
 };
 
 

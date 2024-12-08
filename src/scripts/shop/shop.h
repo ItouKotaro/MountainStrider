@@ -24,9 +24,13 @@ public:
 	void Draw();
 	void SetVisible(const bool& show) { m_shop->SetVisible(show); }
 	static void AddPoint(const int& point) { m_points += point; }
+	static void Reset();
 
 	// x•¥‚¦‚½‚Étrue‚ğ•Ô‚µA¸”s‚·‚é‚ÆÁ”ï‚³‚ê‚¸‚Éfalse‚ğ•Ô‚µ‚Ü‚·
 	bool PayPoint(const int& cost);
+
+	// Š‹à‚ğæ“¾‚·‚é
+	int GetPoints() { return m_points; }
 
 	static const float BAR_SPACE;
 private:

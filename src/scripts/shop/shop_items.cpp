@@ -9,6 +9,9 @@
 #include "scene/game.h"
 #include "scripts/vehicle.h"
 
+#include "scripts/item/items.h"
+#include "scripts/item/item_manager.h"
+
 float ShopItem::m_saleDiscount = 0.0f;
 
 //=============================================================
@@ -72,45 +75,29 @@ bool EnduranceItem::onBuy()
 }
 
 //=============================================================
-// [FuelTankItem] 購入時
+// [ShopFuelTank] 購入時
 //=============================================================
-bool FuelTankItem::onBuy()
+bool ShopFuelTank::onBuy()
 {
-	// ゲームシーンを取得する
-	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
-
-	// バイクを取得する
-	auto pBike = gameScene->GetBike()->GetComponent<CVehicle>();
-
-	if (pBike->GetFuel() < CVehicle::MAX_FUEL)
-	{
-		if (this->Pay())
-		{ // 支払えた時
-			pBike->AddFuel(static_cast<float>(m_amount));
-			return true;
-		}
+	if (this->Pay())
+	{ // 支払えた時
+		// 燃料タンクをインベントリに追加
+		ItemManager::GetInstance()->AddItem(new FuelTankItem());
+		return true;
 	}
 	return false;
 }
 
 //=============================================================
-// [ToolBoxItem] 購入時
+// [ShopToolBox]購入時
 //=============================================================
-bool ToolBoxItem::onBuy()
+bool ShopToolBox::onBuy()
 {
-	// ゲームシーンを取得する
-	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
-
-	// バイクを取得する
-	auto pBike = gameScene->GetBike()->GetComponent<CVehicle>();
-
-	if (pBike->GetEndurance() < CVehicle::MAX_ENDURANCE)
-	{
-		if (this->Pay())
-		{ // 支払えた時
-			pBike->AddEndurance(static_cast<float>(m_amount));
-			return true;
-		}
+	if (this->Pay())
+	{ // 支払えた時
+		// 工具箱をインベントリに追加
+		ItemManager::GetInstance()->AddItem(new ToolBoxItem());
+		return true;
 	}
 	return false;
 }

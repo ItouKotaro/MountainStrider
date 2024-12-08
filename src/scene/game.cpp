@@ -18,6 +18,8 @@
 #include "scripts/result/result_camera.h"
 #include "scripts/result/mt_result.h"
 #include "scripts/status_ui.h"
+#include "scripts/item/item_manager.h"
+#include "scripts/shop/shop.h"
 
 #include <noise/noise.h>
 
@@ -182,6 +184,12 @@ void CGameScene::ResetGame()
 
 	// リザルトデータのリセット
 	ResultBase::Reset();
+
+	// ショップ情報のリセット
+	ShopManager::Reset();
+
+	// アイテムの情報をリセット
+	ItemManager::GetInstance()->AllRemoveItem();
 }
 
 //=============================================================

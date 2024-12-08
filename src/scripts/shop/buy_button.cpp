@@ -7,6 +7,7 @@
 #include "buy_button.h"
 #include "renderer.h"
 #include "manager.h"
+#include "shop.h"
 
 const float BuyButtonUI::EDGE_BOLD = 15.0f;
 const float BuyButtonUI::WIDTH = 280.0f;
@@ -172,8 +173,9 @@ void BuyButtonUI::Update()
 	if (wPos.x <= cursorPos.x && cursorPos.x <= wPos.x + WIDTH &&
 		wPos.y <= cursorPos.y && cursorPos.y <= wPos.y + HEIGHT)
 	{ // ボタンの範囲内
-		if (INPUT_INSTANCE->onPress("lclick"))
-		{
+		if (INPUT_INSTANCE->onPress("lclick") && 
+			m_shopItem->GetShopManager()->GetPoints() >= m_shopItem->GetPrice())
+		{ // 左クリックかつポイントが足りているとき
 			isClicked = true;
 		}
 	}
