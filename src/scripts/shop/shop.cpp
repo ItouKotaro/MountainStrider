@@ -59,7 +59,7 @@ void ShopManager::Init(Pages* pages)
 	for (int i = 0; i < 6; i++)
 	{
 		m_shopItems[i] = new GameObject();
-		m_shopItems[i]->AddComponent<BuyButtonUI>(m_itemList[1]);
+		m_shopItems[i]->AddComponent<BuyButtonUI>(i < 3 ? m_itemList[0] : m_itemList[1]);
 		m_shopItems[i]->transform->SetPos(300.0f * i + 40.0f, 350.0f);
 		m_shopItems[i]->transform->Translate(i < 3 ? 0.0f : 60.0f, 0.0f, 0.0f);
 		m_pages->AddObject(1, m_shopItems[i]);

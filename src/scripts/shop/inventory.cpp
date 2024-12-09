@@ -13,12 +13,6 @@
 //=============================================================
 void InventoryUI::Init()
 {
-	// 背景
-	m_bg = new SingleComponent<CPolygon>();
-	m_bg->Init();
-	m_bg->SetParent(gameObject);
-	m_bg->transform->SetSize(900.0f, 200.0f);
-
 	// 前へ
 	m_backArrow = new SingleComponent<ButtonUI>();
 	m_backArrow->SetParent(gameObject);
@@ -64,6 +58,34 @@ void InventoryUI::Init()
 		m_itemTexture[i]->transform->SetPos(170.0f * i + 132.5f, 40.0f);
 		m_itemTexture[i]->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
 	}
+
+	// 情報パネル
+	m_infoEdge = new SingleComponent<CPolygon>();
+	m_infoEdge->Init();
+	m_infoEdge->transform->SetSize(510.0f, 190.0f);
+	m_infoEdge->transform->SetPos(-5.0f, -5.0f);
+	m_infoEdge->SetColor(D3DCOLOR_RGBA(204, 204, 204, 255));
+
+	m_infoBG = new SingleComponent<CPolygon>();
+	m_infoBG->Init();
+	m_infoBG->transform->SetSize(500.0f, 180.0f);
+	m_infoBG->SetColor(D3DCOLOR_RGBA(50, 50, 50, 255));
+
+	m_infoName = new SingleComponent<CText>();
+	m_infoName->Init();
+	m_infoName->SetFont("07鉄瓶ゴシック");
+	m_infoName->SetFontSize(55);
+	m_infoName->SetParent(m_infoBG->transform);
+	m_infoName->SetAlign(CText::CENTER);
+	m_infoName->transform->SetPos(250.0f, 20.0f);
+
+	m_infoDescription = new SingleComponent<CText>();
+	m_infoDescription->Init();
+	m_infoDescription->SetFont("07鉄瓶ゴシック");
+	m_infoDescription->SetFontSize(30);
+	m_infoDescription->SetParent(m_infoBG->transform);
+	m_infoDescription->SetAlign(CText::CENTER);
+	m_infoDescription->transform->SetPos(250.0f, 95.0f);
 }
 
 //=============================================================
@@ -71,14 +93,23 @@ void InventoryUI::Init()
 //=============================================================
 void InventoryUI::Uninit()
 {
-	m_bg->Uninit();
-	delete m_bg;
-
 	m_backArrow->Uninit();
 	delete m_backArrow;
 
 	m_nextArrow->Uninit();
 	delete m_nextArrow;
+
+	m_infoEdge->Uninit();
+	delete m_infoEdge;
+
+	m_infoBG->Uninit();
+	delete m_infoBG;
+
+	m_infoName->Uninit();
+	delete m_infoName;
+
+	m_infoDescription->Uninit();
+	delete m_infoDescription;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -142,18 +173,39 @@ void InventoryUI::Update()
 			auto wFramePos = m_itemFrame[i]->transform->GetWPos();
 
 			if (wFramePos.x <= cPos.x && cPos.x <= wFramePos.x + 160.0f &&
-				wFramePos.y <= cPos.y && cPos.y <= wFramePos.y + 160.0f &&
-				INPUT_INSTANCE->onTrigger("lclick"))
-			{ // クリックされたとき
-				ItemManager::GetInstance()->ToggleCarryOn(pInventory->at(m_headIdx + i));
+				wFramePos.y <= cPos.y && cPos.y <= wFramePos.y + 160.0f)
+			{
+				// アイテム詳細にデータを代入
+				m_infoItem = pInventory->at(m_headIdx + i);
+
+				// クリックされたとき
+				if (INPUT_INSTANCE->onTrigger("lclick"))
+				{
+					ItemManager::GetInstance()->ToggleCarryOn(pInventory->at(m_headIdx + i));
+				}
 			}
 		}
 	}
 
+	// アイテム詳細パネルを更新する
+	if (m_infoItem != nullptr)
+	{ // アイテムの上にカーソルがあるとき
+		// 位置を変更する
+		m_infoEdge->transform->SetPos(cPos.x - 5.0f, cPos.y - 5.0f - 180.0f);
+		m_infoBG->transform->SetPos(cPos.x, cPos.y - 180.0f);
+
+		// 情報を更新する
+		m_infoName->SetText(m_infoItem->GetName());
+		m_infoDescription->SetText(m_infoItem->GetDescription());
+	}
+
 	// コンポーネントの更新
-	m_bg->Update();
 	m_backArrow->Update();
 	m_nextArrow->Update();
+	m_infoEdge->Update();
+	m_infoBG->Update();
+	m_infoName->Update();
+	m_infoDescription->Update();
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -168,7 +220,6 @@ void InventoryUI::Update()
 //=============================================================
 void InventoryUI::DrawUI()
 {
-	//m_bg->DrawUI();
 	m_backArrow->DrawUI();
 	m_nextArrow->DrawUI();
 
@@ -178,4 +229,15 @@ void InventoryUI::DrawUI()
 		m_itemTexture[i]->DrawUI();
 		m_itemFrame[i]->DrawUI();
 	}	
+
+	if (m_infoItem != nullptr)
+	{
+		m_infoEdge->DrawUI();
+		m_infoBG->DrawUI();
+		m_infoName->DrawUI();
+		m_infoDescription->DrawUI();
+
+		m_infoItem = nullptr;
+	}
+	
 }
