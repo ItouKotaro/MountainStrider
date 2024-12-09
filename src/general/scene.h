@@ -18,6 +18,7 @@ public:
 	virtual void Uninit() {}		// 終了
 	virtual void Update() {}		// 更新
 	virtual void Draw() {}			// 描画
+	virtual void LastUninit() {}	// 最終終了
 };
 
 // シーンマネージャー

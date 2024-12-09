@@ -21,6 +21,7 @@ public:
 	void Uninit() override;			// 終了
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
+	void LastUninit() override;	// 最終終了
 
 	void ResetGame();				// ゲームのリセット
 

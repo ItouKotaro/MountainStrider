@@ -28,6 +28,15 @@ public:
 
 	// アイテムの削除
 	void RemoveItem(Item* item);
+
+	// インベントリの取得
+	std::vector<Item*>* GetInventory() { return &m_inventory; }
+
+	// 持ち込みアイテムの取得
+	Item* GetCarryOn(int idx);
+
+	// アイテムの持ち込みに設定する
+	void ToggleCarryOn(Item* item);
 private:
 	Item* m_carryOn[2];						// 持ち込みアイテム
 	std::vector<Item*> m_inventory;	// インベントリ
@@ -47,6 +56,15 @@ public:
 
 	// 使用時の処理
 	virtual void onUse() = 0;
+
+	// アイテム名の取得
+	std::string GetName() { return m_name; }
+
+	// 説明の取得
+	std::string GetDescription() { return m_description; }
+
+	// テクスチャパスの取得
+	std::string GetTexturePath() { return m_texturePath; }
 protected:
 	void RemoveItem() { ItemManager::GetInstance()->RemoveItem(this); }
 private:

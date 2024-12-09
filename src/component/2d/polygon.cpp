@@ -135,11 +135,18 @@ void CPolygon::DrawUI()
 //=============================================================
 void CPolygon::SetTexture(std::string sPath)
 {
-	CDataTexture* pTex = CDataManager::GetInstance()->RefTexture(sPath);
-
-	if (pTex != nullptr)
+	if (sPath != "")
 	{
-		m_pTexture = pTex->GetTexture();
+		CDataTexture* pTex = CDataManager::GetInstance()->RefTexture(sPath);
+
+		if (pTex != nullptr)
+		{
+			m_pTexture = pTex->GetTexture();
+		}
+	}
+	else
+	{
+		m_pTexture = nullptr;
 	}
 }
 

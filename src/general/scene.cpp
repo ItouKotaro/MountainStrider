@@ -58,6 +58,7 @@ void CSceneManager::Uninit()
 	if (m_pCurrentScene != nullptr)
 	{
 		m_pCurrentScene->pScene->Uninit();
+		m_pCurrentScene->pScene->LastUninit();
 		m_pCurrentScene = nullptr;
 	}
 

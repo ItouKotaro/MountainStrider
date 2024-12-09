@@ -53,6 +53,36 @@ void ItemManager::RemoveItem(Item* item)
 }
 
 //=============================================================
+// [ItemManager] 持ち運びアイテムを取得する
+//=============================================================
+Item* ItemManager::GetCarryOn(int idx)
+{
+	if (0 <= idx && idx < 2)
+	{
+		return m_carryOn[idx];
+	}
+	return nullptr;
+}
+
+//=============================================================
+// [ItemManager] 持ち運びアイテムに設定する
+//=============================================================
+void ItemManager::ToggleCarryOn(Item* item)
+{
+	if (m_carryOn[0] == item)
+		m_carryOn[0] = nullptr;
+	else if (m_carryOn[1] == item)
+		m_carryOn[1] = nullptr;
+	else
+	{
+		if (m_carryOn[0] == nullptr)
+			m_carryOn[0] = item;
+		else if (m_carryOn[1] == nullptr)
+			m_carryOn[1] = item;
+	}
+}
+
+//=============================================================
 // [ItemManager] すべてのアイテムを削除する
 //=============================================================
 void ItemManager::AllRemoveItem()

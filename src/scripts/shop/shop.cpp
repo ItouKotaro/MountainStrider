@@ -59,8 +59,8 @@ void ShopManager::Init(Pages* pages)
 	for (int i = 0; i < 6; i++)
 	{
 		m_shopItems[i] = new GameObject();
-		m_shopItems[i]->AddComponent<BuyButtonUI>(m_itemList[0]);
-		m_shopItems[i]->transform->SetPos(300.0f * i + 40.0f, 400.0f);
+		m_shopItems[i]->AddComponent<BuyButtonUI>(m_itemList[1]);
+		m_shopItems[i]->transform->SetPos(300.0f * i + 40.0f, 350.0f);
 		m_shopItems[i]->transform->Translate(i < 3 ? 0.0f : 60.0f, 0.0f, 0.0f);
 		m_pages->AddObject(1, m_shopItems[i]);
 	}
@@ -68,7 +68,7 @@ void ShopManager::Init(Pages* pages)
 	// インベントリを作成する
 	m_inventory = new GameObject("Inventory", "UI");
 	m_inventory->AddComponent<InventoryUI>();
-	m_inventory->transform->SetPos(100.0f, 800.0f);
+	m_inventory->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2) - 450.0f, 820.0f);
 	m_pages->AddObject(1, m_inventory);
 
 	// 燃料と耐久値の購入ディスプレイを初期化する
@@ -256,7 +256,7 @@ void ShopManager::Draw()
 //=============================================================
 void ShopManager::Reset()
 {
-	m_points = 10;
+	m_points = 30;
 	ShopItem::SetSaleDiscount(0.0f);
 }
 
