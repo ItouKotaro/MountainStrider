@@ -8,6 +8,8 @@
 #define _RESULT_VIEW_H_
 
 #include "component.h"
+#include "component/2d/bar.h"
+#include "component/2d/text.h"
 
 class ResultViewBar : public Component
 {
@@ -16,6 +18,7 @@ public:
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
+	void DrawUI() override;
 
 	// 値の設定
 	void SetValue(const float& before, const float& objective);	
@@ -42,10 +45,10 @@ private:
 	float m_viewProgress;
 
 	// 表示オブジェクト
-	GameObject* m_viewText;
-	GameObject* m_viewBar;
-	GameObject* m_viewValue;
-	GameObject* m_viewCompare;
+	SingleComponent<CText>* m_viewText;
+	SingleComponent<CAdvancedBar>* m_viewBar;
+	SingleComponent<CText>* m_viewValue;
+	SingleComponent<CText>* m_viewCompare;
 };
 
 #endif // !_RESULT_VIEW_H_

@@ -11,6 +11,7 @@
 
 #include "component.h"
 #include "shop_items.h"
+#include "component/other/page.h"
 
 class CGameScene;
 
@@ -18,11 +19,10 @@ class CGameScene;
 class ShopManager
 {
 public:
-	void Init();
+	void Init(Pages* pages);
 	void Uninit();
 	void Update();
 	void Draw();
-	void SetVisible(const bool& show) { m_shop->SetVisible(show); }
 	static void AddPoint(const int& point) { m_points += point; }
 	static void Reset();
 
@@ -41,7 +41,9 @@ private:
 	int m_viewPoints;				// 表示されているポイント
 	int m_pointsCounter;			// ポイントを更新するカウンター
 
-	GameObject* m_shop;		// ページ管理
+	// ページ
+	Pages* m_pages;
+
 	GameObject* m_ptView;	// 上のフレーム
 	GameObject* m_ptText;		// ポイントテキスト
 	CGameScene* m_gameScene;
@@ -52,6 +54,9 @@ private:
 	GameObject* m_shopItems[6];					// ショップアイテム
 	std::vector<ShopItem*> m_itemList;			// アイテムリスト
 	std::vector<ShopItem*> m_perkList;			// パークリスト
+
+	// インベントリ
+	GameObject* m_inventory;		// インベントリ
 
 	// 燃料
 	GameObject* m_fuel;

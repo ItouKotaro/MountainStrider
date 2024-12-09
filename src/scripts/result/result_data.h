@@ -11,6 +11,10 @@
 
 #include "component.h"
 
+#include "component/2d/polygon.h"
+#include "component/2d/bar.h"
+#include "component/2d/text.h"
+
 // データ表示管理コンポーネント
 class ResultDataView : public Component
 {
@@ -18,6 +22,7 @@ public:
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
+	void DrawUI() override;
 
 	void SetTime(const int& time);
 	void SetHighSpeed(const int& kmh);
@@ -26,20 +31,20 @@ public:
 	static const D3DXVECTOR2 TITLE_BG_SIZE;
 	static const float SPACE_SIZE;
 private:
-	GameObject* m_timeTitleBG;
-	GameObject* m_timeTitleText;
-	GameObject* m_timeDataBG;
-	GameObject* m_timeDataText;
+	SingleComponent<CPolygon>* m_timeTitleBG;
+	SingleComponent<CText>* m_timeTitleText;
+	SingleComponent<CPolygon>* m_timeDataBG;
+	SingleComponent<CText>* m_timeDataText;
 
-	GameObject* m_speedTitleBG;
-	GameObject* m_speedTitleText;
-	GameObject* m_speedDataBG;
-	GameObject* m_speedDataText;
+	SingleComponent<CPolygon>* m_speedTitleBG;
+	SingleComponent<CText>* m_speedTitleText;
+	SingleComponent<CPolygon>* m_speedDataBG;
+	SingleComponent<CText>* m_speedDataText;
 
-	GameObject* m_actionTitleBG;
-	GameObject* m_actionTitleText;
-	GameObject* m_actionDataBG;
-	GameObject* m_actionDataText;
+	SingleComponent<CPolygon>* m_actionTitleBG;
+	SingleComponent<CText>* m_actionTitleText;
+	SingleComponent<CPolygon>* m_actionDataBG;
+	SingleComponent<CText>* m_actionDataText;
 };
 
 

@@ -11,6 +11,7 @@
 #include "component/2d/text.h"
 #include "component/2d/polygon.h"
 #include "component/2d/bar.h"
+#include "component/other/page.h"
 
 #include "scripts/vehicle.h"
 #include "scripts/result/result_data.h"
@@ -56,17 +57,18 @@ void ClearResult::Init()
 	m_progCounter = 120;
 
 	// ページの初期化
-	m_page = PAGE_RESULT;
-	m_resultPage = new GameObject();
+	m_page = new GameObject("PageManager");
+	m_page->AddComponent<Pages>();
+	m_page->GetComponent<Pages>()->SetNumPage(2);
+	auto page = m_page->GetComponent<Pages>();
 		
 	// ショップを生成する
 	m_shopManager = new ShopManager();
-	m_shopManager->Init();
+	m_shopManager->Init(page);
 
 	// クリアテキスト
 	{
 		m_mtText = new GameObject("MtClearText", "UI");
-		m_mtText->SetParent(m_resultPage);
 		m_mtText->AddComponent<CText>();
 		m_mtText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 		m_mtText->GetComponent<CText>()->SetFontSize(130);
@@ -75,14 +77,15 @@ void ClearResult::Init()
 		m_mtText->GetComponent<CText>()->SetText(std::to_string(m_goalCount) + "つ目の山を踏破しました");
 		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		m_mtText->transform->SetPos(-2000.0f, 100.0f, 0.0f);
+		page->AddObject(0, m_mtText);
 	}
 
 	// データ表示
 	{
 		m_dataView = new GameObject("DataView", "UI");
-		m_dataView->SetParent(m_resultPage);
 		m_dataView->AddComponent<ResultDataView>();
 		m_dataView->transform->Translate(60.0f, 350.0f, 0.0f);
+		page->AddObject(0, m_dataView);
 		
 		// 最新データを取得
 		ResultData data = m_results[m_results.size()-1];
@@ -95,7 +98,6 @@ void ClearResult::Init()
 	{
 		// 燃料
 		m_fuelView = new GameObject("FuelView", "UI");
-		m_fuelView->SetParent(m_resultPage);
 		m_fuelView->transform->SetPos(1310.0f, 360.0f);
 		m_fuelView->AddComponent<ResultViewBar>(
 			"燃料",
@@ -106,10 +108,10 @@ void ClearResult::Init()
 		m_fuelView->GetComponent<ResultViewBar>()->SetValue(
 			static_cast<float>(m_beforeFuel / CVehicle::MAX_FUEL),
 			static_cast<float>(m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel() / CVehicle::MAX_FUEL));
+		page->AddObject(0, m_fuelView);
 
 		// 耐久値
 		m_enduranceView = new GameObject("EnduranceView", "UI");
-		m_enduranceView->SetParent(m_resultPage);
 		m_enduranceView->transform->SetPos(1310.0f, 600.0f);
 		m_enduranceView->AddComponent<ResultViewBar>(
 			"耐久値",
@@ -120,24 +122,25 @@ void ClearResult::Init()
 		m_enduranceView->GetComponent<ResultViewBar>()->SetValue(
 			static_cast<float>(m_beforeEndurance / CVehicle::MAX_ENDURANCE),
 			static_cast<float>(m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance() / CVehicle::MAX_ENDURANCE));
+		page->AddObject(0, m_enduranceView);
 	}
 
 	// 地形画像
 	{
 		m_terrainImg = new GameObject("TerrainImg", "ResultData");
-		m_terrainImg->SetParent(m_resultPage);
 		m_terrainImg->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT / 2));
 		m_terrainImg->AddComponent<ResultTerrain>();
+		page->AddObject(0, m_terrainImg);
 	}
 
 	// シードテキスト
 	{
 		m_seedText = new GameObject("SeedText", "UI");
-		m_seedText->SetParent(m_resultPage);
 		m_seedText->AddComponent<CText>();
 		m_seedText->GetComponent<CText>()->SetFontSize(50);
 		m_seedText->GetComponent<CText>()->SetText("<color=150,150,150>Seed: " + std::to_string(m_gameScene->GetTerrain()->GetSeed()));
 		m_seedText->transform->SetPos(5.0f, CRenderer::SCREEN_HEIGHT - 50.0f);
+		page->AddObject(0, m_seedText);
 	}
 
 	// 背景
@@ -152,15 +155,16 @@ void ClearResult::Init()
 	// 次の山へ or 終了
 	{
 		GameObject* pNextButton = new GameObject("NextMountain");
-		pNextButton->SetParent(m_resultPage);
+		page->AddObject(0, pNextButton);
 		pNextButton->transform->SetSize(500.0f, 140.0f);
 		pNextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
 		pNextButton->AddComponent<ButtonUI>();
 		pNextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		pNextButton->GetComponent<ButtonUI>()->setClickEvent([this]() { SwitchPage(PAGE_SHOP); });
+		pNextButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() { page->SetPage(1); });
 
 		GameObject* pNextButtonText = new GameObject();
 		pNextButtonText->SetParent(pNextButton);
+		page->AddObject(0, pNextButtonText);
 		pNextButtonText->transform->SetPos(250.0f, 35.0f);
 		pNextButtonText->AddComponent<CText>();
 		pNextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
@@ -171,7 +175,7 @@ void ClearResult::Init()
 	// リスト追加
 	{
 		GameObject* pListButton = new GameObject("NextMountain");
-		pListButton->SetParent(m_resultPage);
+		page->AddObject(0, pListButton);
 		pListButton->transform->SetSize(500.0f, 140.0f);
 		pListButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
 		pListButton->AddComponent<ButtonUI>();
@@ -179,6 +183,7 @@ void ClearResult::Init()
 
 		GameObject* pListButtonText = new GameObject();
 		pListButtonText->SetParent(pListButton);
+		page->AddObject(0, pListButtonText);
 		pListButtonText->transform->SetPos(250.0f, 35.0f);
 		pListButtonText->AddComponent<CText>();
 		pListButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
@@ -186,6 +191,10 @@ void ClearResult::Init()
 		pListButtonText->GetComponent<CText>()->SetText("<color=0,0,0>リストに追加");
 		pListButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
+
+	// ページのリセット
+	page->AllHideObjects();
+	page->SetPage(0);
 
 	// 前回の情報として保存
 	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
@@ -215,7 +224,7 @@ void ClearResult::Update()
 	UpdateResultAnim();
 
 	// ショップを更新する
-	if (m_page == PAGE_SHOP)
+	if (m_page->GetComponent<Pages>()->GetPage() == 1)
 		m_shopManager->Update();
 }
 
@@ -268,38 +277,6 @@ void ClearResult::Draw()
 {
 
 }
-
-//=============================================================
-// [ClearResult] 次のページへ
-//=============================================================
-void ClearResult::SwitchPage(PAGE nextPage)
-{
-	switch (m_page)
-	{
-	case ClearResult::PAGE_RESULT:
-		m_resultPage->SetVisible(false);
-		break;
-	case ClearResult::PAGE_SHOP:
-		m_shopManager->SetVisible(false);
-		break;
-	default:
-		break;
-	}
-
-	switch (nextPage)
-	{
-	case ClearResult::PAGE_RESULT:
-		m_resultPage->SetVisible(true);
-		break;
-	case ClearResult::PAGE_SHOP:
-		m_shopManager->SetVisible(true);
-		break;
-	default:
-		break;
-	}
-	m_page = nextPage;
-}
-
 
 
 

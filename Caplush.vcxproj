@@ -215,6 +215,7 @@
     <ClCompile Include="src\component\other\button.cpp" />
     <ClCompile Include="src\component\other\emitter.cpp" />
     <ClCompile Include="src\component\other\flag.cpp" />
+    <ClCompile Include="src\component\other\page.cpp" />
     <ClCompile Include="src\component\other\render_objects_texture.cpp" />
     <ClCompile Include="src\component\other\sound.cpp" />
     <ClCompile Include="src\general\benlib.cpp" />
@@ -248,6 +249,7 @@
     <ClCompile Include="src\scripts\result\result_terrain.cpp" />
     <ClCompile Include="src\scripts\result\result_view.cpp" />
     <ClCompile Include="src\scripts\shop\buy_button.cpp" />
+    <ClCompile Include="src\scripts\shop\inventory.cpp" />
     <ClCompile Include="src\scripts\shop\shop.cpp" />
     <ClCompile Include="src\scripts\shop\shop_items.cpp" />
     <ClCompile Include="src\scripts\status_ui.cpp" />
@@ -277,6 +279,7 @@
     <ClInclude Include="src\component\other\button.h" />
     <ClInclude Include="src\component\other\emitter.h" />
     <ClInclude Include="src\component\other\flag.h" />
+    <ClInclude Include="src\component\other\page.h" />
     <ClInclude Include="src\component\other\render_objects_texture.h" />
     <ClInclude Include="src\component\other\sound.h" />
     <ClInclude Include="src\general\benlib.h" />
@@ -311,6 +314,7 @@
     <ClInclude Include="src\scripts\result\result_terrain.h" />
     <ClInclude Include="src\scripts\result\result_view.h" />
     <ClInclude Include="src\scripts\shop\buy_button.h" />
+    <ClInclude Include="src\scripts\shop\inventory.h" />
     <ClInclude Include="src\scripts\shop\shop.h" />
     <ClInclude Include="src\scripts\shop\shop_items.h" />
     <ClInclude Include="src\scripts\status_ui.h" />

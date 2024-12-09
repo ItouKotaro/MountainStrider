@@ -16,6 +16,7 @@
 #include "scripts/result/result_view.h"
 #include "component/other/button.h"
 #include "scripts/shop/buy_button.h"
+#include "scripts/shop/inventory.h"
 
 const float ShopManager::BAR_SPACE = 110.0f;
 int ShopManager::m_points = 100;
@@ -23,8 +24,9 @@ int ShopManager::m_points = 100;
 //=============================================================
 // [ShopManager] 初期化
 //=============================================================
-void ShopManager::Init()
+void ShopManager::Init(Pages* pages)
 {
+	m_pages = pages;
 	m_viewPoints = m_points;
 	m_pointsCounter = 0;
 
@@ -35,38 +37,39 @@ void ShopManager::Init()
 	m_gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
 	auto pBike = m_gameScene->GetBike()->GetComponent<CVehicle>();
 
-	// ショップの作成
-	m_shop = new GameObject();
-	m_shop->SetVisible(false);
-
 	// ポイント表示
 	m_ptView = new GameObject();
-	m_ptView->SetParent(m_shop);
 	m_ptView->SetPriority(6);
 	m_ptView->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH), static_cast<float>(CRenderer::SCREEN_HEIGHT));
 	m_ptView->AddComponent<CPolygon>();
 	m_ptView->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\SHOP\\shop.png");
+	m_pages->AddObject(1, m_ptView);
 
 	// ポイントの数字テキスト
 	m_ptText = new GameObject();
 	m_ptText->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 + 50.0f, 100.0f);
-	m_ptText->SetParent(m_shop);
 	m_ptText->SetPriority(7);
 	m_ptText->AddComponent<CText>()->SetText("<color=23,116,255>"+std::to_string(m_points));
 	m_ptText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_ptText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_ptText->GetComponent<CText>()->SetFontSize(120);
+	m_pages->AddObject(1, m_ptText);
 
 	// ショップアイテムボタンを作成する
 	for (int i = 0; i < 6; i++)
 	{
 		m_shopItems[i] = new GameObject();
-		m_shopItems[i]->SetParent(m_shop);
 		m_shopItems[i]->AddComponent<BuyButtonUI>(m_itemList[0]);
 		m_shopItems[i]->transform->SetPos(300.0f * i + 40.0f, 400.0f);
 		m_shopItems[i]->transform->Translate(i < 3 ? 0.0f : 60.0f, 0.0f, 0.0f);
+		m_pages->AddObject(1, m_shopItems[i]);
 	}
 
+	// インベントリを作成する
+	m_inventory = new GameObject("Inventory", "UI");
+	m_inventory->AddComponent<InventoryUI>();
+	m_inventory->transform->SetPos(100.0f, 800.0f);
+	m_pages->AddObject(1, m_inventory);
 
 	// 燃料と耐久値の購入ディスプレイを初期化する
 	InitTopDisplay();
@@ -85,7 +88,7 @@ void ShopManager::InitTopDisplay()
 	{
 		// 統括オブジェクト
 		GameObject* uniteObj = new GameObject();
-		uniteObj->SetParent(m_shop);
+		m_pages->AddObject(1, uniteObj);
 		uniteObj->transform->SetPos(static_cast<float>(idx == 0 ? -CRenderer::SCREEN_WIDTH / 2 : CRenderer::SCREEN_WIDTH), 0.0f);
 		if (idx == 0) m_fuel = uniteObj;
 		else m_endurance = uniteObj;
@@ -98,6 +101,7 @@ void ShopManager::InitTopDisplay()
 		bgObj->GetComponent<CPolygon>()->SetColor(1, idx == 0 ? D3DCOLOR_RGBA(250, 176, 97, 255) : D3DCOLOR_RGBA(24, 184, 90, 255));
 		bgObj->GetComponent<CPolygon>()->SetColor(3, idx == 0 ? D3DCOLOR_RGBA(250, 176, 97, 255) : D3DCOLOR_RGBA(24, 184, 90, 255));
 		bgObj->transform->SetSize(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 280.0f);
+		m_pages->AddObject(1, bgObj);
 
 		// テキスト
 		GameObject* textObj = new GameObject();
@@ -107,12 +111,14 @@ void ShopManager::InitTopDisplay()
 		textObj->AddComponent<CText>()->SetText(idx == 0 ? "燃料" : "耐久値");
 		textObj->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 		textObj->GetComponent<CText>()->SetFontSize(80);
+		m_pages->AddObject(1, textObj);
 
 		// バー
 		GameObject* barObj = new GameObject();
 		barObj = new GameObject();
 		barObj->SetParent(uniteObj);
 		barObj->SetPriority(7);
+		m_pages->AddObject(1, barObj);
 		barObj->transform->SetPos(idx == 0 ? CRenderer::SCREEN_WIDTH / 4 - BAR_SPACE : CRenderer::SCREEN_WIDTH / 4 + BAR_SPACE, 150.0f);
 		barObj->AddComponent<CAdvancedBar>();
 		barObj->GetComponent<CAdvancedBar>()->SetAlign(CAdvancedBar::CENTER);
@@ -128,6 +134,7 @@ void ShopManager::InitTopDisplay()
 		GameObject* currentValueObj = new GameObject();
 		currentValueObj->SetParent(uniteObj);
 		currentValueObj->SetPriority(7);
+		m_pages->AddObject(1, currentValueObj);
 		currentValueObj->transform->SetPos(idx == 0 ? 620.0f : 837.5f, 90.0f);
 		currentValueObj->AddComponent<CText>()->SetText(std::to_string(static_cast<int>(idx == 0 ? pBike->GetFuel() : pBike->GetEndurance())) + "<size=20>/" + std::to_string(static_cast<int>(idx == 0 ? CVehicle::MAX_FUEL : CVehicle::MAX_ENDURANCE)));
 		currentValueObj->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
@@ -139,6 +146,7 @@ void ShopManager::InitTopDisplay()
 		// 購入ボタン
 		GameObject* buttonObj = new GameObject();
 		buttonObj->SetParent(uniteObj);
+		m_pages->AddObject(1, buttonObj);
 		buttonObj->transform->SetSize(300.0f, 90.0f);
 		buttonObj->transform->SetPos(idx == 0 ? D3DXVECTOR2(230.0f, 180.0f) : D3DXVECTOR2(440.0f, 180.0f));
 		buttonObj->AddComponent<ButtonUI>();
@@ -156,6 +164,7 @@ void ShopManager::InitTopDisplay()
 		costIconObj->transform->SetPos(idx == 0 ? D3DXVECTOR2(235.0f, 188.0f) : D3DXVECTOR2(445.0f, 188.0f));
 		costIconObj->transform->SetSize(40.0f, 40.0f);
 		costIconObj->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\SHOP\\point.png");
+		m_pages->AddObject(1, costIconObj);
 
 		// コスト表示
 		GameObject* costObj = new GameObject();
@@ -167,6 +176,7 @@ void ShopManager::InitTopDisplay()
 		costObj->GetComponent<CText>()->SetAlign(CText::CENTER);
 		if (idx == 0) m_fuelCost = costObj;
 		else m_enduranceCost = costObj;
+		m_pages->AddObject(1, costObj);
 
 		// 増加量表示
 		GameObject* buttonTextObj = new GameObject();
@@ -178,6 +188,7 @@ void ShopManager::InitTopDisplay()
 		buttonTextObj->GetComponent<CText>()->SetAlign(CText::CENTER);
 		if (idx == 0) m_fuelButtonText = buttonTextObj;
 		else m_enduranceButtonText = buttonTextObj;
+		m_pages->AddObject(1, buttonTextObj);
 	}
 }
 

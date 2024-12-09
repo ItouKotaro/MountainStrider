@@ -190,11 +190,6 @@ GameObject* GameObject::FindTagChildren(const std::string& sTag)
 //=============================================================
 bool GameObject::GetActive()
 {
-	GameObject* pParent = GetParent();
-	if (pParent != nullptr)
-	{ // e‚ª‘¶Ý‚·‚é‚Æ‚«
-		return pParent->GetActive();
-	}
 	return m_active;
 }
 
@@ -203,11 +198,6 @@ bool GameObject::GetActive()
 //=============================================================
 bool GameObject::GetVisible()
 {
-	GameObject* pParent = GetParent();
-	if (pParent != nullptr)
-	{ // e‚ª‘¶Ý‚·‚é‚Æ‚«
-		return pParent->GetVisible();
-	}
 	return m_visible;
 }
 
