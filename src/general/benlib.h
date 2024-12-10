@@ -56,6 +56,15 @@ namespace Benlib
 	D3DXVECTOR3 PosRotation(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2);
 
 	/*
+	@brief 法線ベクトルを算出します
+	@param[in] pos1 : 座標1
+	@param[in] pos2 : 座標2
+	@param[in] pos3 : 座標3
+	@return 法線ベクトル (D3DXVECTOR3)
+	*/
+	D3DXVECTOR3 CalcNormalVector(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2, const D3DXVECTOR3& pos3);
+
+	/*
 	@brief 座標1から座標2の回転を計算します
 	@param[in] pos1 : 座標1
 	@param[in] pos2 : 座標2

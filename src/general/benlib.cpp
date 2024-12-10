@@ -45,6 +45,16 @@ D3DXVECTOR3 Benlib::PosRotation(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2
 	return D3DXVECTOR3(sinf(fTargetAngle), cosf(fTargetHeightAngle), cosf(fTargetAngle));
 }
 
+D3DXVECTOR3 Benlib::CalcNormalVector(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2, const D3DXVECTOR3& pos3)
+{
+	D3DXVECTOR3 v1, v2, v3;
+	v1 = pos2 - pos1;
+	v2 = pos3 - pos1;
+	D3DXVec3Cross(&v3, &v1, &v2);
+	D3DXVec3Normalize(&v3, &v3);
+	return v3;
+}
+
 D3DXQUATERNION Benlib::LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2)
 {
 	D3DXVECTOR3 target = pos2 - pos1;

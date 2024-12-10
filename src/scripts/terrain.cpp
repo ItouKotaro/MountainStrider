@@ -464,7 +464,7 @@ void Terrain::GenerateProduces()
 		}
 
 		// レイポイントの位置を決める
-		D3DXVECTOR3 rayPoint[5];
+		D3DXVECTOR3 rayPoint[6];
 		rayPoint[0].x = -pSelectProduce->GetSize().x / 2;
 		rayPoint[0].z = -pSelectProduce->GetSize().y / 2;
 		rayPoint[1].x = pSelectProduce->GetSize().x / 2;
@@ -475,20 +475,22 @@ void Terrain::GenerateProduces()
 		rayPoint[3].z = pSelectProduce->GetSize().y / 2;
 		rayPoint[4].x = 0.0f;
 		rayPoint[4].z = 0.0f;
+		rayPoint[5].x = 0.0f;
+		rayPoint[5].z = -pSelectProduce->GetSize().y / 2;
 
 		// 生成座標に移動する
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			rayPoint[i] += generatePos;
 		}
 
 		// レイを飛ばす
-		D3DXVECTOR3 rayReachPoint[5];
+		D3DXVECTOR3 rayReachPoint[6];
 		bool bReached = true;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 6; i++)
 		{
-			btVector3 Start = btVector3(rayPoint[i].x, 3000.0f, rayPoint[i].z);
-			btVector3 End = btVector3(rayPoint[i].x, -3000.0f, rayPoint[i].z);
+			btVector3 Start = btVector3(rayPoint[i].x, m_maxHeight + 10.0f, rayPoint[i].z);
+			btVector3 End = btVector3(rayPoint[i].x, m_minHeight - 10.0f, rayPoint[i].z);
 
 			btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 			CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
@@ -511,18 +513,16 @@ void Terrain::GenerateProduces()
 		// すべてのレイが地面に到達したとき
 		if (bReached)
 		{
-	
-			float angle1 = atan2f(sqrtf(fabsf(rayReachPoint[3].x - rayReachPoint[0].x) * fabsf(rayReachPoint[3].x - rayReachPoint[0].x) +
-				fabsf(rayReachPoint[3].z - rayReachPoint[0].z) * fabsf(rayReachPoint[3].z - rayReachPoint[0].z)), (rayReachPoint[3].y - rayReachPoint[0].y));
+			D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[5], rayReachPoint[2], rayReachPoint[3]);
+			D3DXQUATERNION rot;
+			D3DXVECTOR3 axis = { 1.0f, 0.0f, 0.0f };
+			D3DXQuaternionIdentity(&rot);
+			D3DXQuaternionRotationAxis(&rot, &axis, fabsf(atan2f(normal.z, normal.y)));
 
-			float angle2 = atan2f(sqrtf(fabsf(rayReachPoint[2].x - rayReachPoint[1].x) * fabsf(rayReachPoint[2].x - rayReachPoint[1].x) +
-				fabsf(rayReachPoint[2].z - rayReachPoint[1].z) * fabsf(rayReachPoint[2].z - rayReachPoint[1].z)), (rayReachPoint[2].y - rayReachPoint[1].y));
-
-			float angle = 0.0f;
-
-			// 角度を計算する
-			D3DXVECTOR3 rot = {0.0f, 0.0f, 0.0f};
-			//rot.x = 
+			D3DXQUATERNION mulRot;
+			axis = { 0.0f, 1.0f, 0.0f };
+			D3DXQuaternionRotationAxis(&mulRot, &axis, atan2f(normal.x, normal.z));
+			rot *= mulRot;
 
 			// 中心にレイを飛ばして設置高度を取得する
 			btVector3 Start = btVector3(generatePos.x, 3000.0f, generatePos.z);
@@ -536,7 +536,10 @@ void Terrain::GenerateProduces()
 				generatePos.y = RayCallback.m_hitPointWorld.getY() + pSelectProduce->GetOffsetY();
 
 				// オブジェクトを設置する
-				m_producesManager->AddProduce(Transform(generatePos, rot), pSelectProduce);
+				Transform trans;
+				trans.SetPos(generatePos);
+				trans.SetQuaternion(rot);
+				m_producesManager->AddProduce(trans, pSelectProduce);
 
 				// ループを抜ける
 				break;
@@ -828,6 +831,10 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 			ManagedGameObject* managedGameObject = new ManagedGameObject;
 			managedGameObject->gameObject = (*itrManagedProduces)->natureProduce->Generate((*itrManagedProduces)->transform);
 			managedGameObject->natureProduce = (*itrManagedProduces)->natureProduce;
+			if (managedGameObject->gameObject == nullptr || managedGameObject->natureProduce == nullptr)
+			{
+				continue;
+			}
 
 			// コリジョンを変更する
 			managedGameObject->gameObject->Destroy(managedGameObject->gameObject->GetComponent<CRigidBody>());
