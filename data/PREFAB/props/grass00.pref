@@ -1,0 +1,68 @@
+{
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\props\\grass00.x",
+            "name": "model",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    0.25,
+                    0.25,
+                    0.25
+                ]
+            },
+            "trigger": false
+        }
+    },
+    "parent": {
+        "0": -1
+    },
+    "prefab": {
+        "collision": [
+            {
+                "offset": [
+                    0.0,
+                    0.30000001192092896,
+                    0.0
+                ],
+                "radius": 1.399999976158142,
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "type": "sphere"
+            }
+        ],
+        "friction": 1.0,
+        "mass": 10.0,
+        "name": "Grass",
+        "rigidbody": false,
+        "tag": "",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": true
+    }
+}

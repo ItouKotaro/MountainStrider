@@ -1,0 +1,69 @@
+{
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\trees\\fallen_tree00.x",
+            "name": "model",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        }
+    },
+    "parent": {
+        "0": -1
+    },
+    "prefab": {
+        "collision": [
+            {
+                "height": 55.29999923706055,
+                "offset": [
+                    0.0,
+                    0.4000000059604645,
+                    0.0
+                ],
+                "radius": 5.900000095367432,
+                "rotation": [
+                    0.0,
+                    0.0,
+                    1.5750000476837158
+                ],
+                "type": "cylinder"
+            }
+        ],
+        "friction": 1.0,
+        "mass": 10.0,
+        "name": "Prefab",
+        "rigidbody": false,
+        "tag": "",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": true
+    }
+}

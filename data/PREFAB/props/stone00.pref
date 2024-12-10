@@ -1,0 +1,67 @@
+{
+    "object": {
+        "0": {
+            "collision": [
+                {
+                    "offset": [
+                        0.0,
+                        -0.8999999761581421,
+                        0.0
+                    ],
+                    "radius": 4.0,
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "type": "sphere"
+                }
+            ],
+            "friction": 1.0,
+            "model": "data\\MODEL\\props\\stone00.x",
+            "name": "model",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    4.099999904632568,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    0.30000001192092896,
+                    0.30000001192092896,
+                    0.30000001192092896
+                ]
+            },
+            "trigger": false
+        }
+    },
+    "parent": {
+        "0": -1
+    },
+    "prefab": {
+        "friction": 1.0,
+        "mass": 10.0,
+        "name": "Stone",
+        "tag": "",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": false
+    }
+}
