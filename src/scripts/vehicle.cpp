@@ -286,14 +286,14 @@ void CVehicle::FlyingControlVehicle()
 	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
 
 	// ŒX‚«’²®
-	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f};
-	}
-	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
-	}
+	//if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f};
+	//}
+	//if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
+	//}
 
 	// ‰ñ“]
 	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)

@@ -106,17 +106,20 @@ protected:
 // --------------------------------- è·äQï® ---------------------------------
 
 // ñÿ
-class CProdTree : public CNatureProduces
+class CProdTree00 : public CNatureProduces
 {
 public:
-	CProdTree() : CNatureProduces("tree", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 10.0f) {}
+	CProdTree00() : CNatureProduces("tree00", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 10.0f) {}
 };
-
-// ÉtÉFÉìÉX
-class CProdFence : public CNatureProduces
+class CProdTree01 : public CNatureProduces
 {
 public:
-	CProdFence() : CNatureProduces("fence", "data\\PREFAB\\fence.pref", { 10.0f, 10.0f }, 10.0f) {}
+	CProdTree01() : CNatureProduces("tree01", "data\\PREFAB\\tree\\tree01.pref", { 10.0f, 10.0f }, 10.0f) {}
+};
+class CProdFallenTree00 : public CNatureProduces
+{
+public:
+	CProdFallenTree00() : CNatureProduces("fallen_tree00", "data\\PREFAB\\tree\\fallen_tree.pref", { 10.0f, 10.0f }, 30.0f) {}
 };
 
 #endif // !_NATURE_PRODUCES_H_

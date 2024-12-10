@@ -36,16 +36,23 @@ void Terrain::Init()
 	// 障害物を登録する
 
 	// 木
-	CProdTree* prodTree = new CProdTree();
-	prodTree->SetChance(10);
-	prodTree->SetAdjacentRate("tree", 10.0f);
-	RegisterProduces(prodTree);
-	
-	// フェンス
-	CProdFence* prodFence = new CProdFence();
-	prodFence->SetChance(1);
-	prodFence->SetAdjacentRate("fence", 100.0f);
-	RegisterProduces(prodFence);
+	CProdTree00* prodTree00 = new CProdTree00();
+	prodTree00->SetChance(5);
+	prodTree00->SetAdjacentRate("tree00", 10.0f);
+	prodTree00->SetAdjacentRate("tree01", 10.0f);
+	RegisterProduces(prodTree00);
+
+	CProdTree01* prodTree01 = new CProdTree01();
+	prodTree01->SetChance(5);
+	prodTree01->SetAdjacentRate("tree00", 10.0f);
+	prodTree01->SetAdjacentRate("tree01", 10.0f);
+	RegisterProduces(prodTree01);
+
+	CProdFallenTree00* prodFallenTree00 = new CProdFallenTree00();
+	prodFallenTree00->SetChance(5);
+	prodFallenTree00->SetAdjacentRate("tree00", 10.0f);
+	prodFallenTree00->SetAdjacentRate("tree01", 10.0f);
+	RegisterProduces(prodFallenTree00);
 
 	// 高度カラーを設定する
 	AddHeightColor(1.0f, D3DCOLOR_RGBA(11, 112, 0, 255));
@@ -476,6 +483,7 @@ void Terrain::GenerateProduces()
 		}
 
 		// レイを飛ばす
+		D3DXVECTOR3 rayReachPoint[5];
 		bool bReached = true;
 		for (int i = 0; i < 5; i++)
 		{
@@ -491,12 +499,31 @@ void Terrain::GenerateProduces()
 					bReached = false;
 					break;
 				}
+				rayReachPoint[i] = { RayCallback.m_hitPointWorld.getX(), RayCallback.m_hitPointWorld.getY(), RayCallback.m_hitPointWorld.getZ()};
+			}
+			else
+			{
+				bReached = false;
+				break;
 			}
 		}
 
 		// すべてのレイが地面に到達したとき
 		if (bReached)
 		{
+	
+			float angle1 = atan2f(sqrtf(fabsf(rayReachPoint[3].x - rayReachPoint[0].x) * fabsf(rayReachPoint[3].x - rayReachPoint[0].x) +
+				fabsf(rayReachPoint[3].z - rayReachPoint[0].z) * fabsf(rayReachPoint[3].z - rayReachPoint[0].z)), (rayReachPoint[3].y - rayReachPoint[0].y));
+
+			float angle2 = atan2f(sqrtf(fabsf(rayReachPoint[2].x - rayReachPoint[1].x) * fabsf(rayReachPoint[2].x - rayReachPoint[1].x) +
+				fabsf(rayReachPoint[2].z - rayReachPoint[1].z) * fabsf(rayReachPoint[2].z - rayReachPoint[1].z)), (rayReachPoint[2].y - rayReachPoint[1].y));
+
+			float angle = 0.0f;
+
+			// 角度を計算する
+			D3DXVECTOR3 rot = {0.0f, 0.0f, 0.0f};
+			//rot.x = 
+
 			// 中心にレイを飛ばして設置高度を取得する
 			btVector3 Start = btVector3(generatePos.x, 3000.0f, generatePos.z);
 			btVector3 End = btVector3(generatePos.x, -3000.0f, generatePos.z);
@@ -509,7 +536,7 @@ void Terrain::GenerateProduces()
 				generatePos.y = RayCallback.m_hitPointWorld.getY() + pSelectProduce->GetOffsetY();
 
 				// オブジェクトを設置する
-				m_producesManager->AddProduce(Transform(generatePos), pSelectProduce);
+				m_producesManager->AddProduce(Transform(generatePos, rot), pSelectProduce);
 
 				// ループを抜ける
 				break;
