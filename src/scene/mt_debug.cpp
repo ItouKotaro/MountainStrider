@@ -42,10 +42,14 @@ void CMountainDebug::Init()
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(500.0f, 2.0f, 500.0f));
 
 
-	m_pGhostTest = new GameObject;
-	m_pGhostTest->transform->Translate(0.0f, -50.0f, 0.0f);
-	m_pGhostTest->AddComponent<CBoxCollider>(D3DXVECTOR3(30.0f, 10.0f, 30.0f));
-	CCollision::GetCollision(m_pGhostTest)->IsTrigger(true);
+	//m_pGhostTest = new GameObject;
+	//m_pGhostTest->transform->Translate(0.0f, -50.0f, 0.0f);
+	//m_pGhostTest->AddComponent<CBoxCollider>(D3DXVECTOR3(30.0f, 10.0f, 30.0f));
+	//CCollision::GetCollision(m_pGhostTest)->IsTrigger(true);
+
+	// レンダーバッファを登録する
+	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
+	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
 }
 
 //=============================================================
@@ -60,24 +64,16 @@ void CMountainDebug::Uninit()
 //=============================================================
 void CMountainDebug::Update()
 {
-	auto& pTest = CCollision::GetCollision(m_pGhostTest)->GetOverlappingGameObjects();
-	for (unsigned int i = 0; i < pTest.size(); i++)
-	{
-		if (pTest[i]->GetName() == "BOX")
-		{
-			std::cout << "aaa";
-		}
-	}
 
-	if (INPUT_INSTANCE->onTrigger("o"))
-	{
-		GameObject* pBox = new GameObject;
-		pBox->SetName("BOX");
-		pBox->transform->Translate(0.0f, 20.0f, 0.0f);
-		pBox->AddComponent<CBoxCollider>(D3DXVECTOR3(5, 5, 5));
-		pBox->AddComponent<CRigidBody>();
-		CCollision::GetCollision(pBox)->SetMass(0.0f);
-	}
+	//if (INPUT_INSTANCE->onTrigger("o"))
+	//{
+	//	GameObject* pBox = new GameObject;
+	//	pBox->SetName("BOX");
+	//	pBox->transform->Translate(0.0f, 20.0f, 0.0f);
+	//	pBox->AddComponent<CBoxCollider>(D3DXVECTOR3(5, 5, 5));
+	//	pBox->AddComponent<CRigidBody>();
+	//	CCollision::GetCollision(pBox)->SetMass(0.0f);
+	//}
 
 	if (INPUT_INSTANCE->onTrigger("up"))
 	{
@@ -88,8 +84,8 @@ void CMountainDebug::Update()
 	//{
 	//	m_pTerrain = new GameObject;
 	//	m_pTerrain->transform->Translate(0.0f, -200.0f, 0.0f);
-	//	m_pTerrain->AddComponent<CTerrain>();
-	//	m_pTerrain->GetComponent<CTerrain>()->Generate();
+	//	m_pTerrain->AddComponent<Terrain>();
+	//	m_pTerrain->GetComponent<Terrain>()->Generate();
 	//}
 
 	// バイクを生成する

@@ -71,6 +71,26 @@ void ShopManager::Init(Pages* pages)
 	m_inventory->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2) - 450.0f, 820.0f);
 	m_pages->AddObject(1, m_inventory);
 
+	// 次へのボタンを作成する
+	GameObject* nextButton = new GameObject("NextButton", "UI");
+	nextButton->transform->SetSize(400.0f, 130.0f);
+	nextButton->transform->SetPos(1450.0f, 900.0f);
+	nextButton->AddComponent<ButtonUI>();
+	nextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+	nextButton->GetComponent<ButtonUI>()->setClickEvent([]() {CSceneManager::GetInstance()->ReloadScene(); });
+	m_pages->AddObject(1, nextButton);
+
+	GameObject* nextButtonText = new GameObject("NextButtonText", "UI");
+	nextButtonText->AddComponent<CText>();
+	nextButtonText->GetComponent<CText>()->SetText("次の山へ");
+	nextButtonText->GetComponent<CText>()->SetFontColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+	nextButtonText->GetComponent<CText>()->SetFontSize(90);
+	nextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+	nextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+	nextButtonText->transform->SetPos(200.0f, 25.0f);
+	nextButtonText->SetParent(nextButton);
+	m_pages->AddObject(1, nextButtonText);
+
 	// 燃料と耐久値の購入ディスプレイを初期化する
 	InitTopDisplay();
 }
