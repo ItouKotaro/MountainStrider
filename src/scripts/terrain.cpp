@@ -439,31 +439,31 @@ void Terrain::GenerateProduces()
 			continue;
 		}
 
+		// 周辺に生成物がないかを確認する
+		if (m_producesManager->FindProducesByDistance(generatePos, pSelectProduce->GetSize()))
+		{ // 存在するとき
+			continue;
+		}
+
 		// レイポイントの位置を決める
-		D3DXVECTOR3 rayPoint[6];
+		D3DXVECTOR3 rayPoint[3];
 		rayPoint[0].x = -pSelectProduce->GetSize() / 2;
-		rayPoint[0].z = -pSelectProduce->GetSize() / 2;
+		rayPoint[0].z = pSelectProduce->GetSize() / 2;
 		rayPoint[1].x = pSelectProduce->GetSize() / 2;
-		rayPoint[1].z = -pSelectProduce->GetSize() / 2;
-		rayPoint[2].x = -pSelectProduce->GetSize() / 2;
-		rayPoint[2].z = pSelectProduce->GetSize() / 2;
-		rayPoint[3].x = pSelectProduce->GetSize() / 2;
-		rayPoint[3].z = pSelectProduce->GetSize() / 2;
-		rayPoint[4].x = 0.0f;
-		rayPoint[4].z = 0.0f;
-		rayPoint[5].x = 0.0f;
-		rayPoint[5].z = -pSelectProduce->GetSize() / 2;
+		rayPoint[1].z = pSelectProduce->GetSize() / 2;
+		rayPoint[2].x = 0.0f;
+		rayPoint[2].z = -pSelectProduce->GetSize() / 2;
 
 		// 生成座標に移動する
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			rayPoint[i] += generatePos;
 		}
 
 		// レイを飛ばす
-		D3DXVECTOR3 rayReachPoint[6];
+		D3DXVECTOR3 rayReachPoint[3];
 		bool bReached = true;
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			btVector3 Start = btVector3(rayPoint[i].x, m_maxHeight + 10.0f, rayPoint[i].z);
 			btVector3 End = btVector3(rayPoint[i].x, m_minHeight - 10.0f, rayPoint[i].z);
@@ -508,7 +508,7 @@ void Terrain::GenerateProduces()
 			else
 			{ // 傾斜角を考慮する
 				// 地形に合わせた角度を計算する
-				D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[5], rayReachPoint[2], rayReachPoint[3]);
+				D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[0], rayReachPoint[1], rayReachPoint[2]);
 				axis = { 1.0f, 0.0f, 0.0f };
 				D3DXQuaternionRotationAxis(&rot, &axis, fabsf(atan2f(normal.z, normal.y)) + randAngle());
 
@@ -991,7 +991,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 //=============================================================
 // [ProducesManager] 近くの生成物を取得する
 //=============================================================
-float ProducesManager::GetNearProduces(const std::string& name, const D3DXVECTOR3& pos, const float& range)
+float ProducesManager::GetNearProducesRate(const std::string& name, const D3DXVECTOR3& pos, const float& range)
 {
 	float rate = 1.0f;
 	for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
@@ -1003,4 +1003,19 @@ float ProducesManager::GetNearProduces(const std::string& name, const D3DXVECTOR
 	}
 
 	return rate;
+}
+
+//=============================================================
+// [ProducesManager] 指定距離内に生成物があるか
+//=============================================================
+bool ProducesManager::FindProducesByDistance(const D3DXVECTOR3& pos, const float& distance)
+{
+	for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
+	{
+		if (Benlib::PosDistance((*itr)->transform.GetPos(), pos) < distance)
+		{ // 範囲内の時
+			return true;
+		}
+	}
+	return false;
 }

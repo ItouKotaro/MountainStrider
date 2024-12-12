@@ -33,7 +33,7 @@ float CNatureProduces::GetAdjacentRate(const D3DXVECTOR3& pos)
 	float rate = 1.0f;
 
 #ifndef _DEBUG
-	rate = pProducesManager->GetNearProduces(m_produceName, pos, m_adjacentDistance);
+	rate = pProducesManager->GetNearProducesRate(m_produceName, pos, m_adjacentDistance);
 #endif // _DEBUG
 			
 	return rate;

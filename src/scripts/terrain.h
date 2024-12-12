@@ -27,7 +27,10 @@ public:
 	void Update(const D3DXVECTOR3& pos);
 
 	// 指定位置の周囲のオブジェクトを取得する
-	float GetNearProduces(const std::string& name , const D3DXVECTOR3& pos, const float& range);
+	float GetNearProducesRate(const std::string& name , const D3DXVECTOR3& pos, const float& range);
+
+	// 指定位置から指定の範囲に生成物が存在するか
+	bool FindProducesByDistance(const D3DXVECTOR3& pos, const float& distance);
 private:
 	void UpdateGameObjects(const D3DXVECTOR3& pos);
 
