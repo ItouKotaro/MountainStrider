@@ -20,7 +20,8 @@ public:
 private:
 	GameObject* m_pCamera;
 	GameObject* m_pTerrain;
-	GameObject* m_pGhostTest;
+	GameObject* m_pRollTest;
+	GameObject* m_pText;
 };
 
 #endif // !_MOUNTAIN_DEBUG_H_

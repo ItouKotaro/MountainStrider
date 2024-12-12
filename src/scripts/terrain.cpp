@@ -261,20 +261,13 @@ void Terrain::GenerateRoad()
 		int point;		// ポイント（低いと優先）
 	};
 
-	// 経路アルゴリズム（水: 1500ステップ）
-	//for (int i = 0; i < 1500; i++)
+
+	// 逆経路アルゴリズム
+	//while (1)
 	//{
+	//	// 最終地点を設定する
 
 	//}
-
-
-
-
-
-
-
-
-
 
 
 	// 経路アルゴリズム
@@ -308,7 +301,7 @@ void Terrain::GenerateRoad()
 			int y = abs((*itr).y) <= abs((*itr).y - TERRAIN_SIZE) ? abs((*itr).y) : abs((*itr).y - TERRAIN_SIZE);
 			int disNear = x <= y ? x : y;
 
-			(*itr).point -= disNear * 0.6f;
+			(*itr).point -= static_cast<int>((TERRAIN_SIZE - disNear) * 0.2f);
 		}
 
 		// 高低差でポイントを加算する
@@ -322,7 +315,7 @@ void Terrain::GenerateRoad()
 
 			if (aroundRouteData[i].height < currentHeight)
 			{ // 現在高度より低いときポイントを引く
-				aroundRouteData[i].point -= 10;
+				aroundRouteData[i].point -= 5;
 			}
 		}
 
@@ -344,7 +337,7 @@ void Terrain::GenerateRoad()
 					{
 						if (m_routeData[aroundRouteData[i].x + x][aroundRouteData[i].y + y])
 						{ // 周辺に存在するとき
-							aroundRouteData[i].point += 8;
+							aroundRouteData[i].point += 4;
 						}
 					}
 				}

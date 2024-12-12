@@ -237,14 +237,14 @@ void CVehicle::LandingControlVehicle()
 	}
 
 	// ŒX‚«’²®
-	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
-	}
-	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
-	}
+	//if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+	//}
+	//if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+	//}
 	
 	// •ûŒü“]Š·
 	float fSteeringVelocity = 0.0f;
@@ -280,14 +280,15 @@ void CVehicle::FlyingControlVehicle()
 	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
 
 	// ŒX‚«’²®
-	//if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 1.5f};
-	//}
-	//if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
-	//}
+	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {sinf(transform->GetRotY()) * 1.5f, 0.0f, cosf(transform->GetRotY()) * 1.5f};
+	}
+	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
+	}
+	//gameObject->transform->Rotate(angularVelocity * 0.08f);
 
 	// ‰ñ“]
 	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
@@ -302,7 +303,6 @@ void CVehicle::FlyingControlVehicle()
 
 	// ŒX‚«‘¬“x‚ð“K—p‚·‚é
 	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));
-
 }
 
 //=============================================================

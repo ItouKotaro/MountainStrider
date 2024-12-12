@@ -14,6 +14,7 @@
 #include "component/3d/collision.h"
 #include "scripts/terrain.h"
 #include "scripts/vehicle.h"
+#include "component/2d/text.h"
 
 //=============================================================
 // [CMountainDebug] ‰Šú‰»
@@ -41,7 +42,11 @@ void CMountainDebug::Init()
 	pFloor->transform->Translate(0.0f, -200.0f, 0.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(500.0f, 2.0f, 500.0f));
 
+	m_pRollTest = new GameObject;
+	m_pRollTest->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\fence.x");
 
+	m_pText = new GameObject();
+	m_pText->AddComponent<CText>();
 	//m_pGhostTest = new GameObject;
 	//m_pGhostTest->transform->Translate(0.0f, -50.0f, 0.0f);
 	//m_pGhostTest->AddComponent<CBoxCollider>(D3DXVECTOR3(30.0f, 10.0f, 30.0f));
@@ -75,10 +80,21 @@ void CMountainDebug::Update()
 	//	CCollision::GetCollision(pBox)->SetMass(0.0f);
 	//}
 
-	if (INPUT_INSTANCE->onTrigger("up"))
+	D3DXVECTOR3 angularVelocity = { 0.0f, 0.0f, 0.0f };
+	if (INPUT_INSTANCE->onPress("up"))
 	{
-		m_pGhostTest->transform->Translate(0.0f, 5.0f, 0.0f);
+		angularVelocity += {sinf(0.0f+D3DX_PI*0.5f) * 1.5f, 0.0f, cosf(0.0f + D3DX_PI * 0.5f) * 1.5f};
 	}
+	if (INPUT_INSTANCE->onPress("down"))
+	{
+		angularVelocity += {sinf(m_pRollTest->transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(m_pRollTest->transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
+	}
+	//m_pRollTest->transform->Rotate(angularVelocity * 0.08f);
+
+	angularVelocity *= 0.08f;
+	m_pRollTest->transform->Rotate(angularVelocity);
+
+	m_pText->GetComponent<CText>()->SetText(std::to_string(sinf(m_pRollTest->transform->GetWRotY() + D3DX_PI * 0.5f)));
 
 	//if (INPUT_INSTANCE->onTrigger("o"))
 	//{
