@@ -23,7 +23,7 @@ struct AdjacentRate
 class CNatureProduces
 {
 public:
-	CNatureProduces(const std::string& name, const std::string& path, const D3DXVECTOR2& size, const float& damage = 0.0f, const float& offsetY = 0.0f, const float& adjacentDistance = 100.0f)
+	CNatureProduces(const std::string& name, const std::string& path, const float& size, const float& damage = 0.0f, const float& offsetY = 0.0f, const float& angleRange = 0.0f, const bool& isMatchInclination = true, const float& adjacentDistance = 100.0f)
 	{
 		m_produceName = name;
 		m_path = path;
@@ -31,6 +31,8 @@ public:
 		m_damage = damage;
 		m_offsetY = offsetY;
 		m_adjacentDistance = adjacentDistance;
+		m_angleRange = angleRange;
+		m_isMatchInclination = isMatchInclination;
 	}
 
 	// バイクとヒットしたときのイベント
@@ -41,7 +43,7 @@ public:
 	GameObject* Generate(const Transform& transform);
 
 	// サイズの取得
-	D3DXVECTOR2 GetSize() { return m_size; }
+	float GetSize() { return m_size; }
 	// オフセットYの取得
 	float GetOffsetY() { return m_offsetY; }
 	// 産物名の取得
@@ -90,12 +92,20 @@ public:
 		return 1.0f;
 	}
 
+	// ランダム角度
+	float GetAngleRange() { return m_angleRange; }
+
+	// 傾斜角に合わせるか
+	bool IsMatchInclination() { return m_isMatchInclination; }
+
 protected:
 	std::string m_path;				// 設置プレハブのパス
-	D3DXVECTOR2 m_size;			// サイズ（XZ）
+	float m_size;							// サイズ
 	float m_offsetY;						// Yのオフセット
 	std::string m_produceName;	// 産物名
 	float m_damage;					// ダメージ量（ヒット時）
+	float m_angleRange;				// ランダム角度
+	bool m_isMatchInclination;		// 傾斜角を考慮するか
 
 	// 確率
 	unsigned int m_chance;										// 標準確率（整数）
@@ -109,17 +119,17 @@ protected:
 class CProdTree00 : public CNatureProduces
 {
 public:
-	CProdTree00() : CNatureProduces("tree00", "data\\PREFAB\\tree\\tree00.pref", {10.0f, 10.0f}, 10.0f) {}
+	CProdTree00() : CNatureProduces("tree00", "data\\PREFAB\\tree\\tree00.pref", 10.0f, 10.0f, 0.0f, 0.5f, false) {}
 };
 class CProdTree01 : public CNatureProduces
 {
 public:
-	CProdTree01() : CNatureProduces("tree01", "data\\PREFAB\\tree\\tree01.pref", { 10.0f, 10.0f }, 10.0f) {}
+	CProdTree01() : CNatureProduces("tree01", "data\\PREFAB\\tree\\tree01.pref", 10.0f, 10.0f, 0.0f, 0.5f, false) {}
 };
 class CProdFallenTree00 : public CNatureProduces
 {
 public:
-	CProdFallenTree00() : CNatureProduces("fallen_tree00", "data\\PREFAB\\tree\\fallen_tree.pref", { 10.0f, 10.0f }, 30.0f) {}
+	CProdFallenTree00() : CNatureProduces("fallen_tree00", "data\\PREFAB\\tree\\fallen_tree.pref", 10.0f, 30.0f) {}
 };
 
 #endif // !_NATURE_PRODUCES_H_

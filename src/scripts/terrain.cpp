@@ -466,18 +466,18 @@ void Terrain::GenerateProduces()
 
 		// レイポイントの位置を決める
 		D3DXVECTOR3 rayPoint[6];
-		rayPoint[0].x = -pSelectProduce->GetSize().x / 2;
-		rayPoint[0].z = -pSelectProduce->GetSize().y / 2;
-		rayPoint[1].x = pSelectProduce->GetSize().x / 2;
-		rayPoint[1].z = -pSelectProduce->GetSize().y / 2;
-		rayPoint[2].x = -pSelectProduce->GetSize().x / 2;
-		rayPoint[2].z = pSelectProduce->GetSize().y / 2;
-		rayPoint[3].x = pSelectProduce->GetSize().x / 2;
-		rayPoint[3].z = pSelectProduce->GetSize().y / 2;
+		rayPoint[0].x = -pSelectProduce->GetSize() / 2;
+		rayPoint[0].z = -pSelectProduce->GetSize() / 2;
+		rayPoint[1].x = pSelectProduce->GetSize() / 2;
+		rayPoint[1].z = -pSelectProduce->GetSize() / 2;
+		rayPoint[2].x = -pSelectProduce->GetSize() / 2;
+		rayPoint[2].z = pSelectProduce->GetSize() / 2;
+		rayPoint[3].x = pSelectProduce->GetSize() / 2;
+		rayPoint[3].z = pSelectProduce->GetSize() / 2;
 		rayPoint[4].x = 0.0f;
 		rayPoint[4].z = 0.0f;
 		rayPoint[5].x = 0.0f;
-		rayPoint[5].z = -pSelectProduce->GetSize().y / 2;
+		rayPoint[5].z = -pSelectProduce->GetSize() / 2;
 
 		// 生成座標に移動する
 		for (int i = 0; i < 6; i++)
@@ -514,16 +514,34 @@ void Terrain::GenerateProduces()
 		// すべてのレイが地面に到達したとき
 		if (bReached)
 		{
-			D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[5], rayReachPoint[2], rayReachPoint[3]);
 			D3DXQUATERNION rot;
-			D3DXVECTOR3 axis = { 1.0f, 0.0f, 0.0f };
 			D3DXQuaternionIdentity(&rot);
-			D3DXQuaternionRotationAxis(&rot, &axis, fabsf(atan2f(normal.z, normal.y)));
 
-			D3DXQUATERNION mulRot;
-			axis = { 0.0f, 1.0f, 0.0f };
-			D3DXQuaternionRotationAxis(&mulRot, &axis, atan2f(normal.x, normal.z));
-			rot *= mulRot;
+			// ランダム角度を取得する
+			float angleRange = pSelectProduce->GetAngleRange();
+			std::function<float()> randAngle = [angleRange]() {
+				if (angleRange == 0)
+					return 0.0f;
+				return (rand() % static_cast<int>(angleRange * 1000) - static_cast<int>(angleRange * 500)) * 0.001f; 
+			};
+		
+			D3DXVECTOR3 axis = { 0.0f, 0.0f, 0.0f };
+			if (!pSelectProduce->IsMatchInclination())
+			{ // 傾斜角を考慮しない
+				D3DXQuaternionRotationYawPitchRoll(&rot, randAngle(), 0.0f, randAngle());
+			}
+			else
+			{ // 傾斜角を考慮する
+				// 地形に合わせた角度を計算する
+				D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[5], rayReachPoint[2], rayReachPoint[3]);
+				axis = { 1.0f, 0.0f, 0.0f };
+				D3DXQuaternionRotationAxis(&rot, &axis, fabsf(atan2f(normal.z, normal.y)) + randAngle());
+
+				D3DXQUATERNION mulRot;
+				axis = { 0.0f, 1.0f, 0.0f };
+				D3DXQuaternionRotationAxis(&mulRot, &axis, atan2f(normal.x, normal.z) + randAngle());
+				rot *= mulRot;
+			}
 
 			// 中心にレイを飛ばして設置高度を取得する
 			btVector3 Start = btVector3(generatePos.x, 3000.0f, generatePos.z);
