@@ -261,6 +261,22 @@ void Terrain::GenerateRoad()
 		int point;		// ポイント（低いと優先）
 	};
 
+	// 経路アルゴリズム（水: 1500ステップ）
+	//for (int i = 0; i < 1500; i++)
+	//{
+
+	//}
+
+
+
+
+
+
+
+
+
+
+
 	// 経路アルゴリズム
 	while (1)
 	{
@@ -284,9 +300,20 @@ void Terrain::GenerateRoad()
 			}
 		}
 
+		// 外側から離れているときはポイントを加算する
+		std::vector<RouteData> distanceData;
+		for (auto itr = aroundRouteData.begin(); itr != aroundRouteData.end(); itr++)
+		{
+			int x = abs((*itr).x) <= abs((*itr).x - TERRAIN_SIZE) ? abs((*itr).x) : abs((*itr).x - TERRAIN_SIZE);
+			int y = abs((*itr).y) <= abs((*itr).y - TERRAIN_SIZE) ? abs((*itr).y) : abs((*itr).y - TERRAIN_SIZE);
+			int disNear = x <= y ? x : y;
+
+			(*itr).point -= disNear * 0.6f;
+		}
+
 		// 高低差でポイントを加算する
 		std::sort(aroundRouteData.begin(), aroundRouteData.end(),
-			[currentHeight](RouteData& com1, RouteData& com2) {return fabsf(com1.height - currentHeight) < fabsf(com2.height - currentHeight); }
+			[currentHeight](RouteData& com1, RouteData& com2) {return com1.height - currentHeight < com2.height - currentHeight; }
 		);
 		for (unsigned int i = 0; i < aroundRouteData.size(); i++)
 		{
@@ -295,7 +322,7 @@ void Terrain::GenerateRoad()
 
 			if (aroundRouteData[i].height < currentHeight)
 			{ // 現在高度より低いときポイントを引く
-				aroundRouteData[i].point -= 3;
+				aroundRouteData[i].point -= 10;
 			}
 		}
 
@@ -317,13 +344,12 @@ void Terrain::GenerateRoad()
 					{
 						if (m_routeData[aroundRouteData[i].x + x][aroundRouteData[i].y + y])
 						{ // 周辺に存在するとき
-							aroundRouteData[i].point += 5;
+							aroundRouteData[i].point += 8;
 						}
 					}
 				}
 			}
 		}
-
 
 		// 周辺データをポイントを昇順でソートする
 		std::sort(aroundRouteData.begin(), aroundRouteData.end(),
