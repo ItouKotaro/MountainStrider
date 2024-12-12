@@ -23,17 +23,16 @@ struct AdjacentRate
 class CNatureProduces
 {
 public:
-	CNatureProduces(const std::string& name, const std::string& path, const float& size, const float& damage = 0.0f, const float& offsetY = 0.0f, const float& angleRange = 0.0f, const bool& isMatchInclination = true, const float& adjacentDistance = 100.0f)
-	{
-		m_produceName = name;
-		m_path = path;
-		m_size = size;
-		m_damage = damage;
-		m_offsetY = offsetY;
-		m_adjacentDistance = adjacentDistance;
-		m_angleRange = angleRange;
-		m_isMatchInclination = isMatchInclination;
-	}
+	CNatureProduces() :
+		m_path(""),
+		m_size(10.0f),
+		m_offsetY(0.0f),
+		m_produceName(""),
+		m_damage(10.0f),
+		m_angleRange(0.0f),
+		m_isMatchInclination(true),
+		m_chance(0),
+		m_adjacentDistance(100.0f){}
 
 	// バイクとヒットしたときのイベント
 	virtual void onHit(GameObject* gameObject) {}
@@ -41,7 +40,20 @@ public:
 
 	// オブジェクトの生成
 	GameObject* Generate(const Transform& transform);
-
+	// 名前の設定
+	void SetName(const std::string& name) { m_produceName = name; }
+	// パスの設定
+	void SetPath(const std::string& path) { m_path = path; }
+	// サイズの設定
+	void SetSize(const float& size) { m_size = size; }
+	// ダメージの設定
+	void SetDamage(const float& damage) { m_damage = damage; }
+	// オフセットYの設定
+	void SetOffsetY(const float& offset) { m_offsetY = offset; }
+	// ランダム角度の設定
+	void SetAngleRange(const float& angle) { m_angleRange = angle; }
+	// 傾斜角に合わせるか
+	void SetIsMatchInclination(const bool& isMatchInclination) { m_isMatchInclination = isMatchInclination; }
 	// サイズの取得
 	float GetSize() { return m_size; }
 	// オフセットYの取得
@@ -115,21 +127,21 @@ protected:
 
 // --------------------------------- 障害物 ---------------------------------
 
-// 木
-class CProdTree00 : public CNatureProduces
-{
-public:
-	CProdTree00() : CNatureProduces("tree00", "data\\PREFAB\\tree\\tree00.pref", 10.0f, 10.0f, 0.0f, 0.5f, false) {}
-};
-class CProdTree01 : public CNatureProduces
-{
-public:
-	CProdTree01() : CNatureProduces("tree01", "data\\PREFAB\\tree\\tree01.pref", 10.0f, 10.0f, 0.0f, 0.5f, false) {}
-};
-class CProdFallenTree00 : public CNatureProduces
-{
-public:
-	CProdFallenTree00() : CNatureProduces("fallen_tree00", "data\\PREFAB\\tree\\fallen_tree.pref", 10.0f, 30.0f) {}
-};
+//// 木
+//class CProdTree00 : public CNatureProduces
+//{
+//public:
+//	CProdTree00() : CNatureProduces("tree00", "data\\PREFAB\\tree\\tree00.pref", 10.0f, 10.0f, 0.0f, 0.5f, false) {}
+//};
+//class CProdTree01 : public CNatureProduces
+//{
+//public:
+//	CProdTree01() : CNatureProduces("tree01", "data\\PREFAB\\tree\\tree01.pref", 10.0f, 10.0f, 0.0f, 0.5f, false) {}
+//};
+//class CProdFallenTree00 : public CNatureProduces
+//{
+//public:
+//	CProdFallenTree00() : CNatureProduces("fallen_tree00", "data\\PREFAB\\tree\\fallen_tree.pref", 10.0f, 30.0f) {}
+//};
 
 #endif // !_NATURE_PRODUCES_H_

@@ -67,6 +67,7 @@ public:
 	unsigned int GetSeed() { return m_seed; }
 	float GetMinHeight() { return m_minHeight; }
 	float GetMaxHeight() { return m_maxHeight; }
+	void LoadTerrainFile(const std::string path);
 
 	ProducesManager* GetProducesManager() { return m_producesManager; }
 

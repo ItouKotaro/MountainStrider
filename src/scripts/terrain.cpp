@@ -7,6 +7,7 @@
 #include "terrain.h"
 #include "benlib.h"
 #include <fstream>
+#include "manager.h"
 
 #include "component/3d/meshfield.h"
 #include "scripts/vehicle.h"
@@ -34,33 +35,7 @@ void Terrain::Init()
 	m_producesManager->Init();
 
 	// 障害物を登録する
-
-	// 木
-	CProdTree00* prodTree00 = new CProdTree00();
-	prodTree00->SetChance(5);
-	prodTree00->SetAdjacentRate("tree00", 10.0f);
-	prodTree00->SetAdjacentRate("tree01", 10.0f);
-	RegisterProduces(prodTree00);
-
-	CProdTree01* prodTree01 = new CProdTree01();
-	prodTree01->SetChance(5);
-	prodTree01->SetAdjacentRate("tree00", 10.0f);
-	prodTree01->SetAdjacentRate("tree01", 10.0f);
-	RegisterProduces(prodTree01);
-
-	CProdFallenTree00* prodFallenTree00 = new CProdFallenTree00();
-	prodFallenTree00->SetChance(5);
-	prodFallenTree00->SetAdjacentRate("tree00", 10.0f);
-	prodFallenTree00->SetAdjacentRate("tree01", 10.0f);
-	RegisterProduces(prodFallenTree00);
-
-	// 高度カラーを設定する
-	AddHeightColor(1.0f, D3DCOLOR_RGBA(11, 112, 0, 255));
-	AddHeightColor(0.5f, D3DCOLOR_RGBA(101, 191, 125, 255));
-	AddHeightColor(-1.0f, D3DCOLOR_RGBA(50, 166, 8, 255));
-
-	// 傾斜カラーを設定する
-	AddSlantColor(300.0f, 500.0f, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f), 0.6f);
+	LoadTerrainFile("data\\TERRAINS\\terrains.json");
 }
 
 //=============================================================
@@ -698,6 +673,130 @@ D3DXCOLOR Terrain::GetVertexColor(const int& x, const int& y)
 	return result;
 }
 
+//=============================================================
+// [Terrain] 地形ファイルの読み込み
+//=============================================================
+void Terrain::LoadTerrainFile(const std::string path)
+{
+	// jsonファイルを読み込む
+	std::ifstream ifs(path.c_str());
+
+	if (ifs.fail())
+	{ // ファイルの読み込みに失敗
+		MessageBox(CManager::GetInstance()->GetHWND(), "地形情報ファイルの読み込みに失敗しました", "エラー", MB_OK); //終了メッセージ
+		return;
+	}
+
+	// json形式に変換
+	std::string sInputData((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+	auto jInput = json::parse(sInputData);
+
+	// 地形情報を読み込む
+	if (jInput.contains("terrain"))
+	{
+		// 高度カラー
+		if (jInput["terrain"].contains("height_color"))
+		{
+			for (auto itr = jInput["terrain"]["height_color"].begin(); itr != jInput["terrain"]["height_color"].end(); itr++)
+			{
+				if ((*itr).contains("color") && (*itr).contains("height"))
+				{
+					AddHeightColor((*itr)["height"], D3DCOLOR_RGBA((*itr)["color"][0], (*itr)["color"][1], (*itr)["color"][2], (*itr)["color"][3]));
+				}
+			}
+		}
+
+		// 傾斜カラー
+		if (jInput["terrain"].contains("slant_color"))
+		{
+			for (auto itr = jInput["terrain"]["slant_color"].begin(); itr != jInput["terrain"]["slant_color"].end(); itr++)
+			{
+				if ((*itr).contains("color") && (*itr).contains("min") && (*itr).contains("max"))
+				{
+					AddSlantColor((*itr)["min"], (*itr)["max"], D3DCOLOR_RGBA((*itr)["color"][0], (*itr)["color"][1], (*itr)["color"][2], (*itr)["color"][3]));
+				}
+			}
+		}
+	}
+
+	// 生成物情報を読み込む
+	if (jInput.contains("produces"))
+	{ // 生成物の項目があるとき
+		for (auto itr = jInput["produces"].begin(); itr != jInput["produces"].end(); itr++)
+		{
+			CNatureProduces* produce = new CNatureProduces();
+
+			// 名前
+			if ((*itr).contains("name"))
+			{
+				produce->SetName((*itr)["name"]);
+			}
+
+			// パス
+			if ((*itr).contains("path"))
+			{
+				produce->SetPath((*itr)["path"]);
+			}
+
+			// サイズ
+			if ((*itr).contains("size"))
+			{
+				produce->SetSize((*itr)["size"]);
+			}
+
+			// ダメージ
+			if ((*itr).contains("damage"))
+			{
+				produce->SetSize((*itr)["damage"]);
+			}
+
+			// オフセットY
+			if ((*itr).contains("offset"))
+			{
+				produce->SetOffsetY((*itr)["offset"]);
+			}
+
+			// ランダム角度
+			if ((*itr).contains("angle_range"))
+			{
+				produce->SetAngleRange((*itr)["angle_range"]);
+			}
+
+			// 傾斜角に合わせるか
+			if ((*itr).contains("match_inclination"))
+			{
+				produce->SetIsMatchInclination((*itr)["match_inclination"]);
+			}
+
+			// 隣接の範囲
+			if ((*itr).contains("adjacent_distance"))
+			{
+				produce->SetAdjacentDistance((*itr)["adjacent_distance"]);
+			}
+
+			// 確率
+			if ((*itr).contains("chance"))
+			{
+				produce->SetChance((*itr)["chance"]);
+			}
+
+			// 隣接情報
+			if ((*itr).contains("adjacent_rate"))
+			{ // 隣接情報が含まれているとき
+				for (auto adjItr = (*itr)["adjacent_rate"].begin(); adjItr != (*itr)["adjacent_rate"].end(); adjItr++)
+				{
+					if ((*adjItr).contains("name") && (*adjItr).contains("rate"))
+					{
+						produce->SetAdjacentRate((*adjItr)["name"], (*adjItr)["rate"]);
+					}
+				}
+			}
+
+			// 生成物を登録する
+			RegisterProduces(produce);
+		}
+	}
+}
 
 //=============================================================
 // [ProducesManager] 生成物の配置情報を追加する

@@ -1,0 +1,69 @@
+
+{
+    "terrain":
+    {
+        "height_color":
+        [
+            {
+                "color": [11, 112, 0, 255],
+                "height": 1.0
+            },
+            {
+                "color": [101, 191, 125, 255],
+                "height": 0.5
+            },
+            {
+                "color": [50, 166, 8, 255],
+                "height": -1.0
+            }
+        ],
+        "slant_color":
+        [
+            {
+                "color": [178, 178, 178, 255],
+                "min": 300.0,
+                "max": 500.0
+            }
+        ]
+    },
+
+    "produces":
+    [
+        {
+            "name": "tree00",
+            "path": "data\\PREFAB\\tree\\tree00.pref",
+            "size": 10.0,
+            "damage": 10.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.0,
+            "match_inclination": true,
+            "chance": 10,
+            "adjacent_rate":
+            [
+                {
+                    "name": "tree01",
+                    "rate": 10.0
+                }
+            ]
+        },
+        {
+            "name": "fallen_tree00",
+            "path": "data\\PREFAB\\tree\\fallen_tree.pref",
+            "size": 20.0,
+            "damage": 5.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.0,
+            "match_inclination": true,
+            "chance": 10,
+            "adjacent_rate":
+            [
+                {
+                    "name": "tree00",
+                    "rate": 10.0
+                }
+            ]
+        }
+    ]
+}
