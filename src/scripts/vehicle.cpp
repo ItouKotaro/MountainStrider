@@ -371,4 +371,10 @@ void CVehicle::UpdateGroundDistance()
 	{ // ’…’n‚µ‚½‚Æ”»’f‚³‚ê‚½‚Æ‚«
 		m_flying = false;
 	}
+
+	// –„‚Ü‚è‘Îô
+	if (m_groundDistance < 5.0f)
+	{
+		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+	}
 }

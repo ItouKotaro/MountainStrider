@@ -486,6 +486,16 @@ void Terrain::GenerateProduces()
 			}
 		}
 
+		// –@üƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
+		D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[0], rayReachPoint[1], rayReachPoint[2]);
+
+		// ŒXÎ§ŒÀ‚ÌğŒ‚É–‚½‚µ‚Ä‚¢‚È‚¢‚Æ‚«
+		if (!(fabsf(atan2f(normal.z, normal.y)) >= pSelectProduce->GetSlantAngleLimitMin() &&
+			fabsf(atan2f(normal.z, normal.y)) <= pSelectProduce->GetSlantAngleLimitMax()))
+		{
+			continue;
+		}
+
 		// ‚·‚×‚Ä‚ÌƒŒƒC‚ª’n–Ê‚É“’B‚µ‚½‚Æ‚«
 		if (bReached)
 		{
@@ -499,7 +509,7 @@ void Terrain::GenerateProduces()
 					return 0.0f;
 				return (rand() % static_cast<int>(angleRange * 1000) - static_cast<int>(angleRange * 500)) * 0.001f; 
 			};
-		
+
 			D3DXVECTOR3 axis = { 0.0f, 0.0f, 0.0f };
 			if (!pSelectProduce->IsMatchInclination())
 			{ // ŒXÎŠp‚ğl—¶‚µ‚È‚¢
@@ -508,7 +518,6 @@ void Terrain::GenerateProduces()
 			else
 			{ // ŒXÎŠp‚ğl—¶‚·‚é
 				// ’nŒ`‚É‡‚í‚¹‚½Šp“x‚ğŒvZ‚·‚é
-				D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[0], rayReachPoint[1], rayReachPoint[2]);
 				axis = { 1.0f, 0.0f, 0.0f };
 				D3DXQuaternionRotationAxis(&rot, &axis, fabsf(atan2f(normal.z, normal.y)) + randAngle());
 
@@ -778,6 +787,12 @@ void Terrain::LoadTerrainFile(const std::string path)
 			if ((*itr).contains("chance"))
 			{
 				produce->SetChance((*itr)["chance"]);
+			}
+
+			// ŒXÎŠp“xğŒ
+			if ((*itr).contains("limit_slant"))
+			{
+				produce->SetSlantAngleLimit((*itr)["limit_slant"][0], (*itr)["limit_slant"][1]);
 			}
 
 			// —×Úî•ñ

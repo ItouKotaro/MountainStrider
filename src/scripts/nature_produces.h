@@ -32,7 +32,8 @@ public:
 		m_angleRange(0.0f),
 		m_isMatchInclination(true),
 		m_chance(0),
-		m_adjacentDistance(100.0f){}
+		m_adjacentDistance(100.0f),
+		m_slantAngleLimit({ 0.0f, D3DX_PI }) {}
 
 	// バイクとヒットしたときのイベント
 	virtual void onHit(GameObject* gameObject) {}
@@ -71,6 +72,11 @@ public:
 	float GetAdjacentRate(const D3DXVECTOR3& pos);
 	// 隣接距離の設定
 	void SetAdjacentDistance(const float& distance) { m_adjacentDistance = distance; }
+	// 傾斜角の制限の設定
+	void SetSlantAngleLimit(const float& min, const float& max) { m_slantAngleLimit = {min, max}; }
+	// 傾斜角の制限の取得
+	float GetSlantAngleLimitMin() { return m_slantAngleLimit.x; }
+	float GetSlantAngleLimitMax() { return m_slantAngleLimit.y; }
 	// 生成物ごとの隣接倍率の設定
 	void SetAdjacentRate(const std::string& produceName, const float& rate)
 	{
@@ -111,13 +117,14 @@ public:
 	bool IsMatchInclination() { return m_isMatchInclination; }
 
 protected:
-	std::string m_path;				// 設置プレハブのパス
-	float m_size;							// サイズ
-	float m_offsetY;						// Yのオフセット
-	std::string m_produceName;	// 産物名
-	float m_damage;					// ダメージ量（ヒット時）
-	float m_angleRange;				// ランダム角度
-	bool m_isMatchInclination;		// 傾斜角を考慮するか
+	std::string m_path;						// 設置プレハブのパス
+	float m_size;									// サイズ
+	float m_offsetY;								// Yのオフセット
+	std::string m_produceName;			// 産物名
+	float m_damage;							// ダメージ量（ヒット時）
+	float m_angleRange;						// ランダム角度
+	bool m_isMatchInclination;				// 傾斜角を考慮するか
+	D3DXVECTOR2 m_slantAngleLimit;	// 傾斜制限範囲
 
 	// 確率
 	unsigned int m_chance;										// 標準確率（整数）
