@@ -87,7 +87,7 @@ void CMountainDebug::Update()
 	}
 	if (INPUT_INSTANCE->onPress("down"))
 	{
-		angularVelocity += {sinf(m_pRollTest->transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(m_pRollTest->transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
+		angularVelocity += {sinf(0.0f + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(0.0f + D3DX_PI * 0.5f) * -1.5f};
 	}
 	//m_pRollTest->transform->Rotate(angularVelocity * 0.08f);
 

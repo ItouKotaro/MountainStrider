@@ -22,7 +22,7 @@ const float CVehicle::MAX_ENGINEFORCE = 600000.0f;
 const float CVehicle::MAX_STEERING = 50000.0f;
 const float CVehicle::MAX_FUEL = 4000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
-const float CVehicle::FLYING_DISTANCE = 120.0f;
+const float CVehicle::FLYING_DISTANCE = 100.0f;
 const float CVehicle::GROUND_DISTANCE = 20.0f;
 
 float CVehicle::m_fuel = CVehicle::MAX_FUEL;
@@ -272,23 +272,32 @@ void CVehicle::LandingControlVehicle()
 void CVehicle::FlyingControlVehicle()
 {
 	// 起き上がる方向にトルクを加える
-	D3DXVECTOR3 angularVelocity = {0.0f, 0.0f, 0.0f};
+	D3DXVECTOR3 angularVelocity;
+	float ang = transform->GetWRotZ();
+	angularVelocity = {
+		sinf(transform->GetWRotY()) * -ang * 1.8f,
+		0.0f,
+		cosf(transform->GetWRotY()) * -ang * 1.8f
+	};
 
 	// コントローラーの情報を取得する
 	auto pGamepadDev = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>();
 	short stickLX = pGamepadDev->GetState().Gamepad.sThumbLX;
 	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
 
+	//float y;
+	//y = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getRotation().getAxis().getY();
+
 	// 傾き調整
-	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY()) * 1.5f, 0.0f, cosf(transform->GetRotY()) * 1.5f};
-	}
-	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -1.5f};
-	}
-	//gameObject->transform->Rotate(angularVelocity * 0.08f);
+	//if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {sinf(y + D3DX_PI * 0.5f) * 2.0f, 0.0f, cosf(y + D3DX_PI * 0.5f) * 2.0f};
+	//}
+	//if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {sinf(y + D3DX_PI * 0.5f) * -2.0f, 0.0f, cosf(y + D3DX_PI * 0.5f) * -2.0f};
+	//}
+	////gameObject->transform->Rotate(angularVelocity * 0.08f);
 
 	// 回転
 	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
@@ -364,6 +373,7 @@ void CVehicle::UpdateGroundDistance()
 	{ // 飛んでいると判定されたとき
 		m_flying = true;
 		m_startFlyingAngle = transform->GetRotY();
+		m_flyingPosture = transform->GetRot();
 	}
 
 	// 着地したか判断する

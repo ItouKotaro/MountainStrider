@@ -63,6 +63,7 @@ private:
 
 	static float m_fuel;							// ”R—¿
 	static float m_endurance;				// ‘Ï‹v’l
+	D3DXVECTOR3 m_flyingPosture;		// ”òs‚Ìp¨
 
 	// ’n–Êî•ñ
 	bool m_flying;						// ”ò‚ñ‚Å‚¢‚é
