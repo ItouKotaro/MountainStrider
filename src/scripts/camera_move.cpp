@@ -107,24 +107,22 @@ void CCameraMove::Update()
 	D3DXVec3TransformCoord(&posS, &posS, &mtxS);
 
 	// レイでカメラの位置を決める
-	//btVector3 Start = btVector3(m_pTarget->transform->GetWPos().x, m_pTarget->transform->GetWPos().y + 10.0f, m_pTarget->transform->GetWPos().z);
-	//Start += btVector3(posS.x, posS.y, posS.z) * 0.2f;
-	//btVector3 End = Start + btVector3(posS.x, posS.y, posS.z);
-	//btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
-	//CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-	//if (RayCallback.hasHit())
-	//{ // ヒットしたとき
-	//	D3DXVECTOR3 minPos = { 0.0f, 0.0f, 20.0f };
-	//	D3DXVec3TransformCoord(&minPos, &minPos, &mtxS);
-	//	posS = { RayCallback.m_hitPointWorld.getX(), RayCallback.m_hitPointWorld.getY(), RayCallback.m_hitPointWorld.getZ() };
-	//	posS += {minPos.x, minPos.y, minPos.z};
-	//}
-	//else
-	//{
-	//	posS += m_pTarget->transform->GetWPos();
-	//}
-
-	posS += m_pTarget->transform->GetWPos();
+	btVector3 Start = btVector3(m_pTarget->transform->GetWPos().x, m_pTarget->transform->GetWPos().y + 10.0f, m_pTarget->transform->GetWPos().z);
+	Start += btVector3(posS.x, posS.y, posS.z) * 0.2f;
+	btVector3 End = Start + btVector3(posS.x, posS.y, posS.z);
+	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+	if (RayCallback.hasHit())
+	{ // ヒットしたとき
+		D3DXVECTOR3 minPos = { 0.0f, 0.0f, 20.0f };
+		D3DXVec3TransformCoord(&minPos, &minPos, &mtxS);
+		posS = { RayCallback.m_hitPointWorld.getX(), RayCallback.m_hitPointWorld.getY(), RayCallback.m_hitPointWorld.getZ() };
+		posS += {minPos.x, minPos.y, minPos.z};
+	}
+	else
+	{
+		posS += m_pTarget->transform->GetWPos();
+	}
 	pCamera->transform->SetPos(posS);
 
 

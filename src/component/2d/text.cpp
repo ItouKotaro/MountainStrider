@@ -60,7 +60,7 @@ void CText::Init()
     m_outlineColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     m_fillColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     m_align = ALIGN::LEFT;
-    m_fAlpha = 1.0f;
+    m_alpha = 1.0f;
 }
 
 //=============================================================
@@ -108,7 +108,7 @@ void CText::DrawUI()
     for (int i = 0; i < (int)m_textInfos.size(); i++)
     {
         D3DXVECTOR3 pos = { transform->GetWPos().x + m_textInfos[i].pos.x, transform->GetWPos().y - m_textInfos[i].pos.y + m_fMaxHeight * m_textInfos[i].line, 0.0f };
-        m_pSprite->Draw(m_textInfos[i].pTex, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpha));
+        m_pSprite->Draw(m_textInfos[i].pTex, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
     }
 
     m_pSprite->End();
@@ -175,7 +175,7 @@ void CText::SetAlign(const ALIGN& align)
 //=============================================================
 void CText::SetAlpha(const float& fAlpha)
 {
-    m_fAlpha = fAlpha;
+    m_alpha = fAlpha;
 }
 
 //=============================================================
@@ -713,7 +713,7 @@ void CTypingText::DrawUI()
         if (i < m_nTypingNum)
         {
             D3DXVECTOR3 pos = { transform->GetWPos().x + m_textInfos[i].pos.x, transform->GetWPos().y - m_textInfos[i].pos.y + m_fMaxHeight, 0.0f };
-            m_pSprite->Draw(m_textInfos[i].pTex, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpha));
+            m_pSprite->Draw(m_textInfos[i].pTex, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
         }
     }
 

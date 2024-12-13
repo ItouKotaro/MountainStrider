@@ -48,6 +48,7 @@ public:
 	void SetFont(const std::string& fontName);
 	void SetAlign(const ALIGN& align);
 	void SetAlpha(const float& fAlpha);
+	float GetAlpha() { return m_alpha; }
 
 	int GetFontSize() { return m_fontSize; }
 
@@ -58,7 +59,7 @@ protected:
 	LPD3DXSPRITE m_pSprite;							// スプライト
 	std::vector<TextInfo> m_textInfos;				// 文字管理
 	float m_fMaxHeight;									// 文字の中でも最大サイズ
-	float m_fAlpha;											// 不透明度
+	float m_alpha;											// 不透明度
 private:
 	void UpdateText();
 

@@ -234,12 +234,19 @@ void CGameScene::SpawnBike()
 //=============================================================
 void CGameScene::ClearCondition()
 {
-	float terrainLength = static_cast<float>(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE);
+	float terrainLength = static_cast<float>(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE / 2.0f);
 	D3DXVECTOR3 vehiclePos = m_pBike->transform->GetWPos();
-	if (vehiclePos.y < m_pTerrain->GetMinHeight() - 5.0f)
+
+	if (vehiclePos.x < -terrainLength || vehiclePos.x > terrainLength ||
+		vehiclePos.z < -terrainLength || vehiclePos.z > terrainLength)
 	{
 		onClear();
 	}
+
+	//if (vehiclePos.y < m_pTerrain->GetMinHeight() - 5.0f)
+	//{
+	//	onClear();
+	//}
 }
 
 //=============================================================

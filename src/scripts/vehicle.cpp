@@ -13,6 +13,7 @@
 #include "benlib.h"
 
 #include "scripts/status_ui.h"
+#include "scripts/vehicle_action.h"
 #include "scene/game.h"
 
 const float CVehicle::ENGINEFORCE_VALUE = 40.0f;
@@ -44,6 +45,7 @@ void CVehicle::Init()
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -140.0f, 0.0f));
+	gameObject->AddComponent<VehicleAction>();
 
 	// Ô‘Ì
 	GameObject* pBodyModel = new GameObject;
@@ -237,14 +239,14 @@ void CVehicle::LandingControlVehicle()
 	}
 
 	// ŒX‚«’²®
-	//if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
-	//}
-	//if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
-	//}
+	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+	}
+	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+	}
 	
 	// •ûŒü“]Š·
 	float fSteeringVelocity = 0.0f;
@@ -302,12 +304,12 @@ void CVehicle::FlyingControlVehicle()
 	// ‰ñ“]
 	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {0.0f, -3.5f, 0.0f};
+		angularVelocity += {0.0f, -5.5f, 0.0f};
 
 	}
 	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {0.0f, 3.5f, 0.0f};
+		angularVelocity += {0.0f, 5.5f, 0.0f};
 	}
 
 	// ŒX‚«‘¬“x‚ğ“K—p‚·‚é
@@ -354,7 +356,7 @@ void CVehicle::UpdateGroundDistance()
 {
 	// ’n–Ê‚Æ‚Ì‹——£‚ğŒv‘ª‚·‚é
 	D3DXVECTOR3 vehiclePos = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
-	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y, vehiclePos.z);
+	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y - 5.0f, vehiclePos.z);
 	btVector3 End = Start + btVector3(0.0f, -3000.0f, 0.0f);
 
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
@@ -374,16 +376,18 @@ void CVehicle::UpdateGroundDistance()
 		m_flying = true;
 		m_startFlyingAngle = transform->GetRotY();
 		m_flyingPosture = transform->GetRot();
+		gameObject->GetComponent<VehicleAction>()->onFlyBegin();
 	}
 
 	// ’…’n‚µ‚½‚©”»’f‚·‚é
 	if (m_flying && m_groundDistance <= GROUND_DISTANCE)
 	{ // ’…’n‚µ‚½‚Æ”»’f‚³‚ê‚½‚Æ‚«
 		m_flying = false;
+		gameObject->GetComponent<VehicleAction>()->onFlyEnd();
 	}
 
 	// –„‚Ü‚è‘Îô
-	if (m_groundDistance < 5.0f)
+	if (m_groundDistance < 1.0f)
 	{
 		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 	}

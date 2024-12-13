@@ -74,7 +74,7 @@ public:
 
 	ProducesManager* GetProducesManager() { return m_producesManager; }
 
-	static const int TERRAIN_SIZE = 100;
+	static const int TERRAIN_SIZE = 150;
 	static const float TERRAIN_SCALE;
 private:
 	void UninitTerrain();
