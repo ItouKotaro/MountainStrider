@@ -16,6 +16,7 @@
 void CCameraMove::Init()
 {
 	m_cameraRot = { 0.0f, 0.0f, 0.0f };
+	m_moveCounter = 0;
 }
 
 //=============================================================
@@ -28,11 +29,6 @@ void CCameraMove::Update()
 	{ // ターゲットが存在しないとき
 		return;
 	}
-
-	// カメラの取得
-	CCamera* pCamera = gameObject->GetComponent<CCamera>();
-	pCamera->SetCustomPosR(false);
-	pCamera->SetPosR(m_pTarget->transform->GetWPos() + D3DXVECTOR3(0.0f, 30.0f, 0.0f));
 
 	// カーソル
 	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
@@ -48,14 +44,7 @@ void CCameraMove::Update()
 		}
 
 		// ウィンドウ外にマウスが行ったとき
-		if (cursor.x < 1.0f ||
-			cursor.x > CManager::GetInstance()->GetWindowSize().x - 1 ||
-			cursor.y < 1.0f ||
-			cursor.y > CManager::GetInstance()->GetWindowSize().y - 10.0f)
-		{
-			CManager::GetInstance()->SetCursorClientPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT / 2));
-		}
-
+		CManager::GetInstance()->SetCursorClientPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT / 2));
 		m_oldCursor = CManager::GetInstance()->GetCursorClientPos();
 	}
 
@@ -83,49 +72,26 @@ void CCameraMove::Update()
 		}
 	}
 
-
-	// 正規化
-	if (m_cameraRot.x < D3DX_PI * 0.5f + 0.1f)
-	{
-		m_cameraRot.x = D3DX_PI * 0.5f + 0.1f;
-	}
-	if (m_cameraRot.x > D3DX_PI)
-	{
-		m_cameraRot.x = D3DX_PI;
-	}
-
-	// 設定
 	bool flying = m_pTarget->GetComponent<CVehicle>()->GetFlying();
 
-	// 視点の位置を計算する
-	float distance = flying ? 250.0f : 180.0f;
-	D3DXVECTOR3 posS = { 0.0f, 0.0f, -distance };
-	D3DXMATRIX mtxY, mtxX, mtxS;
-	D3DXMatrixRotationX(&mtxX, m_cameraRot.x);
-	D3DXMatrixRotationY(&mtxY, m_cameraRot.y);
-	mtxS = mtxX* mtxY ;
-	D3DXVec3TransformCoord(&posS, &posS, &mtxS);
-
-	// レイでカメラの位置を決める
-	btVector3 Start = btVector3(m_pTarget->transform->GetWPos().x, m_pTarget->transform->GetWPos().y + 10.0f, m_pTarget->transform->GetWPos().z);
-	Start += btVector3(posS.x, posS.y, posS.z) * 0.2f;
-	btVector3 End = Start + btVector3(posS.x, posS.y, posS.z);
-	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
-	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-	if (RayCallback.hasHit())
-	{ // ヒットしたとき
-		D3DXVECTOR3 minPos = { 0.0f, 0.0f, 20.0f };
-		D3DXVec3TransformCoord(&minPos, &minPos, &mtxS);
-		posS = { RayCallback.m_hitPointWorld.getX(), RayCallback.m_hitPointWorld.getY(), RayCallback.m_hitPointWorld.getZ() };
-		posS += {minPos.x, minPos.y, minPos.z};
+	if (!flying)
+	{
+		UpdateFPS();
 	}
 	else
 	{
-		posS += m_pTarget->transform->GetWPos();
+		UpdateTPS();
 	}
-	pCamera->transform->SetPos(posS);
 
-
+	if (m_moveCounter > 0)
+	{
+		m_moveCounter--;
+		transform->Translate((m_posS - transform->GetPos()) * 0.5f);
+	}
+	else
+	{
+		transform->SetPos(m_posS);
+	}
 
 
 	//// 情報の取得
@@ -171,6 +137,103 @@ void CCameraMove::Update()
 	//// 目標地点に移動する
 	//transform->SetPos(transform->GetWPos()+(objectivePos - transform->GetWPos()) * 0.08f);
 }
+
+//=============================================================
+// [CCameraMove] 更新
+//=============================================================
+void CCameraMove::UpdateFPS()
+{
+	// カメラの取得
+	CCamera* pCamera = gameObject->GetComponent<CCamera>();
+	pCamera->SetCustomPosR(true);
+
+	// 補正
+	if (m_cameraRot.x < -D3DX_PI * 0.5f)
+	{
+		m_cameraRot.x = -D3DX_PI * 0.5f;
+	}
+	else if (m_cameraRot.x > D3DX_PI * 0.5f)
+	{
+		m_cameraRot.x = D3DX_PI * 0.5f;
+	}
+	if (m_cameraRot.y < -D3DX_PI * 0.5f)
+	{
+		m_cameraRot.y = -D3DX_PI * 0.5f;
+	}
+	else if (m_cameraRot.y > D3DX_PI * 0.5f)
+	{
+		m_cameraRot.y = D3DX_PI * 0.5f;
+	}
+
+	// 視点
+	D3DXVECTOR3 fpsPos = D3DXVECTOR3(0.0f, 40.0f, -10.0f);
+	D3DXMATRIX fpsMtx = m_pTarget->transform->GetMatrix();
+	D3DXVec3TransformCoord(&fpsPos, &fpsPos, &fpsMtx);
+	m_posS = fpsPos;
+
+	// 注視点
+	fpsPos = D3DXVECTOR3(0.0f, 35.0f, 40.0f);
+	fpsPos += {sinf(m_cameraRot.y) * 50.0f, sinf(m_cameraRot.x) * -50.0f, cosf(m_cameraRot.y) * 50.0f};
+	D3DXVec3TransformCoord(&fpsPos, &fpsPos, &fpsMtx);
+	pCamera->SetPosR(fpsPos);
+}
+
+//=============================================================
+// [CCameraMove] 更新
+//=============================================================
+void CCameraMove::UpdateTPS()
+{
+	// カメラの取得
+	CCamera* pCamera = gameObject->GetComponent<CCamera>();
+	pCamera->SetCustomPosR(true);
+	pCamera->SetPosR(m_pTarget->transform->GetWPos() + D3DXVECTOR3(0.0f, 30.0f, 0.0f));
+
+	if (m_moveCounter <= 0)
+	{ // 最初
+		m_cameraRot = m_pTarget->transform->GetRot();
+	}
+
+	// 正規化
+	if (m_cameraRot.x < -D3DX_PI * 0.5f)
+	{
+		m_cameraRot.x = -D3DX_PI * 0.5f;
+	}
+	if (m_cameraRot.x > D3DX_PI * 0.5f)
+	{
+		m_cameraRot.x = D3DX_PI * 0.5f;
+	}
+
+	// 視点の位置を計算する
+	float distance = 250.0f;
+	D3DXVECTOR3 posS = { 0.0f, 0.0f, -distance };
+	D3DXMATRIX mtxY, mtxX, mtxS;
+	D3DXMatrixRotationX(&mtxX, m_cameraRot.x);
+	D3DXMatrixRotationY(&mtxY, m_cameraRot.y);
+	mtxS = mtxX * mtxY;
+	D3DXVec3TransformCoord(&posS, &posS, &mtxS);
+
+	// レイでカメラの位置を決める
+	btVector3 Start = btVector3(m_pTarget->transform->GetWPos().x, m_pTarget->transform->GetWPos().y + 10.0f, m_pTarget->transform->GetWPos().z);
+	Start += btVector3(posS.x, posS.y, posS.z) * 0.2f;
+	btVector3 End = Start + btVector3(posS.x, posS.y, posS.z);
+	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+	if (RayCallback.hasHit())
+	{ // ヒットしたとき
+		D3DXVECTOR3 minPos = { 0.0f, 0.0f, 20.0f };
+		D3DXVec3TransformCoord(&minPos, &minPos, &mtxS);
+		posS = { RayCallback.m_hitPointWorld.getX(), RayCallback.m_hitPointWorld.getY(), RayCallback.m_hitPointWorld.getZ() };
+		posS += {minPos.x, minPos.y, minPos.z};
+	}
+	else
+	{
+		posS += m_pTarget->transform->GetWPos();
+	}
+	m_posS = posS;
+
+	m_moveCounter = 60;
+}
+
 
 //=============================================================
 // [CCameraMove] オブジェクトが破棄されたときの処理

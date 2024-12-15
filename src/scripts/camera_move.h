@@ -20,8 +20,13 @@ public:
 	// ターゲットを設定する
 	void SetTarget(GameObject* pTarget) { m_pTarget = pTarget; }
 private:
+	void UpdateFPS();
+	void UpdateTPS();
+
 	GameObject* m_pTarget;			// ターゲット
 	D3DXVECTOR3 m_cameraRot;	// 回転
+	D3DXVECTOR3 m_posS;
+	int m_moveCounter;
 	CManager::CursorPos m_oldCursor;					// 前回のカーソル位置
 };
 
