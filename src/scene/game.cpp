@@ -21,6 +21,8 @@
 #include "scripts/item/item_manager.h"
 #include "scripts/shop/shop.h"
 
+#include "render/shadow_rb.h"
+
 #include <noise/noise.h>
 
 //=============================================================
@@ -79,9 +81,27 @@ void CGameScene::Init()
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
 
+	// ライトカメラ
+	m_pLightCamera = new GameObject;
+	m_pLightCamera->AddComponent<CCamera>();
+	m_pLightCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
+	m_pLightCamera->SetParent(m_pBike);
+	m_pLightCamera->transform->Translate(0.0f,  15.0f, 25.0f);
+	m_pLightCamera->transform->Rotate(0.0f, 0.0f, 0.0f);
+
+	//GameObject* pplight = new GameObject;
+	//pplight->AddComponent<CLight>()->SetIntensity(2000.0f);
+	//pplight->SetParent(m_pBike);
+	//pplight->transform->SetPos(50.0f, 10.0f);
+
 	// レンダーバッファを登録する
-	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
-	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
+	//CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
+	//renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
+
+	// カメラをレンダーバッファに追加する
+	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_pLightCamera->GetComponent<CCamera>());
 }
 
 //=============================================================

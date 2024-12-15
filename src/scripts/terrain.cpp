@@ -26,6 +26,10 @@ const float Terrain::TERRAIN_SCALE = 300.0f;
 //=============================================================
 void Terrain::Init()
 {
+	m_pShadowField = new GameObject;
+	m_pShadowField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
+	m_pShadowField->transform->SetPos(0.0f, -10.0f);
+
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
 	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
@@ -111,6 +115,8 @@ void Terrain::Generate()
 	// 地形データを生成する
 	GenerateTerrain();
 
+	m_pField->GetComponent<CMeshField>()->SetTexture("data\\terrain.bmp");
+
 	// HeightfieldTerrainShapeを作成する
 	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
@@ -144,16 +150,16 @@ void Terrain::GenerateTerrain()
 	heightMapBuilder.SetSourceModule(myModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
-	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 5.0);
+	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 6.0);
 	heightMapBuilder.Build();
 
-	for (int x = 0; x < TERRAIN_SIZE; x++)
-	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
-		{
-			heightMap.SetValue(x, y, heightMap.GetValue(x, y) * 1300.0f);
-		}
-	}
+	//for (int x = 0; x < TERRAIN_SIZE; x++)
+	//{
+	//	for (int y = 0; y < TERRAIN_SIZE; y++)
+	//	{
+	//		heightMap.SetValue(x, y, heightMap.GetValue(x, y) * 1300.0f);
+	//	}
+	//}
 
 	// 画像に書き出す
 	utils::RendererImage renderer;
@@ -165,6 +171,9 @@ void Terrain::GenerateTerrain()
 	{
 		renderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
 	}
+	renderer.EnableLight();
+	renderer.SetLightContrast(3.0);
+	renderer.SetLightBrightness(1.0);
 	renderer.Render();
 
 	// ファイルに書き出す
@@ -180,7 +189,7 @@ void Terrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y);
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 1500.0f;
 		}
 	}
 
@@ -216,15 +225,16 @@ void Terrain::GenerateTerrain()
 
 			// 高さを設定する
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, height);
+			m_pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, height);
 
-			// 色を設定する
-			m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetVertexColor(x, y));
+			//// 色を設定する
+			//m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetVertexColor(x, y));
 
-			// 道があるとき色を変える（仮）
-			if (m_routeData[x][y])
-			{
-				m_pField->GetComponent<CMeshField>()->SetColor(x, y, D3DCOLOR_RGBA(179, 119, 0, 255));
-			}
+			//// 道があるとき色を変える（仮）
+			//if (m_routeData[x][y])
+			//{
+			//	m_pField->GetComponent<CMeshField>()->SetColor(x, y, D3DCOLOR_RGBA(179, 119, 0, 255));
+			//}
 		}
 	}
 
@@ -301,7 +311,7 @@ void Terrain::GenerateRoad()
 			int y = abs((*itr).y) <= abs((*itr).y - TERRAIN_SIZE) ? abs((*itr).y) : abs((*itr).y - TERRAIN_SIZE);
 			int disNear = x <= y ? x : y;
 
-			(*itr).point -= static_cast<int>((TERRAIN_SIZE - disNear) * 0.2f);
+			(*itr).point -= static_cast<int>((TERRAIN_SIZE - disNear) * 0.3f);
 		}
 
 		// 高低差でポイントを加算する
@@ -337,7 +347,7 @@ void Terrain::GenerateRoad()
 					{
 						if (m_routeData[aroundRouteData[i].x + x][aroundRouteData[i].y + y])
 						{ // 周辺に存在するとき
-							aroundRouteData[i].point += 4;
+							aroundRouteData[i].point += 6;
 						}
 					}
 				}

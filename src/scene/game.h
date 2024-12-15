@@ -57,6 +57,7 @@ private:
 	Terrain* m_pTerrain;				// 地形
 	GameObject* m_voidField;		// 奈落
 	GameObject* m_pCamera;		// カメラ
+	GameObject* m_pLightCamera;
 	GameObject* m_pBike;			// バイク
 	GameObject* m_pStatusUI;	// ステータスUI
 

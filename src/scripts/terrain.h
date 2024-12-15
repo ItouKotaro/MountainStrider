@@ -81,6 +81,7 @@ private:
 
 	unsigned int m_seed;										// シード値
 	GameObject* m_pField;									// メッシュフィールド
+	GameObject* m_pShadowField;
 	float* m_terrainData;										// 高度データ
 	btHeightfieldTerrainShape* m_terrainShape;	// 地形コリジョンシェイプ
 

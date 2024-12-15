@@ -10,16 +10,19 @@
 #define _COMPONENT_H_
 
 #include "gameobject.h"
+#include "shader.h"
 
 // コンポーネントクラス
 class Component
 {
 public:
-	Component() {
+	Component() { 
 		enabled = true;
 		m_attached = false;
 		gameObject = nullptr;
 		transform = nullptr;
+		m_shader = nullptr;
+		m_pass = 0;
 	}
 	virtual ~Component() {
 		if (this->gameObject != nullptr)
@@ -29,7 +32,7 @@ public:
 				if (*itr == this)
 				{
 					SAFE_ERASE(m_pComponents, itr)
-						break;
+					break;
 				}
 			}
 		}
@@ -177,6 +180,16 @@ public:
 	}
 
 	/*
+	@brief シェーダーの命令
+	@param[in] pComponent : コンポーネントのポインタ
+	*/
+	void SetShader(Shader* shader, UINT pass) 
+	{
+		m_shader = shader;
+		m_pass = pass;
+	}
+
+	/*
 	@brief ゲームオブジェクトにアタッチする
 	@param[in] attachObj : アタッチ先のゲームオブジェクト
 	*/
@@ -190,14 +203,35 @@ public:
 	// @brief 有効状態か
 	bool enabled;
 
+	// @brief アタッチ先のゲームオブジェクト
+	GameObject* gameObject;
+
 	// @brief アタッチ先のトランスフォーム
 	Transform* transform;
 
-	// @brief アタッチ先のゲームオブジェクト
-	GameObject* gameObject;
+protected:
+	// @brief パスの開始
+	void BeginPass();
+
+	// @brief パスの終了
+	void EndPass();
+
+	// @brief シェーダーに情報を渡す
+	void SetParam(Shader::ParamData data);
+
+	// @brief シェーダーが有効か
+	bool IsEnabledShader() { return m_shader != nullptr; }
+
 private:
+	// @brief シェーダー類
+	Shader* m_shader;
+	UINT m_pass;
+
+	// @brief アタッチ済みか
+	bool m_attached;
+
+	// @brief コンポーネントリスト
 	static std::vector<Component*> m_pComponents;
-	bool m_attached;	// アタッチ済みか
 };
 
 
@@ -218,7 +252,7 @@ public:
 	}
 
 	// 親を設定する
-	void SetParent(GameObject* parent){	this->transform->SetParent(parent->transform);}
+	void SetParent(GameObject* parent) { this->transform->SetParent(parent->transform); }
 	void SetParent(Transform* parent) { this->transform->SetParent(parent); }
 private:
 	void InitTransform() { this->transform = new Transform(); }

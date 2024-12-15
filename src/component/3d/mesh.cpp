@@ -68,14 +68,15 @@ void CMesh::Draw()
 		return;
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &transform->GetMatrix());
+	if (!IsEnabledShader()) pDevice->SetTransform(D3DTS_WORLD, &transform->GetMatrix());
 
 	// 現在のマテリアルを取得
-	pDevice->GetMaterial(&matDef);
+	if (!IsEnabledShader()) pDevice->GetMaterial(&matDef);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
 
+	Component::BeginPass();
 	for (int nCntMat = 0; nCntMat < (int)m_dwNumMat; nCntMat++)
 	{
 		// 不透明度
@@ -92,17 +93,25 @@ void CMesh::Draw()
 
 		// マテリアルの設定
 		pMat[nCntMat].MatD3D.Diffuse.a = fAlpha;
-		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+		if (!IsEnabledShader()) pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
 		// テクスチャの設定
+		LPDIRECT3DTEXTURE9 tex;
 		if (pMat[nCntMat].pTextureFilename != NULL)
 		{ // テクスチャがあるとき
-			pDevice->SetTexture(0, m_apTexture[nCntMat]);
+			tex = m_apTexture[nCntMat];
 		}
 		else
 		{
-			pDevice->SetTexture(0, NULL);
+			tex = NULL;
 		}
+		if (!IsEnabledShader()) pDevice->SetTexture(0, tex);
+
+		// シェーダーに情報を渡す
+		Shader::ParamData paramData;
+		paramData.color = { pMat[nCntMat].MatD3D.Diffuse.r, pMat[nCntMat].MatD3D.Diffuse.g, pMat[nCntMat].MatD3D.Diffuse.b, pMat[nCntMat].MatD3D.Diffuse.a };
+		paramData.texture = tex;
+		Component::SetParam(paramData);
 
 		// モデル（パーツ）の描画
 		m_pMesh->DrawSubset(nCntMat);
@@ -110,9 +119,10 @@ void CMesh::Draw()
 		// マテリアル設定を戻す
 		pMat[nCntMat].MatD3D.Diffuse.a = fBeforeAlpha;
 	}
+	Component::EndPass();
 
 	// 保存していたマテリアルに戻す
-	pDevice->SetMaterial(&matDef);
+	if (!IsEnabledShader()) pDevice->SetMaterial(&matDef);
 }
 
 //=============================================================

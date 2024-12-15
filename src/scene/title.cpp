@@ -11,6 +11,7 @@
 #include "component/other/button.h"
 #include "scene/game.h"
 #include "renderer.h"
+#include "render/shadow_rb.h"
 
 //=============================================================
 // [CTitleScene] ‰Šú‰»
@@ -70,7 +71,8 @@ void CTitleScene::Init()
 	}
 
 
-	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
+	//CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
+	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 }
 
 //=============================================================

@@ -39,6 +39,7 @@ public:
 			T* renderBuffer = new T();
 			renderBuffer->SetName(name);
 			m_renderBuffers.push_back(renderBuffer);
+			renderBuffer->Init();
 			return renderBuffer;
 		}
 		return static_cast<T*>(findRenderBuffer);
@@ -47,6 +48,9 @@ public:
 	RenderBuffer* GetRenderBuffer(const std::string& name);
 	// レンダーバッファの削除
 	void RemoveRenderBuffer(const std::string& name);
+
+	// 影の描画
+	CShadow* GetShadow() { return m_pShadow; }
 
 	// フルスクリーン
 	bool GetFullScreen() { return m_bFullScreen; }

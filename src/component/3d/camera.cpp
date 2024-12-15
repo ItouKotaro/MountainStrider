@@ -76,7 +76,7 @@ void CCamera::Update()
 //=============================================================
 // [CCamera] カメラの設定処理
 //=============================================================
-void CCamera::SetCamera()
+void CCamera::SetCamera(const bool& isSet)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
@@ -113,7 +113,8 @@ void CCamera::SetCamera()
 
 
 	// プロジェクションマトリックスの設定
-	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
+	if (isSet)
+		pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
 
 	// ビューマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxView);
@@ -123,8 +124,10 @@ void CCamera::SetCamera()
 	D3DXMatrixLookAtLH(&m_mtxView, &pos, &m_posR, &m_vecU);
 
 	// ビューマトリックスの設定
-	pDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
+	if (isSet)
+		pDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
 
 	// ビューポートの設定
-	pDevice->SetViewport(&m_viewport);
+	if (isSet)
+		pDevice->SetViewport(&m_viewport);
 }

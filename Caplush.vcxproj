@@ -228,6 +228,7 @@
     <ClCompile Include="src\general\renderer.cpp" />
     <ClCompile Include="src\general\render_buffer.cpp" />
     <ClCompile Include="src\general\scene.cpp" />
+    <ClCompile Include="src\general\shader.cpp" />
     <ClCompile Include="src\general\transform.cpp" />
     <ClCompile Include="src\general\world_loader.cpp" />
     <ClCompile Include="src\internal\audio_manager.cpp" />
@@ -235,6 +236,7 @@
     <ClCompile Include="src\internal\physics.cpp" />
     <ClCompile Include="src\internal\shadow.cpp" />
     <ClCompile Include="src\internal\util.cpp" />
+    <ClCompile Include="src\render\shadow_rb.cpp" />
     <ClCompile Include="src\scene\game.cpp" />
     <ClCompile Include="src\scene\mt_debug.cpp" />
     <ClCompile Include="src\scene\start_scene.cpp" />
@@ -293,6 +295,7 @@
     <ClInclude Include="src\general\renderer.h" />
     <ClInclude Include="src\general\render_buffer.h" />
     <ClInclude Include="src\general\scene.h" />
+    <ClInclude Include="src\general\shader.h" />
     <ClInclude Include="src\general\transform.h" />
     <ClInclude Include="src\general\world_loader.h" />
     <ClInclude Include="src\internal\audio_manager.h" />
@@ -301,6 +304,7 @@
     <ClInclude Include="src\internal\physics.h" />
     <ClInclude Include="src\internal\shadow.h" />
     <ClInclude Include="src\internal\util.h" />
+    <ClInclude Include="src\render\shadow_rb.h" />
     <ClInclude Include="src\scene\game.h" />
     <ClInclude Include="src\scene\mt_debug.h" />
     <ClInclude Include="src\scene\start_scene.h" />

@@ -6,6 +6,7 @@
 //=============================================================
 #include "render_buffer.h"
 #include "renderer.h"
+#include "manager.h"
 
 //=============================================================
 // [RenderBuffer] 終了
@@ -49,7 +50,7 @@ void RenderBuffer::ChangeTarget()
 	// レンダーターゲットを設定する
 	if (m_texture != nullptr)
 	{
-		//device->SetDepthStencilSurface(m_depthSurface);
+		device->SetDepthStencilSurface(m_depthSurface);
 
 		if (FAILED(m_texture->GetSurfaceLevel(0, &m_surface)))
 		{
@@ -147,30 +148,55 @@ void RenderBuffer::DestroyTexture()
 }
 
 //=============================================================
+// [RenderBuffer] シーン描画開始
+//=============================================================
+bool RenderBuffer::BeginScene()
+{
+	auto device = CRenderer::GetInstance()->GetDevice();
+	if (SUCCEEDED(device->BeginScene()))
+	{
+		return true;
+	}
+	return false;
+}
+
+//=============================================================
+// [RenderBuffer] シーン描画終了
+//=============================================================
+bool RenderBuffer::EndScene()
+{
+	auto device = CRenderer::GetInstance()->GetDevice();
+	if (SUCCEEDED(device->EndScene()))
+	{
+		return true;
+	}
+	return false;
+}
+
+//=============================================================
 // [CameraRenderBuffer] レンダー
 //=============================================================
 void CameraRenderBuffer::Render()
 {
-	if (m_camera != nullptr)
-	{
-		m_camera->SetCamera();
-	}
-	
-	// デバイスの取得
 	auto device = CRenderer::GetInstance()->GetDevice();
 
-	// 画面クリア（バッファクリア＆Zバッファクリア）
-	device->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
-
-	// スカイボックスの描画
-	if (m_camera != nullptr)
+	if (BeginScene())
 	{
-		m_camera->GetSkybox()->Draw();
+		// 画面クリア（バッファクリア＆Zバッファクリア）
+		device->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+
+		if (m_camera != nullptr)
+		{
+			m_camera->SetCamera();
+			m_camera->GetSkybox()->Draw();
+
+			if (CShadow::USE_SHADOW)
+				CRenderer::GetInstance()->GetShadow()->Draw(m_camera);
+		}
+		
+		GameObject::DrawAll();
+		GameObject::DrawUIAll();
+
+		EndScene();
 	}
-
-	// ゲームオブジェクトの描画処理
-	GameObject::DrawAll();
-
-	// ゲームオブジェクトのUI描画処理
-	GameObject::DrawUIAll();
 }

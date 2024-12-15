@@ -16,6 +16,8 @@ public:
 
 	//@brief 描画
 	virtual void Render();
+	//@brief 初期化
+	virtual void Init(){}
 	//@brief 終了
 	virtual void Uninit();
 
@@ -37,6 +39,12 @@ public:
 	LPDIRECT3DTEXTURE9 GetTexture() { return m_texture; }
 
 	bool enabled;	// 有効か
+
+protected:
+	//@brief シーンの開始
+	bool BeginScene();
+	//@brief シーンの終了
+	bool EndScene();
 private:
 	std::string m_name;	// 名前
 
@@ -57,7 +65,7 @@ public:
 	CameraRenderBuffer() : m_camera(nullptr) {}
 	void SetCamera(CCamera* camera) { m_camera = camera; }
 	void Render() override;
-private:
+protected:
 	CCamera* m_camera;
 };
 

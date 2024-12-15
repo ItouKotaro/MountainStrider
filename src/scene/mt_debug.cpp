@@ -15,6 +15,9 @@
 #include "scripts/terrain.h"
 #include "scripts/vehicle.h"
 #include "component/2d/text.h"
+#include "component/3d/field.h"
+
+#include "render/shadow_rb.h"
 
 //=============================================================
 // [CMountainDebug] 初期化
@@ -39,8 +42,13 @@ void CMountainDebug::Init()
 	//pSLight->transform->Translate(0.0f, 100.0f, 0.0f);
 
 	GameObject* pFloor = new GameObject;
-	pFloor->transform->Translate(0.0f, -200.0f, 0.0f);
+	pFloor->transform->Translate(0.0f, -51.0f, 0.0f);
+	pFloor->AddComponent<CField>()->Set(500.0f, 500.0f);
+
+	pFloor = new GameObject;
+	pFloor->transform->Translate(0.0f, -50.0f, 0.0f);
 	pFloor->AddComponent<CBoxCollider>(D3DXVECTOR3(500.0f, 2.0f, 500.0f));
+	pFloor->AddComponent<CField>()->Set(500.0f, 500.0f);
 
 	m_pRollTest = new GameObject;
 	m_pRollTest->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\fence.x");
@@ -52,9 +60,16 @@ void CMountainDebug::Init()
 	//m_pGhostTest->AddComponent<CBoxCollider>(D3DXVECTOR3(30.0f, 10.0f, 30.0f));
 	//CCollision::GetCollision(m_pGhostTest)->IsTrigger(true);
 
+	// ライトカメラ
+	GameObject* m_pLightCamera = new GameObject;
+	m_pLightCamera->AddComponent<CCamera>();
+	m_pLightCamera->transform->Translate(0.0f, 10.0f, -100.0f);
+	m_pLightCamera->transform->Rotate(0.8f, 0.0f, 0.0f);
+
 	// レンダーバッファを登録する
-	CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
-	renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
+	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_pLightCamera->GetComponent<CCamera>());
 }
 
 //=============================================================

@@ -9,13 +9,14 @@
 #include "component/3d/light.h"
 #include "component/3d/mesh.h"
 #include "component/3d/camera.h"
+#include "component/3d/meshfield.h"
 #include "benlib.h"
 using namespace std;
 
 // 変数の定義
 const bool CShadow::USE_SHADOW = false;
 const std::string CShadow::SHADOW_VOLUME_PATH = "./data/SHADER/ShadowVolume.fx";		// シャドウボリュームのパス
-const float CShadow::FAR_CLIP = 500.0f;
+const float CShadow::FAR_CLIP = 1000.0f;
 const float CShadow::ADJACENCY_EPSILON = 0.0001f;
 const float CShadow::EXTRUDE_EPSILON = 0.01f;
 const CShadow::RENDER_TYPE CShadow::RENDER_MODE = CShadow::RENDERTYPE_SCENE;
@@ -244,6 +245,8 @@ void CShadow::DrawShadow(CCamera* pCamera)
             }
         }
 
+
+
         // ステンシルとライティングを有効にしてシーンをレンダリング
         m_pShadowVolume->SetTechnique(m_hRenderScene);
         RenderMesh(pCamera, false);
@@ -327,7 +330,6 @@ void CShadow::RenderMesh(CCamera* pCamera, bool bRenderLight)
     // メッシュリストを取得する
     vector<CMesh*> pMeshList = Component::GetComponents<CMesh>(false, true);
     
-
     for (unsigned int nCntModel = 0; nCntModel < pMeshList.size(); nCntModel++)
     {
         // モデルを取得する

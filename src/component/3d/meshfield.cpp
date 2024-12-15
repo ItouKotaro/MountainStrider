@@ -55,8 +55,10 @@ void CMeshField::Draw()
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();		// デバイスを取得
 	D3DXMATRIX mtx = transform->GetMatrix();
 
+	Component::BeginPass();
+
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &mtx);
+	if (!IsEnabledShader()) pDevice->SetTransform(D3DTS_WORLD, &mtx);
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -68,7 +70,12 @@ void CMeshField::Draw()
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	// テクスチャの設定
-	pDevice->SetTexture(0, m_pTexture);
+	if (!IsEnabledShader()) pDevice->SetTexture(0, m_pTexture);
+
+	Shader::ParamData paramData;
+	paramData.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	paramData.texture = m_pTexture;
+	Component::SetParam(paramData);
 
 	// ポリゴンの描画
 	pDevice->DrawIndexedPrimitive(
@@ -79,6 +86,8 @@ void CMeshField::Draw()
 		0,
 		((m_sizeX + 1) * 2) * (m_sizeY + 1)
 	);
+
+	Component::EndPass();
 }
 
 //=============================================================

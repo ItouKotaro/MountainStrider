@@ -91,6 +91,12 @@
     <Filter Include="ヘッダー ファイル\scripts\shop">
       <UniqueIdentifier>{6e5bb9c3-e773-4959-85be-4de77e973b86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\render">
+      <UniqueIdentifier>{91e9994a-eb84-4502-b7b4-875e09a2e6b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\render">
+      <UniqueIdentifier>{22cf1328-1597-42b3-96c0-acadcd2c9d25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -281,6 +287,12 @@
     </ClCompile>
     <ClCompile Include="src\scripts\vehicle_action.cpp">
       <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\shader.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\shadow_rb.cpp">
+      <Filter>ソース ファイル\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -475,6 +487,12 @@
     </ClInclude>
     <ClInclude Include="src\scripts\vehicle_action.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\general\shader.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\shadow_rb.h">
+      <Filter>ヘッダー ファイル\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

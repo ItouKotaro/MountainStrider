@@ -84,7 +84,6 @@ HRESULT CRenderer::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ハンドルの代入
 	m_hwnd = hWnd;
-	SetFullScreen(true);
 
 	// 影の生成
 	if (CShadow::USE_SHADOW)
@@ -185,20 +184,8 @@ void CRenderer::Draw()
 			continue;
 		}
 
-		// ターゲットの変更
-		(*itr)->ChangeTarget();
-
-		if (SUCCEEDED(m_pD3DDevice->BeginScene()))
-		{
-			// 描画
-			(*itr)->Render();
-
-			// 描画終了
-			m_pD3DDevice->EndScene();
-		}
-
-		// バッファ設定のリセット
-		(*itr)->ResetBuffer();
+		// 描画
+		(*itr)->Render();
 	}
 
 	// バックバッファとフロントバッファの入れ替え

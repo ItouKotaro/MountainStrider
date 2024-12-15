@@ -30,7 +30,7 @@ public:
 	float m_fClippingPlanesFar;				// クリップ距離（遠い）
 
 	// カメラの設定
-	void SetCamera();																						// カメラの設定
+	void SetCamera(const bool& isSet = true);																						// カメラの設定
 	void SetPosR(const D3DXVECTOR3& posR) { m_posR = posR; }					// 注視点の設定
 	D3DXVECTOR3 GetPosR() { return m_posR; }												// 注視点の取得
 	void SetParallel(const bool& isParallel) { m_bParallel = isParallel; }					// 平行投影の設定
