@@ -219,6 +219,12 @@ void CVehicle::LandingControlVehicle()
 		cosf(transform->GetWRotY()) * -ang * 1.8f
 	};
 
+	// ジャンプアクション
+	if (INPUT_INSTANCE->onInput("jump") && m_groundDistance <= 15.0f)
+	{
+		CCollision::GetCollision(gameObject)->GetRigidBody()->setLinearVelocity(CCollision::GetCollision(gameObject)->GetRigidBody()->getLinearVelocity() + btVector3(0.0f, 100.0f, 0.0f));
+	}
+
 	// アクセル
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	if (m_fuel > 0.0f)
@@ -355,8 +361,10 @@ void CVehicle::UpdateStatusUI()
 void CVehicle::UpdateGroundDistance()
 {
 	// 地面との距離を計測する
-	D3DXVECTOR3 vehiclePos = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
-	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y - 5.0f, vehiclePos.z);
+	D3DXVECTOR3 vehiclePos = transform->GetWPos() + D3DXVECTOR3(sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -20.0f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -20.0f);
+	//D3DXMATRIX vehicleMtx = transform->GetMatrix();
+	//D3DXVec3TransformCoord(&vehiclePos, &vehiclePos, &vehicleMtx);
+	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y, vehiclePos.z);
 	btVector3 End = Start + btVector3(0.0f, -3000.0f, 0.0f);
 
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
@@ -389,6 +397,6 @@ void CVehicle::UpdateGroundDistance()
 	// 埋まり対策
 	if (m_groundDistance < 1.0f)
 	{
-		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 100.0f, 0.0f));
 	}
 }

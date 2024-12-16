@@ -9,23 +9,32 @@
 
 #include "component.h"
 #include "component/2d/text.h"
+#include "component/2d/bar.h"
 
-// バイクアクション
-class VehicleAction : public Component
+// 合計ポイントテキスト表示
+class SumActionPointText : public Component
 {
 public:
 	void Init() override;
+	void Uninit() override;
 	void Update() override;
+	void DrawUI() override;
 
-	void onFlyBegin();
-	void onFlyEnd();
+	// ポイント加算
+	void AddPoints(const int& points);
+
+	// ポイント加算終了
+	void Reset() 
+	{ 
+		m_points = 0;
+		m_viewPoints = 0;
+		m_text->SetAlpha(0.0f);
+	}
 private:
-	float m_rolling;
-	float m_beforeRot;
-	bool m_isMeasure;
-	int m_rollCount;
-
-	
+	SingleComponent<CText>* m_text;
+	int m_points;
+	int m_viewPoints;
+	float m_textScale;
 };
 
 // バイク回転ポイント表示
@@ -43,22 +52,28 @@ public:
 	void SetCounter(const int& count) { m_counter = count; }
 private:
 	SingleComponent<CText>* m_text;	// ポリゴン
-	int m_counter;											// フェードカウンター
-	float m_fade;												// フェード
-	float m_upValue;										// 上昇値
+	int m_counter;									// フェードカウンター
+	float m_fade;										// フェード
+	float m_upValue;								// 上昇値
 };
 
-// 合計ポイントテキスト表示
-class SumActionPointText : public Component
+
+// バイクアクション
+class VehicleAction : public Component
 {
 public:
 	void Init() override;
-	void Uninit() override;
 	void Update() override;
-	void DrawUI() override;
 
+	void onFlyBegin();
+	void onFlyEnd();
 private:
-	SingleComponent<CText>* m_text;
+	float m_rolling;			// 合計回転
+	float m_beforeRot;		// 前回の回転
+	bool m_isMeasure;		// 計測
+	int m_rollCount;			// 回転カウンター
+
+	SumActionPointText* m_sumPoints;
 };
 
 #endif // !_VEHICLE_ACTION_H_

@@ -294,6 +294,9 @@
     <ClCompile Include="src\render\shadow_rb.cpp">
       <Filter>ソース ファイル\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\road.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -493,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="src\render\shadow_rb.h">
       <Filter>ヘッダー ファイル\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\road.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

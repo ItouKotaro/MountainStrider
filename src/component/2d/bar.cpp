@@ -22,8 +22,8 @@ void CBar::Init()
 {
 	m_pBgObj = new GameObject();
 	m_pBarObj = new GameObject();
-	m_pBgObj->SetParent(gameObject);
-	m_pBarObj->SetParent(gameObject);
+	m_pBgObj->transform->SetParent(transform);
+	m_pBarObj->transform->SetParent(transform);
 	m_pBgObj->AddComponent<CPolygon>();
 	m_pBarObj->AddComponent<CPolygon>();
 

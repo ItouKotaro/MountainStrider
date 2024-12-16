@@ -34,6 +34,7 @@ void CGameScene::Init()
 	m_endType = ENDTYPE_NONE;
 	m_travellingCount = 0;
 	m_travellingDatas.clear();
+	m_score = 0;
 
 	// カメラの作成
 	{
@@ -102,6 +103,7 @@ void CGameScene::Init()
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_pLightCamera->GetComponent<CCamera>());
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetAmbient({ 0.7f, 0.7f, 0.7f, 1.0f });
 }
 
 //=============================================================
@@ -313,7 +315,7 @@ void CGameScene::onClear()
 		ResultBase::ResultData data;
 		data.time = (timeGetTime() - m_startTime) / 1000;
 		data.highSpeed = m_highSpeed;
-		data.action = 50;
+		data.action = m_score;
 		ResultBase::AddResult(data);
 
 		// クリアリザルトの初期化

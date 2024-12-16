@@ -5,6 +5,8 @@
 //
 //=============================================================
 #include "vehicle_action.h"
+#include "scripts/vehicle.h"
+#include "scene/game.h"
 
 //=============================================================
 // [VehicleAction] 初期化
@@ -15,6 +17,12 @@ void VehicleAction::Init()
 	m_rolling = 0.0f;
 	m_rollCount = 0;
 	m_beforeRot = 0.0f;
+
+	// 合計ポイント用テキスト
+	GameObject* sumObj = new GameObject("SumPoints", "UI");
+	m_sumPoints = sumObj->AddComponent<SumActionPointText>();
+	m_sumPoints->transform->SetPos(1500.0f, 300.0f);
+	m_sumPoints->Reset();
 }
 
 //=============================================================
@@ -29,7 +37,7 @@ void VehicleAction::Update()
 		float currentRot = transform->GetRot().y;
 
 		// 明らかに回転率がおかしいとき
-		float rolling = fabsf(currentRot - m_beforeRot);
+		float rolling = currentRot - m_beforeRot;
 		m_beforeRot = currentRot;
 		if (fabsf(rolling) > D3DX_PI)
 		{
@@ -39,9 +47,26 @@ void VehicleAction::Update()
 		// 回転数を加算する
 		m_rolling += rolling;
 
-		if (m_rollCount < (m_rolling - fmod(m_rolling, D3DX_PI)) / static_cast<float>(D3DX_PI))
+		if (m_rollCount < (fabsf(m_rolling) - fmod(fabsf(m_rolling), D3DX_PI)) / static_cast<float>(D3DX_PI))
 		{
 			m_rollCount++;
+
+			// バイクを取得する
+			auto pBike = gameObject->GetComponent<CVehicle>();
+
+			// スコアを計算する
+			int addScore = 0;
+			addScore += m_rollCount * 60;	// 基礎スコア
+			addScore += static_cast<int>(pBike->GetSpeed());
+
+			if (m_rollCount > 5)
+			{
+				addScore += (m_rollCount - 5) * (m_rollCount - 5) * 120;
+			}
+
+			// 合計値に加算する
+			m_sumPoints->AddPoints(addScore);
+
 
 			// 表示テキストを決める
 			char pointText[24];
@@ -53,8 +78,7 @@ void VehicleAction::Update()
 			// 表示
 			GameObject* addRollText = new GameObject();
 			addRollText->transform->SetPos(1300.0f, 600.0f);
-			addRollText->AddComponent<ActionPointText>();
-			auto rollText = addRollText->GetComponent<ActionPointText>();
+			auto rollText = addRollText->AddComponent<ActionPointText>();
 			rollText->SetText(pointText);
 			rollText->SetFade(0.02f);
 			rollText->SetCounter(120);
@@ -93,6 +117,7 @@ void ActionPointText::Init()
 	m_text->Init();
 	m_text->SetParent(gameObject);
 	m_text->SetFont("07鉄瓶ゴシック");
+	m_text->SetAlign(CText::CENTER);
 }
 
 //=============================================================
@@ -132,7 +157,6 @@ void ActionPointText::DrawUI()
 }
 
 
-
 //=============================================================
 // [SumActionPointText] 初期化
 //=============================================================
@@ -142,6 +166,10 @@ void SumActionPointText::Init()
 	m_text->Init();
 	m_text->SetParent(gameObject);
 	m_text->SetFont("07鉄瓶ゴシック");
+
+	m_points = 0;
+	m_viewPoints = 0;
+	m_textScale = 1.0f;
 }
 
 //=============================================================
@@ -159,6 +187,31 @@ void SumActionPointText::Uninit()
 void SumActionPointText::Update()
 {
 	m_text->Update();
+
+	// 表示ポイントを決める
+	m_viewPoints += (m_points - m_viewPoints) * 0.08f;
+
+	// ポイントを表示する
+	m_text->SetText(std::to_string(m_viewPoints));
+	m_text->SetFontSize(static_cast<int>(120 * m_textScale));
+
+	// サイズを戻していく
+	m_textScale += (1.0f - m_textScale) * 0.08f;
+
+	// 透明にしていく
+	if (m_text->GetAlpha() > 0.05f)
+	{
+		m_text->SetAlpha(m_text->GetAlpha() - 0.01f);
+	}
+	else
+	{ // 終了
+		// ポイントを加算する
+		static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->AddScore(m_points);
+
+		m_text->SetAlpha(0.0f);
+		m_points = 0;
+		m_viewPoints = 0;
+	}
 }
 
 //=============================================================
@@ -167,4 +220,15 @@ void SumActionPointText::Update()
 void SumActionPointText::DrawUI()
 {
 	m_text->DrawUI();
+}
+
+//=============================================================
+// [SumActionPointText] ポイント加算
+//=============================================================
+void SumActionPointText::AddPoints(const int& points)
+{
+	// ポイントを加算する
+	m_points += points;
+	m_textScale = 1.5f;
+	m_text->SetAlpha(1.0f);
 }

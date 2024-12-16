@@ -26,6 +26,7 @@ public:
 	void SetProj(const D3DXMATRIX* pmProj) { m_effect->SetMatrix(m_hProj, pmProj); }
 	void SetLightPos(D3DXVECTOR4* lightPos) { m_effect->SetVector(m_hLightPos, lightPos); }
 	void SetLightDir(D3DXVECTOR4* lightDir) { m_effect->SetVector(m_hLightDir, lightDir); }
+	void SetLightAmbient(D3DXVECTOR4* ambient) { m_effect->SetVector(m_hLightAmbient, ambient); }
 	void SetWorldView(D3DXMATRIX* worldView) { m_effect->SetMatrix(m_hWorldView, worldView); }
 	void SetShadowTex(LPDIRECT3DTEXTURE9 shadowTex) { m_effect->SetTexture(m_hShadowTex, shadowTex); }
 	void SetViewToLightProj(D3DXMATRIX* viewToLightProj) { m_effect->SetMatrix(m_hViewToLightProj, viewToLightProj); }
@@ -45,6 +46,7 @@ private:
 	D3DXHANDLE m_hTexture;
 	D3DXHANDLE m_hShadowTex;
 	D3DXHANDLE m_hViewToLightProj;
+	D3DXHANDLE m_hLightAmbient;
 	D3DXHANDLE m_hRenderShadowTechnique;
 	D3DXHANDLE m_hRenderSceneTechnique;
 	D3DXHANDLE m_hRenderLightTechnique;
@@ -59,6 +61,7 @@ public:
 	void Uninit() override;
 	void Render() override;
 
+	void SetAmbient(D3DXVECTOR4 ambient) { m_shader->SetLightAmbient(&ambient); }
 	void SetLightCamera(CCamera* camera) { m_lightCamera = camera; }
 
 	static const int SHADOWMAP_SIZE;
