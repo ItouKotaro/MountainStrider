@@ -219,6 +219,12 @@ void CVehicle::LandingControlVehicle()
 		cosf(transform->GetWRotY()) * -ang * 1.8f
 	};
 
+	// ジャンプアクション
+	if (INPUT_INSTANCE->onInput("jump") && m_groundDistance <= 15.0f)
+	{
+		CCollision::GetCollision(gameObject)->GetRigidBody()->setLinearVelocity(CCollision::GetCollision(gameObject)->GetRigidBody()->getLinearVelocity() + btVector3(0.0f, 100.0f, 0.0f));
+	}
+
 	// アクセル
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	if (m_fuel > 0.0f)

@@ -3,5 +3,10 @@
     {
         "key": ["space","p:rightthumb"],
         "input": "press"
+    },
+    "jump":
+    {
+        "key": ["lshift"],
+        "input": "trigger"
     }
 }
