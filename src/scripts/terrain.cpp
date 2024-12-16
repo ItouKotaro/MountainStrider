@@ -887,11 +887,11 @@ void ProducesManager::AddProduce(const Transform& transform, CNatureProduces* pN
 //=============================================================
 void ProducesManager::Init()
 {
-	//m_pNumObj = new GameObject("TerrainNumObj");
-	//m_pNumObj->AddComponent<CText>();
-	//m_pNumObj->GetComponent<CText>()->SetFontSize(80);
-	//m_pNumObj->GetComponent<CText>()->SetAlign(CText::ALIGN::RIGHT);
-	//m_pNumObj->transform->SetPos(CRenderer::SCREEN_WIDTH - 50.0f, 30.0f);
+	m_pNumObj = new GameObject("TerrainNumObj");
+	m_pNumObj->AddComponent<CText>();
+	m_pNumObj->GetComponent<CText>()->SetFontSize(80);
+	m_pNumObj->GetComponent<CText>()->SetAlign(CText::ALIGN::RIGHT);
+	m_pNumObj->transform->SetPos(CRenderer::SCREEN_WIDTH - 50.0f, 30.0f);
 }
 
 //=============================================================
@@ -926,7 +926,7 @@ void ProducesManager::Uninit()
 void ProducesManager::Update(const D3DXVECTOR3& pos)
 {
 	// デバッグ用
-	//m_pNumObj->GetComponent<CText>()->SetText("生成物総数: " + std::to_string(m_managedGameObjects.size()));
+	m_pNumObj->GetComponent<CText>()->SetText("生成物総数: " + std::to_string(m_managedGameObjects.size()));
 
 	// バイクの取得
 	if (m_pVehicle == nullptr)
@@ -950,6 +950,10 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 
 			if ((*itrManagedProduces)->managedGameObject != nullptr)
 			{ // すでに設置済みのとき
+				// 破棄カウンターを更新する
+				(*itrManagedProduces)->managedGameObject->destroyCounter = 600;
+
+				// バイクとの衝突
 				std::vector<GameObject*>& pOverlappingObj = CCollision::GetCollision((*itrManagedProduces)->managedGameObject->gameObject)->GetOverlappingGameObjects();
 				for (auto itrOverlappingObj = pOverlappingObj.begin(); itrOverlappingObj != pOverlappingObj.end(); itrOverlappingObj++)
 				{
@@ -1003,6 +1007,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 
 					// ゲームオブジェクトをアクティブにする
 					(*itrManagedGameObj)->gameObject->SetActive(true);
+					(*itrManagedGameObj)->destroyCounter = 600;
 
 					// 設置情報にゲームオブジェクト情報を設定する
 					(*itrManagedProduces)->managedGameObject = (*itrManagedGameObj);
@@ -1020,6 +1025,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 			ManagedGameObject* managedGameObject = new ManagedGameObject;
 			managedGameObject->gameObject = (*itrManagedProduces)->natureProduce->Generate((*itrManagedProduces)->transform);
 			managedGameObject->natureProduce = (*itrManagedProduces)->natureProduce;
+			managedGameObject->destroyCounter = 600;
 			if (managedGameObject->gameObject == nullptr || managedGameObject->natureProduce == nullptr)
 			{
 				continue;
@@ -1055,6 +1061,22 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 				// 設置オブジェクトから除外する
 				(*itrManagedProduces)->managedGameObject = nullptr;
 			}
+		}
+	}
+
+
+	// 管理ゲームオブジェクトの整理
+	for (auto itr = m_managedGameObjects.begin(); itr != m_managedGameObjects.end(); itr++)
+	{
+		(*itr)->destroyCounter--;
+		if ((*itr)->destroyCounter <= 0)
+		{ // 破棄カウンターが0になったとき
+			ManagedGameObject* pManaged = *itr;
+			itr = m_managedGameObjects.erase(itr);
+			delete pManaged;
+
+			if (itr == m_managedGameObjects.end())
+				break;
 		}
 	}
 }

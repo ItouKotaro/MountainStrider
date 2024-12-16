@@ -39,6 +39,7 @@ private:
 	{
 		GameObject* gameObject;
 		CNatureProduces* natureProduce;
+		int destroyCounter;
 	};
 
 	// 生成物管理データ（配置情報）
