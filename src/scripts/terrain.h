@@ -102,7 +102,8 @@ private:
 
 	std::vector<CNatureProduces*> m_registerNatureProduces;		// 生成物リスト（登録）
 	ProducesManager* m_producesManager;									// 生成物管理
-	bool m_routeData[TERRAIN_SIZE][TERRAIN_SIZE];
+	//UINT m_routeData[TERRAIN_SIZE][TERRAIN_SIZE];
+	std::vector<int[TERRAIN_SIZE][TERRAIN_SIZE]> m_routeData;
 	
 
 	// 高度カラーを追加する

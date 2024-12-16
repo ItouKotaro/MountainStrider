@@ -39,6 +39,7 @@ bool ShadowMapShader::Init()
 	m_hTexture = m_effect->GetParameterByName(NULL, "g_txScene");
 	m_hShadowTex = m_effect->GetParameterByName(NULL, "g_txShadow");
 	m_hViewToLightProj = m_effect->GetParameterByName(NULL, "g_mViewToLightProj");
+	m_hLightAmbient = m_effect->GetParameterByName(NULL, "g_vLightAmbient");
 	m_hRenderShadowTechnique = m_effect->GetTechniqueByName("RenderShadow");
 	m_hRenderSceneTechnique = m_effect->GetTechniqueByName("RenderScene");
 	m_hRenderLightTechnique = m_effect->GetTechniqueByName("RenderLight");

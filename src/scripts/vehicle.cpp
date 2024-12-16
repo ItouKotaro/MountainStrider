@@ -361,9 +361,9 @@ void CVehicle::UpdateStatusUI()
 void CVehicle::UpdateGroundDistance()
 {
 	// ’n–Ê‚Æ‚Ì‹——£‚ðŒv‘ª‚·‚é
-	D3DXVECTOR3 vehiclePos = { 0.0f, -10.0f, 0.0f };
-	D3DXMATRIX vehicleMtx = transform->GetMatrix();
-	D3DXVec3TransformCoord(&vehiclePos, &vehiclePos, &vehicleMtx);
+	D3DXVECTOR3 vehiclePos = transform->GetWPos() + D3DXVECTOR3(sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -20.0f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -20.0f);
+	//D3DXMATRIX vehicleMtx = transform->GetMatrix();
+	//D3DXVec3TransformCoord(&vehiclePos, &vehiclePos, &vehicleMtx);
 	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y, vehiclePos.z);
 	btVector3 End = Start + btVector3(0.0f, -3000.0f, 0.0f);
 
