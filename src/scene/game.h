@@ -30,6 +30,8 @@ public:
 	Terrain* GetTerrain() { return m_pTerrain; }
 	GameObject* GetBike() { return m_pBike; }
 
+	void AddScore(const int& score) { m_score += score; }
+
 	// 走行データ
 	struct TravellingData
 	{
@@ -64,6 +66,7 @@ private:
 	// リザルトデータ用
 	DWORD m_startTime;			// 開始時間
 	int m_highSpeed;					// 最高速度
+	int m_score;							// スコア
 
 	// FPS表示
 	GameObject* m_pFPS;

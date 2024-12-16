@@ -361,8 +361,10 @@ void CVehicle::UpdateStatusUI()
 void CVehicle::UpdateGroundDistance()
 {
 	// ínñ Ç∆ÇÃãóó£Çåvë™Ç∑ÇÈ
-	D3DXVECTOR3 vehiclePos = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
-	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y - 5.0f, vehiclePos.z);
+	D3DXVECTOR3 vehiclePos = { 0.0f, -10.0f, 0.0f };
+	D3DXMATRIX vehicleMtx = transform->GetMatrix();
+	D3DXVec3TransformCoord(&vehiclePos, &vehiclePos, &vehicleMtx);
+	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y, vehiclePos.z);
 	btVector3 End = Start + btVector3(0.0f, -3000.0f, 0.0f);
 
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
@@ -395,6 +397,6 @@ void CVehicle::UpdateGroundDistance()
 	// ñÑÇ‹ÇËëŒçÙ
 	if (m_groundDistance < 1.0f)
 	{
-		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 100.0f, 0.0f));
 	}
 }
