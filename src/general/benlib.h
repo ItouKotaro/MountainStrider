@@ -12,6 +12,7 @@
 
 #define SAFE_ERASE(container, iterator) {iterator = container.erase(iterator); if(iterator == container.end()) break;}
 
+// 便利な機能を提供します
 namespace Benlib
 {
 	/*
@@ -71,6 +72,14 @@ namespace Benlib
 	@return 回転 (D3DXVECTOR3)
 	*/
 	D3DXQUATERNION LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2);
+
+	/*
+	@brief 浮動小数点型のランダム値を生成します
+	@param[in] min : 最小値
+	@param[in] max : 最大値
+	@return ランダム値 (float)
+	*/
+	float Random(float min, float max);
 
 	/*
 	@brief 角度からラジアンに変換します

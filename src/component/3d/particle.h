@@ -41,20 +41,39 @@ namespace ParticleModule
 	// 放出
 	class Emission
 	{
+	public:
+		void SetRateOverTime(const float& time) { m_rateOverTime = time; }
+		float GetRateOverTime() { return m_rateOverTime; }
+		virtual int GetResult(float elapsedTime);
+	private:
+		float m_rateOverTime;	// 秒あたりの放出数
+		float m_elapsedTime;		// 経過時間
+	};
+
+	// 形状
+	class Shape
+	{
+	public:
+		struct ResultData
+		{
+			D3DXVECTOR3 position;
+			D3DXVECTOR3 direction;
+		};
+		virtual ResultData GetResult() = 0;
 	};
 }
 
 
-// パーティクルエミッター
-class ParticleEmitter : public Component
+// パーティクルシステム
+class ParticleSystem : public Component
 {
 public:
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
 private:
-	ParticleModule::Emission m_emission;			// 放出
-
+	ParticleModule::Emission* m_emitter;			// 放出
+	ParticleModule::Shape* m_shape;				// 形状
 
 	// パーティクルデータ
 	struct ParticleData
@@ -69,14 +88,31 @@ private:
 };
 
 
-
-class SphereEmission : public ParticleModule::Emission
+namespace ParticleShape
 {
-public:
+	// ポイント（一点）
+	class PointShape : public ParticleModule::Shape
+	{
+	public:
+		ResultData GetResult() override
+		{
+			ResultData data;
+			data.position = { 0.0f, 0.0f, 0.0f };
+			data.direction = { 0.0f, 0.0f, 0.0f };
+			return data;
+		}
+	};
 
-private:
-
-};
+	// 球
+	class SphereShape : public ParticleModule::Shape
+	{
+	public:
+		ResultData GetResult() override;
+		void SetRadius(const float& radius) { m_radius = radius; }
+	private:
+		float m_radius;	// 半径
+	};
+}
 
 
 

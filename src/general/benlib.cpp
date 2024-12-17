@@ -5,6 +5,7 @@
 //
 //==================================================================
 #include "benlib.h"
+#include <random>
 
 float Benlib::PosDistance(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2)
 {
@@ -72,6 +73,14 @@ D3DXQUATERNION Benlib::LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2)
 	q.z = cross.z * sinf(theta);
 	q.w = cosf(theta);
 	return q;
+}
+
+float Benlib::Random(float min, float max)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dist(min, max);
+	return dist(gen);
 }
 
 float Benlib::DegreeToRadian(const int& nDegree)

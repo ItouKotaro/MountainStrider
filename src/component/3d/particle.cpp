@@ -9,40 +9,6 @@
 #include "internal/data_manager.h"
 
 //=============================================================
-// [ParticleEmitter] 初期化
-//=============================================================
-void ParticleEmitter::Init()
-{
-
-}
-
-//=============================================================
-// [ParticleEmitter] 終了
-//=============================================================
-void ParticleEmitter::Uninit()
-{
-	for (auto itr = m_particleData.begin(); itr != m_particleData.end(); itr++)
-	{
-		if ((*itr).particle != nullptr)
-		{
-			(*itr).particle->Uninit();
-			delete (*itr).particle;
-		}
-	}
-	m_particleData.clear();
-}
-
-//=============================================================
-// [ParticleEmitter] 更新
-//=============================================================
-void ParticleEmitter::Update()
-{
-
-}
-
-
-
-//=============================================================
 // [Particle] 初期化
 //=============================================================
 void Particle::Init()
@@ -190,4 +156,60 @@ void Particle::SetSize(const float& x, const float& y)
 void Particle::SetTexture(const std::string& path)
 {
 	BindTexture(CDataManager::GetInstance()->RefTexture(path)->GetTexture());
+}
+
+
+
+//=============================================================
+// [ParticleSystem] 初期化
+//=============================================================
+void ParticleSystem::Init()
+{
+
+}
+
+//=============================================================
+// [ParticleSystem] 終了
+//=============================================================
+void ParticleSystem::Uninit()
+{
+	for (auto itr = m_particleData.begin(); itr != m_particleData.end(); itr++)
+	{
+		if ((*itr).particle != nullptr)
+		{
+			(*itr).particle->Uninit();
+			delete (*itr).particle;
+		}
+	}
+	m_particleData.clear();
+}
+
+//=============================================================
+// [ParticleSystem] 更新
+//=============================================================
+void ParticleSystem::Update()
+{
+
+}
+
+
+//=============================================================
+// [SphereShape] テクスチャの設定
+//=============================================================
+int ParticleModule::Emission::GetResult(float elapsedTime)
+{
+
+}
+
+//=============================================================
+// [SphereShape] テクスチャの設定
+//=============================================================
+ParticleModule::Shape::ResultData ParticleShape::SphereShape::GetResult()
+{
+	float x = Benlib::Random(0.0f, D3DX_PI);
+	float y = Benlib::Random(0.0f, D3DX_PI * 2.0f);
+	ResultData data;
+	data.position = D3DXVECTOR3(sinf(y) * m_radius, cosf(x) * m_radius, cosf(y) * m_radius);
+	D3DXVec3Normalize(&data.direction, &data.position);
+	return data;
 }
