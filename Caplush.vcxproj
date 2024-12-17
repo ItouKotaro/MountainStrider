@@ -242,6 +242,8 @@
     <ClCompile Include="src\scene\start_scene.cpp" />
     <ClCompile Include="src\scene\title.cpp" />
     <ClCompile Include="src\scripts\camera_move.cpp" />
+    <ClCompile Include="src\scripts\environmental.cpp" />
+    <ClCompile Include="src\scripts\environmental_type.cpp" />
     <ClCompile Include="src\scripts\item\items.cpp" />
     <ClCompile Include="src\scripts\item\item_manager.cpp" />
     <ClCompile Include="src\scripts\nature_produces.cpp" />
@@ -311,6 +313,8 @@
     <ClInclude Include="src\scene\start_scene.h" />
     <ClInclude Include="src\scene\title.h" />
     <ClInclude Include="src\scripts\camera_move.h" />
+    <ClInclude Include="src\scripts\environmental.h" />
+    <ClInclude Include="src\scripts\environmental_type.h" />
     <ClInclude Include="src\scripts\item\items.h" />
     <ClInclude Include="src\scripts\item\item_manager.h" />
     <ClInclude Include="src\scripts\nature_produces.h" />

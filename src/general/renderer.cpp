@@ -10,7 +10,7 @@
 // 変数の初期化
 const int CRenderer::SCREEN_WIDTH = 1920;
 const int CRenderer::SCREEN_HEIGHT = 1080;
-const bool CRenderer::USE_FOG = true;
+const bool CRenderer::USE_FOG = false;
 
 //=============================================================
 // [CRenderer] コンストラクタ

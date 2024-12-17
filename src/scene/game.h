@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "internal/physics.h"
 #include "scripts/terrain.h"
+#include "scripts/environmental.h"
 #include "scripts/result/mt_result.h"
 
 // ゲームシーン
@@ -43,30 +44,31 @@ public:
 	// 終了の種類
 	enum ENDTYPE
 	{
-		ENDTYPE_NONE,			// なし（通常）
-		ENDTYPE_CLEAR,			// クリア（山踏破）
-		ENDTYPE_GAMEOVER,	// ゲームオーバー
+		ENDTYPE_NONE,											// なし（通常）
+		ENDTYPE_CLEAR,											// クリア（山踏破）
+		ENDTYPE_GAMEOVER,									// ゲームオーバー
 	};
-	ENDTYPE m_endType;		// 終了理由
+	ENDTYPE m_endType;										// 終了理由
 private:
-	void SpawnBike();				// バイクの生成
-	void ClearCondition();			// クリア条件
+	void SpawnBike();												// バイクの生成
+	void ClearCondition();											// クリア条件
 
 	int m_travellingCount;
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
-	ResultBase* m_result;			// リザルト
+	ResultBase* m_result;										// リザルト
 
-	Terrain* m_pTerrain;				// 地形
-	GameObject* m_voidField;		// 奈落
-	GameObject* m_pCamera;		// カメラ
-	GameObject* m_pLightCamera;
-	GameObject* m_pBike;			// バイク
-	GameObject* m_pStatusUI;	// ステータスUI
+	Terrain* m_pTerrain;											// 地形
+	EnvironmentalEffect* m_environmental;				// 環境
+	GameObject* m_voidField;									// 奈落
+	GameObject* m_pCamera;									// カメラ
+	GameObject* m_pLightCamera;							// ライト用カメラ
+	GameObject* m_pBike;										// バイク
+	GameObject* m_pStatusUI;								// ステータスUI
 
 	// リザルトデータ用
-	DWORD m_startTime;			// 開始時間
-	int m_highSpeed;					// 最高速度
-	int m_score;							// スコア
+	DWORD m_startTime;										// 開始時間
+	int m_highSpeed;												// 最高速度
+	int m_score;														// スコア
 
 	// FPS表示
 	GameObject* m_pFPS;

@@ -128,7 +128,7 @@ void Terrain::Generate()
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		GenerateProduces();
 	}

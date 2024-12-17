@@ -59,6 +59,9 @@ void CGameScene::Init()
 		m_pTerrain->Generate();
 	}
 
+	// 環境効果
+	m_environmental = new EnvironmentalEffect();
+	m_environmental->Init();
 
 	// 奈落
 	{
@@ -90,20 +93,10 @@ void CGameScene::Init()
 	m_pLightCamera->transform->Translate(0.0f,  15.0f, 25.0f);
 	m_pLightCamera->transform->Rotate(0.0f, 0.0f, 0.0f);
 
-	//GameObject* pplight = new GameObject;
-	//pplight->AddComponent<CLight>()->SetIntensity(2000.0f);
-	//pplight->SetParent(m_pBike);
-	//pplight->transform->SetPos(50.0f, 10.0f);
-
-	// レンダーバッファを登録する
-	//CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
-	//renderBuff->SetCamera(m_pCamera->GetComponent<CCamera>());
-
 	// カメラをレンダーバッファに追加する
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_pLightCamera->GetComponent<CCamera>());
-	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetAmbient({ 0.7f, 0.7f, 0.7f, 1.0f });
 }
 
 //=============================================================
@@ -117,6 +110,14 @@ void CGameScene::Uninit()
 		m_pTerrain->Uninit();
 		delete m_pTerrain;
 		m_pTerrain = nullptr;
+	}
+
+	// 環境効果の破棄
+	if (m_environmental != nullptr)
+	{
+		m_environmental->Uninit();
+		delete m_environmental;
+		m_environmental = nullptr;
 	}
 
 	// リザルトマネージャーの破棄
@@ -146,6 +147,9 @@ void CGameScene::Update()
 
 	// 地形を更新する
 	m_pTerrain->Update(m_pCamera->transform->GetWPos());
+
+	// 環境効果を更新する
+	m_environmental->Update();
 
 	// 未ゲームオーバー時
 	if (m_endType == ENDTYPE_NONE)

@@ -189,7 +189,7 @@ void SumActionPointText::Update()
 	m_text->Update();
 
 	// 表示ポイントを決める
-	m_viewPoints += (m_points - m_viewPoints) * 0.08f;
+	m_viewPoints += static_cast<int>((m_points - m_viewPoints) * 0.08f);
 
 	// ポイントを表示する
 	m_text->SetText(std::to_string(m_viewPoints));
