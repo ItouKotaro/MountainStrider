@@ -111,6 +111,7 @@ void CMesh::Draw()
 		Shader::ParamData paramData;
 		paramData.color = { pMat[nCntMat].MatD3D.Diffuse.r, pMat[nCntMat].MatD3D.Diffuse.g, pMat[nCntMat].MatD3D.Diffuse.b, pMat[nCntMat].MatD3D.Diffuse.a };
 		paramData.texture = tex;
+		paramData.mtx = transform->GetMatrix();
 		Component::SetParam(paramData);
 
 		// モデル（パーツ）の描画

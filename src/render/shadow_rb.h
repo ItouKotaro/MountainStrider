@@ -20,6 +20,9 @@ public:
 	// パス開始
 	void SetParam(const ParamData& data) override;
 
+	// カメラを設定する
+	void SetViewMtx(D3DXMATRIX mtx) { m_viewMtx = mtx; }
+
 	// 設定
 	void SetLightDiffuse(D3DXVECTOR4* diffuse) { m_effect->SetVector(m_hLightDiffuse, diffuse); }
 	void SetCosTheta(float cosTheta) { m_effect->SetFloat(m_hCosTheta, cosTheta); }
@@ -36,6 +39,7 @@ public:
 private:
 	LPDIRECT3DTEXTURE9 m_defTex;
 
+	D3DXMATRIX m_viewMtx;
 	D3DXHANDLE m_hLightDiffuse;
 	D3DXHANDLE m_hCosTheta;
 	D3DXHANDLE m_hProj;

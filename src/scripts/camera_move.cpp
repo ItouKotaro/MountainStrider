@@ -74,14 +74,15 @@ void CCameraMove::Update()
 
 	bool flying = m_pTarget->GetComponent<CVehicle>()->GetFlying();
 
-	if (!flying)
-	{
-		UpdateFPS();
-	}
-	else
-	{
-		UpdateTPS();
-	}
+	UpdateTPS();
+	//if (!flying)
+	//{
+	//	UpdateFPS();
+	//}
+	//else
+	//{
+	//	UpdateTPS();
+	//}
 
 	if (m_moveCounter > 0)
 	{

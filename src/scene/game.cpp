@@ -23,7 +23,7 @@
 
 #include "render/shadow_rb.h"
 
-#include "component/3d/billboard.h"
+#include "component/3d/particle.h"
 
 #include <noise/noise.h>
 
@@ -75,6 +75,12 @@ void CGameScene::Init()
 
 	// バイクの生成
 	SpawnBike();
+
+	GameObject* pbill = new GameObject("bill");
+	pbill->transform->SetScale(100.0f);
+	pbill->AddComponent<Particle>();
+	pbill->GetComponent<Particle>()->SetSize(100.0f, 100.0f);
+	pbill->SetParent(m_pBike);
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);

@@ -82,6 +82,12 @@ void ShadowMapShader::SetParam(const ParamData& data)
 	else
 		m_effect->SetTexture(m_hTexture, m_defTex);
 
+
+	D3DXMATRIXA16 mWorldView = data.mtx != nullptr ? data.mtx : data.component->transform->GetMatrix();
+	D3DXMATRIX viewMtx = m_viewMtx;
+	D3DXMatrixMultiply(&mWorldView, &mWorldView, &viewMtx);
+	SetWorldView(&mWorldView);
+
 	// 値の変更を適用
 	HRESULT hr = m_effect->CommitChanges();
 }
@@ -269,6 +275,7 @@ void ShadowRenderBuffer::RenderScene(bool renderShadow, const D3DXMATRIX* pmView
 
 	// プロジェクションマトリックスを設定する
 	m_shader->SetProj(pmProj);
+	m_shader->SetViewMtx(*pmView);
 
 	// ライトのパラメーターを更新する
 	D3DXVECTOR3 v = *(D3DXVECTOR3*)&m_lightCamera->transform->GetMatrix()._41;

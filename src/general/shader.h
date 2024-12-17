@@ -39,6 +39,7 @@ public:
 		Component* component;
 		D3DXCOLOR color;
 		LPDIRECT3DTEXTURE9 texture;
+		D3DXMATRIX mtx;
 	};
 
 	// •`‰æî•ñ‚Ìİ’è

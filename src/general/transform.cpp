@@ -210,6 +210,8 @@ bool Transform::operator ==(Transform& transform)
 //=============================================================
 void Transform::LookAt(D3DXVECTOR3 target)
 {
+	m_rotation = Benlib::LookAt(GetWPos(), target);
+
 	//// Œ»İ‚ÌˆÊ’u‚ğæ“¾‚·‚é
 	//D3DXVECTOR3 pos = GetWPos();
 

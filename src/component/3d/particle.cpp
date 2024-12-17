@@ -30,10 +30,10 @@ void Particle::Init()
 	pVtx[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	//法線の設定
-	pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
 	//頂点カラー
 	pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
@@ -69,7 +69,6 @@ void Particle::Uninit()
 //=============================================================
 void Particle::Update()
 {
-
 }
 
 //=============================================================
@@ -78,7 +77,8 @@ void Particle::Update()
 void Particle::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();		// デバイスを取得
-	D3DXMATRIX mtx = transform->GetMatrix();
+	D3DXMATRIX mtx;
+	D3DXMATRIX mtxView;
 
 	Component::BeginPass();
 
@@ -87,6 +87,22 @@ void Particle::Draw()
 
 	// ワールドマトリックスの設定
 	if (!IsEnabledShader()) pDevice->SetTransform(D3DTS_WORLD, &mtx);
+
+	// マトリックスの初期化
+	D3DXMatrixIdentity(&mtx);
+
+	// ビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+	// ポリゴンをカメラに対して正面に向ける
+	D3DXMatrixInverse(&mtx, NULL, &mtxView);	// 逆行列を求める
+	mtx._41 = 0.0f;
+	mtx._42 = 0.0f;
+	mtx._43 = 0.0f;
+
+	// オブジェクトのマトリックスを掛ける
+	D3DXMATRIX mtxTrans = transform->GetTranslationMatrix();
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_vtxBuff, 0, sizeof(VERTEX_3D));
@@ -98,8 +114,9 @@ void Particle::Draw()
 	if (!IsEnabledShader()) pDevice->SetTexture(0, m_texture);
 
 	Shader::ParamData paramData;
-	paramData.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	paramData.color = m_color;
 	paramData.texture = m_texture;
+	paramData.mtx = mtx;
 	Component::SetParam(paramData);
 
 	// ポリゴンの描画

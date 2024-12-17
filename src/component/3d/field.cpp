@@ -96,6 +96,7 @@ void CField::Draw()
 	Shader::ParamData paramData;
 	paramData.color = m_color;
 	paramData.texture = m_pTexture;
+	paramData.mtx = transform->GetMatrix();
 	Component::SetParam(paramData);
 
 	// ƒ|ƒŠƒSƒ“‚Ì•`‰æ

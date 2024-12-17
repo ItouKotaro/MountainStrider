@@ -75,6 +75,7 @@ void CMeshField::Draw()
 	Shader::ParamData paramData;
 	paramData.color = {1.0f, 1.0f, 1.0f, 1.0f};
 	paramData.texture = m_pTexture;
+	paramData.mtx = transform->GetMatrix();
 	Component::SetParam(paramData);
 
 	// ƒ|ƒŠƒSƒ“‚Ì•`‰æ
