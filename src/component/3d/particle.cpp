@@ -9,6 +9,40 @@
 #include "internal/data_manager.h"
 
 //=============================================================
+// [ParticleEmitter] èâä˙âª
+//=============================================================
+void ParticleEmitter::Init()
+{
+
+}
+
+//=============================================================
+// [ParticleEmitter] èIóπ
+//=============================================================
+void ParticleEmitter::Uninit()
+{
+	for (auto itr = m_particleData.begin(); itr != m_particleData.end(); itr++)
+	{
+		if ((*itr).particle != nullptr)
+		{
+			(*itr).particle->Uninit();
+			delete (*itr).particle;
+		}
+	}
+	m_particleData.clear();
+}
+
+//=============================================================
+// [ParticleEmitter] çXêV
+//=============================================================
+void ParticleEmitter::Update()
+{
+
+}
+
+
+
+//=============================================================
 // [Particle] èâä˙âª
 //=============================================================
 void Particle::Init()
