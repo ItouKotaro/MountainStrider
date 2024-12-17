@@ -7,38 +7,42 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
 
-#include "billboard.h"
+#include "component.h"
+#include "component/3d/billboard.h"
 
-// パーティクルコンポーネント
-class CParticle : public CBillboard
+// パーティクル（単体）
+class Particle : public Component
 {
 public:
-	CParticle(const int& nLife = 10, const D3DXVECTOR3& move = { 0.0f, 0.0f, 0.0f }, const float& fAlpha = 0.0f, const D3DXVECTOR2& size = {0.0f, 0.0f}, const float& fAngle = 0.0f);
-	//CParticle(const int& nLife = 10, const D3DXVECTOR3& move = { 0.0f, 0.0f, 0.0f }, const float& fAlpha = 0.0f, const float& fSize = 0.0f, const float& fAngle = 0.0f);
+	Particle() : m_vtxBuff(nullptr), m_texture(nullptr){}
 
-	// 寿命を設定する
-	void SetLife(const int& nLife);
+	void Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	// 1フレームごとの移動量を設定する
-	void SetEveryMove(const D3DXVECTOR3& move);
+	// サイズの設定
+	void SetSize(const float& x, const float& y);
 
-	// 1フレームごとの回転量を設定する
-	void SetEveryAngle(const float& fAngle);
-
-	// 1フレームごとの拡大量を設定する
-	void SetEverySize(const float& fSize);
-	void SetEverySize(const D3DXVECTOR2& size);
-
-	// 1フレームごとの透明率を設定する
-	void SetEveryAlpha(const float& fAlpha);
-
-
-	void Update() override;				// 更新
+	// テクスチャの設定
+	void SetTexture(const std::string& path);
+	void BindTexture(LPDIRECT3DTEXTURE9 texture) { m_texture = texture; }
 private:
-	int m_nLife;								// 寿命
-	D3DXVECTOR3 m_everyMove;	// 移動量
-	D3DXVECTOR2 m_everySize;		// 拡大
-	float m_everyAngle, m_everyAlpha;
+	LPDIRECT3DVERTEXBUFFER9 m_vtxBuff;		// 頂点バッファ
+	LPDIRECT3DTEXTURE9 m_texture;					// テクスチャ
 };
+
+// パーティクルエミッター
+//class ParticleEmitter : public Component
+//{
+//public:
+//	
+//private:
+//	struct Particle
+//	{
+//
+//		SingleComponent<Particle> particle;
+//	};
+//};
 
 #endif // !_PARTICLE_H_

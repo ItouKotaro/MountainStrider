@@ -23,6 +23,8 @@
 
 #include "render/shadow_rb.h"
 
+#include "component/3d/billboard.h"
+
 #include <noise/noise.h>
 
 //=============================================================

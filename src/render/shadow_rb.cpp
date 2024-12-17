@@ -193,7 +193,6 @@ void ShadowRenderBuffer::Render()
 
 	// カメラの更新
 	m_camera->SetCamera(false);
-	m_camera->GetSkybox()->Draw();
 
 	// ライトカメラの更新
 	m_lightCamera->SetCamera(false);

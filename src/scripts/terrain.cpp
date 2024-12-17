@@ -128,7 +128,7 @@ void Terrain::Generate()
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	// 生成物を生成する
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		GenerateProduces();
 	}
@@ -1072,6 +1072,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 		if ((*itr)->destroyCounter <= 0)
 		{ // 破棄カウンターが0になったとき
 			ManagedGameObject* pManaged = *itr;
+			pManaged->gameObject->Destroy();
 			itr = m_managedGameObjects.erase(itr);
 			delete pManaged;
 
