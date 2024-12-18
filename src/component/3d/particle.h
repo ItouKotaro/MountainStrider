@@ -36,6 +36,7 @@ private:
 	D3DXCOLOR m_color;
 };
 
+// パーティクルモジュール
 namespace ParticleModule
 {
 	// 放出
@@ -44,8 +45,9 @@ namespace ParticleModule
 	public:
 		void SetRateOverTime(const float& time) { m_rateOverTime = time; }
 		float GetRateOverTime() { return m_rateOverTime; }
-		virtual int GetResult(float elapsedTime);
-	private:
+		void SetElapsedTime(float elapsedTime) { m_elapsedTime += elapsedTime; }
+		virtual int GetResult();
+	protected:
 		float m_rateOverTime;	// 秒あたりの放出数
 		float m_elapsedTime;		// 経過時間
 	};
@@ -61,6 +63,25 @@ namespace ParticleModule
 		};
 		virtual ResultData GetResult() = 0;
 	};
+
+	// 力
+	class Power
+	{
+	public:
+		void SetPower(const float& power) 
+		{ 
+			m_min = power;
+			m_max = power;
+		}
+		void SetPower(const float& min, const float& max)
+		{
+			m_min = min;
+			m_max = max;
+		}
+		virtual float GetResult() { Benlib::Random(m_min, m_max); }
+	private:
+		float m_min, m_max;
+	};
 }
 
 
@@ -68,12 +89,17 @@ namespace ParticleModule
 class ParticleSystem : public Component
 {
 public:
+	ParticleSystem() :
+		m_emission(nullptr),
+		m_shape(nullptr),
+		m_power(nullptr){}
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
 private:
-	ParticleModule::Emission* m_emitter;			// 放出
+	ParticleModule::Emission* m_emission;		// 放出
 	ParticleModule::Shape* m_shape;				// 形状
+	ParticleModule::Power* m_power;				// 力
 
 	// パーティクルデータ
 	struct ParticleData
@@ -87,7 +113,7 @@ private:
 	std::vector<ParticleData> m_particleData;
 };
 
-
+// パーティクルのシェイプ
 namespace ParticleShape
 {
 	// ポイント（一点）

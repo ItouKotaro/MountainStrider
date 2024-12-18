@@ -7,6 +7,7 @@
 #include "particle.h"
 #include "renderer.h"
 #include "internal/data_manager.h"
+#include "manager.h"
 
 //=============================================================
 // [Particle] 初期化
@@ -159,13 +160,16 @@ void Particle::SetTexture(const std::string& path)
 }
 
 
-
 //=============================================================
 // [ParticleSystem] 初期化
 //=============================================================
 void ParticleSystem::Init()
 {
+	// エミッションを生成する
+	m_emission = new ParticleModule::Emission();
 
+	// 力を生成する
+	m_power = new ParticleModule::Power();
 }
 
 //=============================================================
@@ -173,6 +177,28 @@ void ParticleSystem::Init()
 //=============================================================
 void ParticleSystem::Uninit()
 {
+	// エミッションの破棄
+	if (m_emission != nullptr)
+	{
+		delete m_emission;
+		m_emission = nullptr;
+	}
+
+	// シェイプの破棄
+	if (m_shape != nullptr)
+	{
+		delete m_shape;
+		m_shape = nullptr;
+	}
+
+	// 力の破棄
+	if (m_power != nullptr)
+	{
+		delete m_power;
+		m_power = nullptr;
+	}
+
+	// パーティクルの終了/解放
 	for (auto itr = m_particleData.begin(); itr != m_particleData.end(); itr++)
 	{
 		if ((*itr).particle != nullptr)
@@ -189,16 +215,40 @@ void ParticleSystem::Uninit()
 //=============================================================
 void ParticleSystem::Update()
 {
+	// 必須設定がされているかをチェックする
+	if (m_emission == nullptr || m_shape == nullptr)
+		return;
 
+	// エミッションによる放出量の決定
+	m_emission->SetElapsedTime(CManager::GetInstance()->GetDeltaTime());
+	int numPerticles = m_emission->GetResult();
+
+	// パーティクルの生成
+	for (int i = 0; i < numPerticles; i++)
+	{
+		// シェイプから結果を取得する（位置と方向）
+		ParticleModule::Shape::ResultData shapeResult = m_shape->GetResult();
+
+		// 力を取得する
+		float power = m_power->GetResult();
+
+
+	}
 }
 
 
 //=============================================================
-// [SphereShape] テクスチャの設定
+// [Emission] 放出量
 //=============================================================
-int ParticleModule::Emission::GetResult(float elapsedTime)
+int ParticleModule::Emission::GetResult()
 {
-
+	if (m_elapsedTime >= m_rateOverTime)
+	{
+		int nNum = (m_elapsedTime - fmod(m_elapsedTime, m_rateOverTime)) / m_rateOverTime;
+		m_elapsedTime -= m_rateOverTime * nNum;
+		return nNum;
+	}
+	return 0;
 }
 
 //=============================================================
