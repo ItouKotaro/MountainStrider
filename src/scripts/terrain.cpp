@@ -985,8 +985,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 						// ”jŠü
 						delete pManagedGameObj;
 						delete (*itrManagedProduces);
-						SAFE_ERASE(m_managedProduces, itrManagedProduces);
-
+						itrManagedProduces = m_managedProduces.erase(itrManagedProduces);
 						break;
 					}
 				}
