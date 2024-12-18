@@ -16,6 +16,7 @@
 #include "scripts/vehicle.h"
 #include "component/2d/text.h"
 #include "component/3d/field.h"
+#include "component/3d/particle.h"
 
 #include "render/shadow_rb.h"
 
@@ -109,7 +110,7 @@ void CMountainDebug::Update()
 	angularVelocity *= 0.08f;
 	m_pRollTest->transform->Rotate(angularVelocity);
 
-	m_pText->GetComponent<CText>()->SetText(std::to_string(sinf(m_pRollTest->transform->GetWRotY() + D3DX_PI * 0.5f)));
+	m_pText->GetComponent<CText>()->SetText(std::to_string(5));
 
 	//if (INPUT_INSTANCE->onTrigger("o"))
 	//{

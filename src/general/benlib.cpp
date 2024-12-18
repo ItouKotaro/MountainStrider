@@ -75,7 +75,12 @@ D3DXQUATERNION Benlib::LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2)
 	return q;
 }
 
-float Benlib::Random(float min, float max)
+int Benlib::RandomInt(const int& min, const int& max)
+{
+	return rand() % (abs(max - min) + 1) + min;
+}
+
+float Benlib::RandomFloat(const float& min, const float& max)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());

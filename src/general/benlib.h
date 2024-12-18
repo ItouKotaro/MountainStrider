@@ -73,13 +73,22 @@ namespace Benlib
 	*/
 	D3DXQUATERNION LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2);
 
+
+	/*
+	@brief 整数型のランダム値を生成します
+	@param[in] min : 最小値
+	@param[in] max : 最大値
+	@return ランダム値 (int)
+	*/
+	int RandomInt(const int& min, const int& max);
+
 	/*
 	@brief 浮動小数点型のランダム値を生成します
 	@param[in] min : 最小値
 	@param[in] max : 最大値
 	@return ランダム値 (float)
 	*/
-	float Random(float min, float max);
+	float RandomFloat(const float& min, const float& max);
 
 	/*
 	@brief 角度からラジアンに変換します

@@ -181,12 +181,30 @@ public:
 
 	/*
 	@brief シェーダーの命令
-	@param[in] pComponent : コンポーネントのポインタ
+	@param[in] shader : シェーダー
+	@param[in] pass : パス
 	*/
 	void SetShader(Shader* shader, UINT pass) 
 	{
 		m_shader = shader;
 		m_pass = pass;
+	}
+
+	// @brief シェーダー情報
+	struct ShaderInfo
+	{
+		Shader* shader;
+		UINT pass;
+	};
+
+	/*
+	@brief シェーダーの命令
+	@param[in] shaderInfo : シェーダー情報（GetShaderInfoで取得可能）
+	*/
+	void SetShader(ShaderInfo shaderInfo)
+	{
+		m_shader = shaderInfo.shader;
+		m_pass = shaderInfo.pass;
 	}
 
 	/*
@@ -210,6 +228,15 @@ public:
 	Transform* transform;
 
 protected:
+	// @brief シェーダーの取得
+	ShaderInfo GetShaderInfo()
+	{
+		ShaderInfo info;
+		info.shader = m_shader;
+		info.pass = m_pass;
+		return info;
+	}
+
 	// @brief パスの開始
 	void BeginPass();
 

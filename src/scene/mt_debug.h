@@ -22,6 +22,7 @@ private:
 	GameObject* m_pTerrain;
 	GameObject* m_pRollTest;
 	GameObject* m_pText;
+	//GameObject* m_pParticle;
 };
 
 #endif // !_MOUNTAIN_DEBUG_H_
