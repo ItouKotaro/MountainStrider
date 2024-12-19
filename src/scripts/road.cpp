@@ -135,7 +135,7 @@ void Road::Generate()
 			m_currentPos += dir * 70.0f;
 
 			// 設置する
-			CreateRoad(m_currentPos, 180.0f, 0.0f);
+			CreateRoad(m_currentPos, 70.0f, 0.0f);
 
 			// 目標地点に到着しているかを確認する
 			if (nextPos.x <= m_currentPos.x && m_currentPos.x <= nextPos.x + Terrain::TERRAIN_SCALE &&
@@ -177,8 +177,8 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	// レイで頂点座標を決める
 	for (int i = 0; i < 4; i++)
 	{
-		btVector3 Start = btVector3(vtxPos[i].x, 3000.0f, vtxPos[i].y);
-		btVector3 End = Start + btVector3(0.0f, -6000.0f, 0.0f);
+		btVector3 Start = btVector3(vtxPos[i].x, 6000.0f, vtxPos[i].y);
+		btVector3 End = Start + btVector3(0.0f, -12000.0f, 0.0f);
 
 		// レイ
 		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
@@ -197,7 +197,7 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	SingleComponent<CMeshField>* groundMesh = new SingleComponent<CMeshField>();
 	groundMesh->Init();
 	groundMesh->Create(1, 1, size);
-	groundMesh->transform->SetPos({ pos.x, 3.0f, pos.y });
+	groundMesh->transform->SetPos({ pos.x, 2.0f, pos.y });
 	groundMesh->SetHeight(0, 0, vtxHeight[0]);
 	groundMesh->SetHeight(1, 0, vtxHeight[1]);
 	groundMesh->SetHeight(0, 1, vtxHeight[2]);

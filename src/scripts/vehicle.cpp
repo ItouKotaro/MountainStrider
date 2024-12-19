@@ -10,7 +10,7 @@
 #include "component/3d/collision.h"
 #include "component/3d/mesh.h"
 #include "component/2d/text.h"
-#include "benlib.h"
+#include "component/other/sound.h"
 
 #include "scripts/status_ui.h"
 #include "scripts/vehicle_action.h"
@@ -38,6 +38,11 @@ void CVehicle::Init()
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
 	m_pStatusUI = nullptr;
+
+	// サウンド
+	m_pVehicleSE = new GameObject();
+	m_pVehicleSE->AddComponent<CSound>();
+	m_pVehicleSE->GetComponent<CSound>()->LoadWav("data\\SOUND\\SE\\BIKE\\running00.wav");
 
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(6.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
@@ -113,8 +118,8 @@ void CVehicle::Init()
 	pFrontHinge->setTargetVelocity(5, 0);
 
 	// その他の設定
-	pFrontHinge->enableSpring(2, true);
-	pBackHinge->enableSpring(2, true);
+	//pFrontHinge->enableSpring(2, true);
+	//pBackHinge->enableSpring(2, true);
 	pFrontHinge->setStiffness(2, 5.0f);
 	pBackHinge->setStiffness(2, 5.0f);
 	pFrontHinge->setDamping(2, 0.00f);
@@ -150,6 +155,9 @@ void CVehicle::Update()
 
 	// 地面との距離を更新する
 	UpdateGroundDistance();
+
+	// サウンドの更新
+	UpdateSound();
 
 	//// ゲームオーバー処理
 	//if (m_fuel <= 0.0f)
@@ -397,6 +405,14 @@ void CVehicle::UpdateGroundDistance()
 	// 埋まり対策
 	if (m_groundDistance < 1.0f)
 	{
-		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 100.0f, 0.0f));
+		//gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 100.0f, 0.0f));
 	}
+}
+
+//=============================================================
+// [CVehicle] サウンドの更新
+//=============================================================
+void CVehicle::UpdateSound()
+{
+
 }

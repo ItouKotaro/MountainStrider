@@ -56,10 +56,12 @@ private:
 	void UpdateSpeedMeter();			// スピードの更新
 	void UpdateStatusUI();				// ステータスUIの更新
 	void UpdateGroundDistance();		// 地面距離の更新
+	void UpdateSound();
 
 	GameObject* m_pHandle;		// ハンドル
 	GameObject* m_pFrontTire;	// 前輪
 	GameObject* m_pBackTire;	// 後輪
+	GameObject* m_pVehicleSE;
 
 	static float m_fuel;							// 燃料
 	static float m_endurance;				// 耐久値

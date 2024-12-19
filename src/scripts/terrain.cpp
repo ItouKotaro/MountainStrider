@@ -123,7 +123,7 @@ void Terrain::Generate()
 	// HeightfieldTerrainShapeを作成する
 	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
-	CCollision::GetCollision(m_pField)->SetFriction(10.0f);
+	CCollision::GetCollision(m_pField)->SetFriction(100.0f);
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
 	// 設定したシェープを適用する
