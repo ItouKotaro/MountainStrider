@@ -202,7 +202,7 @@ void CMeshField::Create(const int& x, const int& y, const float& spaceSize)
 		pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
 		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2((nCntVertex % (x + 1)) / static_cast<float>((x + 1)), (nVertexLine) / static_cast<float>((y + 1)));
+		pVtx[0].tex = D3DXVECTOR2((nCntVertex % (x + 1)) / static_cast<float>(x), (nVertexLine) / static_cast<float>(y));
 
 		pVtx++; // ポインタを進める
 	}

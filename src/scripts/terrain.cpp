@@ -14,6 +14,7 @@
 #include "scripts/wreckage.h"
 #include "component/3d/collision.h"
 #include "component/3d/field.h"
+#include "scripts/road.h"
 using namespace noise;
 
 #include "component/2d/text.h"
@@ -34,6 +35,7 @@ void Terrain::Init()
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
 	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
+	m_pField->AddComponent<Road>();
 
 	m_terrainData = nullptr;
 	m_producesManager = new ProducesManager();
@@ -127,6 +129,9 @@ void Terrain::Generate()
 	// 設定したシェープを適用する
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
+	// 道のオブジェクトを生成する
+	m_pField->GetComponent<Road>()->Generate();
+
 	// 生成物を生成する
 	for (int i = 0; i < 1000; i++)
 	{
@@ -213,7 +218,6 @@ void Terrain::GenerateTerrain()
 		}
 	}
 
-
 	// 道を生成する
 	GenerateRoad();
 
@@ -256,171 +260,163 @@ void Terrain::GenerateTerrain()
 //=============================================================
 void Terrain::GenerateRoad()
 {
-	// 現在位置情報変数
-	//int currentX = TERRAIN_SIZE / 2;
-	//int currentY = TERRAIN_SIZE / 2;
-	//float currentHeight = GetVertexHeight(currentX, currentY);
+	// ポイント ------------------------------------------------
 
-	//// ルート配列の初期化
-	//for (int x = 0; x < TERRAIN_SIZE; x++)
-	//{
-	//	for (int y = 0; y < TERRAIN_SIZE; y++)
-	//	{
-	//		m_routeData[x][y] = false;
-	//	}
-	//}
-	//m_routeData[currentX][currentY] = true;
+	// 道のコンポーネントを取得する
+	auto pRoad = m_pField->GetComponent<Road>();
 
-	//// 経路計算に使う構造体
-	//struct RouteData
-	//{
-	//	int x;				// X
-	//	int y;				// Y
-	//	float height;	// 高度
-	//	int point;		// ポイント（低いと優先）
-	//};
+	// 道を生成する
+	int routeData[TERRAIN_SIZE][TERRAIN_SIZE];
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			routeData[x][y] = 0;
+		}
+	}
 
+	// 周辺の高さ情報
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			float centerHeight = GetVertexHeight(x, y);
+			for (int sX = 0; sX < 3; sX++)
+			{
+				for (int sY = 0; sY < 3; sY++)
+				{
+					if (!(sX == 1 && sY == 1))
+					{ // 中心以外
+						float height = GetVertexHeight(x - 1 + sX, y - 1 + sY);
+						
+						// 高低差を取得する
+						float heightDifference = height - centerHeight;
 
+						if (heightDifference > 0)
+						{ // 高いとき
+							routeData[x][y] += static_cast<int>(fabsf(heightDifference) * 0.2f);
+						}
+						else
+						{ // 低いとき
+							routeData[x][y] -= static_cast<int>(fabsf(heightDifference) * 0.1f);
+						}
+					}
+				}
+			}
+		}
+	}
 
+	// 中心によるほどポイントが高くなる
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			int dX = abs(x) <= abs(x - TERRAIN_SIZE) ? abs(x) : abs(x - TERRAIN_SIZE);
+			int dY = abs(y) <= abs(y - TERRAIN_SIZE) ? abs(y) : abs(y - TERRAIN_SIZE);
+			int disNear = dX <= dY ? dX : dY;
 
+			routeData[x][y] += disNear * 2;
+		}
+	}
+
+	// 道選択 ------------------------------------------------
+
+	int routeIdx = 0;
+	pRoad->AddIdx();
+
+	// 辺
+	enum Area
+	{
+		NONE,
+		TOP,
+		BOTTOM,
+		LEFT,
+		RIGHT
+	};
+	Area startArea = NONE;
 
 	// 最終地点を設定する（縁）
 	bool isAxisX = rand() % 2 == 0;
-	int startX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
-	int startY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
+	int currentX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
+	int currentY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
+	pRoad->AddPoint(routeIdx, currentX, currentY);
 
-	// 逆経路アルゴリズム
-	//while (1)
-	//{
+	// 辺を割り出す
+	if (currentX == 0) startArea = LEFT;
+	if (currentX == TERRAIN_SIZE - 1) startArea = RIGHT;
+	if (currentY == 0) startArea = TOP;
+	if (currentY == TERRAIN_SIZE - 1) startArea = BOTTOM;
 
+	// 道を伸ばす
+	for (int pass = 0; pass < 200; pass++)
+	{
+		// 現在地点からポイントの高い方向に向かう
+		int selectX = 0;
+		int selectY = 0;
+		int high = 0;
+		for (int x = -1; x < 2; x++)
+		{
+			for (int y = -1; y < 2; y++)
+			{
+				// 除外リスト
+				if ((x == 0 && y == 0) ||
+					currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
+					currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+				{ // 現在位置と範囲外
+					continue;	// スキップ
+				}
 
-	//}
+				// 既にルートの時も除外
+				if (pRoad->IsRoutedByIdx(routeIdx, currentX + x, currentY + y))
+				{
+					continue;	// スキップ
+				}
 
+				if (routeData[currentX + x][currentY + y] > high)
+				{ // 最高スコアの時
+					selectX = currentX + x;
+					selectY = currentY + y;
+					high = routeData[currentX + x][currentY + y];
+				}
+			}
+		}
+		currentX = selectX;
+		currentY = selectY;
 
+		bool isEnded = false;
+		// 終了条件: 中心にたどり着く
+		if (currentX == TERRAIN_SIZE / 2 && currentY == TERRAIN_SIZE / 2)
+		{
+			isEnded = true;
+		}
 
+		// 終了条件: 他の道と衝突
+		int routedIdx = pRoad->IsIndexRouted(currentX, currentY);
+		if (routedIdx != -1 && routedIdx != routeIdx)
+		{
+			isEnded = true;
+		}
 
+		// 終了条件: 別の辺に衝突
+		Area currentArea = NONE;
+		if (currentX == 0) currentArea = LEFT;
+		if (currentX == TERRAIN_SIZE - 1) currentArea = RIGHT;
+		if (currentY == 0) currentArea = TOP;
+		if (currentY == TERRAIN_SIZE - 1) currentArea = BOTTOM;
+		if (currentArea != NONE && startArea != currentArea)
+		{
+			isEnded = true;
+		}
 
+		// 道を追加する
+		pRoad->AddPoint(routeIdx, currentX, currentY);
 
+		if (isEnded)
+			break;
+	}
 
-
-
-
-
-
-	//// 経路アルゴリズム
-	//while (1)
-	//{
-	//	//--------------------------------------------------------------------
-	//	// 経路条件
-
-	//	// 周辺の高さ情報を取得する
-	//	std::vector<RouteData> aroundRouteData;
-	//	for (int x = 0; x < 3; x++)
-	//	{
-	//		for (int y = 0; y < 3; y++)
-	//		{
-	//			if (!(x == 1 && y == 1))
-	//			{ // 中心以外
-	//				RouteData data;
-	//				data.x = currentX - 1 + x;
-	//				data.y = currentY - 1 + y;
-	//				data.height = GetVertexHeight(currentX - 1 + x, currentY - 1 + y);
-	//				aroundRouteData.push_back(data);
-	//			}
-	//		}
-	//	}
-
-	//	// 外側から離れているときはポイントを加算する
-	//	std::vector<RouteData> distanceData;
-	//	for (auto itr = aroundRouteData.begin(); itr != aroundRouteData.end(); itr++)
-	//	{
-	//		int x = abs((*itr).x) <= abs((*itr).x - TERRAIN_SIZE) ? abs((*itr).x) : abs((*itr).x - TERRAIN_SIZE);
-	//		int y = abs((*itr).y) <= abs((*itr).y - TERRAIN_SIZE) ? abs((*itr).y) : abs((*itr).y - TERRAIN_SIZE);
-	//		int disNear = x <= y ? x : y;
-
-	//		(*itr).point -= static_cast<int>((TERRAIN_SIZE - disNear) * 0.3f);
-	//	}
-
-	//	// 高低差でポイントを加算する
-	//	std::sort(aroundRouteData.begin(), aroundRouteData.end(),
-	//		[currentHeight](RouteData& com1, RouteData& com2) {return com1.height - currentHeight < com2.height - currentHeight; }
-	//	);
-	//	for (unsigned int i = 0; i < aroundRouteData.size(); i++)
-	//	{
-	//		// 高低差順にポイントを加算する
-	//		aroundRouteData[i].point += i;
-
-	//		if (aroundRouteData[i].height < currentHeight)
-	//		{ // 現在高度より低いときポイントを引く
-	//			aroundRouteData[i].point -= 5;
-	//		}
-	//	}
-
-	//	// さらに周辺に道が存在するときポイントを加算する
-	//	for (unsigned int i = 0; i < aroundRouteData.size(); i++)
-	//	{
-	//		for (int x = -1; x < 2; x++)
-	//		{
-	//			for (int y = -1; y < 2; y++)
-	//			{
-	//				// 除外リスト
-	//				if ((x == 1 && y == 1) ||
-	//					(x == currentX && y == currentY))
-	//				{ // 中央と現在位置
-	//					continue;	// スキップ
-	//				}
-
-	//				if (aroundRouteData[i].x + x >= 0 && aroundRouteData[i].y + y > 0)
-	//				{
-	//					if (m_routeData[aroundRouteData[i].x + x][aroundRouteData[i].y + y])
-	//					{ // 周辺に存在するとき
-	//						aroundRouteData[i].point += 6;
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-
-	//	// 周辺データをポイントを昇順でソートする
-	//	std::sort(aroundRouteData.begin(), aroundRouteData.end(),
-	//		[](RouteData& com1, RouteData& com2) {return com1.point < com2.point;}
-	//	);
-
-	//	// 最も緩やかな方向に道を伸ばす
-	//	for (unsigned int i = 0; i < aroundRouteData.size(); i++)
-	//	{
-	//		if (!m_routeData[aroundRouteData[i].x][aroundRouteData[i].y])
-	//		{ // 経路になっていないとき
-	//			m_routeData[aroundRouteData[i].x][aroundRouteData[i].y] = true;
-	//			currentX = aroundRouteData[i].x;
-	//			currentY = aroundRouteData[i].y;
-
-	//			// ファイルに経路データを書き出す
-	//			std::ofstream outputRoute("route.txt");
-	//			for (int y = 0; y < TERRAIN_SIZE; y++)
-	//			{
-	//				for (int x = 0; x < TERRAIN_SIZE; x++)
-	//				{
-	//					char mark = m_routeData[x][y] ? '#' : 'X';
-	//					outputRoute << mark;
-	//				}
-	//				outputRoute << std::endl;
-	//			}
-	//			outputRoute.close();
-	//			break;
-	//		}
-	//	}
-
-	//	//--------------------------------------------------------------------
-	//	// 終了条件
-
-	//	// 山の周りにたどり着いたとき
-	//	if (currentX == 0 || currentX == TERRAIN_SIZE - 1 ||
-	//		currentY == 0 || currentY == TERRAIN_SIZE - 1)
-	//	{
-	//		break;	// 終了
-	//	}
-	//}
+	// 生成する
+	pRoad->OutputText();
 }
 
 //=============================================================
