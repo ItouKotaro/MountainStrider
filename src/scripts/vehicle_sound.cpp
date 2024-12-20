@@ -49,21 +49,20 @@ void VehicleSound::Update()
 		{
 			if (m_runnningVolume < 50.0f) m_runnningVolume = 50.0f;
 			m_runnningVolume += 2.0f + m_vehicle->GetSpeed() / 100.0f;
-			m_runnningVolumeLimit = 250.0f;
-			m_runnningPitch += 0.02f;
-			m_runnningPitchLimit = 1.55f;
+			m_runnningVolumeLimit = 200.0f;
+			m_runnningPitch += 0.01f;
+			m_runnningPitchLimit = 1.25f + m_vehicle->GetSpeed() / 250.0f;
 		}
 		else
 		{
 			m_runnningVolume += 1.0f;
-			m_runnningVolumeLimit = 120.0f;
+			m_runnningVolumeLimit = 70.0f;
 			m_runnningPitchLimit = 1.0f;
 		}
 	}
 	else
 	{
-		m_runnningVolume -= 1.0f;
-		m_runnningVolumeLimit = 90.0f;
+		m_runnningVolumeLimit = 40.0f;
 		m_runnningPitchLimit = 1.0f;
 	}
 
