@@ -229,13 +229,31 @@ void CSoundListener::Uninit()
 void CSoundListener::Update()
 {
 	// ˆÊ’u‚ðÝ’è‚·‚é
-	alListener3f(AL_POSITION, transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z);
+	ALfloat listenerPos[] = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
+	alListenerfv(AL_POSITION, listenerPos);
 
 	// •ûŒü‚ðÝ’è‚·‚é
 	if (m_bUpdateAngle)
 	{
-		float fAngle = transform->GetWRotY();
-		alListenerfv(AL_ORIENTATION, &fAngle);
+		CCamera* pCamera = gameObject->GetComponent<CCamera>();
+		D3DXVECTOR3 posR = { 0.0f, 0.0f, 1.0f };
+
+		if (pCamera != nullptr)
+		{ // ƒJƒƒ‰‚ª‚ ‚é‚Æ‚«
+			posR = pCamera->GetPosR() - transform->GetWPos();
+			posR *= -1.0f;
+		}
+		else
+		{
+			D3DXMATRIX rotMtx = transform->GetRotationMatrix();
+			D3DXVECTOR3 posR = { 0.0f, 0.0f, 1.0f };
+			D3DXVec3TransformCoord(&posR, &posR, &rotMtx);
+		}
+		D3DXVec3Normalize(&posR, &posR);
+
+
+		ALfloat listenerOri[] = { posR.x, posR.y, posR.z, 0.0f, 1.0f, 0.0f };
+		alListenerfv(AL_ORIENTATION, listenerOri);
 	}
 }
 

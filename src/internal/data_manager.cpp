@@ -340,7 +340,7 @@ CDataAudio::CDataAudio() : CDataBase(AUDIO)
 void CDataAudio::Clear()
 {
 	// バッファの破棄
-	alDeleteBuffers(1, &m_buffer);
+	//alDeleteBuffers(1, &m_buffer);
 }
 
 //=============================================================

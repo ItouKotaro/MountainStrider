@@ -61,7 +61,6 @@ private:
 	GameObject* m_pHandle;		// ƒnƒ“ƒhƒ‹
 	GameObject* m_pFrontTire;	// ‘O—Ö
 	GameObject* m_pBackTire;	// Œã—Ö
-	GameObject* m_pVehicleSE;
 
 	static float m_fuel;							// ”R—¿
 	static float m_endurance;				// ‘Ï‹v’l

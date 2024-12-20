@@ -261,6 +261,7 @@
     <ClCompile Include="src\scripts\terrain.cpp" />
     <ClCompile Include="src\scripts\vehicle.cpp" />
     <ClCompile Include="src\scripts\vehicle_action.cpp" />
+    <ClCompile Include="src\scripts\vehicle_sound.cpp" />
     <ClCompile Include="src\scripts\wreckage.cpp" />
     <ClCompile Include="src\utility\noise.cpp" />
   </ItemGroup>
@@ -332,6 +333,7 @@
     <ClInclude Include="src\scripts\terrain.h" />
     <ClInclude Include="src\scripts\vehicle.h" />
     <ClInclude Include="src\scripts\vehicle_action.h" />
+    <ClInclude Include="src\scripts\vehicle_sound.h" />
     <ClInclude Include="src\scripts\wreckage.h" />
     <ClInclude Include="src\utility\noise.h" />
   </ItemGroup>

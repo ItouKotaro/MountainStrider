@@ -11,6 +11,7 @@
 #include "component/3d/light.h"
 #include "component/2d/text.h"
 #include "component/3d/field.h"
+#include "component/other/sound.h"
 
 #include "scripts/vehicle.h"
 #include "scripts/terrain.h"
@@ -45,6 +46,7 @@ void CGameScene::Init()
 		m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 		m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
 		m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
+		m_pCamera->AddComponent<CSoundListener>()->IsUpdateAngle(true);
 	}
 
 	// ライトを作成

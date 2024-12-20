@@ -14,6 +14,7 @@
 
 #include "scripts/status_ui.h"
 #include "scripts/vehicle_action.h"
+#include "scripts/vehicle_sound.h"
 #include "scene/game.h"
 
 const float CVehicle::ENGINEFORCE_VALUE = 40.0f;
@@ -39,11 +40,6 @@ void CVehicle::Init()
 	m_measurePos = transform->GetWPos();
 	m_pStatusUI = nullptr;
 
-	// サウンド
-	m_pVehicleSE = new GameObject();
-	m_pVehicleSE->AddComponent<CSound>();
-	m_pVehicleSE->GetComponent<CSound>()->LoadWav("data\\SOUND\\SE\\BIKE\\running00.wav");
-
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(6.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
 	CCollision::GetCollision(gameObject)->SetMass(400.0f);
@@ -51,6 +47,7 @@ void CVehicle::Init()
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -140.0f, 0.0f));
 	gameObject->AddComponent<VehicleAction>();
+	gameObject->AddComponent<VehicleSound>();
 
 	// 車体
 	GameObject* pBodyModel = new GameObject;
