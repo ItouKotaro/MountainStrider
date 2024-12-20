@@ -9,7 +9,7 @@
 #include "component/3d/mesh.h"
 #include "component/3d/meshfield.h"
 
-const int ShadowRenderBuffer::SHADOWMAP_SIZE = 4098;
+const int ShadowRenderBuffer::SHADOWMAP_SIZE = 1024;
 
 //=============================================================
 // [ShadowMapShader] èâä˙âª
