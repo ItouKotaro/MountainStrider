@@ -21,7 +21,11 @@ public:
 private:
 	CVehicle* m_vehicle;				// バイク
 
-	CSound* m_runningSE;	// 走行音
+	CSound* m_runningSE;			// 走行音
+	float m_runnningVolume;
+	float m_runnningPitch;
+	float m_runnningPitchLimit;
+	float m_runnningVolumeLimit;
 };
 
 #endif // !_VEHICLE_SOUND_H_
