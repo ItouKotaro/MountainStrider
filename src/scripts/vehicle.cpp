@@ -18,10 +18,10 @@
 #include "scene/game.h"
 
 const float CVehicle::ENGINEFORCE_VALUE = 40.0f;
-const float CVehicle::STEERING_VALUE = 10.0f;
-const float CVehicle::MIN_ENGINEFORCE_VALUE = 10.0f;
-const float CVehicle::MAX_ENGINEFORCE = 600000.0f;
-const float CVehicle::MAX_STEERING = 50000.0f;
+const float CVehicle::STEERING_VALUE = 3.0f;
+const float CVehicle::MIN_ENGINEFORCE_VALUE = 1.0f;
+const float CVehicle::MAX_ENGINEFORCE = 180000.0f;
+const float CVehicle::MAX_STEERING = 15000.0f;
 const float CVehicle::MAX_FUEL = 4000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
 const float CVehicle::FLYING_DISTANCE = 100.0f;
@@ -41,47 +41,47 @@ void CVehicle::Init()
 	m_pStatusUI = nullptr;
 
 	// バイクを生成する
-	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(6.0f, 6.0f, 20.0f), D3DXVECTOR3(0.0f, 10.0f, 0.0f));
-	CCollision::GetCollision(gameObject)->SetMass(400.0f);
+	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(1.8f, 1.8f, 6.0f), D3DXVECTOR3(0.0f, 3.0f, 0.0f));
+	CCollision::GetCollision(gameObject)->SetMass(120.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
-	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -140.0f, 0.0f));
+	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
 	gameObject->AddComponent<VehicleAction>();
 	gameObject->AddComponent<VehicleSound>();
 
 	// 車体
 	GameObject* pBodyModel = new GameObject;
 	pBodyModel->SetParent(gameObject);
-	pBodyModel->transform->Translate(0.0f, 25.0f, 0.0f);
+	pBodyModel->transform->Translate(0.0f, 7.5f, 0.0f);
 	pBodyModel->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\body.x");
 
 	// ハンドル
 	m_pHandle = new GameObject;
 	m_pHandle->SetParent(gameObject);
 	m_pHandle->transform->Rotate(0.0f, D3DX_PI, 0.0f);
-	m_pHandle->transform->Translate(0.0f, 29.0f, 10.0f);
+	m_pHandle->transform->Translate(0.0f, 8.7f, 3.0f);
 	m_pHandle->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\handle.x");
 
 	// 前輪の生成
 	m_pFrontTire = new GameObject;
-	m_pFrontTire->transform->Translate(0.0f, -5.0f, -25.0f);
-	m_pFrontTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pFrontTire->transform->Translate(0.0f, -1.5f, -7.5f);
+	m_pFrontTire->AddComponent<CCylinderCollider>(3.0f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
-	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
-	CCollision::GetCollision(m_pFrontTire)->SetMass(30.0f);
-	CCollision::GetCollision(m_pFrontTire)->SetFriction(900);
+	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -54.0f, 0.0f));
+	CCollision::GetCollision(m_pFrontTire)->SetMass(9.0f);
+	CCollision::GetCollision(m_pFrontTire)->SetFriction(100);
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// 後輪の生成
 	m_pBackTire = new GameObject;
-	m_pBackTire->transform->Translate(0.0f, -5.0f, 20.0f);
-	m_pBackTire->AddComponent<CCylinderCollider>(10.0f, 3.5f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pBackTire->transform->Translate(0.0f, -1.5f, 6.0f);
+	m_pBackTire->AddComponent<CCylinderCollider>(3.0f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
 	m_pBackTire->AddComponent<CRigidBody>();
-	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -180.0f, 0.0f));
-	CCollision::GetCollision(m_pBackTire)->SetMass(30.0f);
-	CCollision::GetCollision(m_pBackTire)->SetFriction(900);
+	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -54.0f, 0.0f));
+	CCollision::GetCollision(m_pBackTire)->SetMass(9.0f);
+	CCollision::GetCollision(m_pBackTire)->SetFriction(100);
 	m_pBackTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// ヒンジの設定
@@ -115,8 +115,8 @@ void CVehicle::Init()
 	pFrontHinge->setTargetVelocity(5, 0);
 
 	// その他の設定
-	//pFrontHinge->enableSpring(2, true);
-	//pBackHinge->enableSpring(2, true);
+	pFrontHinge->enableSpring(2, true);
+	pBackHinge->enableSpring(2, true);
 	pFrontHinge->setStiffness(2, 5.0f);
 	pBackHinge->setStiffness(2, 5.0f);
 	pFrontHinge->setDamping(2, 0.00f);
@@ -219,9 +219,9 @@ void CVehicle::LandingControlVehicle()
 	D3DXVECTOR3 angularVelocity;
 	float ang = transform->GetWRotZ();
 	angularVelocity = {
-		sinf(transform->GetWRotY()) * -ang * 1.8f,
+		sinf(transform->GetWRotY()) * -ang * 5.0f,
 		0.0f,
-		cosf(transform->GetWRotY()) * -ang * 1.8f
+		cosf(transform->GetWRotY()) * -ang * 5.0f
 	};
 
 	// ジャンプアクション
@@ -236,6 +236,8 @@ void CVehicle::LandingControlVehicle()
 	{ // 燃料があるとき
 		// エンジン力を取得する
 		float fEngineForce = INPUT_INSTANCE->onInput("accel") || pGamepadDev->GetState().Gamepad.bRightTrigger ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
+
+		pBackHinge->enableMotor(3, INPUT_INSTANCE->onInput("accel"));
 
 		// タイヤを回転させる
 		pBackHinge->setTargetVelocity(3, fEngineForce);
@@ -263,13 +265,13 @@ void CVehicle::LandingControlVehicle()
 	float fSteeringVelocity = 0.0f;
 	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {sinf(transform->GetRotY()) * 1.0f, 0.0f, cosf(transform->GetRotY()) * 1.0f};
+		angularVelocity += {sinf(transform->GetRotY()) * 3.0f, 0.0f, cosf(transform->GetRotY()) * 3.0f};
 		fSteeringVelocity += STEERING_VALUE;
 
 	}
 	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {sinf(transform->GetRotY()) * -1.0f, 0.0f, cosf(transform->GetRotY()) * -1.0f};
+		angularVelocity += {sinf(transform->GetRotY()) * -3.0f, 0.0f, cosf(transform->GetRotY()) * -3.0f};
 		fSteeringVelocity -= STEERING_VALUE;
 	}
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
@@ -288,9 +290,9 @@ void CVehicle::FlyingControlVehicle()
 	D3DXVECTOR3 angularVelocity;
 	float ang = transform->GetWRotZ();
 	angularVelocity = {
-		sinf(transform->GetWRotY()) * -ang * 1.8f,
+		sinf(transform->GetWRotY()) * -ang * 5.0f,
 		0.0f,
-		cosf(transform->GetWRotY()) * -ang * 1.8f
+		cosf(transform->GetWRotY()) * -ang * 5.0f
 	};
 
 	// コントローラーの情報を取得する
@@ -301,27 +303,16 @@ void CVehicle::FlyingControlVehicle()
 	//float y;
 	//y = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getRotation().getAxis().getY();
 
-	// 傾き調整
-	//if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {sinf(y + D3DX_PI * 0.5f) * 2.0f, 0.0f, cosf(y + D3DX_PI * 0.5f) * 2.0f};
-	//}
-	//if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {sinf(y + D3DX_PI * 0.5f) * -2.0f, 0.0f, cosf(y + D3DX_PI * 0.5f) * -2.0f};
-	//}
-	////gameObject->transform->Rotate(angularVelocity * 0.08f);
-
 	// 回転
-	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {0.0f, -5.5f, 0.0f};
+	//if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {0.0f, -5.5f, 0.0f};
 
-	}
-	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {0.0f, 5.5f, 0.0f};
-	}
+	//}
+	//if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	//{
+	//	angularVelocity += {0.0f, 5.5f, 0.0f};
+	//}
 
 	// 傾き速度を適用する
 	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));

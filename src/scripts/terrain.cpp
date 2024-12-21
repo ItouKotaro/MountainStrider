@@ -21,7 +21,7 @@ using namespace noise;
 #include "renderer.h"
 
 // Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
-const float Terrain::TERRAIN_SCALE = 300.0f;
+const float Terrain::TERRAIN_SCALE = 90.0f;
 
 //=============================================================
 // [Terrain] ‰Šú‰»
@@ -133,7 +133,7 @@ void Terrain::Generate()
 	m_pField->GetComponent<Road>()->Generate();
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
-	for (int i = 0; i < 6000; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		GenerateProduces();
 	}
@@ -195,7 +195,7 @@ void Terrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 1500.0f;
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 450.0f;
 		}
 	}
 

@@ -187,7 +187,7 @@ void CCameraMove::UpdateTPS()
 	// カメラの取得
 	CCamera* pCamera = gameObject->GetComponent<CCamera>();
 	pCamera->SetCustomPosR(true);
-	pCamera->SetPosR(m_pTarget->transform->GetWPos() + D3DXVECTOR3(0.0f, 30.0f, 0.0f));
+	pCamera->SetPosR(m_pTarget->transform->GetWPos() + D3DXVECTOR3(0.0f, 9.0f, 0.0f));
 
 	if (m_moveCounter <= 0)
 	{ // 最初
@@ -205,7 +205,7 @@ void CCameraMove::UpdateTPS()
 	}
 
 	// 視点の位置を計算する
-	float distance = 250.0f;
+	float distance = 100.0f;
 	D3DXVECTOR3 posS = { 0.0f, 0.0f, -distance };
 	D3DXMATRIX mtxY, mtxX, mtxS;
 	D3DXMatrixRotationX(&mtxX, m_cameraRot.x);
