@@ -25,7 +25,7 @@ void VehicleSound::Init()
 	m_runnningVolume = 0.0f;
 	m_runnningVolumeLimit = 100.0f;
 	m_runnningPitch = 1.0f;
-	m_runnningPitchLimit = 1.0f;
+	m_runnningPitchLimit = 0.6f;
 }
 
 //=============================================================
@@ -42,7 +42,7 @@ void VehicleSound::Uninit()
 void VehicleSound::Update()
 {
 	// ‹ó”ò‚ñ‚Å‚¢‚È‚¢‚Æ‚«
-	if (!m_vehicle->GetFlying())
+	if (m_vehicle->GetGroundDistance() < 20.0f)
 	{
 		// ƒAƒNƒZƒ‹‚ð“¥‚ñ‚Å‚¢‚é‚Æ‚«
 		if (INPUT_INSTANCE->onInput("accel"))
@@ -50,14 +50,14 @@ void VehicleSound::Update()
 			if (m_runnningVolume < 50.0f) m_runnningVolume = 50.0f;
 			m_runnningVolume += 2.0f + m_vehicle->GetSpeed() / 100.0f;
 			m_runnningVolumeLimit = 200.0f;
-			m_runnningPitch += 0.01f;
-			m_runnningPitchLimit = 1.25f + m_vehicle->GetSpeed() / 250.0f;
+			m_runnningPitch += 0.005f;
+			m_runnningPitchLimit = 0.8f + m_vehicle->GetSpeed() / 200.0f;
 		}
 		else
 		{
 			m_runnningVolume += 1.0f;
 			m_runnningVolumeLimit = 70.0f;
-			m_runnningPitchLimit = 1.0f;
+			m_runnningPitchLimit = 0.6f;
 		}
 	}
 	else
