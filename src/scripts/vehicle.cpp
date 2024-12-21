@@ -11,6 +11,7 @@
 #include "component/3d/mesh.h"
 #include "component/2d/text.h"
 #include "component/other/sound.h"
+#include "component/3d/line.h"
 
 #include "scripts/status_ui.h"
 #include "scripts/vehicle_action.h"
@@ -24,8 +25,8 @@ const float CVehicle::MAX_ENGINEFORCE = 180000.0f;
 const float CVehicle::MAX_STEERING = 15000.0f;
 const float CVehicle::MAX_FUEL = 4000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
-const float CVehicle::FLYING_DISTANCE = 100.0f;
-const float CVehicle::GROUND_DISTANCE = 20.0f;
+const float CVehicle::FLYING_DISTANCE = 30.0f;
+const float CVehicle::GROUND_DISTANCE = 5.0f;
 
 float CVehicle::m_fuel = CVehicle::MAX_FUEL;
 float CVehicle::m_endurance = CVehicle::MAX_ENDURANCE;
@@ -35,6 +36,11 @@ float CVehicle::m_endurance = CVehicle::MAX_ENDURANCE;
 //=============================================================
 void CVehicle::Init()
 {
+	m_pGroundLine = new GameObject();
+	m_pGroundLine->AddComponent<CLine>();
+	m_pGroundLine2 = new GameObject();
+	m_pGroundLine2->AddComponent<CLine>();
+
 	// 変数の初期化
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
@@ -42,7 +48,7 @@ void CVehicle::Init()
 
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(1.8f, 1.8f, 6.0f), D3DXVECTOR3(0.0f, 3.0f, 0.0f));
-	CCollision::GetCollision(gameObject)->SetMass(120.0f);
+	CCollision::GetCollision(gameObject)->SetMass(300.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
@@ -300,19 +306,16 @@ void CVehicle::FlyingControlVehicle()
 	short stickLX = pGamepadDev->GetState().Gamepad.sThumbLX;
 	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
 
-	//float y;
-	//y = CCollision::GetCollision(gameObject)->GetRigidBody()->getWorldTransform().getRotation().getAxis().getY();
-
 	// 回転
-	//if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {0.0f, -5.5f, 0.0f};
+	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {0.0f, -5.5f, 0.0f};
 
-	//}
-	//if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	//{
-	//	angularVelocity += {0.0f, 5.5f, 0.0f};
-	//}
+	}
+	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {0.0f, 5.5f, 0.0f};
+	}
 
 	// 傾き速度を適用する
 	CCollision::GetCollision(gameObject)->GetRigidBody()->setAngularVelocity(btVector3(angularVelocity.x, angularVelocity.y, angularVelocity.z));
@@ -357,22 +360,32 @@ void CVehicle::UpdateStatusUI()
 void CVehicle::UpdateGroundDistance()
 {
 	// 地面との距離を計測する
-	D3DXVECTOR3 vehiclePos = transform->GetWPos() + D3DXVECTOR3(sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -20.0f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -20.0f);
-	//D3DXMATRIX vehicleMtx = transform->GetMatrix();
-	//D3DXVec3TransformCoord(&vehiclePos, &vehiclePos, &vehicleMtx);
-	btVector3 Start = btVector3(vehiclePos.x, vehiclePos.y, vehiclePos.z);
-	btVector3 End = Start + btVector3(0.0f, -3000.0f, 0.0f);
+	D3DXVECTOR3 frontPos = m_pFrontTire->transform->GetWPos();
+	D3DXVECTOR3 backPos = m_pBackTire->transform->GetWPos();
 
-	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
-	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-	if (RayCallback.hasHit())
-	{ // ヒットしたとき
-		m_groundDistance = Start.getY() - RayCallback.m_hitPointWorld.getY();
-	}
-	else
+	btVector3 Start;
+	btVector3 End;
+	float nearGroundDistance = 3000.0f;
+	for (int i = 0; i < 2; i++)
 	{
-		m_groundDistance = 3000.0f;
+		Start = i == 0 ? btVector3(frontPos.x, frontPos.y, frontPos.z) : btVector3(backPos.x, backPos.y, backPos.z);
+		End = Start + btVector3(0.0f, -3000.0f, 0.0f);
+
+		if (i == 0) m_pGroundLine->GetComponent<CLine>()->SetLine({ Start.getX(), Start.getY(), Start.getZ() }, { End.getX(), End.getY(), End.getZ() });
+		if (i == 1) m_pGroundLine2->GetComponent<CLine>()->SetLine({ Start.getX(), Start.getY(), Start.getZ() }, { End.getX(), End.getY(), End.getZ() });
+
+		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+		CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+		if (RayCallback.hasHit())
+		{ // ヒットしたとき
+			float distance = Start.getY() - RayCallback.m_hitPointWorld.getY();
+			if (distance < nearGroundDistance)
+			{
+				nearGroundDistance = distance;
+			}
+		}
 	}
+	m_groundDistance = nearGroundDistance;
 
 	// 飛んでいるか判定する
 	if (!m_flying && m_groundDistance >= FLYING_DISTANCE)

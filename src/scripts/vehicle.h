@@ -62,6 +62,9 @@ private:
 	GameObject* m_pFrontTire;	// ‘O—Ö
 	GameObject* m_pBackTire;	// Œã—Ö
 
+	GameObject* m_pGroundLine;
+	GameObject* m_pGroundLine2;
+
 	static float m_fuel;							// ”R—¿
 	static float m_endurance;				// ‘Ï‹v’l
 	D3DXVECTOR3 m_flyingPosture;		// ”òs‚Ìp¨
