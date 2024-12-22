@@ -312,6 +312,9 @@
     <ClCompile Include="src\scripts\vehicle_particle.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\item\item_slot.cpp">
+      <Filter>ソース ファイル\scripts\item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -529,6 +532,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\vehicle_particle.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\item\item_slot.h">
+      <Filter>ヘッダー ファイル\scripts\item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

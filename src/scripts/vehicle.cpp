@@ -391,7 +391,7 @@ void CVehicle::UpdateGroundDistance()
 			// ‚à‚µ’n’†‚É–„‚Ü‚Á‚Ä‚¢‚½ê‡
 			if (RayCallback.m_collisionObject == CCollision::GetCollision(GameObject::Find("ShadowTerrain"))->GetGhostObject())
 			{
-				MessageBox(NULL, "’n’†‚É–„‚Ü‚Á‚½", "Œx", MB_OK);
+				SetPos({ transform->GetWPos().x, transform->GetWPos().y + 15.0f, transform->GetWPos().z });
 			}
 		}
 	}

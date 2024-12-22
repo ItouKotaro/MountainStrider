@@ -21,6 +21,7 @@
 #include "scripts/status_ui.h"
 #include "scripts/item/item_manager.h"
 #include "scripts/shop/shop.h"
+#include "scripts/item/item_slot.h"
 
 #include "render/shadow_rb.h"
 
@@ -78,6 +79,11 @@ void CGameScene::Init()
 
 	// バイクの生成
 	SpawnBike();
+
+	// アイテムスロット
+	m_pItemSlot = new GameObject("ItemSlot", "UI");
+	m_pItemSlot->AddComponent<ItemSlot>();
+	m_pItemSlot->transform->SetPos(CRenderer::SCREEN_WIDTH - 400.0f, 30.0f);
 
 	// 環境効果
 	m_environmental = new EnvironmentalEffect();

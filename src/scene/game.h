@@ -65,6 +65,7 @@ private:
 	GameObject* m_pCamera;									// カメラ
 	GameObject* m_pBike;										// バイク
 	GameObject* m_pStatusUI;								// ステータスUI
+	GameObject* m_pItemSlot;								// アイテムスロット
 
 	// リザルトデータ用
 	DWORD m_startTime;										// 開始時間
