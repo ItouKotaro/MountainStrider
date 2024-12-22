@@ -7,13 +7,20 @@
 #include "environmental.h"
 
 #include "render/shadow_rb.h"
-#include "component/3d/camera.h"
 
 //=============================================================
 // [EnvironmentalEffect] 初期化
 //=============================================================
 void EnvironmentalEffect::Init()
 {
+	// ライトを生成する
+	m_light = new GameObject("Light");
+	m_light->AddComponent<CCamera>();
+	m_light->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
+
+	// バイクを取得する
+	m_vehicle = GameObject::Find("Vehicle");
+
 	// 時間を決める
 	TIME time = static_cast<TIME>(rand() % TIME::MAX);
 	SetTime(time);
@@ -44,6 +51,9 @@ void EnvironmentalEffect::Update()
 	{
 		m_weather->Update();
 	}
+
+	// ライトの更新
+	UpdateLight();
 }
 
 //=============================================================
@@ -88,4 +98,45 @@ void EnvironmentalEffect::SetWeather(Weather* weather)
 {
 	m_weather = weather;
 	m_weather->Init();
+}
+
+//=============================================================
+// [EnvironmentalEffect] ライト位置の更新
+//=============================================================
+void EnvironmentalEffect::UpdateLight()
+{
+	D3DXVECTOR3 pos = GameObject::Find("Camera")->transform->GetWPos();
+	float angle = Benlib::PosAngle(pos, m_vehicle->transform->GetWPos());
+
+	// 時間の設定
+	switch (m_time)
+	{
+	case TIME::MORNING:
+		m_light->transform->SetPos(m_vehicle->transform->GetWPos() + D3DXVECTOR3(300.0f, 700.0f, -100.0f));
+		m_light->transform->LookAt(m_vehicle->transform->GetWPos());
+		m_light->transform->Translate(sinf(angle) * 200.0f, 0.0f, cosf(angle) * 200.0f);
+		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint(
+			m_vehicle->transform->GetWPos() + D3DXVECTOR3(sinf(angle) * 200.0f, 0.0f, cosf(angle) * 200.0f)
+		);
+		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(350.0f);
+		break;
+	case TIME::DAYTIME:
+		m_light->transform->SetPos(m_vehicle->transform->GetWPos() + D3DXVECTOR3(300.0f, 700.0f, -100.0f));
+		m_light->transform->LookAt(m_vehicle->transform->GetWPos());
+		m_light->transform->Translate(sinf(angle) * 200.0f, 0.0f, cosf(angle) * 200.0f);
+		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint(
+			m_vehicle->transform->GetWPos() + D3DXVECTOR3(sinf(angle) * 200.0f, 0.0f, cosf(angle) * 200.0f)
+		);
+		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(350.0f);
+		break;
+	case TIME::NIGHT:
+		m_light->SetParent(m_vehicle);
+		m_light->transform->SetPos(0.0f, 15.0f, -25.0f);
+		m_light->transform->SetRot(0.0f, D3DX_PI, 0.0f);
+		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint(
+			m_light->transform->GetWPos() + D3DXVECTOR3(sinf(m_vehicle->transform->GetWRot().y) * -250.0f, 0.0f, cosf(m_vehicle->transform->GetWRot().y) * -250.0f)
+		);
+		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(500.0f);
+		break;
+	}
 }

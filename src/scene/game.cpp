@@ -63,10 +63,6 @@ void CGameScene::Init()
 		m_pTerrain->Generate();
 	}
 
-	// 環境効果
-	m_environmental = new EnvironmentalEffect();
-	m_environmental->Init();
-
 	// 奈落
 	{
 		m_voidField = new GameObject("Void");
@@ -77,6 +73,10 @@ void CGameScene::Init()
 
 	// バイクの生成
 	SpawnBike();
+
+	// 環境効果
+	m_environmental = new EnvironmentalEffect();
+	m_environmental->Init();
 
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
@@ -89,18 +89,10 @@ void CGameScene::Init()
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
 
-	// ライトカメラ
-	m_pLightCamera = new GameObject;
-	m_pLightCamera->AddComponent<CCamera>();
-	m_pLightCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
-	m_pLightCamera->SetParent(m_pBike);
-	m_pLightCamera->transform->Translate(0.0f,  15.0f, -25.0f);
-	m_pLightCamera->transform->Rotate(0.0f, D3DX_PI, 0.0f);
-
 	// カメラをレンダーバッファに追加する
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
-	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_pLightCamera->GetComponent<CCamera>());
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_environmental->GetLightCamera());
 }
 
 //=============================================================

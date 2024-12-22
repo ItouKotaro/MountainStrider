@@ -67,6 +67,8 @@ public:
 
 	void SetAmbient(D3DXVECTOR4 ambient) { m_shader->SetLightAmbient(&ambient); }
 	void SetLightCamera(CCamera* camera) { m_lightCamera = camera; }
+	void SetShadowPoint(const D3DXVECTOR3& pos) { m_shadowPoint = pos; }
+	void SetShadowRange(const float& range) { m_shadowRange = range; }
 
 	static const int SHADOWMAP_SIZE;
 private:
@@ -78,9 +80,10 @@ private:
 	LPDIRECT3DTEXTURE9 m_shadowMap;	// シャドウマップ
 	LPDIRECT3DSURFACE9 m_dsShadow;		// 深度バッファ
 	float m_lightFov;									// スポットライトのFOV
-	D3DXMATRIX m_shadowProj;			// プロジェクションマトリックス
+	D3DXMATRIX m_shadowProj;					// プロジェクションマトリックス
 	CCamera* m_lightCamera;						// ライトカメラ
-	//GameObject* m_shadowMapTex;
+	D3DXVECTOR3 m_shadowPoint;				// シャドウの中心地
+	float m_shadowRange;							// シャドウの範囲
 };
 
 #endif

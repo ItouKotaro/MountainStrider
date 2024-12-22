@@ -61,7 +61,6 @@ private:
 	EnvironmentalEffect* m_environmental;				// 環境
 	GameObject* m_voidField;									// 奈落
 	GameObject* m_pCamera;									// カメラ
-	GameObject* m_pLightCamera;							// ライト用カメラ
 	GameObject* m_pBike;										// バイク
 	GameObject* m_pStatusUI;								// ステータスUI
 

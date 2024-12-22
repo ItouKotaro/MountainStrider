@@ -9,7 +9,7 @@
 #include "component/3d/mesh.h"
 #include "component/3d/meshfield.h"
 
-const int ShadowRenderBuffer::SHADOWMAP_SIZE = 1024;
+const int ShadowRenderBuffer::SHADOWMAP_SIZE = 4096;
 
 //=============================================================
 // [ShadowMapShader] 初期化
@@ -100,6 +100,9 @@ void ShadowRenderBuffer::Init()
 	// デバイスの取得
 	auto device = CRenderer::GetInstance()->GetDevice();
 
+	m_shadowPoint = { 0.0f, 0.0f, 0.0f };
+	m_shadowRange = 600.0f;
+
 	// シェーダーの初期化
 	m_shader = new ShadowMapShader();
 	m_shader->Init();
@@ -114,7 +117,7 @@ void ShadowRenderBuffer::Init()
 	m_light.Position = D3DXVECTOR3(-8.0f, -8.0f, 0.0f);
 	m_light.Direction = D3DXVECTOR3(1.0f, -1.0f, 0.0f);
 	D3DXVec3Normalize((D3DXVECTOR3*)&m_light.Direction, (D3DXVECTOR3*)&m_light.Direction);
-	m_light.Range = 10.0f;
+	m_light.Range = 20.0f;
 	m_light.Theta = m_lightFov / 2.0f;
 	m_light.Phi = m_lightFov / 2.0f;
 
@@ -319,7 +322,7 @@ void ShadowRenderBuffer::RenderScene(bool renderShadow, const D3DXMATRIX* pmView
 					if ((*itrComp)->enabled)
 					{
 						if (renderShadow && !Component::IsClassType<CMeshField>(*itrComp) &&
-							Benlib::PosPlaneDistance((*itrComp)->transform->GetWPos(), m_lightCamera->transform->GetWPos()) > 600.0f)
+							Benlib::PosPlaneDistance((*itrComp)->transform->GetWPos(), m_shadowPoint) > m_shadowRange)
 							break;
 
 						// オブジェクトのマトリックスを設定する
