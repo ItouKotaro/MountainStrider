@@ -5,6 +5,8 @@
 //
 //=============================================================
 #include "item_slot.h"
+#include "manager.h"
+#include "item_manager.h"
 
 //=============================================================
 // [ItemSlot] 初期化
@@ -62,6 +64,38 @@ void ItemSlot::Uninit()
 //=============================================================
 void ItemSlot::Update()
 {
+	// 選択位置を変更する
+	m_scroll += CManager::GetInstance()->GetMouseWheel();
+	if (m_scroll > 150)
+	{
+		m_selectIdx--;
+		m_scroll = 0;
+	}
+	else if (m_scroll < -150)
+	{
+		m_selectIdx++;
+		m_scroll = 0;
+	}
+
+	if (m_selectIdx < 0) m_selectIdx = 0;
+	else if (m_selectIdx > 1) m_selectIdx = 1;
+
+	// 選択の枠の色を変更する
+	for (int i = 0; i < 2; i++)
+	{
+		m_itemFrame[i]->SetColor(i == m_selectIdx ? D3DCOLOR_RGBA(255, 67, 20, 255) : D3DCOLOR_RGBA(255, 255, 255, 255));
+	}
+
+	// 使用キーを押されたとき、アイテムを使用する
+	if (INPUT_INSTANCE->onTrigger("f"))
+	{
+		if (ItemManager::GetInstance()->GetCarryOn(m_selectIdx) != nullptr)
+		{
+			ItemManager::GetInstance()->GetCarryOn(m_selectIdx)->onUse();
+		}
+	}
+
+
 	for (int i = 0; i < 2; i++)
 	{
 		m_itemFrame[i]->Update();
