@@ -306,8 +306,11 @@
     <ClCompile Include="src\scripts\vehicle_sound.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\pause.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
     <ClCompile Include="src\scripts\vehicle_particle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -521,8 +524,11 @@
     <ClInclude Include="src\scripts\vehicle_sound.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
+    <ClInclude Include="src\scripts\pause.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
     <ClInclude Include="src\scripts\vehicle_particle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

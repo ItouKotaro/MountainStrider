@@ -193,7 +193,7 @@ void SumActionPointText::Update()
 
 	// ポイントを表示する
 	m_text->SetText(std::to_string(m_viewPoints));
-	m_text->SetFontSize(static_cast<int>(120 * m_textScale));
+	//m_text->SetFontSize(static_cast<int>(120 * m_textScale));
 
 	// サイズを戻していく
 	m_textScale += (1.0f - m_textScale) * 0.08f;

@@ -38,6 +38,11 @@ void CGameScene::Init()
 	m_travellingCount = 0;
 	m_travellingDatas.clear();
 	m_score = 0;
+	m_pause = nullptr;
+
+	// ポーズ
+	m_pause = new Pause();
+	m_pause->Init();
 
 	// カメラの作成
 	{
@@ -124,6 +129,12 @@ void CGameScene::Uninit()
 		m_result = nullptr;
 	}
 
+	// ポーズの破棄
+	if (m_pause != nullptr)
+	{
+		delete m_pause;
+	}
+
 	// レンダーバッファのカメラをnullにする
 	static_cast<CameraRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(nullptr);
 }
@@ -136,6 +147,16 @@ void CGameScene::Update()
 	if (INPUT_INSTANCE->onTrigger("@"))
 	{
 		onClear();
+	}
+
+	// ポーズ
+	if (INPUT_INSTANCE->onTrigger("p"))
+	{
+		m_pause->SetPause(!m_pause->GetPause());
+	}
+	if (m_pause->GetPause())
+	{
+		return;
 	}
 
 	// FPSを更新する

@@ -73,7 +73,7 @@ void CPhysicsDebugDraw::clearLines()
 //=============================================================
 // [CPhysics] コンストラクタ
 //=============================================================
-CPhysics::CPhysics()
+CPhysics::CPhysics() : m_isUpdatePhysics(true)
 {
 
 }
@@ -208,9 +208,11 @@ void CPhysics::Uninit()
 void CPhysics::Update()
 {
 	// 物理ワールドを進める
-	m_dynamicsWorld->stepSimulation(static_cast<btScalar>(1. / 60.), 1);
-	m_dynamicsWorld->debugDrawWorld();
-
+	if (m_isUpdatePhysics)
+	{
+		m_dynamicsWorld->stepSimulation(static_cast<btScalar>(1. / 60.), 1);
+		m_dynamicsWorld->debugDrawWorld();
+	}
 
 	// コリジョンリストを取得する
 	std::vector<CCollision*> pCollisions = CCollision::GetCollisions();

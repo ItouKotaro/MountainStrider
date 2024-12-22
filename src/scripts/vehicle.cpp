@@ -133,6 +133,9 @@ void CVehicle::Init()
 	pFrontHinge->setLowerLimit(D3DX_PI * -0.06f);
 	pBackHinge->setUpperLimit(0.0f);
 	pBackHinge->setLowerLimit(0.0f);
+
+	// ポーズを取得する
+	m_pause = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetPause();
 }
 
 //=============================================================
@@ -147,6 +150,8 @@ void CVehicle::Uninit()
 //=============================================================
 void CVehicle::Update()
 {
+	if (m_pause->GetPause()) return;
+
 	// 操作処理
 	m_flying ? FlyingControlVehicle() : LandingControlVehicle();
 
@@ -158,9 +163,6 @@ void CVehicle::Update()
 
 	// 地面との距離を更新する
 	UpdateGroundDistance();
-
-	// サウンドの更新
-	UpdateSound();
 
 	//// ゲームオーバー処理
 	//if (m_fuel <= 0.0f)
@@ -385,6 +387,12 @@ void CVehicle::UpdateGroundDistance()
 				nearGroundDistance = distance;
 				isHit = true;
 			}
+
+			// もし地中に埋まっていた場合
+			if (RayCallback.m_collisionObject == CCollision::GetCollision(GameObject::Find("ShadowTerrain"))->GetGhostObject())
+			{
+				MessageBox(NULL, "地中に埋まった", "警告", MB_OK);
+			}
 		}
 	}
 	if (isHit)
@@ -413,12 +421,4 @@ void CVehicle::UpdateGroundDistance()
 	{
 		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 10.0f, 0.0f));
 	}
-}
-
-//=============================================================
-// [CVehicle] サウンドの更新
-//=============================================================
-void CVehicle::UpdateSound()
-{
-
 }

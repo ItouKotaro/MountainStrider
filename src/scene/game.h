@@ -12,6 +12,7 @@
 #include "scripts/terrain.h"
 #include "scripts/environmental.h"
 #include "scripts/result/mt_result.h"
+#include "scripts/pause.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -32,6 +33,7 @@ public:
 	GameObject* GetBike() { return m_pBike; }
 
 	void AddScore(const int& score) { m_score += score; }
+	Pause* GetPause() { return m_pause; }
 
 	// 走行データ
 	struct TravellingData
@@ -68,6 +70,9 @@ private:
 	DWORD m_startTime;										// 開始時間
 	int m_highSpeed;												// 最高速度
 	int m_score;														// スコア
+
+	// ポーズ
+	Pause* m_pause;
 
 	// FPS表示
 	GameObject* m_pFPS;

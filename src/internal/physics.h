@@ -50,6 +50,7 @@ public:
 	void Init();				// 初期化
 	void Uninit();			// 終了
 	void Update();		// 更新
+	void SetUpdatePhysics(const bool& enabled) { m_isUpdatePhysics = enabled; }
 
 	static CPhysics* GetInstance() {
 		static CPhysics physics;
@@ -63,6 +64,7 @@ private:
 	static btDiscreteDynamicsWorld* m_dynamicsWorld;								// 物理ワールド
 	static btAlignedObjectArray<btCollisionShape*> m_collisionShapes;		// 形状リスト
 	static CPhysicsDebugDraw* m_debugDraw;
+	bool m_isUpdatePhysics;
 
 	// 設定
 	btDefaultCollisionConfiguration* m_collisionConfiguration;

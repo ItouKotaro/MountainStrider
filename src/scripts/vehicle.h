@@ -10,6 +10,7 @@
 #include "component.h"
 #include "internal/physics.h"
 #include "scripts/status_ui.h"
+#include "scripts/pause.h"
 
 // 車両
 class CVehicle : public Component
@@ -56,8 +57,8 @@ private:
 	void UpdateSpeedMeter();			// スピードの更新
 	void UpdateStatusUI();				// ステータスUIの更新
 	void UpdateGroundDistance();		// 地面距離の更新
-	void UpdateSound();
 
+	Pause* m_pause;
 	GameObject* m_pPlayer;
 	GameObject* m_pHandle;		// ハンドル
 	GameObject* m_pFrontTire;	// 前輪

@@ -28,7 +28,7 @@ const float Terrain::TERRAIN_SCALE = 90.0f;
 //=============================================================
 void Terrain::Init()
 {
-	m_pShadowField = new GameObject;
+	m_pShadowField = new GameObject("ShadowTerrain");
 	m_pShadowField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
 	m_pShadowField->transform->SetPos(0.0f, -10.0f);
 
@@ -88,6 +88,7 @@ void Terrain::Update(const D3DXVECTOR3& pos)
 void Terrain::UninitTerrain()
 {
 	CCollision::RemoveCollision(m_pField);
+	CCollision::RemoveCollision(m_pShadowField);
 
 	if (m_terrainData != nullptr)
 	{
@@ -111,6 +112,7 @@ void Terrain::Generate()
 
 	// コリジョンを作成する
 	CCollision::Create(m_pField);
+	CCollision::Create(m_pShadowField);
 
 	// シード値を設定する
 	srand(m_seed);
@@ -125,6 +127,7 @@ void Terrain::Generate()
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
 	CCollision::GetCollision(m_pField)->SetFriction(100.0f);
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
+	CCollision::GetCollision(m_pShadowField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
 	// 設定したシェープを適用する
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
