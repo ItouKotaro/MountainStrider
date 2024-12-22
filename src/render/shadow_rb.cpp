@@ -319,7 +319,7 @@ void ShadowRenderBuffer::RenderScene(bool renderShadow, const D3DXMATRIX* pmView
 					if ((*itrComp)->enabled)
 					{
 						if (renderShadow && !Component::IsClassType<CMeshField>(*itrComp) &&
-							Benlib::PosPlaneDistance((*itrComp)->transform->GetWPos(), m_lightCamera->transform->GetWPos()) > 1000.0f)
+							Benlib::PosPlaneDistance((*itrComp)->transform->GetWPos(), m_lightCamera->transform->GetWPos()) > 600.0f)
 							break;
 
 						// オブジェクトのマトリックスを設定する

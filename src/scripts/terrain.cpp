@@ -133,7 +133,7 @@ void Terrain::Generate()
 	m_pField->GetComponent<Road>()->Generate();
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 5000; i++)
 	{
 		GenerateProduces();
 	}
@@ -941,7 +941,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 {
 	for (auto itrManagedProduces = m_managedProduces.begin(); itrManagedProduces != m_managedProduces.end(); itrManagedProduces++)
 	{
-		if (Benlib::PosDistance(pos, (*itrManagedProduces)->transform.GetWPos()) < 3500.0f)
+		if (Benlib::PosDistance(pos, (*itrManagedProduces)->transform.GetWPos()) < 1500.0f)
 		{ // ¶¬”ÍˆÍ“à‚Ì‚Æ‚«
 
 			if ((*itrManagedProduces)->managedGameObject != nullptr)

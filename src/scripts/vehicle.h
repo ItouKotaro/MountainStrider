@@ -58,12 +58,10 @@ private:
 	void UpdateGroundDistance();		// 地面距離の更新
 	void UpdateSound();
 
+	GameObject* m_pPlayer;
 	GameObject* m_pHandle;		// ハンドル
 	GameObject* m_pFrontTire;	// 前輪
 	GameObject* m_pBackTire;	// 後輪
-
-	GameObject* m_pGroundLine;
-	GameObject* m_pGroundLine2;
 
 	static float m_fuel;							// 燃料
 	static float m_endurance;				// 耐久値

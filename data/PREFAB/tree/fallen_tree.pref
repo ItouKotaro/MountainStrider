@@ -18,9 +18,9 @@
                     0.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579
                 ]
             },
             "trigger": false
@@ -32,13 +32,13 @@
     "prefab": {
         "collision": [
             {
-                "height": 55.29999923706055,
+                "height": 34.099998474121094,
                 "offset": [
                     0.0,
                     0.4000000059604645,
                     0.0
                 ],
-                "radius": 5.900000095367432,
+                "radius": 3.5,
                 "rotation": [
                     0.0,
                     0.0,
@@ -49,7 +49,7 @@
         ],
         "friction": 1.0,
         "mass": 10.0,
-        "name": "Prefab",
+        "name": "FallenTree",
         "rigidbody": false,
         "tag": "",
         "transform": {

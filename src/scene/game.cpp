@@ -94,8 +94,8 @@ void CGameScene::Init()
 	m_pLightCamera->AddComponent<CCamera>();
 	m_pLightCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
 	m_pLightCamera->SetParent(m_pBike);
-	m_pLightCamera->transform->Translate(0.0f,  15.0f, 25.0f);
-	m_pLightCamera->transform->Rotate(0.0f, 0.0f, 0.0f);
+	m_pLightCamera->transform->Translate(0.0f,  15.0f, -25.0f);
+	m_pLightCamera->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 
 	// カメラをレンダーバッファに追加する
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
@@ -249,7 +249,7 @@ void CGameScene::SpawnBike()
 
 	// バイクを生成する
 	m_pBike = new GameObject("Vehicle");
-	m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
+	//m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_pBike->AddComponent<CVehicle>();
 	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
 

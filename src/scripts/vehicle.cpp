@@ -11,7 +11,7 @@
 #include "component/3d/mesh.h"
 #include "component/2d/text.h"
 #include "component/other/sound.h"
-#include "component/3d/line.h"
+#include "component/3d/motion.h"
 
 #include "scripts/status_ui.h"
 #include "scripts/vehicle_action.h"
@@ -36,15 +36,16 @@ float CVehicle::m_endurance = CVehicle::MAX_ENDURANCE;
 //=============================================================
 void CVehicle::Init()
 {
-	m_pGroundLine = new GameObject();
-	m_pGroundLine->AddComponent<CLine>();
-	m_pGroundLine2 = new GameObject();
-	m_pGroundLine2->AddComponent<CLine>();
-
 	// 変数の初期化
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
 	m_pStatusUI = nullptr;
+
+	// プレイヤーを生成する
+	m_pPlayer = GameObject::LoadPrefab("data\\PREFAB\\player.pref");
+	m_pPlayer->SetParent(gameObject);
+	m_pPlayer->transform->SetScale(0.7f);
+	m_pPlayer->GetComponent<CMotionManager>()->Play("ride");
 
 	// バイクを生成する
 	gameObject->AddComponent<CBoxCollider>(D3DXVECTOR3(1.8f, 1.8f, 6.0f), D3DXVECTOR3(0.0f, 3.0f, 0.0f));
@@ -58,21 +59,20 @@ void CVehicle::Init()
 	// 車体
 	GameObject* pBodyModel = new GameObject;
 	pBodyModel->SetParent(gameObject);
-	pBodyModel->transform->Translate(0.0f, 7.5f, 0.0f);
+	pBodyModel->transform->Translate(0.0f, 5.5f, 0.0f);
 	pBodyModel->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\body.x");
 
 	// ハンドル
 	m_pHandle = new GameObject;
 	m_pHandle->SetParent(gameObject);
-	m_pHandle->transform->Rotate(0.0f, D3DX_PI, 0.0f);
-	m_pHandle->transform->Translate(0.0f, 8.7f, 3.0f);
+	m_pHandle->transform->Translate(0.0f, 11.0f, -8.0f);
 	m_pHandle->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\handle.x");
 
 	// 前輪の生成
 	m_pFrontTire = new GameObject;
-	m_pFrontTire->transform->Translate(0.0f, -1.5f, -7.5f);
-	m_pFrontTire->AddComponent<CCylinderCollider>(3.0f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
-	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
+	m_pFrontTire->transform->Translate(0.0f, 0.0f, -12.5f);
+	m_pFrontTire->AddComponent<CCylinderCollider>(3.5f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\front.x");
 	m_pFrontTire->AddComponent<CRigidBody>();
 	m_pFrontTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -54.0f, 0.0f));
 	CCollision::GetCollision(m_pFrontTire)->SetMass(9.0f);
@@ -81,9 +81,9 @@ void CVehicle::Init()
 
 	// 後輪の生成
 	m_pBackTire = new GameObject;
-	m_pBackTire->transform->Translate(0.0f, -1.5f, 6.0f);
-	m_pBackTire->AddComponent<CCylinderCollider>(3.0f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
-	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\tire.x");
+	m_pBackTire->transform->Translate(0.0f, 0.0f, 6.0f);
+	m_pBackTire->AddComponent<CCylinderCollider>(3.5f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
+	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\back.x");
 	m_pBackTire->AddComponent<CRigidBody>();
 	m_pBackTire->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -54.0f, 0.0f));
 	CCollision::GetCollision(m_pBackTire)->SetMass(9.0f);
@@ -123,8 +123,8 @@ void CVehicle::Init()
 	// その他の設定
 	pFrontHinge->enableSpring(2, true);
 	pBackHinge->enableSpring(2, true);
-	pFrontHinge->setStiffness(2, 5.0f);
-	pBackHinge->setStiffness(2, 5.0f);
+	pFrontHinge->setStiffness(2, 1.0f);
+	pBackHinge->setStiffness(2, 1.0f);
 	pFrontHinge->setDamping(2, 0.00f);
 	pBackHinge->setDamping(2, 0.00f);
 
@@ -260,24 +260,24 @@ void CVehicle::LandingControlVehicle()
 	// 傾き調整
 	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
 	}
 	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
 	}
 	
 	// 方向転換
 	float fSteeringVelocity = 0.0f;
 	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {sinf(transform->GetRotY()) * 3.0f, 0.0f, cosf(transform->GetRotY()) * 3.0f};
+		angularVelocity += {sinf(transform->GetRotY()) * -3.0f, 0.0f, cosf(transform->GetRotY()) * -3.0f};
 		fSteeringVelocity += STEERING_VALUE;
 
 	}
 	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
-		angularVelocity += {sinf(transform->GetRotY()) * -3.0f, 0.0f, cosf(transform->GetRotY()) * -3.0f};
+		angularVelocity += {sinf(transform->GetRotY()) * 3.0f, 0.0f, cosf(transform->GetRotY()) * 3.0f};
 		fSteeringVelocity -= STEERING_VALUE;
 	}
 	auto pFrontHinge = m_pFrontTire->GetComponent<CHinge2Constraint>()->GetHinge2();
@@ -366,26 +366,31 @@ void CVehicle::UpdateGroundDistance()
 	btVector3 Start;
 	btVector3 End;
 	float nearGroundDistance = 3000.0f;
+	bool isHit = false;
 	for (int i = 0; i < 2; i++)
 	{
 		Start = i == 0 ? btVector3(frontPos.x, frontPos.y, frontPos.z) : btVector3(backPos.x, backPos.y, backPos.z);
-		End = Start + btVector3(0.0f, -3000.0f, 0.0f);
-
-		if (i == 0) m_pGroundLine->GetComponent<CLine>()->SetLine({ Start.getX(), Start.getY(), Start.getZ() }, { End.getX(), End.getY(), End.getZ() });
-		if (i == 1) m_pGroundLine2->GetComponent<CLine>()->SetLine({ Start.getX(), Start.getY(), Start.getZ() }, { End.getX(), End.getY(), End.getZ() });
+		End = Start + btVector3(0.0f, -6000.0f, 0.0f);
 
 		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 		CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-		if (RayCallback.hasHit())
+		if (RayCallback.hasHit() && 
+			RayCallback.m_collisionObject != CCollision::GetCollision(m_pFrontTire)->GetRigidBody() &&
+			RayCallback.m_collisionObject != CCollision::GetCollision(m_pBackTire)->GetRigidBody() &&
+			RayCallback.m_collisionObject != CCollision::GetCollision(gameObject)->GetRigidBody())
 		{ // ヒットしたとき
 			float distance = Start.getY() - RayCallback.m_hitPointWorld.getY();
 			if (distance < nearGroundDistance)
 			{
 				nearGroundDistance = distance;
+				isHit = true;
 			}
 		}
 	}
-	m_groundDistance = nearGroundDistance;
+	if (isHit)
+	{
+		m_groundDistance = nearGroundDistance;
+	}
 
 	// 飛んでいるか判定する
 	if (!m_flying && m_groundDistance >= FLYING_DISTANCE)
@@ -406,7 +411,7 @@ void CVehicle::UpdateGroundDistance()
 	// 埋まり対策
 	if (m_groundDistance < 1.0f)
 	{
-		//gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 100.0f, 0.0f));
+		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 10.0f, 0.0f));
 	}
 }
 
