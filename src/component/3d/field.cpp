@@ -180,3 +180,28 @@ void CField::SetColor(D3DXCOLOR col)
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
 }
+
+//=============================================================
+// [CField] テクスチャのループ数設定
+//=============================================================
+void CField::SetLoopTexture(const int& num)
+{
+	if (num > 0)
+	{
+		// 構成変数
+		VERTEX_3D* pVtx;
+		int nVertexLine = -1;	// 現在の列
+
+		//頂点バッファをロックし、頂点情報へのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		//テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(static_cast<float>(num), 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, static_cast<float>(num));
+		pVtx[3].tex = D3DXVECTOR2(static_cast<float>(num), static_cast<float>(num));
+
+		// 頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+	}
+}

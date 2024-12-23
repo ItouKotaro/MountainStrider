@@ -34,10 +34,24 @@ void ItemSlot::Init()
 		m_itemTexture[i] = new SingleComponent<CPolygon>();
 		m_itemTexture[i]->SetParent(gameObject);
 		m_itemTexture[i]->Init();
-		m_itemTexture[i]->SetTexture("data\\TEXTURE\\ITEM\\fuel_tank.png");
 		m_itemTexture[i]->transform->SetSize(120.0f, 120.0f);
 		m_itemTexture[i]->transform->SetPos(170.0f * i + 20.0f, 20.0f);
 		m_itemTexture[i]->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
+	}
+
+	// アイテムのテクスチャを変更する
+	for (int i = 0; i < 2; i++)
+	{
+		if (ItemManager::GetInstance()->GetCarryOn(i) != nullptr)
+		{ // アイテムあり
+			m_itemTexture[i]->SetTexture(ItemManager::GetInstance()->GetCarryOn(i)->GetTexturePath());
+			m_itemTexture[i]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+		else
+		{ // アイテムなし
+			m_itemTexture[i]->SetTexture("");
+			m_itemTexture[i]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.1f));
+		}
 	}
 }
 
@@ -77,6 +91,7 @@ void ItemSlot::Update()
 		m_scroll = 0;
 	}
 
+	// 選択の上限下限
 	if (m_selectIdx < 0) m_selectIdx = 0;
 	else if (m_selectIdx > 1) m_selectIdx = 1;
 
@@ -93,8 +108,22 @@ void ItemSlot::Update()
 		{
 			ItemManager::GetInstance()->GetCarryOn(m_selectIdx)->onUse();
 		}
-	}
 
+		// テクスチャの更新
+		for (int i = 0; i < 2; i++)
+		{
+			if (ItemManager::GetInstance()->GetCarryOn(i) != nullptr)
+			{ // アイテムあり
+				m_itemTexture[i]->SetTexture(ItemManager::GetInstance()->GetCarryOn(i)->GetTexturePath());
+				m_itemTexture[i]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else
+			{ // アイテムなし
+				m_itemTexture[i]->SetTexture("");
+				m_itemTexture[i]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.1f));
+			}
+		}
+	}
 
 	for (int i = 0; i < 2; i++)
 	{
