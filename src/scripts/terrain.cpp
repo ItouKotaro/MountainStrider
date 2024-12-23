@@ -542,6 +542,14 @@ void Terrain::GenerateProduces()
 			rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f
 		};
 
+		// “¹‚Ì‹ß‚­‚Ì‚Æ‚«
+		int chunkX = static_cast<int>((generatePos.x + TERRAIN_SIZE * TERRAIN_SCALE * 0.5f) / (float)TERRAIN_SCALE);
+		int chunkY = static_cast<int>((generatePos.y + TERRAIN_SIZE * TERRAIN_SCALE * 0.5f) / (float)TERRAIN_SCALE);
+		if (m_pField->GetComponent<Road>()->IsRouted(chunkX, chunkY))
+		{ // ‚·‚Å‚É“¹‚Ì‚Æ‚«
+			continue;
+		}
+
 		// ¶¬•¨‚ğŒˆ’è‚·‚é
 		CNatureProduces* pSelectProduce = nullptr;
 		int nAllChance = 0;		// ‚·‚×‚Ä‚ÌŠm—¦

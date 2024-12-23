@@ -548,15 +548,28 @@ void GameOverResult::InitFinalResult()
 		RANK_C
 	};
 
+	// ランクのテクスチャ取得
+	auto GetRankPath = [](RANK rank)
+	{
+		if (rank == RANK_S) return "data\\TEXTURE\\RESULT\\rank_s.png";
+		else if (rank == RANK_A) return "data\\TEXTURE\\RESULT\\rank_a.png";
+		else if (rank == RANK_B) return "data\\TEXTURE\\RESULT\\rank_b.png";
+		else if (rank == RANK_C) return "data\\TEXTURE\\RESULT\\rank_c.png";
+		return "";
+	};
+
 	// 平均タイム
 	RANK timeRank;
-	if (time < 60) timeRank = RANK_S;
-	else if (time < 90) timeRank = RANK_A;
-	else if (time < 120) timeRank = RANK_B;
+	if (time < 90) timeRank = RANK_S;
+	else if (time < 120) timeRank = RANK_A;
+	else if (time < 180) timeRank = RANK_B;
 	else timeRank = RANK_C;
 
 	// アクション
-	RANK actionRank;
+	RANK actionRank = RANK_S;
+
+	// 燃費
+	RANK fuelRank = RANK_S;
 
 
 	// 表示 ------------------------------------------------------------------------------------
@@ -616,7 +629,7 @@ void GameOverResult::InitFinalResult()
 	m_timeRate->transform->SetPos(75.0f, 170.0f);
 	m_timeRate->transform->SetSize(200.0f, 200.0f);
 	m_timeRate->SetParent(timeFrame);
-	m_timeRate->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\rank_s.png");
+	m_timeRate->AddComponent<CPolygon>()->SetTexture(GetRankPath(timeRank));
 	page->AddObject(1, m_timeRate);
 
 	m_timeValue = new GameObject();
@@ -657,7 +670,7 @@ void GameOverResult::InitFinalResult()
 	m_actionRate->transform->SetPos(75.0f, 170.0f);
 	m_actionRate->transform->SetSize(200.0f, 200.0f);
 	m_actionRate->SetParent(actionFrame);
-	m_actionRate->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\rank_s.png");
+	m_actionRate->AddComponent<CPolygon>()->SetTexture(GetRankPath(actionRank));
 	page->AddObject(1, m_actionRate);
 
 	m_actionValue = new GameObject();
@@ -698,7 +711,7 @@ void GameOverResult::InitFinalResult()
 	m_fuelRate->transform->SetPos(75.0f, 170.0f);
 	m_fuelRate->transform->SetSize(200.0f, 200.0f);
 	m_fuelRate->SetParent(fuelFrame);
-	m_fuelRate->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\rank_s.png");
+	m_fuelRate->AddComponent<CPolygon>()->SetTexture(GetRankPath(fuelRank));
 	page->AddObject(1, m_fuelRate);
 
 	m_fuelValue = new GameObject();
