@@ -27,6 +27,9 @@ public:
 		int time;			// クリア時間
 		int highSpeed;	// 最高速度
 		int action;			// アクション
+		float mileage;		// 走行距離
+		float fuel;			// 消費燃料
+		float endurance;	// 消費耐久値
 	};
 	static void AddResult(ResultData data);
 	static void Reset();

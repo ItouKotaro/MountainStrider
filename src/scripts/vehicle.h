@@ -24,6 +24,7 @@ public:
 	void AddFuel(const float& value);
 	void AddEndurance(const float& value);
 	void SetStatusUI(CStatusUI* pStatusUI) { m_pStatusUI = pStatusUI; }
+	float GetFuelConsumption() { return m_fuelConsumption; }
 
 	static void ResetState()
 	{
@@ -67,6 +68,7 @@ private:
 	static float m_fuel;							// ”R—¿
 	static float m_endurance;				// ‘Ï‹v’l
 	D3DXVECTOR3 m_flyingPosture;		// ”òs‚Ìp¨
+	float m_fuelConsumption;				// Á”ï”R—¿
 
 	// ’n–Êî•ñ
 	bool m_flying;						// ”ò‚ñ‚Å‚¢‚é

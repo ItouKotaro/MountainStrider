@@ -55,7 +55,7 @@ private:
 	void SpawnBike();												// バイクの生成
 	void ClearCondition();											// クリア条件
 
-	int m_travellingCount;
+	int m_travellingCount;										// 突破数
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
 	ResultBase* m_result;										// リザルト
 

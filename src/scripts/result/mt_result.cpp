@@ -517,6 +517,28 @@ void GameOverResult::InitFinalResult()
 {
 	auto page = m_page->GetComponent<Pages>();
 
+	// 平均時間の表示形式を変更する
+	int time = GetAverageTime();
+	int min = (time - time % 60) / 60;
+	int sec = time % 60;
+	char timeTextPara[64];
+	sprintf(&timeTextPara[0], "%d:%02d", min, sec);
+
+	// 燃費を計算する
+	float fuelConsumption = 0.0f;
+	float totalMileage = 0.0f;
+	float totalFuel = 0.0f;
+	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	{
+		totalMileage += (*itr).mileage;
+		totalFuel += (*itr).fuel * 0.6f;
+	}
+	fuelConsumption = totalMileage / totalFuel;
+	char fuelTextPara[64];
+	sprintf(&fuelTextPara[0], "%.1f<size=40>Km/L", fuelConsumption);
+
+	// 表示 ------------------------------------------------------------------------------------
+
 	// 最終結果
 	GameObject* finalText = new GameObject();
 	finalText->AddComponent<CText>()->SetText("スコア");
@@ -574,15 +596,6 @@ void GameOverResult::InitFinalResult()
 	m_timeRate->SetParent(timeFrame);
 	m_timeRate->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\rank_s.png");
 	page->AddObject(1, m_timeRate);
-
-	// 分と秒
-	int time = GetAverageTime();
-	int min = (time - time % 60) / 60;
-	int sec = time % 60;
-
-	// 時間の表示形式を変更する
-	char timeTextPara[64];
-	sprintf(&timeTextPara[0], "%d:%02d", min, sec);
 
 	m_timeValue = new GameObject();
 	m_timeValue->transform->SetPos(0.0f, 350.0f);
@@ -669,7 +682,7 @@ void GameOverResult::InitFinalResult()
 	m_fuelValue = new GameObject();
 	m_fuelValue->transform->SetPos(0.0f, 350.0f);
 	m_fuelValue->SetParent(fuelText);
-	m_fuelValue->AddComponent<CText>()->SetText("15<size=40>Km/L");
+	m_fuelValue->AddComponent<CText>()->SetText(fuelTextPara);
 	m_fuelValue->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_fuelValue->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_fuelValue->GetComponent<CText>()->SetFontSize(60);

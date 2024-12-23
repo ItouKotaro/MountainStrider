@@ -85,7 +85,7 @@ void CMeshField::Draw()
 		0,
 		(m_sizeX + 1) * (m_sizeY + 1),
 		0,
-		(m_sizeX + 1) * (m_sizeY + 1) * 2
+		(m_sizeX * 2) * m_sizeY + m_sizeY - 1
 	);
 
 	Component::EndPass();

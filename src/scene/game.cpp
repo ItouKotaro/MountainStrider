@@ -310,11 +310,23 @@ void CGameScene::onGameOver()
 		// アイテムスロットを非表示にする
 		m_pItemSlot->SetActive(false);
 
+		// 走行距離を計算する
+		float mileage = 0.0f;
+		for (UINT i = 0; i < m_travellingDatas.size(); i++)
+		{
+			if (i + 1 < m_travellingDatas.size())
+			{ // 次があるとき
+				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
+			}
+		}
+
 		// リザルトデータの格納
 		ResultBase::ResultData data;
 		data.time = -1;
 		data.highSpeed = m_highSpeed;
 		data.action = 50;
+		data.mileage = mileage;
+		data.fuel = m_pBike->GetComponent<CVehicle>()->GetFuelConsumption();
 		ResultBase::AddResult(data);
 
 		// ゲームオーバーリザルトの初期化
@@ -343,11 +355,23 @@ void CGameScene::onClear()
 		// アイテムスロットを非表示にする
 		m_pItemSlot->SetActive(false);
 
+		// 走行距離を計算する
+		float mileage = 0.0f;
+		for (UINT i = 0; i < m_travellingDatas.size(); i++)
+		{
+			if (i + 1 < m_travellingDatas.size())
+			{ // 次があるとき
+				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
+			}
+		}
+
 		// リザルトデータの格納
 		ResultBase::ResultData data;
 		data.time = (timeGetTime() - m_startTime) / 1000;
 		data.highSpeed = m_highSpeed;
 		data.action = m_score;
+		data.mileage = mileage;
+		data.fuel = m_pBike->GetComponent<CVehicle>()->GetFuelConsumption();
 		ResultBase::AddResult(data);
 
 		// クリアリザルトの初期化

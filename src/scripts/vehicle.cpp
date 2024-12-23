@@ -23,7 +23,7 @@ const float CVehicle::STEERING_VALUE = 3.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 1.0f;
 const float CVehicle::MAX_ENGINEFORCE = 180000.0f;
 const float CVehicle::MAX_STEERING = 15000.0f;
-const float CVehicle::MAX_FUEL = 4000.0f;
+const float CVehicle::MAX_FUEL = 2000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
 const float CVehicle::FLYING_DISTANCE = 30.0f;
 const float CVehicle::GROUND_DISTANCE = 5.0f;
@@ -40,6 +40,7 @@ void CVehicle::Init()
 	m_measureCounter = 0;
 	m_measurePos = transform->GetWPos();
 	m_pStatusUI = nullptr;
+	m_fuelConsumption = 0.0f;
 
 	// ƒvƒŒƒCƒ„[‚ğ¶¬‚·‚é
 	m_pPlayer = GameObject::LoadPrefab("data\\PREFAB\\player.pref");
@@ -252,6 +253,7 @@ void CVehicle::LandingControlVehicle()
 
 		// ”R—¿‚ğŒ¸‚ç‚·
 		m_fuel -= fEngineForce * 0.01f;
+		m_fuelConsumption += fEngineForce * 0.01f;
 	}
 	else
 	{ // ”R—¿‚ª‚È‚¢‚Æ‚«
