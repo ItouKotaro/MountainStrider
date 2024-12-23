@@ -93,10 +93,6 @@ void CGameScene::Init()
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
 	m_pCamera->AddComponent<ResultCamera>();
 
-	// FPS表示
-	m_pFPS = new GameObject("FPS");
-	m_pFPS->AddComponent<CText>();
-
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
 
@@ -164,9 +160,6 @@ void CGameScene::Update()
 	{
 		return;
 	}
-
-	// FPSを更新する
-	m_pFPS->GetComponent<CText>()->SetText("FPS: " + std::to_string(CManager::GetInstance()->GetFPS()));
 
 	// 地形を更新する
 	m_pTerrain->Update(m_pCamera->transform->GetWPos());

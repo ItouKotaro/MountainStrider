@@ -33,8 +33,8 @@ void CStatusUI::Init()
 	m_pEnduranceBar = pEnduranceObj->AddComponent<CAdvancedBar>();
 
 	// バーの位置を変更する
-	pFuelObj->transform->SetPos(100.0f, 100.0f);
-	pEnduranceObj->transform->SetPos(100.0f, 160.0f);
+	pFuelObj->transform->SetPos(100.0f, 60.0f);
+	pEnduranceObj->transform->SetPos(100.0f, 120.0f);
 
 	// バーの設定
 	m_pFuelBar->SetColor(0, D3DCOLOR_RGBA(252, 185, 40, 255));

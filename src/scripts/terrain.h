@@ -54,9 +54,6 @@ private:
 	std::vector<ManagedGameObject*> m_managedGameObjects;	// 管理されているゲームオブジェクト
 
 	GameObject* m_pVehicle;		// バイク格納
-
-	// デバッグ用
-	GameObject* m_pNumObj;	// オブジェクトの総数テキスト
 };
 
 // 地形

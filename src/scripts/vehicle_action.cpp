@@ -186,8 +186,6 @@ void SumActionPointText::Uninit()
 //=============================================================
 void SumActionPointText::Update()
 {
-	m_text->Update();
-
 	// 表示ポイントを決める
 	m_viewPoints += static_cast<int>((m_points - m_viewPoints) * 0.08f);
 

@@ -121,6 +121,33 @@ void Road::Generate()
 		m_currentPos.x = (*itr)[m_currentIdx].x;
 		m_currentPos.y = (*itr)[m_currentIdx].y;
 
+		// ジャンプ台をどこで設置するか
+		int numJumpStand = rand() % 5 + 3;
+		std::vector<int> putJumpStand;
+		int tryCounter = 0;
+		for (int i = 0; i < numJumpStand; tryCounter++)
+		{
+			int num = rand() % (*itr).size();
+
+			bool putted = false;
+			for (auto numItr = putJumpStand.begin(); numItr != putJumpStand.end(); numItr++)
+			{
+				if (*numItr == num)
+				{
+					putted = true;
+					break;
+				}
+			}
+
+			if (!putted)
+			{
+				putJumpStand.push_back(num);
+				i++;
+			}
+
+			if (tryCounter > 30) break;
+		}
+
 		// 目標地点を設定する（次のポイントが存在するとき）
 		while (m_currentIdx + 1 < (*itr).size())
 		{
@@ -137,6 +164,17 @@ void Road::Generate()
 
 			// 設置する
 			CreateRoad(m_currentPos, 40.0f, Benlib::RandomFloat(0.0f, D3DX_PI * 2.0f));
+
+			// ジャンプ台
+			for (auto numItr = putJumpStand.begin(); numItr != putJumpStand.end(); numItr++)
+			{
+				if (*numItr == m_currentIdx)
+				{
+					CreateJumpStand(m_currentPos, Benlib::PosAngle({ m_currentPos.x, 0.0f, m_currentPos.y }, { nextPos.x, 0.0f, nextPos.y }));
+					m_currentPos = nextPos;
+					break;
+				}
+			}
 
 			// 目標地点に到着しているかを確認する
 			if (nextPos.x <= m_currentPos.x && m_currentPos.x <= nextPos.x + Terrain::TERRAIN_SCALE &&
@@ -169,7 +207,7 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 		D3DXVECTOR3 transVec = { vtxPos[i].x, 0.0f, vtxPos[i].y };
 		D3DXVec3TransformCoord(&transVec, &transVec, &rotMtx);
 		vtxPos[i] = { transVec.x, transVec.z };
-		vtxPos[i] += m_currentPos;
+		vtxPos[i] += pos;
 	}
 
 	// 高度格納用
@@ -206,6 +244,66 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	groundMesh->SetHeight(1, 1, vtxHeight[3]);
 	groundMesh->SetTexture("data\\TEXTURE\\ROAD\\dirt.png");
 	m_roadObj.push_back(groundMesh);
+}
+
+//=============================================================
+// [Road] ジャンプ台の生成
+//=============================================================
+void Road::CreateJumpStand(const D3DXVECTOR2& pos, const float& angle)
+{
+	// レイでメッシュの位置を割り出す
+	D3DXVECTOR2 vtxPos[9];
+	vtxPos[0] = { -60.0f, 0.0f };
+	vtxPos[1] = { 0.0f, 0.0f };
+	vtxPos[2] = { 60.0f, 0.0f };
+	vtxPos[3] = { -60.0f, 100.0f };
+	vtxPos[4] = { 0.0f, 100.0f };
+	vtxPos[5] = { 60.0f, 100.0f };
+	vtxPos[6] = { -60.0f, -100.0f };
+	vtxPos[7] = { 0.0f, -100.0f };
+	vtxPos[8] = { 60.0f, -100.0f };
+
+	// 回転
+	D3DXMATRIX rotMtx;
+	D3DXMatrixRotationY(&rotMtx, angle);
+	for (int i = 0; i < 9; i++)
+	{
+		D3DXVECTOR3 transVec = { vtxPos[i].x, 0.0f, vtxPos[i].y };
+		D3DXVec3TransformCoord(&transVec, &transVec, &rotMtx);
+		vtxPos[i] = { transVec.x, transVec.z };
+		vtxPos[i] += pos;
+	}
+
+	// 高度格納用
+	float vtxHeight = 6000.0f;
+
+	// レイで頂点座標を決める
+	for (int i = 0; i < 9; i++)
+	{
+		btVector3 Start = btVector3(vtxPos[i].x, 6000.0f, vtxPos[i].y);
+		btVector3 End = Start + btVector3(0.0f, -12000.0f, 0.0f);
+
+		// レイ
+		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+		CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+		if (RayCallback.hasHit())
+		{ // ヒットしたとき
+			if (RayCallback.m_hitPointWorld.getY() < vtxHeight)
+			{
+				vtxHeight = RayCallback.m_hitPointWorld.getY();
+			}
+		}
+		else
+		{ // 失敗
+			return;
+		}
+	}
+
+	// 地面を生成する
+	Transform jumpTrans;
+	jumpTrans.SetPos({pos.x, vtxHeight, pos.y});
+	jumpTrans.SetRot(0.0f, angle, 0.0f);
+	GameObject* jumpStand = GameObject::LoadPrefab("data\\PREFAB\\jump_stand.pref", jumpTrans);
 }
 
 //=============================================================

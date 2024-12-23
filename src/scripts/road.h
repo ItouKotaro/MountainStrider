@@ -27,6 +27,7 @@ public:
 	void OutputText();
 private:
 	void CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& angle);
+	void CreateJumpStand(const D3DXVECTOR2& pos, const float& angle);
 
 	D3DXVECTOR2 m_currentPos;	// åªç›ÇÃà íu
 	int m_currentIdx;						// åªç›ÇÃínì_

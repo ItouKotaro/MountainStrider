@@ -74,9 +74,6 @@ private:
 
 	// ポーズ
 	Pause* m_pause;
-
-	// FPS表示
-	GameObject* m_pFPS;
 };
 
 #endif // !_GAME_H_
