@@ -324,161 +324,165 @@ void Terrain::GenerateRoad()
 	}
 
 	// 道選択 ------------------------------------------------
-
-	int routeIdx = 0;
-	pRoad->AddIdx();
-
-	// 辺
-	enum Area
+	for (int i = 0; i < 2; i++)
 	{
-		NONE,
-		TOP,
-		BOTTOM,
-		LEFT,
-		RIGHT
-	};
-	Area startArea = NONE;
+		pRoad->AddIdx();
 
-	// 最終地点を設定する（縁）
-	bool isAxisX = rand() % 2 == 0;
-	int currentX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
-	int currentY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
-	pRoad->AddPoint(routeIdx, currentX, currentY);
+		bool isAxisX = rand() % 2 == 0;
+		int currentX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
+		int currentY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
 
-	// 辺を割り出す
-	if (currentX == 0) startArea = LEFT;
-	if (currentX == TERRAIN_SIZE - 1) startArea = RIGHT;
-	if (currentY == 0) startArea = TOP;
-	if (currentY == TERRAIN_SIZE - 1) startArea = BOTTOM;
-
-	// 道を伸ばす
-	for (int pass = 0; pass < 200; pass++)
-	{
-		// 現在地点からポイントの高い方向に向かう
-		int selectX = 0;
-		int selectY = 0;
-		int high = 0;
-		for (int x = -1; x < 2; x++)
+		// 最終地点を設定する（縁）
+		Area startArea = NONE;
+		while (1)
 		{
-			for (int y = -1; y < 2; y++)
+			isAxisX = rand() % 2 == 0;
+			currentX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
+			currentY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
+
+			// 辺を割り出す
+			if (currentX == 0) startArea = LEFT;
+			if (currentX == TERRAIN_SIZE - 1) startArea = RIGHT;
+			if (currentY == 0) startArea = TOP;
+			if (currentY == TERRAIN_SIZE - 1) startArea = BOTTOM;
+
+			if (m_startArea != startArea)
 			{
-				// 除外リスト
-				if ((x == 0 && y == 0) ||
-					currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
-					currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
-				{ // 現在位置と範囲外
-					continue;	// スキップ
-				}
+				m_startArea = startArea;
+				break;
+			}
+		}
+		pRoad->AddPoint(i, currentX, currentY);
 
-				// 既にルートの時も除外
-				if (pRoad->IsRoutedByIdx(routeIdx, currentX + x, currentY + y))
+		// 道を伸ばす
+		for (int pass = 0; pass < 200; pass++)
+		{
+			// 現在地点からポイントの高い方向に向かう
+			int selectX = 0;
+			int selectY = 0;
+			int high = 0;
+			for (int x = -1; x < 2; x++)
+			{
+				for (int y = -1; y < 2; y++)
 				{
-					continue;	// スキップ
-				}
+					// 除外リスト
+					if ((x == 0 && y == 0) ||
+						currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
+						currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+					{ // 現在位置と範囲外
+						continue;	// スキップ
+					}
 
-				// 周囲に道があるとき
-				int nearRoad = 0;
-				for (int sx = -1; sx < 2; sx++)
-				{
-					for (int sy = -1; sy < 2; sy++)
+					// 既にルートの時も除外
+					if (pRoad->IsRoutedByIdx(i, currentX + x, currentY + y))
 					{
-						// 除外リスト
-						if ((sx == 0 && sy == 0) ||
-							x + currentX + sx < 0 || TERRAIN_SIZE <= x + currentX + sx ||
-							y + currentY + sy < 0 || TERRAIN_SIZE <= y + currentY + sy)
-						{ // 現在位置と範囲外
-							continue;	// スキップ
-						}
+						continue;	// スキップ
+					}
 
-						// 既に道の場合
-						if (pRoad->IsRoutedByIdx(routeIdx, x + currentX + sx, y + currentY + sy))
+					// 周囲に道があるとき
+					int nearRoad = 0;
+					for (int sx = -1; sx < 2; sx++)
+					{
+						for (int sy = -1; sy < 2; sy++)
 						{
-							nearRoad++;
+							// 除外リスト
+							if ((sx == 0 && sy == 0) ||
+								x + currentX + sx < 0 || TERRAIN_SIZE <= x + currentX + sx ||
+								y + currentY + sy < 0 || TERRAIN_SIZE <= y + currentY + sy)
+							{ // 現在位置と範囲外
+								continue;	// スキップ
+							}
+
+							// 既に道の場合
+							if (pRoad->IsRoutedByIdx(i, x + currentX + sx, y + currentY + sy))
+							{
+								nearRoad++;
+							}
 						}
 					}
+					if (nearRoad > 1)
+					{
+						routeData[currentX + x][currentY + y] *= 0.2f;
+					}
+
+					if (routeData[currentX + x][currentY + y] > high)
+					{ // 最高スコアの時
+						selectX = currentX + x;
+						selectY = currentY + y;
+						high = routeData[currentX + x][currentY + y];
+					}
 				}
-				if (nearRoad > 1)
+			}
+			currentX = selectX;
+			currentY = selectY;
+
+			bool isEnded = false;
+			// 終了条件: 中心にたどり着く
+			if (currentX == TERRAIN_SIZE / 2 && currentY == TERRAIN_SIZE / 2)
+			{
+				isEnded = true;
+			}
+
+			// 終了条件: 他の道と衝突
+			int routedIdx = pRoad->IsIndexRouted(currentX, currentY);
+			if (routedIdx != -1 && routedIdx != i)
+			{
+				isEnded = true;
+			}
+
+			// 終了条件: 別の辺に衝突
+			Area currentArea = NONE;
+			if (currentX == 0) currentArea = LEFT;
+			if (currentX == TERRAIN_SIZE - 1) currentArea = RIGHT;
+			if (currentY == 0) currentArea = TOP;
+			if (currentY == TERRAIN_SIZE - 1) currentArea = BOTTOM;
+			if (currentArea != NONE && startArea != currentArea)
+			{
+				isEnded = true;
+			}
+
+			// 道を追加する
+			pRoad->AddPoint(i, currentX, currentY);
+
+			// 道を平地化する
+			int aveCount = 0;
+			float ave = 0.0f;
+			for (int x = -1; x < 2; x++)
+			{
+				for (int y = -1; y < 2; y++)
 				{
-					routeData[currentX + x][currentY + y] *= 0.2f;
-				}
-
-				if (routeData[currentX + x][currentY + y] > high)
-				{ // 最高スコアの時
-					selectX = currentX + x;
-					selectY = currentY + y;
-					high = routeData[currentX + x][currentY + y];
+					// 除外リスト
+					if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
+						currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+					{ // 現在位置と範囲外
+						continue;	// スキップ
+					}
+					ave += GetVertexHeight(currentX + x, currentY + y);
+					aveCount++;
 				}
 			}
-		}
-		currentX = selectX;
-		currentY = selectY;
-
-		bool isEnded = false;
-		// 終了条件: 中心にたどり着く
-		if (currentX == TERRAIN_SIZE / 2 && currentY == TERRAIN_SIZE / 2)
-		{
-			isEnded = true;
-		}
-
-		// 終了条件: 他の道と衝突
-		int routedIdx = pRoad->IsIndexRouted(currentX, currentY);
-		if (routedIdx != -1 && routedIdx != routeIdx)
-		{
-			isEnded = true;
-		}
-
-		// 終了条件: 別の辺に衝突
-		Area currentArea = NONE;
-		if (currentX == 0) currentArea = LEFT;
-		if (currentX == TERRAIN_SIZE - 1) currentArea = RIGHT;
-		if (currentY == 0) currentArea = TOP;
-		if (currentY == TERRAIN_SIZE - 1) currentArea = BOTTOM;
-		if (currentArea != NONE && startArea != currentArea)
-		{
-			isEnded = true;
-		}
-
-		// 道を追加する
-		pRoad->AddPoint(routeIdx, currentX, currentY);
-
-		// 道を平地化する
-		int aveCount = 0;
-		float ave = 0.0f;
-		for (int x = -1; x < 2; x++)
-		{
-			for (int y = -1; y < 2; y++)
+			// 平均値を出す
+			ave /= (float)aveCount;
+			// 設定する
+			for (int x = -1; x < 2; x++)
 			{
-				// 除外リスト
-				if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
-					currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
-				{ // 現在位置と範囲外
-					continue;	// スキップ
+				for (int y = -1; y < 2; y++)
+				{
+					// 除外リスト
+					if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
+						currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+					{ // 現在位置と範囲外
+						continue;	// スキップ
+					}
+					float ori = (GetVertexHeight(currentX + x, currentY + y) - ave) * 0.5f;
+					SetVertexHeight(currentX + x, currentY + y, ave + ori);
 				}
-				ave += GetVertexHeight(currentX + x, currentY + y);
-				aveCount++;
 			}
-		}
-		// 平均値を出す
-		ave /= (float)aveCount;
-		// 設定する
-		for (int x = -1; x < 2; x++)
-		{
-			for (int y = -1; y < 2; y++)
-			{
-				// 除外リスト
-				if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
-					currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
-				{ // 現在位置と範囲外
-					continue;	// スキップ
-				}
-				float ori = (GetVertexHeight(currentX + x, currentY + y) - ave) * 0.5f;
-				SetVertexHeight(currentX + x, currentY + y, ave + ori);
-			}
-		}
 
 
-		if (isEnded)
-			break;
+			if (isEnded)
+				break;
+		}
 	}
 
 	// 生成する

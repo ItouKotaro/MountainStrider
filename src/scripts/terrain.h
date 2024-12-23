@@ -77,6 +77,18 @@ public:
 private:
 	void UninitTerrain();
 
+	// 辺
+	enum Area
+	{
+		NONE,
+		TOP,
+		BOTTOM,
+		LEFT,
+		RIGHT
+	};
+
+	Area m_startArea;
+
 	unsigned int m_seed;										// シード値
 	GameObject* m_pField;									// メッシュフィールド
 	GameObject* m_pShadowField;

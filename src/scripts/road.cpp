@@ -225,6 +225,11 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 		if (RayCallback.hasHit())
 		{ // ƒqƒbƒg‚µ‚½‚Æ‚«
 			vtxHeight[i] = RayCallback.m_hitPointWorld.getY();
+
+			if (CCollision::GetGameObjectFromCollisionObj(RayCallback.m_collisionObject)->GetName() == "JumpStand")
+			{
+				return;
+			}
 		}
 		else
 		{ // Ž¸”s
