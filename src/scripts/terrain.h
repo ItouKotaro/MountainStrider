@@ -91,6 +91,8 @@ private:
 
 	// 頂点の高さを取得する
 	float GetVertexHeight(const int& x, const int& y);
+	// 頂点の高さを設定する
+	void SetVertexHeight(const int& x, const int& y, const float& height);
 
 	// 地形を生成する
 	void GenerateTerrain();

@@ -297,11 +297,11 @@ void Terrain::GenerateRoad()
 
 						if (heightDifference > 0)
 						{ // 高いとき
-							routeData[x][y] += static_cast<int>(fabsf(heightDifference) * 0.2f);
+							routeData[x][y] += static_cast<int>(fabsf(heightDifference) * 0.1f);
 						}
-						else
+						if (fabsf(heightDifference) < 100.0f)
 						{ // 低いとき
-							routeData[x][y] -= static_cast<int>(fabsf(heightDifference) * 0.1f);
+							routeData[x][y] += static_cast<int>(100.0f - fabsf(heightDifference));
 						}
 					}
 				}
@@ -318,7 +318,7 @@ void Terrain::GenerateRoad()
 			int dY = abs(y) <= abs(y - TERRAIN_SIZE) ? abs(y) : abs(y - TERRAIN_SIZE);
 			int disNear = dX <= dY ? dX : dY;
 
-			routeData[x][y] += disNear * 2;
+			routeData[x][y] += static_cast<int>(disNear * 25);
 		}
 	}
 
@@ -375,6 +375,32 @@ void Terrain::GenerateRoad()
 					continue;	// スキップ
 				}
 
+				// 周囲に道があるとき
+				int nearRoad = 0;
+				for (int sx = -1; sx < 2; sx++)
+				{
+					for (int sy = -1; sy < 2; sy++)
+					{
+						// 除外リスト
+						if ((sx == 0 && sy == 0) ||
+							x + currentX + sx < 0 || TERRAIN_SIZE <= x + currentX + sx ||
+							y + currentY + sy < 0 || TERRAIN_SIZE <= y + currentY + sy)
+						{ // 現在位置と範囲外
+							continue;	// スキップ
+						}
+
+						// 既に道の場合
+						if (pRoad->IsRoutedByIdx(routeIdx, x + currentX + sx, y + currentY + sy))
+						{
+							nearRoad++;
+						}
+					}
+				}
+				if (nearRoad > 1)
+				{
+					routeData[currentX + x][currentY + y] *= 0.2f;
+				}
+
 				if (routeData[currentX + x][currentY + y] > high)
 				{ // 最高スコアの時
 					selectX = currentX + x;
@@ -414,6 +440,42 @@ void Terrain::GenerateRoad()
 		// 道を追加する
 		pRoad->AddPoint(routeIdx, currentX, currentY);
 
+		// 道を平地化する
+		int aveCount = 0;
+		float ave = 0.0f;
+		for (int x = -1; x < 2; x++)
+		{
+			for (int y = -1; y < 2; y++)
+			{
+				// 除外リスト
+				if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
+					currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+				{ // 現在位置と範囲外
+					continue;	// スキップ
+				}
+				ave += GetVertexHeight(currentX + x, currentY + y);
+				aveCount++;
+			}
+		}
+		// 平均値を出す
+		ave /= (float)aveCount;
+		// 設定する
+		for (int x = -1; x < 2; x++)
+		{
+			for (int y = -1; y < 2; y++)
+			{
+				// 除外リスト
+				if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
+					currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+				{ // 現在位置と範囲外
+					continue;	// スキップ
+				}
+				float ori = (GetVertexHeight(currentX + x, currentY + y) - ave) * 0.5f;
+				SetVertexHeight(currentX + x, currentY + y, ave + ori);
+			}
+		}
+
+
 		if (isEnded)
 			break;
 	}
@@ -433,6 +495,18 @@ float Terrain::GetVertexHeight(const int& x, const int& y)
 		return m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE];
 	}
 	return 0.0f;
+}
+
+//=============================================================
+// [Terrain] 頂点の高さを設定する
+//=============================================================
+void Terrain::SetVertexHeight(const int& x, const int& y, const float& height)
+{
+	if (0 <= x && x < TERRAIN_SIZE &&
+		0 <= y && y < TERRAIN_SIZE)
+	{
+		m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = height;
+	}
 }
 
 //=============================================================

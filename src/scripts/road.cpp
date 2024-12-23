@@ -132,10 +132,10 @@ void Road::Generate()
 			// 目標地点の方向に移動する
 			D3DXVECTOR2 dir = { (nextPos.x + halfScale) - m_currentPos.x, (nextPos.y + halfScale) - m_currentPos.y };
 			D3DXVec2Normalize(&dir, &dir);		// 目標地点への方向ベクトル
-			m_currentPos += dir * 70.0f;
+			m_currentPos += dir * 30.0f;
 
 			// 設置する
-			CreateRoad(m_currentPos, 70.0f, 0.0f);
+			CreateRoad(m_currentPos, 30.0f, 0.0f);
 
 			// 目標地点に到着しているかを確認する
 			if (nextPos.x <= m_currentPos.x && m_currentPos.x <= nextPos.x + Terrain::TERRAIN_SCALE &&
@@ -197,7 +197,7 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	SingleComponent<CMeshField>* groundMesh = new SingleComponent<CMeshField>();
 	groundMesh->Init();
 	groundMesh->Create(1, 1, size);
-	groundMesh->transform->SetPos({ pos.x, 2.0f, pos.y });
+	groundMesh->transform->SetPos({ pos.x, 1.0f, pos.y });
 	groundMesh->SetHeight(0, 0, vtxHeight[0]);
 	groundMesh->SetHeight(1, 0, vtxHeight[1]);
 	groundMesh->SetHeight(0, 1, vtxHeight[2]);
