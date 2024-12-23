@@ -47,9 +47,11 @@ public:
 	void FadeIn(const float& fFadeValue = 0.01f, const float& fMaxVolume = 1.0f);
 	STATE GetState();
 	void IsStoppedDestroy(const bool& bEnable = true);
+	void IsIgnoreDistance(const bool& bEnable = true);
 private:
 	ALuint m_source;					// ソースID
 	bool m_bStoppedDestroy;		// 停止したときにオブジェクトを破棄するか
+	bool m_bIgnoreDistance;		// 距離を無視する
 
 	float m_fFadeValue;				// フェード値
 	float m_fFadeMaxVolume;		// フェードの最大音量（フェードインに使用）

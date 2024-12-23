@@ -37,7 +37,22 @@ void CSound::Uninit()
 void CSound::Update()
 {
 	// Ä¶ˆÊ’u‚ğİ’è‚·‚é
-	alSource3f(m_source, AL_POSITION, transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z);
+	if (!m_bIgnoreDistance)
+	{
+		alSource3f(m_source, AL_POSITION, transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z);
+	}
+	else
+	{ // ‹——£‚ğ–³‹‚·‚é
+		auto soundListener = Component::GetComponents<CSoundListener>();
+		for (auto itr = soundListener.begin(); itr != soundListener.end(); itr++)
+		{
+			if ((*itr)->gameObject->GetActive() && (*itr)->enabled)
+			{
+				alSource3f(m_source, AL_POSITION, (*itr)->transform->GetWPos().x, (*itr)->transform->GetWPos().y, (*itr)->transform->GetWPos().z);
+				break;
+			}
+		}
+	}
 
 	// ’â~‚µ‚½‚ç”jŠü‚·‚é
 	if (m_bStoppedDestroy && GetState() == STATE::STOPPED)
@@ -201,6 +216,13 @@ void CSound::IsStoppedDestroy(const bool& bEnable)
 	m_bStoppedDestroy = bEnable;
 }
 
+//=============================================================
+// [CSound] ‹——£‚ğ–³‹‚·‚é
+//=============================================================
+void CSound::IsIgnoreDistance(const bool& bEnable)
+{
+	m_bIgnoreDistance = bEnable;
+}
 
 //=============================================================
 // [CSoundListener] ‰Šú‰»

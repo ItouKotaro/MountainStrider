@@ -8,5 +8,10 @@
     {
         "key": ["lshift"],
         "input": "trigger"
+    },
+    "use-item":
+    {
+        "key": ["f","p:b"],
+        "input": "trigger"
     }
 }

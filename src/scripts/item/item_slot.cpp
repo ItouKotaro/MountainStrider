@@ -7,6 +7,7 @@
 #include "item_slot.h"
 #include "manager.h"
 #include "item_manager.h"
+#include "component/other/sound.h"
 
 //=============================================================
 // [ItemSlot] 初期化
@@ -102,11 +103,18 @@ void ItemSlot::Update()
 	}
 
 	// 使用キーを押されたとき、アイテムを使用する
-	if (INPUT_INSTANCE->onTrigger("f"))
+	if (INPUT_INSTANCE->onInput("use-item"))
 	{
 		if (ItemManager::GetInstance()->GetCarryOn(m_selectIdx) != nullptr)
 		{
 			ItemManager::GetInstance()->GetCarryOn(m_selectIdx)->onUse();
+
+			GameObject* useSound = new GameObject();
+			useSound->AddComponent<CSound>()->LoadWav("data\\SOUND\\SE\\use.wav");
+			useSound->GetComponent<CSound>()->SetVolume(1000.0f);
+			useSound->GetComponent<CSound>()->IsStoppedDestroy();
+			useSound->GetComponent<CSound>()->IsIgnoreDistance();
+			useSound->GetComponent<CSound>()->Play();
 		}
 
 		// テクスチャの更新

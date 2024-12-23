@@ -15,6 +15,7 @@
 #include "component/3d/collision.h"
 #include "component/3d/field.h"
 #include "scripts/road.h"
+#include "component/other/sound.h"
 using namespace noise;
 
 #include "component/2d/text.h"
