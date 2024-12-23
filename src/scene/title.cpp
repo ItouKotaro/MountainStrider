@@ -100,11 +100,13 @@ void CTitleScene::Init()
 	pLight->transform->SetPos(-30.0f, 100.0f, -20.0f);
 	pLight->transform->LookAt({ 0.0f, 0.0f, 5.0f });
 
-	//CameraRenderBuffer* renderBuff = CRenderer::GetInstance()->RegisterRenderBuffer<CameraRenderBuffer>("main");
+	// 影用レンダーバッファの設定
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(pCamera->GetComponent<CCamera>());
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(pLight->GetComponent<CCamera>());
-
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetAmbient({ 0.7f, 0.7f, 0.7f, 1.0f });
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint({ 0.0f, 0.0f, 0.0f });
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(600.0f);
 }
 
 //=============================================================

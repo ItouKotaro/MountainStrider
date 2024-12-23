@@ -30,6 +30,8 @@ public:
 	};
 	static void AddResult(ResultData data);
 	static void Reset();
+	static int GetAverageTime();
+	static int GetAverageAction();
 
 	static float GetBeforeFuel() { return m_beforeFuel; }
 	static float GetBeforeEndurance() { return m_beforeEndurance; }

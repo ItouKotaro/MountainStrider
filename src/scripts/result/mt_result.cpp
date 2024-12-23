@@ -43,6 +43,49 @@ void ResultBase::Reset()
 	m_results.clear();
 }
 
+//=============================================================
+// [ResultBase] •½‹ÏŽžŠÔ
+//=============================================================
+int ResultBase::GetAverageTime()
+{
+	int allTime = 0;
+	int count = 0;
+	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	{
+		if ((*itr).time != -1)
+		{
+			allTime += (*itr).time;
+			count++;
+		}
+	}
+
+	if (count > 0)
+	{
+		return allTime / count;
+	}
+	return allTime;
+}
+
+//=============================================================
+// [ResultBase] •½‹ÏƒAƒNƒVƒ‡ƒ“
+//=============================================================
+int ResultBase::GetAverageAction()
+{
+	int allAction = 0;
+	int count = 0;
+	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	{
+		allAction += (*itr).action;
+		count++;
+	}
+
+	if (count > 0)
+	{
+		return allAction / count;
+	}
+	return allAction;
+}
+
 
 //=============================================================
 // [ClearResult] ‰Šú‰»
@@ -532,10 +575,19 @@ void GameOverResult::InitFinalResult()
 	m_timeRate->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\rank_s.png");
 	page->AddObject(1, m_timeRate);
 
+	// •ª‚Æ•b
+	int time = GetAverageTime();
+	int min = (time - time % 60) / 60;
+	int sec = time % 60;
+
+	// ŽžŠÔ‚Ì•\Ž¦Œ`Ž®‚ð•ÏX‚·‚é
+	char timeTextPara[64];
+	sprintf(&timeTextPara[0], "%d:%02d", min, sec);
+
 	m_timeValue = new GameObject();
 	m_timeValue->transform->SetPos(0.0f, 350.0f);
 	m_timeValue->SetParent(timeText);
-	m_timeValue->AddComponent<CText>()->SetText("1:24");
+	m_timeValue->AddComponent<CText>()->SetText(timeTextPara);
 	m_timeValue->GetComponent<CText>()->SetFont("07“S•rƒSƒVƒbƒN");
 	m_timeValue->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_timeValue->GetComponent<CText>()->SetFontSize(60);
@@ -576,7 +628,7 @@ void GameOverResult::InitFinalResult()
 	m_actionValue = new GameObject();
 	m_actionValue->transform->SetPos(0.0f, 350.0f);
 	m_actionValue->SetParent(actionText);
-	m_actionValue->AddComponent<CText>()->SetText("3567");
+	m_actionValue->AddComponent<CText>()->SetText(std::to_string(GetAverageAction()));
 	m_actionValue->GetComponent<CText>()->SetFont("07“S•rƒSƒVƒbƒN");
 	m_actionValue->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_actionValue->GetComponent<CText>()->SetFontSize(60);
