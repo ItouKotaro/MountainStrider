@@ -22,7 +22,7 @@ void CTitleScene::Init()
 {
 	// ”wŒi
 	GameObject* pBack = new GameObject();
-	pBack->AddComponent<CField>()->Set(520.0f, 400.0f);
+	pBack->AddComponent<CField>()->Set(580.0f, 420.0f);
 	pBack->GetComponent<CField>()->SetTexture("data\\TEXTURE\\TITLE\\back.png");
 	pBack->transform->SetPos(0.0f, 0.0f, 300.0f);
 	pBack->transform->SetRot(-D3DX_PI * 0.5f, 0.0f, 0.0f);

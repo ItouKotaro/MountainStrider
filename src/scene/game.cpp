@@ -152,7 +152,7 @@ void CGameScene::Update()
 {
 	if (INPUT_INSTANCE->onTrigger("@"))
 	{
-		onClear();
+		onGameOver();
 	}
 
 	// ポーズ
@@ -268,7 +268,6 @@ void CGameScene::SpawnBike()
 
 	// バイクを生成する
 	m_pBike = new GameObject("Vehicle");
-	//m_pBike->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_pBike->AddComponent<CVehicle>();
 	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
 
@@ -308,6 +307,9 @@ void CGameScene::onGameOver()
 		// ステータスUIを非表示にする
 		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
+		// アイテムスロットを非表示にする
+		m_pItemSlot->SetActive(false);
+
 		// リザルトデータの格納
 		ResultBase::ResultData data;
 		data.time = -1;
@@ -337,6 +339,9 @@ void CGameScene::onClear()
 	{ // 1回のみの処理
 		// ステータスUIを非表示にする
 		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
+
+		// アイテムスロットを非表示にする
+		m_pItemSlot->SetActive(false);
 
 		// リザルトデータの格納
 		ResultBase::ResultData data;

@@ -215,6 +215,7 @@
     <ClCompile Include="src\component\other\button.cpp" />
     <ClCompile Include="src\component\other\emitter.cpp" />
     <ClCompile Include="src\component\other\flag.cpp" />
+    <ClCompile Include="src\component\other\framebox.cpp" />
     <ClCompile Include="src\component\other\page.cpp" />
     <ClCompile Include="src\component\other\render_objects_texture.cpp" />
     <ClCompile Include="src\component\other\sound.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="src\component\other\button.h" />
     <ClInclude Include="src\component\other\emitter.h" />
     <ClInclude Include="src\component\other\flag.h" />
+    <ClInclude Include="src\component\other\framebox.h" />
     <ClInclude Include="src\component\other\page.h" />
     <ClInclude Include="src\component\other\render_objects_texture.h" />
     <ClInclude Include="src\component\other\sound.h" />

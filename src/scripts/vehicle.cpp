@@ -164,11 +164,11 @@ void CVehicle::Update()
 	// 地面との距離を更新する
 	UpdateGroundDistance();
 
-	//// ゲームオーバー処理
-	//if (m_fuel <= 0.0f)
-	//{ // 燃料が無くなったとき
-	//	static_cast<CGameScene*>(CSceneManager::GetInstance()->GetCurrentScene()->pScene)->onGameOver();
-	//}
+	// ゲームオーバー処理
+	if (m_fuel <= 0.0f)
+	{ // 燃料が無くなったとき
+		static_cast<CGameScene*>(CSceneManager::GetInstance()->GetCurrentScene()->pScene)->onGameOver();
+	}
 }
 
 //=============================================================
@@ -414,11 +414,5 @@ void CVehicle::UpdateGroundDistance()
 	{ // 着地したと判断されたとき
 		m_flying = false;
 		gameObject->GetComponent<VehicleAction>()->onFlyEnd();
-	}
-
-	// 埋まり対策
-	if (m_groundDistance < 1.0f)
-	{
-		gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(btVector3(0.0f, 10.0f, 0.0f));
 	}
 }

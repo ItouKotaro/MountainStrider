@@ -315,6 +315,9 @@
     <ClCompile Include="src\scripts\item\item_slot.cpp">
       <Filter>ソース ファイル\scripts\item</Filter>
     </ClCompile>
+    <ClCompile Include="src\component\other\framebox.cpp">
+      <Filter>ソース ファイル\component\other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -535,6 +538,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\item\item_slot.h">
       <Filter>ヘッダー ファイル\scripts\item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\other\framebox.h">
+      <Filter>ヘッダー ファイル\component\other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

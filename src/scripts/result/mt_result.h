@@ -86,9 +86,11 @@ public:
 	void Update() override;
 	void Draw() override;
 private:
+	void InitFinalResult();
 	void UpdateResultAnim();
 
-	GameObject* m_mtText;		// マウンテンテキスト（山の踏破数）
+	GameObject* m_page;					// ページ
+	GameObject* m_mtText;				// マウンテンテキスト（ゲームオーバー表示）
 
 	GameObject* m_bg;						// 背景
 	GameObject* m_seedText;				// シードテキスト
@@ -96,6 +98,15 @@ private:
 	GameObject* m_fuelView;				// 燃料表示
 	GameObject* m_enduranceView;	// 耐久値表示
 	GameObject* m_terrainImg;			// 地形画像
+
+	// 最終結果用
+	GameObject* m_scoreText;				// スコア
+	GameObject* m_timeRate;				// 時間の評価
+	GameObject* m_actionRate;			// アクションの評価
+	GameObject* m_fuelRate;				// 燃費の評価
+	GameObject* m_timeValue;			// 時間表示
+	GameObject* m_actionValue;			// アクション表示
+	GameObject* m_fuelValue;				// 燃費表示
 };
 
 
