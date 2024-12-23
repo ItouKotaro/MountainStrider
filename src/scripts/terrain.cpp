@@ -21,7 +21,7 @@ using namespace noise;
 #include "renderer.h"
 
 // Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
-const float Terrain::TERRAIN_SCALE = 90.0f;
+const float Terrain::TERRAIN_SCALE = 150.0f;
 
 //=============================================================
 // [Terrain] ‰Šú‰»

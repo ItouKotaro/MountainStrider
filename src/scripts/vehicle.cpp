@@ -23,7 +23,7 @@ const float CVehicle::STEERING_VALUE = 3.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 1.0f;
 const float CVehicle::MAX_ENGINEFORCE = 180000.0f;
 const float CVehicle::MAX_STEERING = 15000.0f;
-const float CVehicle::MAX_FUEL = 2000.0f;
+const float CVehicle::MAX_FUEL = 3000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
 const float CVehicle::FLYING_DISTANCE = 30.0f;
 const float CVehicle::GROUND_DISTANCE = 5.0f;
@@ -234,9 +234,9 @@ void CVehicle::LandingControlVehicle()
 	};
 
 	// ジャンプアクション
-	if (INPUT_INSTANCE->onInput("jump") && m_groundDistance <= 15.0f)
+	if (INPUT_INSTANCE->onInput("jump") && m_groundDistance <= GROUND_DISTANCE)
 	{
-		CCollision::GetCollision(gameObject)->GetRigidBody()->setLinearVelocity(CCollision::GetCollision(gameObject)->GetRigidBody()->getLinearVelocity() + btVector3(0.0f, 100.0f, 0.0f));
+		CCollision::GetCollision(gameObject)->GetRigidBody()->setLinearVelocity(CCollision::GetCollision(gameObject)->GetRigidBody()->getLinearVelocity() + btVector3(0.0f, 50.0f, 0.0f));
 	}
 
 	// アクセル

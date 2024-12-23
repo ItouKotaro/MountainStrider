@@ -517,6 +517,8 @@ void GameOverResult::InitFinalResult()
 {
 	auto page = m_page->GetComponent<Pages>();
 
+	// データ計算 ------------------------------------------------------------------------------------
+
 	// 平均時間の表示形式を変更する
 	int time = GetAverageTime();
 	int min = (time - time % 60) / 60;
@@ -536,6 +538,26 @@ void GameOverResult::InitFinalResult()
 	fuelConsumption = totalMileage / totalFuel;
 	char fuelTextPara[64];
 	sprintf(&fuelTextPara[0], "%.1f<size=40>Km/L", fuelConsumption);
+
+	// ランク査定 ------------------------------------------------------------------------------------
+	enum RANK
+	{
+		RANK_S,
+		RANK_A,
+		RANK_B,
+		RANK_C
+	};
+
+	// 平均タイム
+	RANK timeRank;
+	if (time < 60) timeRank = RANK_S;
+	else if (time < 90) timeRank = RANK_A;
+	else if (time < 120) timeRank = RANK_B;
+	else timeRank = RANK_C;
+
+	// アクション
+	RANK actionRank;
+
 
 	// 表示 ------------------------------------------------------------------------------------
 
