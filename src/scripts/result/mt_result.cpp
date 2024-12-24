@@ -539,6 +539,15 @@ void GameOverResult::InitFinalResult()
 	char fuelTextPara[64];
 	sprintf(&fuelTextPara[0], "%.1f<size=40>Km/L", fuelConsumption);
 
+	// スコア計算
+	int score = 0;
+	score += GetAverageAction() * m_results.size();
+	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	{
+		score += (500 - (*itr).time) * 2;
+	}
+	score += m_results.size() * 1200;
+
 	// ランク査定 ------------------------------------------------------------------------------------
 	enum RANK
 	{
@@ -585,7 +594,7 @@ void GameOverResult::InitFinalResult()
 
 	// 最終スコア
 	m_scoreText = new GameObject();
-	m_scoreText->AddComponent<CText>()->SetText("15688");
+	m_scoreText->AddComponent<CText>()->SetText(std::to_string(score));
 	m_scoreText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_scoreText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_scoreText->GetComponent<CText>()->SetFontSize(200);

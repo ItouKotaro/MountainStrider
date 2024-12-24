@@ -137,7 +137,7 @@ void Terrain::Generate()
 	m_pField->GetComponent<Road>()->Generate();
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 20000; i++)
 	{
 		GenerateProduces();
 	}

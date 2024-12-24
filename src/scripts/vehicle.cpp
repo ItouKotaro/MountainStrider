@@ -18,7 +18,7 @@
 #include "scripts/vehicle_sound.h"
 #include "scene/game.h"
 
-const float CVehicle::ENGINEFORCE_VALUE = 40.0f;
+const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
 const float CVehicle::STEERING_VALUE = 3.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 1.0f;
 const float CVehicle::MAX_ENGINEFORCE = 180000.0f;
