@@ -14,6 +14,7 @@
 #include "scene/game.h"
 #include "renderer.h"
 #include "render/shadow_rb.h"
+#include "manager.h"
 
 //=============================================================
 // [CTitleScene] èâä˙âª
@@ -58,6 +59,13 @@ void CTitleScene::Init()
 		pStartButton->AddComponent<ButtonUI>();
 		pStartButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 		pStartButton->GetComponent<ButtonUI>()->setClickEvent([]() { 
+			// ì«Ç›çûÇ›íÜÇÃâÊëúÇï\é¶
+			GameObject* loadingPoly = new GameObject();
+			loadingPoly->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\TITLE\\loading.png");
+			loadingPoly->transform->SetSize(1220.0f, 304.0f);
+			loadingPoly->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 610.0f, CRenderer::SCREEN_HEIGHT / 2 - 152.0f);
+
+			// ÉQÅ[ÉÄèàóù
 			static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->ResetGame();
 			CSceneManager::GetInstance()->SetScene("game");
 			});
@@ -107,6 +115,8 @@ void CTitleScene::Init()
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetAmbient({ 0.7f, 0.7f, 0.7f, 1.0f });
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint({ 0.0f, 0.0f, 0.0f });
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(600.0f);
+
+	CManager::GetInstance()->SetShowCursor(true);
 }
 
 //=============================================================

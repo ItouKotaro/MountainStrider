@@ -72,6 +72,8 @@ void Pause::SetPause(const bool& enabled)
 	m_pausePage->GetComponent<Pages>()->SetPage(enabled ? 1 : 0);
 	m_isPause = enabled;
 
+	CManager::GetInstance()->SetShowCursor(enabled);
+
 	// •¨—Ý’è
 	CPhysics::GetInstance()->SetUpdatePhysics(!m_isPause);
 	GameObject::Find("Camera")->GetComponent<CCameraMove>()->enabled = !enabled;
