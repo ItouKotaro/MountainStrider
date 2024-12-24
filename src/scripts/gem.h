@@ -11,8 +11,11 @@
 class Gem : public Component
 {
 public:
+	void Init() override;
 	void Update() override;
 	void OnTriggerEnter(GameObject* other) override;
+private:
+	GameObject* m_particle;
 };
 
 #endif // !_GEM_H_

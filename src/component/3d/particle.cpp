@@ -304,6 +304,7 @@ void ParticleSystem::UpdateGenerator()
 		}
 
 		// ‰ŠúˆÊ’u‚ðÝ’è‚·‚é
+		data.particle->transform->SetParent(gameObject->transform);
 		data.particle->transform->SetPos(shapeResult.position);
 
 		// ’Ç‰Á‚·‚é

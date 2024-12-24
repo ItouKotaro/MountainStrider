@@ -128,7 +128,7 @@ class ParticleSystem : public Component
 public:
 	ParticleSystem() :
 		m_gravity(0.0f),
-		m_size(10.0f),
+		m_size(5.0f),
 		m_emission(nullptr),
 		m_shape(nullptr),
 		m_power(nullptr),

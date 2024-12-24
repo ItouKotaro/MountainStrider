@@ -76,8 +76,8 @@ void ShopManager::Init(Pages* pages)
 	inventoryInfo->AddComponent<CText>()->SetText("インベントリ内のアイテムをクリックで持ち込む");
 	inventoryInfo->GetComponent<CText>()->SetAlign(CText::CENTER);
 	inventoryInfo->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
-	inventoryInfo->GetComponent<CText>()->SetFontSize(80);
-	inventoryInfo->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT - 100.0f);
+	inventoryInfo->GetComponent<CText>()->SetFontSize(40);
+	inventoryInfo->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT - 60.0f);
 	m_pages->AddObject(1, inventoryInfo);
 
 	// 次へのボタンを作成する

@@ -26,7 +26,16 @@ void EnvironmentalEffect::Init()
 	SetTime(time);
 
 	// “VŒó‚ðŒˆ‚ß‚é
-	SetWeather(new WeatherClear());
+	Weather* weather;
+	if (rand() % 3 == 0)
+	{
+		weather = new WeatherFog();
+	}
+	else
+	{
+		weather = new WeatherClear();
+	}
+	SetWeather(weather);
 }
 
 //=============================================================

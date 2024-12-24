@@ -6,6 +6,23 @@
 //=============================================================
 #include "gem.h"
 #include "shop/shop.h"
+#include "component/3d/particle.h"
+
+//=============================================================
+// [Gem] ‰Šú‰»
+//=============================================================
+void Gem::Init()
+{
+	m_particle = new GameObject();
+	m_particle->transform->SetPos(0.0f, -15.0f, 0.0f);
+	m_particle->SetParent(gameObject);
+	m_particle->AddComponent<ParticleSystem>();
+	m_particle->GetComponent<ParticleSystem>()->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\particle01.png");
+	m_particle->GetComponent<ParticleSystem>()->SetGravity(-0.005f);
+	ParticleModule::Emission* emission = new ParticleModule::Emission();
+	emission->SetRateOverTime(1.5f);
+	m_particle->GetComponent<ParticleSystem>()->SetEmission(emission);
+}
 
 //=============================================================
 // [Gem] XV

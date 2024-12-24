@@ -149,7 +149,7 @@ void CGameScene::Update()
 {
 	if (INPUT_INSTANCE->onTrigger("@"))
 	{
-		onGameOver();
+		onClear();
 	}
 
 	// ポーズ
