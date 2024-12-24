@@ -76,6 +76,7 @@ public:
 	static const float TERRAIN_SCALE;
 private:
 	void UninitTerrain();
+	void GenerateGem();
 
 	// •Ó
 	enum Area

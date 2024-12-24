@@ -573,6 +573,7 @@ void GameOverResult::InitFinalResult()
 	else if (time < 100) timeRank = RANK_A;
 	else if (time < 180) timeRank = RANK_B;
 	else timeRank = RANK_C;
+	if (timeRank == 0) timeRank = RANK_C;
 
 	// ƒAƒNƒVƒ‡ƒ“
 	RANK actionRank = RANK_S;

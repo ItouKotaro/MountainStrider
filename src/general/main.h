@@ -9,7 +9,7 @@
 
 // マクロ定義
 #define CLASS_NAME			"WindowClass"	// クラス名
-#define WINDOW_NAME	"Caplush"			// ウィンドウ名
+#define WINDOW_NAME	"MountainStrider"			// ウィンドウ名
 #define FIXED_FPS			(60)					// 固定FPS値
 
 // プロトタイプ宣言

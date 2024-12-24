@@ -16,6 +16,7 @@
 #include "component/3d/field.h"
 #include "scripts/road.h"
 #include "component/other/sound.h"
+#include "scripts/gem.h"
 using namespace noise;
 
 #include "component/2d/text.h"
@@ -136,6 +137,12 @@ void Terrain::Generate()
 	// 道のオブジェクトを生成する
 	m_pField->GetComponent<Road>()->Generate();
 
+	// ジェムの生成
+	for (int i = 0; i < 100; i++)
+	{
+		GenerateGem();
+	}
+
 	// 生成物を生成する
 	for (int i = 0; i < 20000; i++)
 	{
@@ -235,23 +242,6 @@ void Terrain::GenerateTerrain()
 			// 高さを設定する
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, height);
 			m_pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, height);
-
-			//// 色を設定する
-			//m_pField->GetComponent<CMeshField>()->SetColor(x, y, GetVertexColor(x, y));
-
-			//if (m_routeData[x][y])
-			//{
-			//	//GameObject* pRoadField = new GameObject();
-			//	//pRoadField->AddComponent<CField>()->Set(TERRAIN_SCALE, TERRAIN_SCALE);
-			//	//pRoadField->transform->SetPos(x * TERRAIN_SCALE - (TERRAIN_SCALE * TERRAIN_SIZE) / 2, height + 0.5f, y * TERRAIN_SCALE - (TERRAIN_SCALE * TERRAIN_SIZE) / 2);
-			//	//
-			//}
-
-			//// 道があるとき色を変える（仮）
-			//if (m_routeData[x][y])
-			//{
-			//	m_pField->GetComponent<CMeshField>()->SetColor(x, y, D3DCOLOR_RGBA(179, 119, 0, 255));
-			//}
 		}
 	}
 
@@ -487,6 +477,31 @@ void Terrain::GenerateRoad()
 
 	// 生成する
 	pRoad->OutputText();
+}
+
+//=============================================================
+// [Terrain] ジェムの生成
+//=============================================================
+void Terrain::GenerateGem()
+{
+	// ランダムで位置を決める
+	D3DXVECTOR3 generatePos;
+	generatePos = {
+		rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f,
+		0.0f,
+		rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f
+	};
+
+	btVector3 Start = btVector3(generatePos.x, m_maxHeight + 10.0f, generatePos.z);
+	btVector3 End = btVector3(generatePos.x, m_minHeight - 10.0f, generatePos.z);
+
+	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+	if (RayCallback.hasHit())
+	{ // ヒットしたとき
+		GameObject* gemObj = GameObject::LoadPrefab("data\\PREFAB\\item\\gem.pref", Transform({generatePos.x, RayCallback.m_hitPointWorld.getY() + 20.0f, generatePos.z}));
+		gemObj->AddComponent<Gem>();
+	}
 }
 
 //=============================================================

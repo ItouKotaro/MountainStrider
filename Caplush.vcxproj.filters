@@ -318,6 +318,9 @@
     <ClCompile Include="src\component\other\framebox.cpp">
       <Filter>ソース ファイル\component\other</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\gem.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -541,6 +544,9 @@
     </ClInclude>
     <ClInclude Include="src\component\other\framebox.h">
       <Filter>ヘッダー ファイル\component\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\gem.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

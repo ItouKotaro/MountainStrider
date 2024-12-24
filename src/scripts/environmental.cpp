@@ -132,7 +132,7 @@ void EnvironmentalEffect::UpdateLight()
 	case TIME::NIGHT:
 		m_light->SetParent(m_vehicle);
 		m_light->transform->SetPos(0.0f, 15.0f, -25.0f);
-		m_light->transform->SetRot(0.0f, D3DX_PI, 0.0f);
+		m_light->transform->SetRot(0.15f, D3DX_PI, 0.0f);
 		static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint(
 			m_light->transform->GetWPos() + D3DXVECTOR3(sinf(m_vehicle->transform->GetWRot().y) * -250.0f, 0.0f, cosf(m_vehicle->transform->GetWRot().y) * -250.0f)
 		);

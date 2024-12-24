@@ -71,6 +71,15 @@ void ShopManager::Init(Pages* pages)
 	m_inventory->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2) - 450.0f, 820.0f);
 	m_pages->AddObject(1, m_inventory);
 
+	// インベントリ説明
+	GameObject* inventoryInfo = new GameObject;
+	inventoryInfo->AddComponent<CText>()->SetText("インベントリ内のアイテムをクリックで持ち込む");
+	inventoryInfo->GetComponent<CText>()->SetAlign(CText::CENTER);
+	inventoryInfo->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+	inventoryInfo->GetComponent<CText>()->SetFontSize(80);
+	inventoryInfo->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT - 100.0f);
+	m_pages->AddObject(1, inventoryInfo);
+
 	// 次へのボタンを作成する
 	GameObject* nextButton = new GameObject("NextButton", "UI");
 	nextButton->transform->SetSize(400.0f, 130.0f);
