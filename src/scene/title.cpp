@@ -15,6 +15,7 @@
 #include "renderer.h"
 #include "render/shadow_rb.h"
 #include "manager.h"
+#include "component/other/page.h"
 
 //=============================================================
 // [CTitleScene] 初期化
@@ -107,6 +108,20 @@ void CTitleScene::Init()
 	pLight->AddComponent<CCamera>();
 	pLight->transform->SetPos(-30.0f, 100.0f, -20.0f);
 	pLight->transform->LookAt({ 0.0f, 0.0f, 5.0f });
+
+	// チュートリアル
+	GameObject* tutorialImg = new GameObject();
+	tutorialImg->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\TITLE\\tutorial.png");
+	tutorialImg->transform->SetSize(CRenderer::SCREEN_WIDTH, CRenderer::SCREEN_HEIGHT);
+	tutorialImg->SetVisible(false);
+
+	GameObject* tutorialButton = new GameObject();
+	tutorialButton->transform->SetSize(100.0f, 100.0f);
+	tutorialButton->transform->SetPos(CRenderer::SCREEN_WIDTH - 100.0f, 0.0f);
+	tutorialButton->AddComponent<ButtonUI>();
+	tutorialButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\TITLE\\tutorial_book.png");
+	tutorialButton->GetComponent<ButtonUI>()->setClickEvent([this, tutorialImg]() {tutorialImg->SetVisible(!tutorialImg->GetVisible()); });
+	tutorialButton->SetPriority(9);
 
 	// 影用レンダーバッファの設定
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");

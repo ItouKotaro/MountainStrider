@@ -56,19 +56,19 @@ void CCameraMove::Update()
 	{
 		if (stickRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		{
-			m_cameraRot.y += -0.02f;
+			m_cameraRot.y += -0.05f;
 		}
 		if (stickRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		{
-			m_cameraRot.y += 0.02f;
+			m_cameraRot.y += 0.05f;
 		}
 		if (stickRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		{
-			m_cameraRot.x += -0.02f;
+			m_cameraRot.x += 0.02f;
 		}
 		if (stickRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		{
-			m_cameraRot.x += 0.02f;
+			m_cameraRot.x += -0.02f;
 		}
 	}
 
@@ -93,50 +93,6 @@ void CCameraMove::Update()
 	{
 		transform->SetPos(m_posS);
 	}
-
-
-	//// 情報の取得
-	//Transform* pTargetTrans = m_pTarget->transform;
-	//D3DXQUATERNION objectiveRot = pTargetTrans->GetQuaternion();
-	//D3DXQUATERNION targetRot = transform->GetQuaternion();
-	//D3DXVECTOR3 objectivePos;
-
-	//bool flying = m_pTarget->GetComponent<CVehicle>()->GetFlying();
-	//if (!flying)
-	//{ // 地面にいるとき
-	//	pCamera->SetCustomPosR(false);
-
-	//	// カメラの目標地点を計算する
-	//	D3DXMATRIX vehicleMtx = pTargetTrans->GetMatrix();
-	//	objectivePos += {
-	//			0.0f,
-	//			40.0f,
-	//			-150.0f
-	//	};
-	//	D3DXVec3TransformCoord(&objectivePos, &objectivePos, &vehicleMtx);
-	//}
-	//else
-	//{ // 飛んでいるとき
-	//	pCamera->SetCustomPosR(true);
-	//	pCamera->SetPosR(pTargetTrans->GetWPos());
-
-	//	// カメラの目標地点を計算する
-	//	D3DXMATRIX vehicleMtx = pTargetTrans->GetMatrix();
-	//	objectivePos += {
-	//			0.0f,
-	//			30.0f,
-	//			-250.0f
-	//	};
-	//	D3DXVec3TransformCoord(&objectivePos, &objectivePos, &vehicleMtx);
-	//}
-
-	//// 回転
-	//objectiveRot = Benlib::LookAt(transform->GetWPos(), pTargetTrans->GetWPos() + D3DXVECTOR3(0.0f, 50.0f, 0.0f));
-	//D3DXQuaternionSlerp(&objectiveRot, &targetRot, &objectiveRot, 0.08f);
-	//transform->SetQuaternion(objectiveRot);
-
-	//// 目標地点に移動する
-	//transform->SetPos(transform->GetWPos()+(objectivePos - transform->GetWPos()) * 0.08f);
 }
 
 //=============================================================

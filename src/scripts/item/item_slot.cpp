@@ -91,6 +91,11 @@ void ItemSlot::Update()
 		m_selectIdx++;
 		m_scroll = 0;
 	}
+	if (INPUT_INSTANCE->onTrigger("p:b"))
+	{
+		if (m_selectIdx == 0) m_selectIdx = 1;
+		else if (m_selectIdx == 1) m_selectIdx = 0;
+	}
 
 	// ëIëÇÃè„å¿â∫å¿
 	if (m_selectIdx < 0) m_selectIdx = 0;

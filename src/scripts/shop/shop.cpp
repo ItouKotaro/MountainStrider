@@ -86,7 +86,15 @@ void ShopManager::Init(Pages* pages)
 	nextButton->transform->SetPos(1450.0f, 900.0f);
 	nextButton->AddComponent<ButtonUI>();
 	nextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-	nextButton->GetComponent<ButtonUI>()->setClickEvent([]() {CSceneManager::GetInstance()->ReloadScene(); });
+	nextButton->GetComponent<ButtonUI>()->setClickEvent([]() {
+		// “Ç‚Ýž‚Ý’†‚Ì‰æ‘œ‚ð•\Ž¦
+		GameObject* loadingPoly = new GameObject();
+		loadingPoly->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\TITLE\\loading.png");
+		loadingPoly->transform->SetSize(1220.0f, 304.0f);
+		loadingPoly->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 610.0f, CRenderer::SCREEN_HEIGHT / 2 - 152.0f);
+
+		CSceneManager::GetInstance()->ReloadScene(); 
+		});
 	m_pages->AddObject(1, nextButton);
 
 	GameObject* nextButtonText = new GameObject("NextButtonText", "UI");

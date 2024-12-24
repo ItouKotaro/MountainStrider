@@ -1,17 +1,17 @@
 {
     "accel":
     {
-        "key": ["space","p:rightthumb"],
+        "key": ["space","p:a"],
         "input": "press"
     },
     "jump":
     {
-        "key": ["lshift"],
+        "key": ["lshift","p:x"],
         "input": "trigger"
     },
     "use-item":
     {
-        "key": ["f","p:b"],
+        "key": ["f","p:y"],
         "input": "trigger"
     }
 }
