@@ -569,16 +569,25 @@ void GameOverResult::InitFinalResult()
 
 	// 平均タイム
 	RANK timeRank;
-	if (time < 90) timeRank = RANK_S;
-	else if (time < 120) timeRank = RANK_A;
+	if (time < 60) timeRank = RANK_S;
+	else if (time < 100) timeRank = RANK_A;
 	else if (time < 180) timeRank = RANK_B;
 	else timeRank = RANK_C;
 
 	// アクション
 	RANK actionRank = RANK_S;
+	int actionScore = GetAverageAction();
+	if (actionScore >= 3000) actionRank = RANK_S;
+	else if (actionScore >= 1800) actionRank = RANK_A;
+	else if (actionScore >= 600) actionRank = RANK_B;
+	else actionRank = RANK_C;
 
 	// 燃費
 	RANK fuelRank = RANK_S;
+	if (fuelConsumption >= 20.0f) fuelRank = RANK_S;
+	else if (fuelConsumption >= 18.0f) fuelRank = RANK_A;
+	else if (fuelConsumption >= 15.0f) fuelRank = RANK_B;
+	else fuelRank = RANK_C;
 
 
 	// 表示 ------------------------------------------------------------------------------------
