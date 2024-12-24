@@ -241,7 +241,7 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	SingleComponent<CMeshField>* groundMesh = new SingleComponent<CMeshField>();
 	groundMesh->Init();
 	groundMesh->Create(1, 1, size);
-	groundMesh->transform->SetPos({ pos.x, 1.5f, pos.y });
+	groundMesh->transform->SetPos({ pos.x, 1.5f + Benlib::RandomFloat(0.0f, 0.5f), pos.y });
 	groundMesh->transform->SetRot(0.0f, angle, 0.0f);
 	groundMesh->SetHeight(0, 0, vtxHeight[0]);
 	groundMesh->SetHeight(1, 0, vtxHeight[1]);

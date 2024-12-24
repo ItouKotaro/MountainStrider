@@ -63,8 +63,9 @@ void CGameScene::Init()
 
 	// 地面を作成
 	{
+		srand((unsigned int)clock());
 		m_pTerrain = new Terrain();
-		m_pTerrain->SetSeed((unsigned int)clock());
+		m_pTerrain->SetSeed(rand());
 		m_pTerrain->Init();
 		m_pTerrain->Generate();
 	}

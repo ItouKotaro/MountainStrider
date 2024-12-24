@@ -18,6 +18,7 @@ private:
 	bool m_isPause;
 	GameObject* m_pausePage;
 
+	GameObject* m_pauseText;
 	GameObject* m_backButton;
 	GameObject* m_endButton;
 };

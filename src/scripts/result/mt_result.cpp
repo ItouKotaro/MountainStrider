@@ -585,8 +585,8 @@ void GameOverResult::InitFinalResult()
 	// ”R”ï
 	RANK fuelRank = RANK_S;
 	if (fuelConsumption >= 20.0f) fuelRank = RANK_S;
-	else if (fuelConsumption >= 18.0f) fuelRank = RANK_A;
-	else if (fuelConsumption >= 15.0f) fuelRank = RANK_B;
+	else if (fuelConsumption >= 16.0f) fuelRank = RANK_A;
+	else if (fuelConsumption >= 11.0f) fuelRank = RANK_B;
 	else fuelRank = RANK_C;
 
 
