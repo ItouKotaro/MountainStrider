@@ -339,6 +339,7 @@ GameObject::~GameObject()
 
 		if ((*itr)->transform->GetParent() == transform)
 		{
+			(*itr)->Destroy();
 			(*itr)->transform->SetParent(nullptr);		// eó‘Ô‚Ì‰ğœ
 		}
 	}
