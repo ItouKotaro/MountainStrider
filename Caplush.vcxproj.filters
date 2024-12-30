@@ -204,9 +204,6 @@
     <ClCompile Include="src\component\3d\skybox.cpp">
       <Filter>ソース ファイル\component\3d</Filter>
     </ClCompile>
-    <ClCompile Include="src\component\other\sound.cpp">
-      <Filter>ソース ファイル\component\other</Filter>
-    </ClCompile>
     <ClCompile Include="src\component\other\emitter.cpp">
       <Filter>ソース ファイル\component\other</Filter>
     </ClCompile>
@@ -321,6 +318,12 @@
     <ClCompile Include="src\scripts\gem.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\component\other\audio.cpp">
+      <Filter>ソース ファイル\component\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\launch_credit.cpp">
+      <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -430,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="src\component\3d\skybox.h">
       <Filter>ヘッダー ファイル\component\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\component\other\sound.h">
-      <Filter>ヘッダー ファイル\component\other</Filter>
     </ClInclude>
     <ClInclude Include="src\component\other\emitter.h">
       <Filter>ヘッダー ファイル\component\other</Filter>
@@ -547,6 +547,12 @@
     </ClInclude>
     <ClInclude Include="src\scripts\gem.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\other\audio.h">
+      <Filter>ヘッダー ファイル\component\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\launch_credit.h">
+      <Filter>ヘッダー ファイル\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

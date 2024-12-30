@@ -7,7 +7,6 @@
 #include "item_slot.h"
 #include "manager.h"
 #include "item_manager.h"
-#include "component/other/sound.h"
 
 //=============================================================
 // [ItemSlot] 初期化
@@ -54,6 +53,11 @@ void ItemSlot::Init()
 			m_itemTexture[i]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.1f));
 		}
 	}
+
+	// 音を作成する
+	m_seManager = new GameObject();
+	m_seManager->AddComponent<AudioSource>();
+	m_useSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\use.wav", FMOD_2D);
 }
 
 //=============================================================
@@ -72,6 +76,8 @@ void ItemSlot::Uninit()
 		m_itemTexture[i]->Uninit();
 		delete m_itemTexture[i];
 	}
+
+	m_seManager->Destroy();
 }
 
 //=============================================================
@@ -113,13 +119,7 @@ void ItemSlot::Update()
 		if (ItemManager::GetInstance()->GetCarryOn(m_selectIdx) != nullptr)
 		{
 			ItemManager::GetInstance()->GetCarryOn(m_selectIdx)->onUse();
-
-			GameObject* useSound = new GameObject();
-			useSound->AddComponent<CSound>()->LoadWav("data\\SOUND\\SE\\use.wav");
-			useSound->GetComponent<CSound>()->SetVolume(1000.0f);
-			useSound->GetComponent<CSound>()->IsStoppedDestroy();
-			useSound->GetComponent<CSound>()->IsIgnoreDistance();
-			useSound->GetComponent<CSound>()->Play();
+			m_seManager->GetComponent<AudioSource>()->PlayOneShot(m_useSE);
 		}
 
 		// テクスチャの更新

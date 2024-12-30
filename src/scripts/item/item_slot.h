@@ -9,6 +9,8 @@
 
 #include "component.h"
 #include "component/2d/polygon.h"
+#include "component/other/audio.h"
+
 class ItemSlot : public Component
 {
 public:
@@ -23,6 +25,9 @@ private:
 	SingleComponent<CPolygon>* m_itemFrame[2];
 	SingleComponent<CPolygon>* m_itemBG[2];
 	SingleComponent<CPolygon>* m_itemTexture[2];
+
+	AudioClip m_useSE;
+	GameObject* m_seManager;
 };
 
 #endif // !_ITEM_SLOT_H_

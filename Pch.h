@@ -33,16 +33,18 @@ class CInputSystem;
 #include <Eigen/Geometry>
 #include <Eigen/Dense>
 
-// OpenAL Soft ライブラリ
-#include "AL/al.h"
-#include "AL/alc.h"
-#include "AL/alext.h"
-#pragma comment(lib, "OpenAL32.lib")
-#pragma comment(lib, "ex-common.lib")
-
 // Json ライブラリ
 #include "libs/json/json.hpp"
 using json = nlohmann::json;
+
+// FMOD ライブラリ
+#if _DEBUG	// デバッグ用
+#pragma comment(lib, "fmodL_vc.lib")
+#pragma comment(lib, "fmodstudioL_vc.lib")
+#else				// リリース用
+#pragma comment(lib, "fmod_vc.lib")
+#pragma comment(lib, "fmodstudio_vc.lib")
+#endif
 
 // libnoise ライブラリ
 #include "noise/noise.h"

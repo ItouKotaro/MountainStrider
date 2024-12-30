@@ -10,7 +10,6 @@
 #include "component/3d/collision.h"
 #include "component/3d/mesh.h"
 #include "component/2d/text.h"
-#include "component/other/sound.h"
 #include "component/3d/motion.h"
 
 #include "scripts/status_ui.h"

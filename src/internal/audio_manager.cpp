@@ -5,179 +5,91 @@
 //
 //=============================================================
 #include "audio_manager.h"
-#include "manager.h"
-#include <iostream>
-#include <fstream>
-
-class WaveFile {
-public:
-	~WaveFile() {
-		m_fp.close();
-	}
-	bool Open(const char* path);
-	int Read(void* out, size_t size);
-	bool IsEnd()const { return (0 == m_LoadedSize) || (m_DataSize == m_LoadedSize); }
-	ALuint CreateBuffer(ALuint buffer);
-
-private:
-	unsigned short m_ChannelQuantity;
-	unsigned short m_BlockSize;
-	unsigned short m_BitPerSample;
-	unsigned int m_Bps;
-	unsigned int m_SamplingRate;
-	unsigned int m_Length;
-
-	std::ifstream m_fp;
-	std::ifstream::pos_type m_DataHead;
-	size_t m_DataSize;
-	size_t m_LoadedSize;
-};
-bool WaveFile::Open(const char* path) {
-	m_fp.open(path, std::ios::binary);
-
-	// "RIFF" の読み込み
-	unsigned int riff;
-	m_fp.read((char*)&riff, 4);
-
-	// データサイズを取得
-	m_fp.read((char*)&m_DataSize, 4);
-
-	// WAVEの読み込み
-	unsigned int wave;
-	m_fp.read((char*)&wave, 4);
-
-	// PCM 情報とデータの先頭の取得
-	for (int i = 0; i < 2; ++i) {
-		unsigned int res, size;
-		m_fp.read((char*)&res, 4);
-		m_fp.read((char*)&size, 4);
-		if (0x20746d66u == res) 
-		{
-			// PCM 情報の取得
-			unsigned short res16;
-			m_fp.read((char*)&res16, 2);
-			if (1 != res16) {// 非対応フォーマット
-				return false;
-			}
-
-			// モノラル(1), ステレオ(2)
-			m_fp.read((char*)&m_ChannelQuantity, 2);
-			if (2 < m_ChannelQuantity) {
-				return false;
-			}
-
-			// サンプリングレート
-			m_fp.read((char*)&m_SamplingRate, 4);
-
-			// 1秒あたりのバイト数(byte/sec)
-			m_fp.read((char*)&m_Bps, 4);
-
-			// ブロックサイズ(byte/sample)
-			m_fp.read((char*)&m_BlockSize, 2);
-
-			// サンプルあたりのビット数(bit/sample)
-			m_fp.read((char*)&m_BitPerSample, 2);
-		}
-		else if (0x61746164u == res) 
-		{
-			// データの開始位置を保存
-			m_DataHead = m_fp.tellg();
-			m_DataSize = size;
-
-			// データを読み飛ばす
-			m_fp.seekg(size, std::ios::cur);
-		}
-	}
-
-	// データの開始位置までシーク
-	m_fp.seekg(m_DataHead);
-	m_LoadedSize = 0;
-	m_DataSize -= m_DataSize % 100;
-	m_Length = static_cast<unsigned int>(m_DataSize) / m_Bps;
-	return true;
-}
-
-int WaveFile::Read(void* out, size_t size) {
-	if (!out) 
-	{
-		return 0;
-	}
-
-	// データサイズの調整
-	if (m_LoadedSize + size > m_DataSize) {
-		size = m_DataSize - m_LoadedSize;
-	}
-
-	// データを読み出し書き込む
-	m_fp.read((char*)out, size);
-	m_LoadedSize += size;
-	if (m_LoadedSize == m_DataSize) {
-		m_LoadedSize = 0;
-		m_fp.seekg(m_DataHead);
-	}
-	return static_cast<int>(size);
-}
-
-ALuint WaveFile::CreateBuffer(ALuint buffer) {
-	// 新規にバッファを作成
-	if (!buffer)
-	{
-		alGenBuffers(1, &buffer);
-	}
-	std::vector<char> wavData(m_DataSize);
-	int read = Read(&wavData[0], m_DataSize);
-	ALenum format;
-	if (1 == m_ChannelQuantity) 
-	{ // モノラル
-		format = (8 == m_BitPerSample) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-	}
-	else 
-	{ // ステレオ
-		format = (8 == m_BitPerSample) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-	}
-
-	// OpenAL のバッファにデータの書き込み
-	alBufferData(buffer, format, &wavData[0], read, m_SamplingRate);
-	return buffer;
-}
 
 
 //=============================================================
-// [CAudioManager] 初期化
+// [AudioManager] 初期化
 //=============================================================
-HRESULT CAudioManager::Init()
+HRESULT AudioManager::Init()
 {
-	// デバイスの作成
-	m_device = alcOpenDevice(nullptr);
-	if (m_device)
-	{
-		// コンテキストの作成
-		m_context = alcCreateContext(m_device, nullptr);
-		alcMakeContextCurrent(m_context);
-	}
+	// システムの作成
+	FMOD::Studio::System::create(&m_system);
 
-	alGetError();
+	// コアシステムを取得する
+	m_system->getCoreSystem(&m_coreSystem);
+	
+	// フォーマット設定
+	m_coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0);
+
+	// システムの初期化
+	void* extraDriverData = nullptr;
+	m_system->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, extraDriverData);
+
+	// 距離単位の設定
+	m_coreSystem->set3DSettings(1.0f, 1.0f, 1.0f);
+
+
 
 	return S_OK;
 }
 
 //=============================================================
-// [CAudioManager] 終了
+// [AudioManager] 終了
 //=============================================================
-void CAudioManager::Uninit()
+void AudioManager::Uninit()
 {
-	// コンテキストを破棄する
-	alcMakeContextCurrent(nullptr);
-	alcDestroyContext(m_context);
+	// サウンドを破棄する
+	for (auto itr = m_audioClipList.begin(); itr != m_audioClipList.end(); itr++)
+	{
+		(*itr)->release();
+	}
+	m_audioClipList.clear();
 
-	// デバイスを破棄する
-	alcCloseDevice(m_device);
+	// システムを解放する
+	if (m_system != nullptr)
+	{
+		m_system->release();
+	}
 }
 
 //=============================================================
-// [CAudioManager] 更新
+// [AudioManager] 更新
 //=============================================================
-void CAudioManager::Update()
+void AudioManager::Update()
 {
+	if (m_system != nullptr)
+	{
+		m_system->update();
+	}
+}
 
+//=============================================================
+// [AudioManager] オーディオクリップの作成
+//=============================================================
+AudioClip AudioManager::CreateClip(std::string filePath, FMOD_MODE mode, bool isStream)
+{
+	AudioClip sound = nullptr;
+	isStream ? m_coreSystem->createStream(filePath.c_str(), mode, 0, &sound) : m_coreSystem->createSound(filePath.c_str(), mode, 0, &sound);
+	m_audioClipList.push_back(sound);
+	return sound;
+}
+
+//=============================================================
+// [AudioManager] オーディオバンクの読み込み
+//=============================================================
+AudioBank AudioManager::LoadBank(std::string filePath)
+{
+	AudioBank bank = nullptr;
+	m_system->loadBankFile(filePath.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &bank);
+	return bank;
+}
+
+//=============================================================
+// [AudioManager] オーディオイベント記述の取得
+//=============================================================
+AudioEventDesc AudioManager::GetEventDesc(std::string path)
+{
+	AudioEventDesc desc = nullptr;
+	m_system->getEvent(path.c_str(), &desc);
+	return desc;
 }

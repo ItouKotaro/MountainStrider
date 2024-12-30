@@ -19,7 +19,6 @@ public:
 	{
 		TEXTURE = 0,		// テクスチャ
 		MESH,					// メッシュ
-		AUDIO,					// オーディオ
 	}FORMAT;
 
 	CDataBase(const FORMAT& format);
@@ -64,32 +63,6 @@ private:
 	DWORD m_dwNumMat;																// マテリアル数
 };
 
-// オーディオデータクラス
-class CDataAudio : public CDataBase
-{
-public:
-	CDataAudio();
-	void Clear() override;
-	HRESULT Load(const std::string& sPath);
-	ALuint GetBuffer() { return m_buffer; }
-private:
-	int Read(void* out, size_t size);
-	ALuint m_buffer;	// バッファID
-
-	// サウンドデータ
-	unsigned short m_ChannelQuantity;
-	unsigned short m_BlockSize;
-	unsigned short m_BitPerSample;
-	unsigned int m_Bps;
-	unsigned int m_SamplingRate;
-	unsigned int m_Length;
-	std::ifstream m_fp;
-	std::ifstream::pos_type m_DataHead;
-	size_t m_DataSize;
-	size_t m_LoadedSize;
-};
-
-
 // データ管理クラス
 class CDataManager
 {
@@ -107,7 +80,6 @@ public:
 
 	CDataTexture* RefTexture(const std::string& sPath);
 	CDataMesh* RefMesh(const std::string& sPath);
-	CDataAudio* RefAudio(const std::string& sPath);
 private:
 	std::vector<CDataBase*> m_apData;		// 全データ格納
 };

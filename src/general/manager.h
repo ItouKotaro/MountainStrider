@@ -55,11 +55,10 @@ private:
 	int m_nFPS;												// FPS値
 	float m_fDeltaTime;									// デルタタイム
 	int m_nMouseWheel;									// マウスホイール値
-	POINT m_cursorPos;								// マウス位置
+	POINT m_cursorPos;									// マウス位置
 	bool m_bPause;											// ポーズ
 	bool m_showCursor;									// カーソルの表示
 	HWND m_hwnd;										// ハンドル
-	CAudioManager* m_pAudioManager;			// オーディオマネージャー
 };
 
 #endif // !_MANAGER_H_

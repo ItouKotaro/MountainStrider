@@ -9,7 +9,7 @@
 
 #include "component.h"
 #include "vehicle.h"
-#include "component/other/sound.h"
+#include "component/other/audio.h"
 
 // 車両のサウンド
 class VehicleSound : public Component
@@ -21,7 +21,7 @@ public:
 private:
 	CVehicle* m_vehicle;				// バイク
 
-	CSound* m_runningSE;			// 走行音
+	AudioClip m_runningSE;		// 走行音
 	float m_runnningVolume;
 	float m_runnningPitch;
 	float m_runnningPitchLimit;

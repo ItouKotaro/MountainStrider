@@ -8,6 +8,7 @@
 #define _TITLE_H_
 
 #include "scene.h"
+#include "internal/launch_credit.h"
 
 // タイトルシーン
 class CTitleScene : public CScene
@@ -20,6 +21,7 @@ public:
 
 private:
 	GameObject* m_titleScene;
+	LaunchCredit* m_credit;
 };
 
 #endif // !_TITLE_H_

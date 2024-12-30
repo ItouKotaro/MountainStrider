@@ -123,6 +123,19 @@ void CTitleScene::Init()
 	tutorialButton->GetComponent<ButtonUI>()->setClickEvent([this, tutorialImg]() {tutorialImg->SetVisible(!tutorialImg->GetVisible()); });
 	tutorialButton->SetPriority(9);
 
+	// 起動クレジット背景
+	GameObject* creditBG = new GameObject();
+	creditBG->AddComponent<CPolygon>();
+	creditBG->transform->SetSize(CRenderer::SCREEN_WIDTH, CRenderer::SCREEN_HEIGHT);
+
+	// 起動クレジット
+	GameObject* creditObj = new GameObject();
+	m_credit = creditObj->AddComponent<LaunchCredit>();
+	m_credit->AddCredit("data\\TEXTURE\\CREDIT\\FMOD.png", { 728.0f, 192.0f });
+	m_credit->SetShowTime(4.0f);
+	m_credit->SetBG(creditBG->GetComponent<CPolygon>());
+	m_credit->Start();
+
 	// 影用レンダーバッファの設定
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(pCamera->GetComponent<CCamera>());

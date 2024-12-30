@@ -14,18 +14,15 @@ void VehicleSound::Init()
 {
 	// バイクコンポーネントを取得する
 	m_vehicle = gameObject->GetComponent<CVehicle>();
+	gameObject->AddComponent<AudioSource>();
 
 	// 走行音
-	m_runningSE = (new GameObject())->AddComponent<CSound>();
-	m_runningSE->gameObject->SetParent(gameObject);
-	m_runningSE->LoadWav("data\\SOUND\\SE\\BIKE\\running00.wav");
-	m_runningSE->SetVolume(0.0f);
-	m_runningSE->Play();
-	m_runningSE->SetLoop(true);
+	m_runningSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\BIKE\\running00.wav", FMOD_2D | FMOD_LOOP_NORMAL);
 	m_runnningVolume = 0.0f;
-	m_runnningVolumeLimit = 100.0f;
+	m_runnningVolumeLimit = 5.0f;
 	m_runnningPitch = 1.0f;
 	m_runnningPitchLimit = 0.6f;
+	gameObject->GetComponent<AudioSource>()->Play(m_runningSE);
 }
 
 //=============================================================
@@ -47,22 +44,22 @@ void VehicleSound::Update()
 		// アクセルを踏んでいるとき
 		if (INPUT_INSTANCE->onInput("accel"))
 		{
-			if (m_runnningVolume < 50.0f) m_runnningVolume = 50.0f;
-			m_runnningVolume += 2.0f + m_vehicle->GetSpeed() / 100.0f;
-			m_runnningVolumeLimit = 200.0f;
+			if (m_runnningVolume < 0.5f) m_runnningVolume = 0.5f;
+			m_runnningVolume += 0.03f + m_vehicle->GetSpeed() / 1000.0f;
+			m_runnningVolumeLimit = 1.0f;
 			m_runnningPitch += 0.005f;
 			m_runnningPitchLimit = 0.8f + m_vehicle->GetSpeed() / 200.0f;
 		}
 		else
 		{
-			m_runnningVolume += 1.0f;
-			m_runnningVolumeLimit = 70.0f;
+			m_runnningVolume += 0.08f;
+			m_runnningVolumeLimit = 0.5f;
 			m_runnningPitchLimit = 0.6f;
 		}
 	}
 	else
 	{
-		m_runnningVolumeLimit = 40.0f;
+		m_runnningVolumeLimit = 0.1f;
 		m_runnningPitchLimit = 1.0f;
 	}
 
@@ -77,6 +74,6 @@ void VehicleSound::Update()
 	}
 
 	// 設定する
-	m_runningSE->SetVolume(m_runnningVolume);
-	m_runningSE->SetPitch(m_runnningPitch);
+	gameObject->GetComponent<AudioSource>()->GetChannel()->setVolume(m_runnningVolume);
+	gameObject->GetComponent<AudioSource>()->GetChannel()->setPitch(m_runnningPitch);
 }

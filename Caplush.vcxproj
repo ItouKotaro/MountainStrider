@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{e20f083e-c158-4613-a39b-6f8ef756f8d2}</ProjectGuid>
     <RootNamespace>Caplush</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>MountainStrider</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -101,7 +101,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\libnoise\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./src\general;./src\libs\bullet\src;./src\libs\libnoise\include;./src\libs\fmod\core\inc;./src\libs\fmod\studio\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
@@ -112,7 +112,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Bullet2FileLoader.lib;Bullet3Collision.lib;Bullet3Common.lib;Bullet3Dynamics.lib;Bullet3Geometry.lib;Bullet3OpenCL_clew.lib;BulletCollision.lib;BulletDynamics.lib;BulletExampleBrowserLib.lib;BulletFileLoader.lib;BulletInverseDynamics.lib;BulletInverseDynamicsUtils.lib;BulletRobotics.lib;BulletRoboticsGUI.lib;BulletSoftBody.lib;BulletWorldImporter.lib;BulletXmlWorldImporter.lib;BussIK.lib;clsocket.lib;ConvexDecomposition.lib;GIMPACTUtils.lib;gwen.lib;HACD.lib;LinearMath.lib;OpenGLWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\openal-soft\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);./src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);./src\libs\fmod\core\lib\$(LibrariesArchitecture);./src\libs\fmod\studio\lib\$(LibrariesArchitecture);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\libnoise\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./src\general;./src\libs\bullet\src;./src\libs\libnoise\include;./src\libs\fmod\core\inc;./src\libs\fmod\studio\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
@@ -138,7 +138,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Bullet2FileLoader.lib;Bullet3Collision.lib;Bullet3Common.lib;Bullet3Dynamics.lib;Bullet3Geometry.lib;Bullet3OpenCL_clew.lib;BulletCollision.lib;BulletDynamics.lib;BulletExampleBrowserLib.lib;BulletFileLoader.lib;BulletInverseDynamics.lib;BulletInverseDynamicsUtils.lib;BulletRobotics.lib;BulletRoboticsGUI.lib;BulletSoftBody.lib;BulletWorldImporter.lib;BulletXmlWorldImporter.lib;BussIK.lib;clsocket.lib;ConvexDecomposition.lib;GIMPACTUtils.lib;gwen.lib;HACD.lib;LinearMath.lib;OpenGLWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\openal-soft\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);./src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);./src\libs\fmod\core\lib\$(LibrariesArchitecture);./src\libs\fmod\studio\lib\$(LibrariesArchitecture);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -151,7 +151,7 @@
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Pch.h</ForcedIncludeFiles>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\libnoise\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./src\general;./src\libs\bullet\src;./src\libs\libnoise\include;./src\libs\fmod\core\inc;./src\libs\fmod\studio\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <Optimization>Disabled</Optimization>
@@ -162,7 +162,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Bullet2FileLoader.lib;Bullet3Collision.lib;Bullet3Common.lib;Bullet3Dynamics.lib;Bullet3Geometry.lib;Bullet3OpenCL_clew.lib;BulletCollision.lib;BulletDynamics.lib;BulletExampleBrowserLib.lib;BulletFileLoader.lib;BulletInverseDynamics.lib;BulletInverseDynamicsUtils.lib;BulletRobotics.lib;BulletRoboticsGUI.lib;BulletSoftBody.lib;BulletWorldImporter.lib;BulletXmlWorldImporter.lib;BussIK.lib;clsocket.lib;ConvexDecomposition.lib;GIMPACTUtils.lib;gwen.lib;HACD.lib;LinearMath.lib;OpenGLWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\openal-soft\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);./src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);./src\libs\fmod\core\lib\$(LibrariesArchitecture);./src\libs\fmod\studio\lib\$(LibrariesArchitecture);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -177,7 +177,7 @@
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Pch.h</ForcedIncludeFiles>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\general;$(SolutionDir)src\libs\bullet\src;$(SolutionDir)src\libs\openal-soft\include;$(SolutionDir)src\libs\libnoise\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./src\general;./src\libs\bullet\src;./src\libs\libnoise\include;./src\libs\fmod\core\inc;./src\libs\fmod\studio\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Bullet2FileLoader.lib;Bullet3Collision.lib;Bullet3Common.lib;Bullet3Dynamics.lib;Bullet3Geometry.lib;Bullet3OpenCL_clew.lib;BulletCollision.lib;BulletDynamics.lib;BulletExampleBrowserLib.lib;BulletFileLoader.lib;BulletInverseDynamics.lib;BulletInverseDynamicsUtils.lib;BulletRobotics.lib;BulletRoboticsGUI.lib;BulletSoftBody.lib;BulletWorldImporter.lib;BulletXmlWorldImporter.lib;BussIK.lib;clsocket.lib;ConvexDecomposition.lib;GIMPACTUtils.lib;gwen.lib;HACD.lib;LinearMath.lib;OpenGLWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\openal-soft\libs\$(LibrariesArchitecture)\$(Configuration);$(SolutionDir)src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./src\libs\libnoise\libs\$(LibrariesArchitecture)\$(Configuration);./src\libs\bullet\lib\$(LibrariesArchitecture)\$(Configuration);./src\libs\fmod\core\lib\$(LibrariesArchitecture);./src\libs\fmod\studio\lib\$(LibrariesArchitecture);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -212,13 +212,13 @@
     <ClCompile Include="src\component\3d\particle.cpp" />
     <ClCompile Include="src\component\3d\render_texture.cpp" />
     <ClCompile Include="src\component\3d\skybox.cpp" />
+    <ClCompile Include="src\component\other\audio.cpp" />
     <ClCompile Include="src\component\other\button.cpp" />
     <ClCompile Include="src\component\other\emitter.cpp" />
     <ClCompile Include="src\component\other\flag.cpp" />
     <ClCompile Include="src\component\other\framebox.cpp" />
     <ClCompile Include="src\component\other\page.cpp" />
     <ClCompile Include="src\component\other\render_objects_texture.cpp" />
-    <ClCompile Include="src\component\other\sound.cpp" />
     <ClCompile Include="src\general\benlib.cpp" />
     <ClCompile Include="src\general\component.cpp" />
     <ClCompile Include="src\general\data_field.cpp" />
@@ -234,6 +234,7 @@
     <ClCompile Include="src\general\world_loader.cpp" />
     <ClCompile Include="src\internal\audio_manager.cpp" />
     <ClCompile Include="src\internal\data_manager.cpp" />
+    <ClCompile Include="src\internal\launch_credit.cpp" />
     <ClCompile Include="src\internal\physics.cpp" />
     <ClCompile Include="src\internal\shadow.cpp" />
     <ClCompile Include="src\internal\util.cpp" />
@@ -288,13 +289,13 @@
     <ClInclude Include="src\component\3d\particle.h" />
     <ClInclude Include="src\component\3d\render_texture.h" />
     <ClInclude Include="src\component\3d\skybox.h" />
+    <ClInclude Include="src\component\other\audio.h" />
     <ClInclude Include="src\component\other\button.h" />
     <ClInclude Include="src\component\other\emitter.h" />
     <ClInclude Include="src\component\other\flag.h" />
     <ClInclude Include="src\component\other\framebox.h" />
     <ClInclude Include="src\component\other\page.h" />
     <ClInclude Include="src\component\other\render_objects_texture.h" />
-    <ClInclude Include="src\component\other\sound.h" />
     <ClInclude Include="src\general\benlib.h" />
     <ClInclude Include="src\general\component.h" />
     <ClInclude Include="src\general\data_field.h" />
@@ -311,6 +312,7 @@
     <ClInclude Include="src\internal\audio_manager.h" />
     <ClInclude Include="src\internal\data_manager.h" />
     <ClInclude Include="src\internal\KeyAssignmentTable.h" />
+    <ClInclude Include="src\internal\launch_credit.h" />
     <ClInclude Include="src\internal\physics.h" />
     <ClInclude Include="src\internal\shadow.h" />
     <ClInclude Include="src\internal\util.h" />

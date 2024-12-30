@@ -48,8 +48,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CDataManager::GetInstance()->Init();
 
 	// オーディオマネージャーの生成
-	m_pAudioManager = new CAudioManager();
-	m_pAudioManager->Init();
+	AudioManager::GetInstance()->Init();
 
 	// 入力システムの生成
 	CInputSystem::GetInstance()->Init(hInstance, hWnd);
@@ -83,12 +82,7 @@ void CManager::Uninit()
 	CPhysics::GetInstance()->Uninit();
 
 	// オーディオマネージャーを破棄する
-	if (m_pAudioManager != nullptr)
-	{
-		m_pAudioManager->Uninit();
-		delete m_pAudioManager;
-		m_pAudioManager = nullptr;
-	}
+	AudioManager::GetInstance()->Uninit();
 
 	// データ管理を破棄する
 	CDataManager::GetInstance()->Uninit();
@@ -102,9 +96,6 @@ void CManager::Update()
 	// 入力システムの更新
 	CInputSystem::GetInstance()->Update();
 
-	// オーディオの更新
-	m_pAudioManager->Update();
-
 	// レンダラーの更新
 	CRenderer::GetInstance()->Update();
 
@@ -113,6 +104,9 @@ void CManager::Update()
 		// 物理の更新
 		CPhysics::GetInstance()->Update();
 	}
+
+	// オーディオの更新
+	AudioManager::GetInstance()->Update();
 
 	// シーンの更新
 	CSceneManager::GetInstance()->Update();
