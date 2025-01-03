@@ -16,7 +16,16 @@ void VehicleParticle::Init()
 
 	// パーティクルシステムを生成する
 	m_particleSystem = new SingleComponent<ParticleSystem>();
+	m_particleSystem->SetParent(gameObject);
 	m_particleSystem->Init();
+	m_particleSystem->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\particle00.png");
+
+	ParticleShape::PointShape* pointShape = new ParticleShape::PointShape();
+	m_particleSystem->SetShape(pointShape);
+
+	ParticleModule::Emission* emission = new ParticleModule::Emission();
+	emission->SetRateOverTime(10.0f);
+	m_particleSystem->SetEmission(emission);
 	//m_particleSystem->SetShape()
 }
 

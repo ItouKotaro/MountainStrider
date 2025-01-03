@@ -15,12 +15,13 @@
 #include "scripts/status_ui.h"
 #include "scripts/vehicle_action.h"
 #include "scripts/vehicle_sound.h"
+#include "scripts/vehicle_particle.h"
 #include "scene/game.h"
 
-const float CVehicle::ENGINEFORCE_VALUE = 50.0f;
+const float CVehicle::ENGINEFORCE_VALUE = 45.0f;
 const float CVehicle::STEERING_VALUE = 3.0f;
 const float CVehicle::MIN_ENGINEFORCE_VALUE = 1.0f;
-const float CVehicle::MAX_ENGINEFORCE = 180000.0f;
+const float CVehicle::MAX_ENGINEFORCE = 150000.0f;
 const float CVehicle::MAX_STEERING = 15000.0f;
 const float CVehicle::MAX_FUEL = 3000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
@@ -55,6 +56,7 @@ void CVehicle::Init()
 	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
 	gameObject->AddComponent<VehicleAction>();
 	gameObject->AddComponent<VehicleSound>();
+	gameObject->AddComponent<VehicleParticle>();
 
 	// ŽÔ‘Ì
 	GameObject* pBodyModel = new GameObject;

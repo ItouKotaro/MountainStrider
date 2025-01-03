@@ -86,6 +86,14 @@ void Particle::Draw()
 	// ライトを無効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
+	// Zバッファの書き込みを無効にする
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
+	// アルファテストを有効
+	//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	//pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	//pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
 	// ワールドマトリックスの設定
 	if (!IsEnabledShader()) pDevice->SetTransform(D3DTS_WORLD, &mtx);
 
@@ -129,6 +137,12 @@ void Particle::Draw()
 
 	// ライトを有効に戻す
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	// Zバッファの書き込みを有効に戻す
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
+	// アルファテストを無効に戻す
+	//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
 
 //=============================================================
@@ -304,8 +318,7 @@ void ParticleSystem::UpdateGenerator()
 		}
 
 		// 初期位置を設定する
-		data.particle->transform->SetParent(gameObject->transform);
-		data.particle->transform->SetPos(shapeResult.position);
+		data.particle->transform->SetPos(transform->GetWPos() + shapeResult.position);
 
 		// 追加する
 		m_particleData.push_back(data);

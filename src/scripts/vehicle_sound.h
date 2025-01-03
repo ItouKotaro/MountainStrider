@@ -20,12 +20,11 @@ public:
 	void Update() override;
 private:
 	CVehicle* m_vehicle;				// バイク
+	GameObject* m_soundObj;
 
-	AudioClip m_runningSE;		// 走行音
-	float m_runnningVolume;
-	float m_runnningPitch;
-	float m_runnningPitchLimit;
-	float m_runnningVolumeLimit;
+	AudioEventInstance m_vehicleSound;		// 走行音
+	float m_vehicleRPM;
+	float m_vehicleRPMLimit;
 };
 
 #endif // !_VEHICLE_SOUND_H_

@@ -45,6 +45,11 @@ void CGameScene::Init()
 	m_pause = new Pause();
 	m_pause->Init();
 
+	// 音を読み込む
+	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Master.bank");
+	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Master.strings.bank");
+	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Vehicles.bank");
+
 	// カメラの作成
 	{
 		m_pCamera = new GameObject("Camera", "Camera");

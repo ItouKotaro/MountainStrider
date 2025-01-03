@@ -97,18 +97,26 @@ void AudioListener::Update()
 	AudioManager* audioManager = AudioManager::GetInstance();
 
 	// リスナーの位置を適用する
-	FMOD_VECTOR pos = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
+	FMOD_VECTOR pos;
+	pos.x = transform->GetWPos().x;
+	pos.y = transform->GetWPos().y;
+	pos.z = transform->GetWPos().z;
 
 	// 前方
-	FMOD_VECTOR forward = { 0.0f, 0.0f, 1.0f };
+	FMOD_VECTOR forward = { 0.0f, 0.0f, 0.0f };
 	D3DXMATRIX rotMtx = transform->GetRotationMatrix();
 	D3DXVECTOR3 posR = { 0.0f, 0.0f, 1.0f };
 	D3DXVec3TransformCoord(&posR, &posR, &rotMtx);
 	D3DXVec3Normalize(&posR, &posR);
-	forward = { posR.x, 0.0f, posR.z };
+	forward.x = posR.x;
+	forward.y = 0.0f;
+	forward.z = posR.z;
 
 	// 上方向
-	FMOD_VECTOR up = { 0.0f, 1.0f, 0.0f };
+	FMOD_VECTOR up;
+	up.x = 0.0f;
+	up.y = 1.0f;
+	up.z = 0.0f;
 
 	// 速度
 	FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f };
@@ -117,7 +125,14 @@ void AudioListener::Update()
 	velocity.z = (transform->GetWPos().z - m_beforePos.z) * (1000 / static_cast<float>(CManager::GetInstance()->GetFPS()));
 
 	// 適用する
-	audioManager->GetCoreSystem()->set3DListenerAttributes(m_listenerID, &pos, &velocity, &forward, &up);
+	//audioManager->GetCoreSystem()->set3DListenerAttributes(m_listenerID, &pos, &velocity, &forward, &up);
+
+	FMOD_3D_ATTRIBUTES attributes = { {0} };
+	attributes.position = pos;
+	attributes.forward = forward;
+	attributes.velocity = velocity;
+	attributes.up = up;
+	audioManager->GetSystem()->setListenerAttributes(m_listenerID, &attributes);
 
 	// 前回の位置として記録する
 	m_beforePos = transform->GetWPos();
@@ -141,10 +156,37 @@ void AudioEvent::Update()
 {
 	if (m_instance != nullptr)
 	{
-		FMOD_3D_ATTRIBUTES attributes = { { 0 } };
-		attributes.forward.z = 1.0f;
-		attributes.up.y = 1.0f;
-		attributes.position = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
+		// 位置を適用する
+		FMOD_VECTOR pos;
+		pos.x = transform->GetWPos().x;
+		pos.y = transform->GetWPos().y;
+		pos.z = transform->GetWPos().z;
+
+		// 前方
+		FMOD_VECTOR forward = { 0.0f, 0.0f, 0.0f };
+		D3DXMATRIX rotMtx = transform->GetRotationMatrix();
+		D3DXVECTOR3 posR = { 0.0f, 0.0f, 1.0f };
+		D3DXVec3TransformCoord(&posR, &posR, &rotMtx);
+		D3DXVec3Normalize(&posR, &posR);
+		forward.x = posR.x;
+		forward.y = 0.0f;
+		forward.z = posR.z;
+
+		// 上方向
+		FMOD_VECTOR up;
+		up.x = 0.0f;
+		up.y = 1.0f;
+		up.z = 0.0f;
+
+		// 速度
+		FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f };
+
+		FMOD_3D_ATTRIBUTES attributes = { {0} };
+		attributes.position = pos;
+		attributes.forward = forward;
+		attributes.velocity = velocity;
+		attributes.up = up;
+
 		m_instance->set3DAttributes(&attributes);
 	}
 }

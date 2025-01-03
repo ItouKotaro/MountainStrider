@@ -141,12 +141,18 @@ public:
 
 	// @brief 重力の設定
 	void SetGravity(const float& gravity) { m_gravity = -gravity; }
+	// @brief 重力の取得
+	float GetGravity() { return m_gravity; }
 
 	// @brief エミッションの設定
 	void SetEmission(ParticleModule::Emission* emission);
+	// @brief エミッションの取得
+	ParticleModule::Emission* GetEmission() { return m_emission; }
 
 	// @brief シェイプの設定
 	void SetShape(ParticleModule::Shape* shape);
+	// @brief シェイプの取得
+	ParticleModule::Shape* GetShape() { return m_shape; }
 
 	// @brief テクスチャの取得
 	ParticleModule::Texture* GetTexture() { return m_texture; }
