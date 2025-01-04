@@ -97,6 +97,12 @@
     <Filter Include="ヘッダー ファイル\render">
       <UniqueIdentifier>{22cf1328-1597-42b3-96c0-acadcd2c9d25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scripts\vehicle">
+      <UniqueIdentifier>{22c50bca-8c94-4a4a-b519-69550d263190}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts\vehicle">
+      <UniqueIdentifier>{a2dc662e-6aac-47ec-8255-b46bbfd86b50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -210,9 +216,6 @@
     <ClCompile Include="src\component\2d\bar.cpp">
       <Filter>ソース ファイル\component\2d</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\vehicle.cpp">
-      <Filter>ソース ファイル\scripts</Filter>
-    </ClCompile>
     <ClCompile Include="src\internal\util.cpp">
       <Filter>ソース ファイル\internal</Filter>
     </ClCompile>
@@ -282,9 +285,6 @@
     <ClCompile Include="src\component\other\page.cpp">
       <Filter>ソース ファイル\component\other</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\vehicle_action.cpp">
-      <Filter>ソース ファイル\scripts</Filter>
-    </ClCompile>
     <ClCompile Include="src\general\shader.cpp">
       <Filter>ソース ファイル\general</Filter>
     </ClCompile>
@@ -300,13 +300,7 @@
     <ClCompile Include="src\scripts\environmental_type.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\vehicle_sound.cpp">
-      <Filter>ソース ファイル\scripts</Filter>
-    </ClCompile>
     <ClCompile Include="src\scripts\pause.cpp">
-      <Filter>ソース ファイル\scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scripts\vehicle_particle.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
     <ClCompile Include="src\scripts\item\item_slot.cpp">
@@ -323,6 +317,21 @@
     </ClCompile>
     <ClCompile Include="src\internal\launch_credit.cpp">
       <Filter>ソース ファイル\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\vehicle.cpp">
+      <Filter>ソース ファイル\scripts\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\vehicle_action.cpp">
+      <Filter>ソース ファイル\scripts\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\vehicle_particle.cpp">
+      <Filter>ソース ファイル\scripts\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\vehicle_sound.cpp">
+      <Filter>ソース ファイル\scripts\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\trajectory.cpp">
+      <Filter>ソース ファイル\scripts\vehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,9 +449,6 @@
     <ClInclude Include="src\component\2d\bar.h">
       <Filter>ヘッダー ファイル\component\2d</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\vehicle.h">
-      <Filter>ヘッダー ファイル\scripts</Filter>
-    </ClInclude>
     <ClInclude Include="src\internal\util.h">
       <Filter>ヘッダー ファイル\internal</Filter>
     </ClInclude>
@@ -512,9 +518,6 @@
     <ClInclude Include="src\component\other\page.h">
       <Filter>ヘッダー ファイル\component\other</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\vehicle_action.h">
-      <Filter>ヘッダー ファイル\scripts</Filter>
-    </ClInclude>
     <ClInclude Include="src\general\shader.h">
       <Filter>ヘッダー ファイル\general</Filter>
     </ClInclude>
@@ -530,13 +533,7 @@
     <ClInclude Include="src\scripts\environmental_type.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\vehicle_sound.h">
-      <Filter>ヘッダー ファイル\scripts</Filter>
-    </ClInclude>
     <ClInclude Include="src\scripts\pause.h">
-      <Filter>ヘッダー ファイル\scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scripts\vehicle_particle.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\item\item_slot.h">
@@ -553,6 +550,21 @@
     </ClInclude>
     <ClInclude Include="src\internal\launch_credit.h">
       <Filter>ヘッダー ファイル\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\vehicle.h">
+      <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\vehicle_action.h">
+      <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\vehicle_particle.h">
+      <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\vehicle_sound.h">
+      <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\trajectory.h">
+      <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

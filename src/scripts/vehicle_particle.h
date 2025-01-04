@@ -20,8 +20,11 @@ public:
 	void Update() override;
 	void Draw() override;
 private:
+	void UpdateTrajectory();
+
 	CVehicle* m_vehicle;
 	SingleComponent<ParticleSystem>* m_particleSystem;
+	GameObject* m_trajectory;
 };
 
 #endif // !_VEHICLE_PARTICLE_H_

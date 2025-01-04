@@ -19,7 +19,6 @@ void VehicleSound::Init()
 
 	m_soundObj = new GameObject();
 	m_soundObj->SetParent(gameObject);
-	//m_soundObj->transform->Rotate(0.0f, D3DX_PI, 0.0f);
 	m_soundObj->AddComponent<AudioEvent>()->SetEventDesc(vehicleDesc);
 	m_vehicleSound = m_soundObj->GetComponent<AudioEvent>()->GetInstance();
 	m_vehicleSound->setVolume(5.0f);
