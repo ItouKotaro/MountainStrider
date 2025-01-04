@@ -167,9 +167,10 @@ void AudioEvent::Update()
 		D3DXMATRIX rotMtx = transform->GetRotationMatrix();
 		D3DXVECTOR3 posR = { 0.0f, 0.0f, 1.0f };
 		D3DXVec3TransformCoord(&posR, &posR, &rotMtx);
+		posR.y = 0.0f;
 		D3DXVec3Normalize(&posR, &posR);
 		forward.x = posR.x;
-		forward.y = 0.0f;
+		forward.y = posR.y;
 		forward.z = posR.z;
 
 		// è„ï˚å¸
