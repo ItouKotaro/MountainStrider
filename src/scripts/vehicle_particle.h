@@ -23,7 +23,6 @@ private:
 	void UpdateTrajectory();
 
 	CVehicle* m_vehicle;
-	SingleComponent<ParticleSystem>* m_particleSystem;
 	GameObject* m_trajectory;
 };
 

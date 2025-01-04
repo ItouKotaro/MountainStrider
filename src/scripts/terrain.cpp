@@ -161,21 +161,19 @@ void Terrain::GenerateTerrain()
 	// シードを設定する
 	myModule.SetSeed(rand());
 
+	module::ScaleBias scaled;
+	scaled.SetSourceModule(0, myModule);
+	scaled.SetScale(450.0f);
+
 	// 地形を生成する
 	utils::NoiseMapBuilderPlane heightMapBuilder;
-	heightMapBuilder.SetSourceModule(myModule);
+	heightMapBuilder.SetSourceModule(scaled);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
 	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 6.0);
 	heightMapBuilder.Build();
 
-	//for (int x = 0; x < TERRAIN_SIZE; x++)
-	//{
-	//	for (int y = 0; y < TERRAIN_SIZE; y++)
-	//	{
-	//		heightMap.SetValue(x, y, heightMap.GetValue(x, y) * 1300.0f);
-	//	}
-	//}
+
 
 	// 画像に書き出す
 	utils::RendererImage renderer;
@@ -187,9 +185,9 @@ void Terrain::GenerateTerrain()
 	{
 		renderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
 	}
-	renderer.EnableLight();
-	renderer.SetLightContrast(3.0);
-	renderer.SetLightBrightness(1.0);
+	//renderer.EnableLight();
+	//renderer.SetLightContrast(3.0);
+	//renderer.SetLightBrightness(1.0);
 	renderer.Render();
 
 	// ファイルに書き出す
@@ -205,7 +203,7 @@ void Terrain::GenerateTerrain()
 	{
 		for (int y = 0; y < TERRAIN_SIZE; y++)
 		{
-			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y) * 450.0f;
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y);
 		}
 	}
 
