@@ -11,6 +11,7 @@
 #include "internal/physics.h"
 #include "scripts/terrain.h"
 #include "scripts/environmental.h"
+#include "scripts/decoration.h"
 #include "scripts/result/mt_result.h"
 #include "scripts/pause.h"
 
@@ -61,6 +62,8 @@ private:
 
 	Terrain* m_pTerrain;											// 地形
 	EnvironmentalEffect* m_environmental;				// 環境
+	DecorationManager* m_decoration;						// 装飾
+
 	GameObject* m_voidField;									// 奈落
 	GameObject* m_pCamera;									// カメラ
 	GameObject* m_pBike;										// バイク

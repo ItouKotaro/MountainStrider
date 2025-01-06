@@ -108,6 +108,7 @@ public:
 	void SetScale(D3DXVECTOR3 scale) { SetScale(scale.x, scale.y, scale.z); }
 	void SetScale(float ratio) { SetScale(ratio, ratio, ratio); }
 	void SetSize(float x, float y) { m_size = { x, y }; }
+	void SetSize(int x, int y) { m_size = { static_cast<float>(x), static_cast<float>(y) }; }
 	void SetSize(D3DXVECTOR2 size) { SetSize(size.x, size.y); }
 	void SetParent(Transform* pParent);
 	static D3DXVECTOR3 NormalizeRotation(const D3DXVECTOR3& rot);						// âÒì]ÇÃê≥ãKâª

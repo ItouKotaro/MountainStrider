@@ -23,6 +23,8 @@ using namespace noise;
 
 // 静的メンバ変数の初期化
 const float Terrain::TERRAIN_SCALE = 150.0f;
+const float Terrain::TERRAIN_DISTANCE = Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE;
+const float Terrain::TERRAIN_DISTANCE_HALF = Terrain::TERRAIN_DISTANCE / (float)2.0f;
 
 //=============================================================
 // [Terrain] 初期化
@@ -143,10 +145,10 @@ void Terrain::Generate()
 	}
 
 	// 生成物を生成する
-	for (int i = 0; i < 20000; i++)
-	{
-		GenerateProduces();
-	}
+	//for (int i = 0; i < 20000; i++)
+	//{
+	//	GenerateProduces();
+	//}
 
 }
 
@@ -163,17 +165,15 @@ void Terrain::GenerateTerrain()
 
 	module::ScaleBias scaled;
 	scaled.SetSourceModule(0, myModule);
-	scaled.SetScale(450.0f);
+	scaled.SetScale(100.0f);
 
 	// 地形を生成する
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(scaled);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
-	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 6.0);
+	heightMapBuilder.SetBounds(0.0, 20.0, 0.0, 20.0);
 	heightMapBuilder.Build();
-
-
 
 	// 画像に書き出す
 	utils::RendererImage renderer;
@@ -185,9 +185,10 @@ void Terrain::GenerateTerrain()
 	{
 		renderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
 	}
-	//renderer.EnableLight();
-	//renderer.SetLightContrast(3.0);
-	//renderer.SetLightBrightness(1.0);
+	renderer.EnableLight();
+	renderer.SetLightContrast(0.01f);
+	renderer.SetLightBrightness(1.5);
+	renderer.SetLightIntensity(4.5f);
 	renderer.Render();
 
 	// ファイルに書き出す
@@ -1047,8 +1048,8 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 				std::vector<GameObject*>& pOverlappingObj = CCollision::GetCollision((*itrManagedProduces)->managedGameObject->gameObject)->GetOverlappingGameObjects();
 				for (auto itrOverlappingObj = pOverlappingObj.begin(); itrOverlappingObj != pOverlappingObj.end(); itrOverlappingObj++)
 				{
-					if (m_pVehicle == *itrOverlappingObj)
-					{ // バイクと衝突したとき
+					if (m_pVehicle == *itrOverlappingObj || (*itrOverlappingObj)->GetTag() == "HIT")
+					{ // バイク/衝突物と衝突したとき
 						// オブジェクトを破棄する
 						ManagedGameObject* pManagedGameObj = nullptr;
 						for (auto itrManagedGameObj = m_managedGameObjects.begin(); itrManagedGameObj != m_managedGameObjects.end(); itrManagedGameObj++)
@@ -1057,7 +1058,7 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 							{
 								// ゲームオブジェクトの管理を破棄する
 								pManagedGameObj = *itrManagedGameObj;
-								SAFE_ERASE(m_managedGameObjects, itrManagedGameObj)
+								m_managedGameObjects.erase(itrManagedGameObj);
 								break;
 							}
 						}
@@ -1070,7 +1071,10 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 						(*itrManagedProduces)->natureProduce->onHit((*itrManagedProduces)->managedGameObject->gameObject);
 
 						// バイクにダメージを与える
-						m_pVehicle->GetComponent<CVehicle>()->AddDamage((*itrManagedProduces)->natureProduce->GetDamage());
+						if (m_pVehicle == *itrOverlappingObj)
+						{ // バイクのみ
+							m_pVehicle->GetComponent<CVehicle>()->AddDamage((*itrManagedProduces)->natureProduce->GetDamage());
+						}
 
 						// 破棄
 						delete pManagedGameObj;
@@ -1177,13 +1181,13 @@ void ProducesManager::UpdateGameObjects(const D3DXVECTOR3& pos)
 float ProducesManager::GetNearProducesRate(const std::string& name, const D3DXVECTOR3& pos, const float& range)
 {
 	float rate = 1.0f;
-	for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
-	{
-		if (Benlib::PosDistance((*itr)->transform.GetPos(), pos) < range)
-		{ // 範囲内の時
-			rate *= (*itr)->natureProduce->GetAdjacentObjectRate(name);
-		}
-	}
+	//for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
+	//{
+	//	if (Benlib::PosDistance((*itr)->transform.GetPos(), pos) < range)
+	//	{ // 範囲内の時
+	//		rate *= (*itr)->natureProduce->GetAdjacentObjectRate(name);
+	//	}
+	//}
 
 	return rate;
 }
@@ -1193,12 +1197,12 @@ float ProducesManager::GetNearProducesRate(const std::string& name, const D3DXVE
 //=============================================================
 bool ProducesManager::FindProducesByDistance(const D3DXVECTOR3& pos, const float& distance)
 {
-	for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
-	{
-		if (Benlib::PosDistance((*itr)->transform.GetPos(), pos) < distance)
-		{ // 範囲内の時
-			return true;
-		}
-	}
+	//for (auto itr = m_managedProduces.begin(); itr != m_managedProduces.end(); itr++)
+	//{
+	//	if (Benlib::PosDistance((*itr)->transform.GetPos(), pos) < distance)
+	//	{ // 範囲内の時
+	//		return true;
+	//	}
+	//}
 	return false;
 }

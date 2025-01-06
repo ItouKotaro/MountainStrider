@@ -74,6 +74,8 @@ public:
 
 	static const int TERRAIN_SIZE = 150;
 	static const float TERRAIN_SCALE;
+	static const float TERRAIN_DISTANCE;
+	static const float TERRAIN_DISTANCE_HALF;
 private:
 	void UninitTerrain();
 	void GenerateGem();
@@ -115,7 +117,6 @@ private:
 
 	std::vector<CNatureProduces*> m_registerNatureProduces;		// 生成物リスト（登録）
 	ProducesManager* m_producesManager;									// 生成物管理
-	//UINT m_routeData[TERRAIN_SIZE][TERRAIN_SIZE];
 	std::vector<int[TERRAIN_SIZE][TERRAIN_SIZE]> m_routeData;
 	
 

@@ -333,6 +333,9 @@
     <ClCompile Include="src\scripts\trajectory.cpp">
       <Filter>ソース ファイル\scripts\vehicle</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\decoration.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -565,6 +568,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\trajectory.h">
       <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\decoration.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

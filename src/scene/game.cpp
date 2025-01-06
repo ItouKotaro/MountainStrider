@@ -75,6 +75,17 @@ void CGameScene::Init()
 		m_pTerrain->Generate();
 	}
 
+	// 装飾を生成する
+	m_decoration = new DecorationManager();
+	m_decoration->Init(m_pTerrain);
+	m_decoration->AddDecorationType("data\\PREFAB\\props\\grass00.pref");
+	m_decoration->AddDecorationType("data\\PREFAB\\tree\\tree00.pref", 2);
+
+	for (int i = 0; i < 20000; i++)
+	{
+		m_decoration->GenerateDecoration();
+	}
+
 	// 奈落
 	{
 		m_voidField = new GameObject("Void");
@@ -120,6 +131,14 @@ void CGameScene::Uninit()
 		m_pTerrain->Uninit();
 		delete m_pTerrain;
 		m_pTerrain = nullptr;
+	}
+
+	// 装飾の破棄
+	if (m_decoration != nullptr)
+	{
+		m_decoration->Uninit();
+		delete m_decoration;
+		m_decoration = nullptr;
 	}
 
 	// 環境効果の破棄
@@ -170,6 +189,9 @@ void CGameScene::Update()
 
 	// 地形を更新する
 	m_pTerrain->Update(m_pCamera->transform->GetWPos());
+
+	// 装飾の更新
+	m_decoration->Update(m_pCamera->transform->GetWPos());
 
 	// 環境効果を更新する
 	m_environmental->Update();
