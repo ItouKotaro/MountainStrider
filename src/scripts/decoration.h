@@ -13,32 +13,42 @@
 class DecorationManager
 {
 public:
+	struct Range
+	{
+		float min;
+		float max;
+	};
+
+	// デコレーションの種類
+	struct DecorationType
+	{
+		std::string path;					// プレハブのパス
+		int chance;							// 確率
+		float offsetY;						// Yのオフセット
+		float randomAngle;				// ランダムな角度
+		bool isMatchInclination;		// 傾斜角に合わせるか
+
+		// 条件
+		Range slantLimit;				// 傾斜角制限
+		Range heightLimit;				// 高度制限
+		float radiusSize;					// 半径サイズ
+	};
+
+public:
 	void Init(Terrain* terrain);
 	void Uninit();
 	void Update(const D3DXVECTOR3& pos);
 
 	//@brief デコレーションの種類を追加
-	void AddDecorationType(const std::string& path, const int& chance = 1, const float& offsetY = 0.0f);
+	DecorationType* AddDecorationType(const std::string& path, const int& chance = 1, const float& offsetY = 0.0f);
 
 	//@brief デコレーションを生成する（単体）
 	void GenerateDecoration();
 
-	static const int MAX_CHUNK = 20;
+	static const int MAX_CHUNK = 25;
 	static const float CHUNK_DIVISION;
 	static const int DESTROY_LIMIT;
 private:
-	// デコレーションの種類
-	struct DecorationType
-	{
-		std::string path;		// プレハブのパス
-		int chance;				// 確率
-		float offsetY;			// Yのオフセット
-
-		// 条件
-		float maxSlant;
-		float minSlant;
-	};
-
 	// デコレーションの設置データ
 	struct DecorationData
 	{

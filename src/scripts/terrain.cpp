@@ -145,7 +145,7 @@ void Terrain::Generate()
 	}
 
 	// ¶¬•¨‚ğ¶¬‚·‚é
-	//for (int i = 0; i < 20000; i++)
+	//for (int i = 0; i < 70000; i++)
 	//{
 	//	GenerateProduces();
 	//}

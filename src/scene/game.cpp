@@ -78,10 +78,10 @@ void CGameScene::Init()
 	// 装飾を生成する
 	m_decoration = new DecorationManager();
 	m_decoration->Init(m_pTerrain);
-	m_decoration->AddDecorationType("data\\PREFAB\\props\\grass00.pref");
-	m_decoration->AddDecorationType("data\\PREFAB\\tree\\tree00.pref", 2);
+	m_decoration->AddDecorationType("data\\PREFAB\\props\\weed00.pref", 3);
+	m_decoration->AddDecorationType("data\\PREFAB\\tree\\tree00.pref");
 
-	for (int i = 0; i < 20000; i++)
+	for (int i = 0; i < 70000; i++)
 	{
 		m_decoration->GenerateDecoration();
 	}

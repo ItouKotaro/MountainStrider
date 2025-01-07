@@ -184,15 +184,20 @@ void DecorationManager::Update(const D3DXVECTOR3& pos)
 //=============================================================
 // [DecorationManager] デコレーションの種類を追加する
 //=============================================================
-void DecorationManager::AddDecorationType(const std::string& path, const int& chance, const float& offsetY)
+DecorationManager::DecorationType* DecorationManager::AddDecorationType(const std::string& path, const int& chance, const float& offsetY)
 {
 	DecorationType* type = new DecorationType();
 	type->path = path;
 	type->chance = chance;
 	type->offsetY = offsetY;
-	type->minSlant = 0.0f;
-	type->maxSlant = D3DX_PI;
+	type->slantLimit = { 0.0f, D3DX_PI };
+	type->heightLimit = { 0.0f, 1.0f };
+	type->randomAngle = 0.0f;
+	type->isMatchInclination = true;
+	type->radiusSize = 10.0f;
+
 	m_decoType.push_back(type);
+	return type;
 }
 
 //=============================================================
@@ -209,6 +214,17 @@ void DecorationManager::GenerateDecoration()
 	pos.x = Benlib::RandomFloat(-Terrain::TERRAIN_DISTANCE_HALF, Terrain::TERRAIN_DISTANCE_HALF);
 	pos.z = Benlib::RandomFloat(-Terrain::TERRAIN_DISTANCE_HALF, Terrain::TERRAIN_DISTANCE_HALF);
 	pos.y = 0.0f;
+
+	// チャンクから周囲にオブジェクトがないかを確認する
+	int cX, cY;
+	GetChunk(&cX, &cY, pos);
+	for (auto itr = m_decoData[cX][cY].begin(); itr != m_decoData[cX][cY].end(); itr++)
+	{
+		if (Benlib::PosDistance((*itr)->transform.GetWPos(), pos) < decoType->radiusSize)
+		{
+			return;
+		}
+	}
 
 	// レイポイントの位置を決める
 	D3DXVECTOR3 rayPoint[4];
@@ -257,12 +273,20 @@ void DecorationManager::GenerateDecoration()
 	// 位置を更新する
 	pos = rayReachPoint[3];
 
+	// 高度制限の条件を満たしていないとき
+	float heightRate = (pos.y - m_terrain->GetMinHeight()) / static_cast<float>(m_terrain->GetMaxHeight() - m_terrain->GetMinHeight());
+	if (!(decoType->heightLimit.min <= heightRate &&
+		heightRate <= decoType->heightLimit.max))
+	{
+		return;
+	}
+
 	// 法線ベクトルを計算する
 	D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[0], rayReachPoint[1], rayReachPoint[2]);
 
 	// 傾斜制限の条件に満たしていないとき
-	if (!(fabsf(atan2f(normal.z, normal.y)) >= decoType->minSlant &&
-		fabsf(atan2f(normal.z, normal.y)) <= decoType->maxSlant))
+	if (!(fabsf(atan2f(normal.z, normal.y)) >= decoType->slantLimit.min &&
+		fabsf(atan2f(normal.z, normal.y)) <= decoType->slantLimit.max))
 	{
 		return;
 	}
@@ -272,21 +296,42 @@ void DecorationManager::GenerateDecoration()
 	D3DXQuaternionIdentity(&rot);
 
 	// ランダム角度を取得する
-	float angleRange = 0.0f;
+	float angleRange = decoType->randomAngle;
 	std::function<float()> randAngle = [angleRange]() {
-		if (angleRange == 0)
+		if (angleRange == 0.0f)
 			return 0.0f;
 		return (rand() % static_cast<int>(angleRange * 1000) - static_cast<int>(angleRange * 500)) * 0.001f;
 	};
 
-	// 地形に合わせた角度を計算する
-	D3DXVECTOR3 axis = { 1.0f, 0.0f, 0.0f };
-	D3DXQuaternionRotationAxis(&rot, &axis, fabsf(atan2f(normal.z, normal.y)) + randAngle());
+	// ランダムY軸回転
+	float randomY = 0.0f;
+	randomY = rand() % static_cast<int>(D3DX_PI * 2 * 10000) * 0.0001f;
 
-	D3DXQUATERNION mulRot;
-	axis = { 0.0f, 1.0f, 0.0f };
-	D3DXQuaternionRotationAxis(&mulRot, &axis, atan2f(normal.x, normal.z) + randAngle());
-	rot *= mulRot;
+	if (!decoType->isMatchInclination)
+	{ // 傾斜角を考慮しない
+		D3DXVECTOR3 axis = { 0.0f, 1.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&rot, &axis, randomY);
+
+		D3DXQUATERNION mulRot;
+		D3DXQuaternionRotationYawPitchRoll(&mulRot, randAngle(), 0.0f, randAngle());
+		rot *= mulRot;
+	}
+	else
+	{
+		D3DXVECTOR3 axis = { 0.0f, 1.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&rot, &axis, randomY);
+
+		// 地形に合わせた角度を計算する
+		D3DXQUATERNION mulRot;
+		axis = { 1.0f, 0.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&mulRot, &axis, fabsf(atan2f(normal.z, normal.y)) + randAngle());
+		rot *= mulRot;
+
+		D3DXQuaternionIdentity(&mulRot);
+		axis = { 0.0f, 1.0f, 0.0f };
+		D3DXQuaternionRotationAxis(&mulRot, &axis, atan2f(normal.x, normal.z) + randAngle());
+		rot *= mulRot;
+	}
 
 
 	// トランスフォームに設定する
