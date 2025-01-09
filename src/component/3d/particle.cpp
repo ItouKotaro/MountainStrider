@@ -109,6 +109,10 @@ void Particle::Draw()
 	mtx._42 = 0.0f;
 	mtx._43 = 0.0f;
 
+	D3DXMATRIX rotMtx;
+	D3DXMatrixRotationZ(&rotMtx, transform->GetWRot().z);
+	mtx *= rotMtx;
+
 	// オブジェクトのマトリックスを掛ける
 	D3DXMATRIX mtxTrans = transform->GetTranslationMatrix();
 	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
@@ -185,12 +189,6 @@ void ParticleSystem::Init()
 	// シェイプを生成する
 	m_shape = new ParticleShape::SphereShape();
 
-	// 力を生成する
-	m_power = new ParticleModule::Power();
-
-	// 生存時間を生成する
-	m_lifetime = new ParticleModule::Lifetime();
-
 	// テクスチャを生成する
 	m_texture = new ParticleModule::Texture();
 }
@@ -212,20 +210,6 @@ void ParticleSystem::Uninit()
 	{
 		delete m_shape;
 		m_shape = nullptr;
-	}
-
-	// 力の破棄
-	if (m_power != nullptr)
-	{
-		delete m_power;
-		m_power = nullptr;
-	}
-
-	// 生存時間の破棄
-	if (m_lifetime != nullptr)
-	{
-		delete m_lifetime;
-		m_lifetime = nullptr;
 	}
 
 	// テクスチャの破棄
@@ -268,7 +252,7 @@ void ParticleSystem::Update()
 void ParticleSystem::UpdateGenerator()
 {
 	// 必須設定がされているかをチェックする
-	if (m_emission == nullptr || m_shape == nullptr || m_lifetime == nullptr)
+	if (m_emission == nullptr || m_shape == nullptr)
 		return;
 
 	// エミッションによる放出量の決定
@@ -280,16 +264,19 @@ void ParticleSystem::UpdateGenerator()
 	{
 		// シェイプから結果を取得する（位置と方向）
 		ParticleModule::Shape::ResultData shapeResult = m_shape->GetResult();
+		D3DXVec3Normalize(&shapeResult.direction, &shapeResult.direction);
 
 		// 力を取得する
-		float power = m_power->GetResult();
+		float power = Benlib::RandomFloat(m_power.min, m_power.max);
 
 		// 生存時間を取得する
-		int lifetime = m_lifetime->GetResult();
+		int lifetime = Benlib::RandomInt(m_lifetime.min, m_lifetime.max);
 
 		// パーティクルデータを設定する
 		ParticleData data;
 		data.move = shapeResult.direction * power;
+		data.color = m_color;
+		data.size = Benlib::RandomFloat(m_size.min, m_size.max);
 		data.lifeCounter = lifetime;
 		data.destroyCounter = DESTROY_TIME;
 		data.use = true;
@@ -313,12 +300,13 @@ void ParticleSystem::UpdateGenerator()
 		{
 			data.particle = new SingleComponent<Particle>();
 			data.particle->Init();
-			data.particle->SetSize(m_size, m_size);
-			data.particle->BindTexture(m_texture->GetResult());
 		}
 
-		// 初期位置を設定する
+		// 生成設定
+		data.particle->SetSize(data.size, data.size);
+		data.particle->BindTexture(m_texture->GetResult());
 		data.particle->transform->SetPos(transform->GetWPos() + shapeResult.position);
+		data.particle->transform->SetRot(Benlib::RandomFloat(m_angle.min, m_angle.max));
 
 		// 追加する
 		m_particleData.push_back(data);
@@ -340,6 +328,16 @@ void ParticleSystem::UpdateParticles()
 
 			// 重力を加算する
 			data->move.y += m_gravity;
+
+			// サイズ
+			data->size += m_fluctuationSize;
+			data->particle->SetSize(data->size, data->size);
+			if (data->size <= 0.0f) data->use = false;
+
+			// カラー
+			data->color.a -= m_fluctuationAlpha;
+			data->particle->SetColor(data->color);
+			if (data->color.a <= 0.0f) data->use = false;
 
 			// 生存時間
 			data->lifeCounter--;

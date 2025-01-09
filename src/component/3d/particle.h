@@ -65,46 +65,6 @@ namespace ParticleModule
 		virtual ResultData GetResult() = 0;
 	};
 
-	// 力
-	class Power
-	{
-	public:
-		Power() : m_min(1.0f), m_max(1.0f){}
-		void Set(const float& power) 
-		{ 
-			m_min = power;
-			m_max = power;
-		}
-		void Set(const float& min, const float& max)
-		{
-			m_min = min;
-			m_max = max;
-		}
-		virtual float GetResult() { return Benlib::RandomFloat(m_min, m_max); }
-	private:
-		float m_min, m_max;
-	};
-
-	// 生存時間
-	class Lifetime
-	{
-	public:
-		Lifetime() : m_min(60), m_max(60) {}
-		void Set(const int& time)
-		{
-			m_min = time;
-			m_max = time;
-		}
-		void Set(const int& min, const int& max)
-		{
-			m_min = min;
-			m_max = max;
-		}
-		virtual int GetResult() { return Benlib::RandomInt(m_min, m_max); }
-	private:
-		int m_min, m_max;
-	};
-
 	// テクスチャ
 	class Texture
 	{
@@ -126,13 +86,28 @@ namespace ParticleModule
 class ParticleSystem : public Component
 {
 public:
+	struct Range
+	{
+		float min;
+		float max;
+	};
+	struct RangeInt
+	{
+		int min;
+		int max;
+	};
+
 	ParticleSystem() :
 		m_gravity(0.0f),
-		m_size(5.0f),
+		m_size({ 5.0f, 5.0f }),
+		m_angle({ 0.0f, 0.0f }),
+		m_fluctuationSize(0.0f),
+		m_fluctuationAlpha(0.0f),
+		m_color(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)),
 		m_emission(nullptr),
 		m_shape(nullptr),
-		m_power(nullptr),
-		m_lifetime(nullptr),
+		m_power({1.0f, 1.0f}),
+		m_lifetime({60, 60}),
 		m_texture(nullptr){}
 	void Init() override;
 	void Uninit() override;
@@ -143,6 +118,45 @@ public:
 	void SetGravity(const float& gravity) { m_gravity = -gravity; }
 	// @brief 重力の取得
 	float GetGravity() { return m_gravity; }
+
+	//@brief 回転の設定
+	void SetAngle(const float& angle) { m_angle = { angle, angle }; }
+	void SetAngle(const float& min, const float& max) { m_angle = { min, max }; }
+	//@brief 回転の取得
+	Range GetAngle() { return m_angle; }
+
+	//@brief カラーの設定
+	void SetColor(const D3DXCOLOR& color) { m_color = color; }
+	//@brief カラーの取得
+	D3DXCOLOR GetColor() { return m_color; }
+
+	//@brief サイズの設定
+	void SetSize(const float& size) { m_size = { size , size }; }
+	void SetSize(const float& min, const float& max) { m_size = { min, max }; }
+	//@brief サイズの取得
+	Range GetSize() { return m_size; }
+
+	//@brief 力の設定
+	void SetPower(const float& power) { m_power = { power, power }; }
+	void SetPower(const float& min, const float& max) { m_power = { min, max }; }
+	//@brief 力の取得
+	Range GetPower() { return m_power; }
+
+	//@brief 生存時間の設定
+	void SetLifetime(const int& time) { m_lifetime = { time, time }; }
+	void SetLifetime(const int& min, const int& max) { m_lifetime = { min, max }; }
+	//@brief 生存時間の取得
+	RangeInt GetLifetime() { return m_lifetime; }
+
+	//@brief サイズの変動設定
+	void SetFluctuationSize(const float& value) { m_fluctuationSize = value; }
+	//@brief サイズの変動取得
+	float GetFluctuationSize() { return m_fluctuationSize; }
+
+	//@brief 透明度の変動設定
+	void SetFluctuationAlpha(const float& value) { m_fluctuationAlpha = value; }
+	//@brief 透明度の変動取得
+	float GetFluctuationAlpha() { return m_fluctuationAlpha; }
 
 	// @brief エミッションの設定
 	void SetEmission(ParticleModule::Emission* emission);
@@ -169,19 +183,25 @@ private:
 	// モジュール
 	ParticleModule::Emission* m_emission;		// 放出
 	ParticleModule::Shape* m_shape;				// 形状
-	ParticleModule::Power* m_power;				// 力
-	ParticleModule::Lifetime* m_lifetime;			// 生存時間
 	ParticleModule::Texture* m_texture;			// テクスチャ
 
 	// 標準設定
 	float m_gravity;											// 重力
-	float m_size;												// サイズ
+	Range m_size;											// サイズ
+	float m_fluctuationSize;								// サイズの変動
+	D3DXCOLOR m_color;								// カラー
+	float m_fluctuationAlpha;							// 透明度の変動
+	Range m_angle;											// 回転
+	Range m_power;										// 力
+	RangeInt m_lifetime;									// 生存時間
 
 	// パーティクルデータ
 	struct ParticleData
 	{
 		SingleComponent<Particle>* particle;		// パーティクル
 		D3DXVECTOR3 move;							// 動き
+		D3DXCOLOR color;									// 色
+		float size;												// サイズ
 
 		int lifeCounter;										// 寿命
 		int destroyCounter;								// 破棄カウンター

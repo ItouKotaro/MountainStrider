@@ -31,7 +31,7 @@ void CCameraMove::Update()
 	}
 
 	// カーソル
-	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
+	if (Main::IsActiveWindow())
 	{
 		// 現在のカーソル位置を取得する
 		CManager::CursorPos cursor = CManager::GetInstance()->GetCursorClientPos();
@@ -52,7 +52,7 @@ void CCameraMove::Update()
 	auto pGamepadDev = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>();
 	short stickRX = pGamepadDev->GetState().Gamepad.sThumbRX;
 	short stickRY = pGamepadDev->GetState().Gamepad.sThumbRY;
-	if (GetActiveWindow() == CManager::GetInstance()->GetHWND())
+	if (Main::IsActiveWindow())
 	{
 		if (stickRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		{

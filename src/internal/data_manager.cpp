@@ -131,6 +131,25 @@ CDataMesh* CDataManager::RefMesh(const std::string& sPath)
 	return pNewData;
 }
 
+//=============================================================
+// [CDataManager] データの削除
+//=============================================================
+void CDataManager::RemoveData(const std::string& path)
+{
+	// すべてのデータを破棄する
+	for (auto itr = m_apData.begin(); itr != m_apData.end(); itr++)
+	{
+		if ((*itr)->GetPath() == path)
+		{
+			(*itr)->Clear();
+			delete* itr;
+			*itr = nullptr;
+			m_apData.erase(itr);
+			return;
+		}
+	}
+}
+
 
 //=============================================================
 // [CDataBase] コンストラクタ

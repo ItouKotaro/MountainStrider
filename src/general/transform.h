@@ -102,7 +102,7 @@ public:
 	void MultiplyQuaternion(D3DXQUATERNION quaternion) { D3DXQuaternionMultiply(&m_rotation, &m_rotation, &quaternion); }
 	void SetRot(float x, float y, float z);
 	void SetRot(D3DXVECTOR3 rotation) { SetRot(rotation.x, rotation.y, rotation.z); }
-	void SetRot(float fAngle) { SetRot(m_rotation.x, m_rotation.y, fAngle); }
+	void SetRot(float fAngle) { SetRot(GetRot().x, GetRot().y, fAngle); }
 	void LookAt(D3DXVECTOR3 target);
 	void SetScale(float x, float y, float z) { m_scale = { x, y, z }; }
 	void SetScale(D3DXVECTOR3 scale) { SetScale(scale.x, scale.y, scale.z); }

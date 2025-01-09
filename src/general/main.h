@@ -15,4 +15,11 @@
 // プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+namespace Main
+{
+	bool IsActiveWindow();
+	void ExitApplication();
+	void SetShowCursor(const bool& show);
+}
+
 #endif

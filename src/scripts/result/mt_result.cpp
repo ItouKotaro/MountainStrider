@@ -197,35 +197,35 @@ void ClearResult::Init()
 
 	// ŽŸ‚ÌŽR‚Ö or I—¹
 	{
-		GameObject* pNextButton = new GameObject("NextMountain");
-		page->AddObject(0, pNextButton);
-		pNextButton->transform->SetSize(500.0f, 140.0f);
-		pNextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
-		pNextButton->AddComponent<ButtonUI>();
-		pNextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		pNextButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() { page->SetPage(1); });
+		m_shopButton = new GameObject("NextMountain");
+		page->AddObject(0, m_shopButton);
+		m_shopButton->transform->SetSize(500.0f, 140.0f);
+		m_shopButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
+		m_shopButton->AddComponent<CPolygon>();
+		m_shopButton->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		//m_addListButton->GetComponent<CPolygon>()->setClickEvent([this, page]() { page->SetPage(1); });
 
-		GameObject* pNextButtonText = new GameObject();
-		pNextButtonText->SetParent(pNextButton);
-		page->AddObject(0, pNextButtonText);
-		pNextButtonText->transform->SetPos(250.0f, 35.0f);
-		pNextButtonText->AddComponent<CText>();
-		pNextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pNextButtonText->GetComponent<CText>()->SetText("<color=0,0,0>Shop ¨");
-		pNextButtonText->GetComponent<CText>()->SetFont("07“S•rƒSƒVƒbƒN");
+		GameObject* pShopButtonText = new GameObject();
+		pShopButtonText->SetParent(m_shopButton);
+		page->AddObject(0, pShopButtonText);
+		pShopButtonText->transform->SetPos(250.0f, 35.0f);
+		pShopButtonText->AddComponent<CText>();
+		pShopButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		pShopButtonText->GetComponent<CText>()->SetText("<color=0,0,0>Shop ¨");
+		pShopButtonText->GetComponent<CText>()->SetFont("07“S•rƒSƒVƒbƒN");
 	}
 
 	// ƒŠƒXƒg’Ç‰Á
 	{
-		GameObject* pListButton = new GameObject("NextMountain");
-		page->AddObject(0, pListButton);
-		pListButton->transform->SetSize(500.0f, 140.0f);
-		pListButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
-		pListButton->AddComponent<ButtonUI>();
-		pListButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		m_addListButton = new GameObject("NextMountain");
+		page->AddObject(0, m_addListButton);
+		m_addListButton->transform->SetSize(500.0f, 140.0f);
+		m_addListButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
+		m_addListButton->AddComponent<CPolygon>();
+		m_addListButton->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 
 		GameObject* pListButtonText = new GameObject();
-		pListButtonText->SetParent(pListButton);
+		pListButtonText->SetParent(m_addListButton);
 		page->AddObject(0, pListButtonText);
 		pListButtonText->transform->SetPos(250.0f, 35.0f);
 		pListButtonText->AddComponent<CText>();

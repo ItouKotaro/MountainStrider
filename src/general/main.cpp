@@ -7,6 +7,7 @@
 #include "main.h"
 #include "manager.h"
 #include <windowsx.h>
+#include <thread>
 
 // メモリーリーク検出
 #define _CRTDBG_MAP_ALLOC
@@ -23,6 +24,11 @@
 #define _NEW new
 #endif // FIND_MEM_LEAKS
 
+// グローバル変数
+bool g_isActiveWindow;
+bool g_isEnded = false;
+bool g_showCursor = true;
+bool g_beforeShowCursor = true;
 //=============================================================
 // メイン関数
 //=============================================================
@@ -99,23 +105,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	dwFrameCount = 0;
 	dwFPSLastTime = timeGetTime();
 
-	// メッセージループ
-	while (1)
-	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != 0)
-		{ // Windowsの処理
-			if (msg.message == WM_QUIT)
-			{ // WM_QUITメッセージ
-				break;
-			}
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-		else
-		{ // DirectXの処理
+	std::thread th2([&]() {
+		while (!g_isEnded)
+		{
 			dwCurrentTime = timeGetTime();		// 現在時刻を取得
 
 			if ((dwCurrentTime - dwFPSLastTime) >= 500)
@@ -149,11 +141,96 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 
 				// マウスホイール値を初期化
 				CManager::GetInstance()->SetMouseWheel(0);
-				
+
 				dwFrameCount++; // フレームカウントを加算
 			}
 		}
+		});
+
+	while (!g_isEnded)
+	{
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != 0)
+		{ // Windowsの処理
+			if (msg.message == WM_QUIT)
+			{ // WM_QUITメッセージ
+				g_isEnded = true;
+				break;
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+
+		// アクティブ情報の更新
+		g_isActiveWindow = GetActiveWindow() != NULL;
+
+		// カーソルの表示設定の更新
+		if (g_showCursor != g_beforeShowCursor)
+		{
+			ShowCursor(g_showCursor ? TRUE : FALSE);
+			g_beforeShowCursor = g_showCursor;
+		}
 	}
+
+	th2.join();
+
+	//// メッセージループ
+	//while (1)
+	//{
+	//	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != 0)
+	//	{ // Windowsの処理
+	//		if (msg.message == WM_QUIT)
+	//		{ // WM_QUITメッセージ
+	//			break;
+	//		}
+	//		else
+	//		{
+	//			TranslateMessage(&msg);
+	//			DispatchMessage(&msg);
+	//		}
+	//	}
+	//	else
+	//	{ // DirectXの処理
+	//		dwCurrentTime = timeGetTime();		// 現在時刻を取得
+
+	//		if ((dwCurrentTime - dwFPSLastTime) >= 500)
+	//		{ // 0.5秒経過毎
+	//			// FPSを計測
+	//			CManager::GetInstance()->SetFPS((dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime));
+	//			dwFPSLastTime = dwCurrentTime;							// 計測した時刻を記録
+	//			dwFrameCount = 0;												// フレームカウントをクリア
+	//		}
+
+	//		if ((dwCurrentTime - dwExecLastTime) >= (1000 / FIXED_FPS))
+	//		{ // 60分の1秒経過
+
+	//			// デルタタイムを設定する
+	//			CManager::GetInstance()->SetDeltaTime((dwCurrentTime - dwExecLastTime) * 0.001f);
+
+	//			//処理開始時刻
+	//			dwExecLastTime = dwCurrentTime;
+
+	//			// 更新処理
+	//			CManager::GetInstance()->Update();
+
+	//			// 描画処理
+	//			CManager::GetInstance()->Draw();
+
+	//			// シーンの変更処理
+	//			CSceneManager::GetInstance()->ChangingScene();
+
+	//			// 死亡フラグのついたオブジェクトを破棄する
+	//			GameObject::DestroyDeathFlag();
+
+	//			// マウスホイール値を初期化
+	//			CManager::GetInstance()->SetMouseWheel(0);
+	//			
+	//			dwFrameCount++; // フレームカウントを加算
+	//		}
+	//	}
+	//}
 
 	// 分解能を戻す
 	timeEndPeriod(1);
@@ -219,4 +296,28 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam); //既定の処理を返す
+}
+
+//=============================================================
+// アクティブウィンドウか
+//=============================================================
+bool Main::IsActiveWindow()
+{
+	return g_isActiveWindow;
+}
+
+//=============================================================
+// アプリケーション終了命令
+//=============================================================
+void Main::ExitApplication()
+{
+	g_isEnded = true;
+}
+
+//=============================================================
+// カーソルの表示
+//=============================================================
+void Main::SetShowCursor(const bool& show)
+{
+	g_showCursor = show;
 }

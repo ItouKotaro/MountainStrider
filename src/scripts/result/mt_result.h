@@ -77,6 +77,11 @@ private:
 	GameObject* m_enduranceView;	// 耐久値表示
 	GameObject* m_terrainImg;			// 地形画像
 
+	// ボタン
+	GameObject* m_addListButton;
+	GameObject* m_shopButton;
+
+
 	ShopManager* m_shopManager;		// ショップ管理
 };
 

@@ -38,7 +38,6 @@ public:
 	const bool GetPause() { return m_bPause; }																// ポーズの取得
 	void SetMouseWheel(const int& nMouseWheel) { m_nMouseWheel = nMouseWheel; }	// マウスホイールの設定（ユーザーの使用禁止）
 	const int GetMouseWheel() { return m_nMouseWheel; }												// マウスホイールの取得
-	void SetShowCursor(const bool& show);
 
 	struct CursorPos
 	{
@@ -57,7 +56,6 @@ private:
 	int m_nMouseWheel;									// マウスホイール値
 	POINT m_cursorPos;									// マウス位置
 	bool m_bPause;											// ポーズ
-	bool m_showCursor;									// カーソルの表示
 	HWND m_hwnd;										// ハンドル
 };
 

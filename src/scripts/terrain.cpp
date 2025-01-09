@@ -123,6 +123,7 @@ void Terrain::Generate()
 	// 地形データを生成する
 	GenerateTerrain();
 
+	CDataManager::GetInstance()->RemoveData("data\\terrain.bmp");
 	m_pField->GetComponent<CMeshField>()->SetTexture("data\\terrain.bmp");
 
 	// HeightfieldTerrainShapeを作成する

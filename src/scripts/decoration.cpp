@@ -333,10 +333,9 @@ void DecorationManager::GenerateDecoration()
 		rot *= mulRot;
 	}
 
-
 	// トランスフォームに設定する
 	Transform transform;
-	transform.SetPos(pos);
+	transform.SetPos(pos+D3DXVECTOR3(0.0f, decoType->offsetY, 0.0f));
 	transform.SetQuaternion(rot);
 
 	// 設置する（データ追加）

@@ -117,7 +117,7 @@ void CGameScene::Init()
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_environmental->GetLightCamera());
-	CManager::GetInstance()->SetShowCursor(false);
+	Main::SetShowCursor(false);
 }
 
 //=============================================================
@@ -333,7 +333,7 @@ void CGameScene::onGameOver()
 		m_pItemSlot->SetActive(false);
 
 		// カーソルを表示する
-		CManager::GetInstance()->SetShowCursor(true);
+		Main::SetShowCursor(true);
 
 		// 走行距離を計算する
 		float mileage = 0.0f;
@@ -381,7 +381,7 @@ void CGameScene::onClear()
 		m_pItemSlot->SetActive(false);
 
 		// カーソルを表示する
-		CManager::GetInstance()->SetShowCursor(true);
+		Main::SetShowCursor(true);
 
 		// 走行距離を計算する
 		float mileage = 0.0f;

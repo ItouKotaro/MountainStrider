@@ -80,6 +80,7 @@ public:
 
 	CDataTexture* RefTexture(const std::string& sPath);
 	CDataMesh* RefMesh(const std::string& sPath);
+	void RemoveData(const std::string& path);
 private:
 	std::vector<CDataBase*> m_apData;		// 全データ格納
 };

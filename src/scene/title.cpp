@@ -16,112 +16,109 @@
 #include "render/shadow_rb.h"
 #include "manager.h"
 #include "component/other/page.h"
+#include "component/3d/meshfield.h"
+#include "component/3d/mesh.h"
+
+#include "component/3d/movement_space.h"
+
+using namespace noise;
 
 //=============================================================
 // [CTitleScene] 初期化
 //=============================================================
 void CTitleScene::Init()
 {
-	// 背景
-	GameObject* pBack = new GameObject();
-	pBack->AddComponent<CField>()->Set(580.0f, 420.0f);
-	pBack->GetComponent<CField>()->SetTexture("data\\TEXTURE\\TITLE\\back.png");
-	pBack->transform->SetPos(0.0f, 0.0f, 300.0f);
-	pBack->transform->SetRot(-D3DX_PI * 0.5f, 0.0f, 0.0f);
+	// タイトルロゴ
+	GameObject* titleLogo = new GameObject();
+	titleLogo->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\logo.png");
+	titleLogo->transform->SetSize(450.0f, 450.0f);
+	titleLogo->transform->SetPos(80.0f, 30.0f);
 
-	// 地面
-	GameObject* pShadowField = new GameObject;
-	pShadowField->AddComponent<CField>()->Set(500.0f, 500.0f);
-	pShadowField->transform->SetPos(0.0f, -70.0f, 0.0f);
+	// 項目バーを作成する
+	m_selectBar = new GameObject();
+	m_selectBar->AddComponent<CPolygon>();
+	m_selectBar->transform->SetSize(10.0f, 100.0f);
 
-	GameObject* pField = new GameObject;
-	pField->AddComponent<CField>()->Set(500.0f, 500.0f);
-	pField->GetComponent<CField>()->SetTexture("data\\TEXTURE\\TITLE\\grass.png");
-	pField->GetComponent<CField>()->SetLoopTexture(10);
-	pField->transform->SetPos(0.0f, -69.0f, 0.0f);
+	// 項目を作成する
+	m_sStart = (new GameObject())->AddComponent<CText>();
+	m_sStart->transform->SetPos(150.0f, SELECT_START_Y);
+	m_sStart->SetText("スタート");
+	m_sStart->SetFont("07鉄瓶ゴシック");
+
+	m_sEnd = (new GameObject())->AddComponent<CText>();
+	m_sEnd->transform->SetPos(150.0f, SELECT_START_Y + SELECT_SPACE * 1);
+	m_sEnd->SetText("終了する");
+	m_sEnd->SetFont("07鉄瓶ゴシック");
+
+	// 地形を生成する
+	InitTerrain();
 
 	// シーン
 	m_titleScene = GameObject::LoadPrefab("data\\PREFAB\\title_scene.pref");
-	m_titleScene->transform->SetPos(0.0f, -20.0f, 10.0f);
+	m_titleScene->transform->SetPos(0.0f, 0.0f, 10.0f);
 	m_titleScene->GetComponent<CMotionManager>()->Play("0");
 
-	// テキスト
-	GameObject* pLogo = new GameObject;
-	pLogo->AddComponent<CField>()->Set(200.0f, 200.0f);
-	pLogo->GetComponent<CField>()->SetTexture("data\\TEXTURE\\logo.png");
-	pLogo->transform->SetPos(0.0f, 30.0f, 290.0f);
-	pLogo->transform->SetRot(-D3DX_PI * 0.5f, 0.0f, 0.0f);
+	// テント
+	GameObject* tentObj = new GameObject();
+	tentObj->transform->SetPos(-20.0f, 0.0f, 40.0f);
+	tentObj->transform->SetRot(0.0f, D3DX_PI * 0.3f, 0.0f);
+	tentObj->transform->SetScale(1.2f);
+	tentObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\TITLE\\tent.x");
 
-	// ゲーム開始
-	{
-		GameObject* pStartButton = new GameObject("StartMountain");
-		pStartButton->transform->SetSize(500.0f, 140.0f);
-		pStartButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) - 400.0f, 800.0f);
-		pStartButton->AddComponent<ButtonUI>();
-		pStartButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		pStartButton->GetComponent<ButtonUI>()->setClickEvent([]() { 
-			// 読み込み中の画像を表示
-			GameObject* loadingPoly = new GameObject();
-			loadingPoly->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\TITLE\\loading.png");
-			loadingPoly->transform->SetSize(1220.0f, 304.0f);
-			loadingPoly->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 610.0f, CRenderer::SCREEN_HEIGHT / 2 - 152.0f);
+	// バックパック
+	GameObject* backpackObj = new GameObject();
+	backpackObj->transform->SetPos(-12.5f, 0.5f, 35.0f);
+	backpackObj->transform->SetRot(0.0f, D3DX_PI * 1.7f, -0.3f);
+	backpackObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\TITLE\\backpack.x");
 
-			// ゲーム処理
-			static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->ResetGame();
-			CSceneManager::GetInstance()->SetScene("game");
-			});
+	// 焚火
+	GameObject* firecampObj = new GameObject();
+	firecampObj->transform->SetPos(25.0f, 0.5f, 5.0f);
+	firecampObj->transform->SetScale(0.7f);
+	firecampObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\TITLE\\campfire.x");
 
-		GameObject* pStartButtonText = new GameObject();
-		pStartButtonText->SetParent(pStartButton);
-		pStartButtonText->transform->SetPos(250.0f, 30.0f);
-		pStartButtonText->AddComponent<CText>();
-		pStartButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pStartButtonText->GetComponent<CText>()->SetText("<color=0,0,0>開始");
-		pStartButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
-	}
+	// 焚火パーティクル
+	GameObject* fireParticleObj = new GameObject();
+	fireParticleObj->SetParent(firecampObj);
+	auto fireParticle = fireParticleObj->AddComponent<ParticleSystem>();
+	fireParticle->SetSize(1.5f, 3.0f);
+	fireParticle->SetFluctuationSize(-0.04f);
+	fireParticle->SetAngle(0.0f, D3DX_PI);
+	fireParticle->GetEmission()->SetRateOverTime(20.0f);
+	fireParticle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\pixel.png");
+	CampFireParticleShape* fireP = new CampFireParticleShape();
+	fireP->SetRadius(3.0f);
+	fireParticle->SetShape(fireP);
+	fireParticle->SetPower(0.2f, 0.4f);
+	fireParticle->SetLifetime(50, 80);
+	fireParticle->SetColor(D3DCOLOR_RGBA(255, 133, 25, 255));
+	fireParticle->SetFluctuationAlpha(0.03f);
 
-	// リスト追加
-	{
-		GameObject* pEndButton = new GameObject("EndMountain");
-		pEndButton->transform->SetSize(500.0f, 140.0f);
-		pEndButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 800.0f);
-		pEndButton->AddComponent<ButtonUI>();
-		pEndButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		pEndButton->GetComponent<ButtonUI>()->setClickEvent([]() { DestroyWindow(CRenderer::GetInstance()->GetHWND()); });
-
-		GameObject* pEndButtonText = new GameObject();
-		pEndButtonText->SetParent(pEndButton);
-		pEndButtonText->transform->SetPos(250.0f, 30.0f);
-		pEndButtonText->AddComponent<CText>();
-		pEndButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pEndButtonText->GetComponent<CText>()->SetText("<color=0,0,0>終了");
-		pEndButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
-	}
+	fireParticle = fireParticleObj->AddComponent<ParticleSystem>();
+	fireParticle->SetSize(1.5f, 3.0f);
+	fireParticle->SetFluctuationSize(-0.04f);
+	fireParticle->SetAngle(0.0f, D3DX_PI);
+	fireParticle->GetEmission()->SetRateOverTime(20.0f);
+	fireParticle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\pixel.png");
+	fireP = new CampFireParticleShape();
+	fireP->SetRadius(6.0f);
+	fireParticle->SetShape(fireP);
+	fireParticle->SetPower(0.2f, 0.4f);
+	fireParticle->SetLifetime(50, 80);
+	fireParticle->SetColor(D3DCOLOR_RGBA(255, 0, 0, 255));
+	fireParticle->SetFluctuationAlpha(0.03f);
 
 	// カメラ
 	GameObject* pCamera = new GameObject();
-	pCamera->AddComponent<CCamera>();
-	pCamera->transform->SetPos(0.0f, 0.0f, -50.0f);
+	pCamera->AddComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight00.json");
+	pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
+	pCamera->transform->SetPos(0.0f, 20.0f, -48.0f);
 
 	// ライト
 	GameObject* pLight = new GameObject();
 	pLight->AddComponent<CCamera>();
 	pLight->transform->SetPos(-30.0f, 100.0f, -20.0f);
 	pLight->transform->LookAt({ 0.0f, 0.0f, 5.0f });
-
-	// チュートリアル
-	GameObject* tutorialImg = new GameObject();
-	tutorialImg->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\TITLE\\tutorial.png");
-	tutorialImg->transform->SetSize(CRenderer::SCREEN_WIDTH, CRenderer::SCREEN_HEIGHT);
-	tutorialImg->SetVisible(false);
-
-	GameObject* tutorialButton = new GameObject();
-	tutorialButton->transform->SetSize(100.0f, 100.0f);
-	tutorialButton->transform->SetPos(CRenderer::SCREEN_WIDTH - 100.0f, 0.0f);
-	tutorialButton->AddComponent<ButtonUI>();
-	tutorialButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\TITLE\\tutorial_book.png");
-	tutorialButton->GetComponent<ButtonUI>()->setClickEvent([this, tutorialImg]() {tutorialImg->SetVisible(!tutorialImg->GetVisible()); });
-	tutorialButton->SetPriority(9);
 
 	// 起動クレジット背景
 	GameObject* creditBG = new GameObject();
@@ -144,7 +141,7 @@ void CTitleScene::Init()
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowPoint({ 0.0f, 0.0f, 0.0f });
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(600.0f);
 
-	CManager::GetInstance()->SetShowCursor(true);
+	Main::SetShowCursor(true);
 }
 
 //=============================================================
@@ -152,6 +149,19 @@ void CTitleScene::Init()
 //=============================================================
 void CTitleScene::Uninit()
 {
+	CCollision::RemoveCollision(m_field);
+
+	if (m_terrainData != nullptr)
+	{
+		delete[] m_terrainData;
+		m_terrainData = nullptr;
+	}
+
+	if (m_terrainShape != nullptr)
+	{
+		delete m_terrainShape;
+		m_terrainShape = nullptr;
+	}
 }
 
 //=============================================================
@@ -159,6 +169,43 @@ void CTitleScene::Uninit()
 //=============================================================
 void CTitleScene::Update()
 {
+	if (!m_credit->IsEnded()) return;
+
+	// 操作の更新
+	UpdateControl();
+
+	// 項目バーを移動させる
+	m_selectBar->transform->SetPos(100.0f, SELECT_START_Y - 5.0f + SELECT_SPACE * m_select);
+
+	// 透明度のリセット
+	m_sStart->SetAlpha(NOT_SELECTED_ALPHA);
+	m_sEnd->SetAlpha(NOT_SELECTED_ALPHA);
+
+	// 項目処理
+	switch (m_select)
+	{
+	case CTitleScene::SELECT_START:
+		m_sStart->SetAlpha(SELECTED_ALPHA);
+		break;
+	case CTitleScene::SELECT_END:
+		m_sEnd->SetAlpha(SELECTED_ALPHA);
+		break;
+	}
+
+	// 確定処理
+	if (INPUT_INSTANCE->onTrigger("space") || INPUT_INSTANCE->onTrigger("enter") ||
+		INPUT_INSTANCE->onTrigger("p:a") || INPUT_INSTANCE->onTrigger("p:start"))
+	{
+		switch (m_select)
+		{
+		case CTitleScene::SELECT_START:
+			CSceneManager::GetInstance()->SetScene("game");
+			break;
+		case CTitleScene::SELECT_END:
+			Main::ExitApplication();
+			break;
+		}
+	}
 }
 
 //=============================================================
@@ -166,4 +213,244 @@ void CTitleScene::Update()
 //=============================================================
 void CTitleScene::Draw()
 {
+}
+
+//=============================================================
+// [CTitleScene] 操作の更新
+//=============================================================
+void CTitleScene::UpdateControl()
+{
+	auto padInfo = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>()->GetState().Gamepad;
+	short stickX = padInfo.sThumbLX;
+	short stickY = padInfo.sThumbLY;
+	static int stickCounter = 0;
+
+	if (stickCounter > 0) stickCounter--;
+	if (stickCounter <= 0 && stickY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		m_select = static_cast<SELECT>(m_select - 1);
+		stickCounter = 15;
+	}
+	if (stickCounter <= 0 && stickY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		m_select = static_cast<SELECT>(m_select + 1);
+		stickCounter = 15;
+	}
+
+
+	// 上
+	if (INPUT_INSTANCE->onTrigger("w") || INPUT_INSTANCE->onTrigger("up") ||
+		INPUT_INSTANCE->onTrigger("p:up"))
+	{
+		m_select = static_cast<SELECT>(m_select - 1);
+	}
+
+	// 下
+	if (INPUT_INSTANCE->onTrigger("s") || INPUT_INSTANCE->onTrigger("down") ||
+		INPUT_INSTANCE->onTrigger("p:down"))
+	{
+		m_select = static_cast<SELECT>(m_select + 1);
+	}
+
+	// 正しい数値に直す
+	if (m_select < 0) m_select = SELECT_START;
+	if (m_select >= SELECT_MAX) m_select = static_cast<SELECT>(SELECT_MAX - 1);
+}
+
+//=============================================================
+// [CTitleScene] 地形の初期化
+//=============================================================
+void CTitleScene::InitTerrain()
+{
+	GameObject* pShadowField = new GameObject();
+	pShadowField->AddComponent<CMeshField>()->Create(30, 30, 30.0f);
+	pShadowField->transform->SetPos(0.0f, -0.5f, TERRAIN_SCALE * 15 );
+
+	m_field = new GameObject();
+	m_field->AddComponent<CMeshField>()->Create(30, 30, 30.0f);
+	m_field->transform->SetPos(0.0f, 0.0f, TERRAIN_SCALE * 15);
+	CCollision::Create(m_field);
+
+	module::Perlin myModule;
+	utils::NoiseMap heightMap;
+
+	// シードを設定する
+	srand((unsigned int)time(NULL));
+	myModule.SetSeed(rand());
+
+	module::ScaleBias scaled;
+	scaled.SetSourceModule(0, myModule);
+	scaled.SetScale(50.0f);
+
+	// 地形を生成する
+	utils::NoiseMapBuilderPlane heightMapBuilder;
+	heightMapBuilder.SetSourceModule(scaled);
+	heightMapBuilder.SetDestNoiseMap(heightMap);
+	heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
+	heightMapBuilder.SetBounds(0.0, 3.0, 0.0, 3.0);
+	heightMapBuilder.Build();
+
+	// 地形データ
+	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];
+
+	// 高さを変更する
+	for (int x = 0; x < TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < TERRAIN_SIZE; y++)
+		{
+			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y);
+
+			if (y >= 27)
+			{
+				pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, 0.0f);
+				m_field->GetComponent<CMeshField>()->SetHeight(x, y, 0.0f);
+				continue;
+			}
+			pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, heightMap.GetValue(x, y));
+			m_field->GetComponent<CMeshField>()->SetHeight(x, y, heightMap.GetValue(x, y));
+		}
+	}
+
+	// テクスチャを生成する
+	utils::RendererImage renderer;
+	utils::Image image;
+	renderer.SetSourceNoiseMap(heightMap);
+	renderer.SetDestImage(image);
+	renderer.ClearGradient();
+	renderer.AddGradientPoint(1.0f, utils::Color(11, 122, 0, 255));
+	renderer.AddGradientPoint(0.0f, utils::Color(101, 191, 125, 255));
+	renderer.AddGradientPoint(-1.0f, utils::Color(50, 166, 8, 255));
+	renderer.EnableLight();
+	renderer.SetLightContrast(0.01f);
+	renderer.SetLightBrightness(1.5);
+	renderer.SetLightIntensity(4.5f);
+	renderer.Render();
+
+	// ファイルに書き出す
+	utils::WriterBMP writer;
+	writer.SetSourceImage(image);
+	writer.SetDestFilename("data\\title_terrain.bmp");
+	writer.WriteDestFile();
+
+	// テクスチャを適用する
+	CDataManager::GetInstance()->RemoveData("data\\title_terrain.bmp");
+	m_field->GetComponent<CMeshField>()->SetTexture("data\\title_terrain.bmp");
+
+	// 地形に当たり判定をつける
+	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
+	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
+	CCollision::GetCollision(m_field)->GetGhostObject()->setCollisionShape(m_terrainShape);
+	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
+
+	// 障害物
+	for (int i = 0; i < 50; i++)
+	{
+		GenerateDecoration();
+	}
+}
+
+//=============================================================
+// [CTitleScene] 装飾の生成
+//=============================================================
+void CTitleScene::GenerateDecoration()
+{
+	// 位置を決める
+	D3DXVECTOR3 pos;
+	pos.x = Benlib::RandomFloat(TERRAIN_SIZE * TERRAIN_SCALE * -0.5f, TERRAIN_SIZE * TERRAIN_SCALE * 0.5f);
+	pos.z = Benlib::RandomFloat(0.0f, (TERRAIN_SIZE - 2) * TERRAIN_SCALE);
+	pos.z += 2.0f * TERRAIN_SCALE;
+	pos.y = 0.0f;
+
+	// レイポイントの位置を決める
+	D3DXVECTOR3 rayPoint[4];
+	rayPoint[0].x = -2.0f;
+	rayPoint[0].z = 2.0f;
+	rayPoint[1].x = 2.0f;
+	rayPoint[1].z = 2.0f;
+	rayPoint[2].x = 0.0f;
+	rayPoint[2].z = -2.0f;
+	rayPoint[3].x = 0.0f;
+	rayPoint[3].z = 0.0f;
+
+	// 生成座標に移動する
+	for (int i = 0; i < 4; i++)
+	{
+		rayPoint[i] += pos;
+	}
+
+	// レイを飛ばす
+	D3DXVECTOR3 rayReachPoint[4];
+	bool bReached = true;
+	for (int i = 0; i < 4; i++)
+	{
+		btVector3 Start = btVector3(rayPoint[i].x, 30000.0f, rayPoint[i].z);
+		btVector3 End = btVector3(rayPoint[i].x, -30000.0f, rayPoint[i].z);
+
+		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+		CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+		if (RayCallback.hasHit())
+		{ // ヒットしたとき
+			rayReachPoint[i] = { RayCallback.m_hitPointWorld.getX(), RayCallback.m_hitPointWorld.getY(), RayCallback.m_hitPointWorld.getZ() };
+		}
+		else
+		{
+			bReached = false;
+			break;
+		}
+	}
+
+	if (!bReached) return;
+
+	// 法線ベクトルを計算する
+	D3DXVECTOR3 normal = Benlib::CalcNormalVector(rayReachPoint[0], rayReachPoint[1], rayReachPoint[2]);
+
+	// 回転を決める ------------------------------------------------------------------------------------------------------------
+	D3DXQUATERNION rot;
+	D3DXQuaternionIdentity(&rot);
+
+
+	// ランダムY軸回転
+	float randomY = 0.0f;
+	randomY = rand() % static_cast<int>(D3DX_PI * 2 * 10000) * 0.0001f;
+
+	D3DXVECTOR3 axis = { 0.0f, 1.0f, 0.0f };
+	D3DXQuaternionRotationAxis(&rot, &axis, randomY);
+
+	// 地形に合わせた角度を計算する
+	D3DXQUATERNION mulRot;
+	axis = { 1.0f, 0.0f, 0.0f };
+	D3DXQuaternionRotationAxis(&mulRot, &axis, fabsf(atan2f(normal.z, normal.y)) * 0.7f);
+	rot *= mulRot;
+
+	D3DXQuaternionIdentity(&mulRot);
+	axis = { 0.0f, 1.0f, 0.0f };
+	D3DXQuaternionRotationAxis(&mulRot, &axis, atan2f(normal.x, normal.z));
+	rot *= mulRot;
+
+	// オブジェクトを作成する
+	Transform trans;
+	trans.SetPos(pos);
+	trans.SetQuaternion(rot);
+
+	if (rand() % 10 < 8)
+	{
+		GameObject::LoadPrefab("data\\PREFAB\\tree\\tree00.pref", trans);
+	}
+	else
+	{
+		GameObject::LoadPrefab("data\\PREFAB\\tree\\fallen_tree.pref", trans);
+	}
+}
+
+//=============================================================
+// [CampFireParticleShape] キャンプファイアのパーティクル
+//=============================================================
+CampFireParticleShape::ResultData CampFireParticleShape::GetResult()
+{
+	ResultData data;
+	float angle = Benlib::RandomFloat(0.0f, D3DX_PI * 2.0f);
+	float radius = Benlib::RandomFloat(0.0f, m_radius);
+	data.position = { sinf(angle) * radius, 0.0f, cosf(angle) * radius };
+	data.direction = D3DXVECTOR3(0.0f, 10.0f, 0.0f) - data.position;
+	return data;
 }
