@@ -115,6 +115,16 @@ public:
 	*/
 	bool onTrigger(const std::string& key);
 
+	// デバイス
+	enum DEVICE
+	{
+		DEVICE_KEYBOARD,
+		DEVICE_MOUSE,
+		DEVICE_CONTROLLER,
+	};
+	//@brief 最後に入力したデバイス
+	DEVICE GetLastInput() { return m_lastDevice; }
+
 	/*
 	@brief 登録されている入力デバイスの取得
 	@return 入力デバイスのポインタ（失敗: nullptr）
@@ -183,8 +193,12 @@ private:
 	*/
 	void AddKeyData(const std::string& sKeyName, const std::vector<std::string>& key, INPUT_TYPE type);
 
+	//@brief 最後のデバイスを取得する
+	void UpdateLastDevice();
+
 	std::vector<KeyData> m_keyData;
 	LPDIRECTINPUT8 m_pInput;
+	DEVICE m_lastDevice;
 };
 
 #endif // !_INPUT_SYSTEM_H_

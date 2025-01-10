@@ -110,6 +110,9 @@ void ShopManager::Init(Pages* pages)
 
 	// 燃料と耐久値の購入ディスプレイを初期化する
 	InitTopDisplay();
+
+	// カーソル非表示
+	Main::SetShowCursor(false);
 }
 
 //=============================================================
@@ -321,3 +324,4 @@ bool ShopManager::PayPoint(const int& cost)
 	}
 	return false;
 }
+

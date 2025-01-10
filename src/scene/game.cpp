@@ -178,12 +178,13 @@ void CGameScene::Update()
 	}
 
 	// ポーズ
-	if (INPUT_INSTANCE->onTrigger("p"))
+	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("p:start"))
 	{
 		m_pause->SetPause(!m_pause->GetPause());
 	}
 	if (m_pause->GetPause())
 	{
+		m_pause->Update();
 		return;
 	}
 

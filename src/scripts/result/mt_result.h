@@ -81,7 +81,6 @@ private:
 	GameObject* m_addListButton;
 	GameObject* m_shopButton;
 
-
 	ShopManager* m_shopManager;		// ƒVƒ‡ƒbƒvŠÇ—
 };
 

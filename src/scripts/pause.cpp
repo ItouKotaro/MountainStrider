@@ -7,7 +7,7 @@
 #include "pause.h"
 #include "renderer.h"
 #include "component/other/page.h"
-#include "component/other/button.h"
+#include "component/2d/polygon.h"
 #include "component/2d/text.h"
 #include "scripts/camera_move.h"
 #include "internal/physics.h"
@@ -38,30 +38,63 @@ void Pause::Init()
 	page->AddObject(1, m_pauseText);
 
 	// 戻るボタン
-	m_backButton = new GameObject();
-	m_backButton->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 300.0f, 400.0f);
-	m_backButton->transform->SetSize(600.0f, 160.0f);
-	m_backButton->AddComponent<ButtonUI>();
-	m_backButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\PAUSE\\back.png");
-	m_backButton->GetComponent<ButtonUI>()->setClickEvent([this]() {SetPause(false); });
-	m_backButton->SetPriority(9);
-	page->AddObject(1, m_backButton);
+	m_sBack = new GameObject();
+	m_sBack->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 300.0f, 400.0f);
+	m_sBack->transform->SetSize(600.0f, 160.0f);
+	m_sBack->AddComponent<CPolygon>();
+	m_sBack->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\PAUSE\\back.png");
+	m_sBack->SetPriority(9);
+	page->AddObject(1, m_sBack);
 
 	// 終了ボタン
-	m_endButton = new GameObject();
-	m_endButton->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 300.0f, 650.0f);
-	m_endButton->transform->SetSize(600.0f, 160.0f);
-	m_endButton->AddComponent<ButtonUI>();
-	m_endButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\PAUSE\\end.png");
-	m_endButton->GetComponent<ButtonUI>()->setClickEvent([this]() {
-		SetPause(false);
-		CSceneManager::GetInstance()->SetScene("title"); 
-		});
-	m_endButton->SetPriority(9);
-	page->AddObject(1, m_endButton);
+	m_sExit = new GameObject();
+	m_sExit->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 300.0f, 650.0f);
+	m_sExit->transform->SetSize(600.0f, 160.0f);
+	m_sExit->AddComponent<CPolygon>();
+	m_sExit->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\PAUSE\\end.png");
+	m_sExit->SetPriority(9);
+	page->AddObject(1, m_sExit);
 
 	// ページを変更する
 	page->AllHideObjects();
+}
+
+//=============================================================
+// [Pause] 更新
+//=============================================================
+void Pause::Update()
+{
+	// 操作の更新
+	UpdateControl();
+
+	// 色を初期値に戻す
+	m_sBack->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.4f));
+	m_sExit->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.4f));
+
+	switch (m_select)
+	{
+	case Pause::SELECT_BACK:
+		m_sBack->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		break;
+	case Pause::SELECT_EXIT:
+		m_sExit->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		break;
+	}
+
+	if (INPUT_INSTANCE->onTrigger("space") || INPUT_INSTANCE->onTrigger("enter") || INPUT_INSTANCE->onTrigger("p:a") ||
+		(INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_MOUSE && INPUT_INSTANCE->onTrigger("lclick") && m_onCursor))
+	{
+		switch (m_select)
+		{
+		case Pause::SELECT_BACK:
+			SetPause(false);
+			break;
+		case Pause::SELECT_EXIT:
+			SetPause(false);
+			CSceneManager::GetInstance()->SetScene("title"); 
+			break;
+		}
+	}
 }
 
 //=============================================================
@@ -72,9 +105,75 @@ void Pause::SetPause(const bool& enabled)
 	m_pausePage->GetComponent<Pages>()->SetPage(enabled ? 1 : 0);
 	m_isPause = enabled;
 
-	Main::SetShowCursor(enabled);
+	if (!enabled) Main::SetShowCursor(false);
 
 	// 物理設定
 	CPhysics::GetInstance()->SetUpdatePhysics(!m_isPause);
 	GameObject::Find("Camera")->GetComponent<CCameraMove>()->enabled = !enabled;
+}
+
+//=============================================================
+// [Pause] 操作の更新
+//=============================================================
+void Pause::UpdateControl()
+{
+	Main::SetShowCursor(INPUT_INSTANCE->GetLastInput() == CInputSystem::DEVICE_MOUSE);
+
+	auto padInfo = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>()->GetState().Gamepad;
+	short stickX = padInfo.sThumbLX;
+	short stickY = padInfo.sThumbLY;
+	static int stickCounter = 0;
+
+	if (stickCounter > 0) stickCounter--;
+	if (stickCounter <= 0 && stickY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		m_select = static_cast<SELECT>(m_select - 1);
+		stickCounter = 10;
+	}
+	if (stickCounter <= 0 && stickY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		m_select = static_cast<SELECT>(m_select + 1);
+		stickCounter = 10;
+	}
+
+
+	// 上
+	if (INPUT_INSTANCE->onTrigger("w") || INPUT_INSTANCE->onTrigger("up") ||
+		INPUT_INSTANCE->onTrigger("p:up"))
+	{
+		m_select = static_cast<SELECT>(m_select - 1);
+	}
+
+	// 下
+	if (INPUT_INSTANCE->onTrigger("s") || INPUT_INSTANCE->onTrigger("down") ||
+		INPUT_INSTANCE->onTrigger("p:down"))
+	{
+		m_select = static_cast<SELECT>(m_select + 1);
+	}
+
+	// 正しい数値に直す
+	if (m_select < 0) m_select = SELECT_BACK;
+	if (m_select >= SELECT_MAX) m_select = static_cast<SELECT>(SELECT_MAX - 1);
+
+
+	// マウス用
+	CManager::CursorPos cursorPos = CManager::GetInstance()->GetCursorClientPos();
+	if (INPUT_INSTANCE->GetLastInput() == CInputSystem::DEVICE_MOUSE &&
+		m_sBack->transform->GetWPos().x <= cursorPos.x && cursorPos.x <= m_sBack->transform->GetWPos().x + m_sBack->transform->GetSize().x &&
+		m_sBack->transform->GetWPos().y <= cursorPos.y && cursorPos.y <= m_sBack->transform->GetWPos().y + m_sBack->transform->GetSize().y)
+	{
+		m_select = SELECT_BACK;
+		m_onCursor = true;
+	}
+	else if (INPUT_INSTANCE->GetLastInput() == CInputSystem::DEVICE_MOUSE &&
+		m_sExit->transform->GetWPos().x <= cursorPos.x && cursorPos.x <= m_sExit->transform->GetWPos().x + m_sExit->transform->GetSize().x &&
+		m_sExit->transform->GetWPos().y <= cursorPos.y && cursorPos.y <= m_sExit->transform->GetWPos().y + m_sExit->transform->GetSize().y)
+	{
+		m_select = SELECT_EXIT;
+		m_onCursor = true;
+	}
+	else
+	{
+		m_onCursor = false;
+	}
 }

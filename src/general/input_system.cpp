@@ -96,6 +96,9 @@ void CInputSystem::Update()
 			pInputDevice[i]->Update();
 		}
 	}
+
+	// 最後に入力されたデバイスを更新する
+	UpdateLastDevice();
 }
 
 //=============================================================
@@ -203,6 +206,71 @@ bool CInputSystem::onTrigger(const std::string& key)
 		}
 	}
 	return true;
+}
+
+//=============================================================
+// [CInputSystem] 最後のデバイスの更新
+//=============================================================
+void CInputSystem::UpdateLastDevice()
+{
+	static CManager::CursorPos oldCursorPos;
+	CManager::CursorPos cursorPos = CManager::GetInstance()->GetCursorClientPos();
+
+	// キーボード
+	for (int i = 0; i < _countof(keyboardTable); i++)
+	{
+		if (onPress(keyboardTable[i].key))
+		{
+			m_lastDevice = DEVICE_KEYBOARD;
+			oldCursorPos = cursorPos;
+			return;
+		}
+	}
+
+	// コントローラー
+	for (int i = 0; i < _countof(gamepadTable); i++)
+	{
+		if (onPress(gamepadTable[i].key))
+		{
+			m_lastDevice = DEVICE_CONTROLLER;
+			oldCursorPos = cursorPos;
+			return;
+		}
+	}
+	// トリガー関係
+	auto padInfo = GetInputDevice<CGamepadDevice>()->GetState().Gamepad;
+	if (padInfo.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+		padInfo.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+		padInfo.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+		padInfo.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+		padInfo.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ||
+		padInfo.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ||
+		padInfo.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ||
+		padInfo.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+	{
+		m_lastDevice = DEVICE_CONTROLLER;
+		oldCursorPos = cursorPos;
+		return;
+	}
+
+	// マウス
+	for (int i = 0; i < _countof(mouseTable); i++)
+	{
+		if (onPress(mouseTable[i].key))
+		{
+			m_lastDevice = DEVICE_MOUSE;
+			oldCursorPos = cursorPos;
+			return;
+		}
+	}
+	
+	if (oldCursorPos.x != cursorPos.x || oldCursorPos.y != cursorPos.y)
+	{
+		m_lastDevice = DEVICE_MOUSE;
+		oldCursorPos = cursorPos;
+		return;
+	}
+	oldCursorPos = cursorPos;
 }
 
 //=============================================================

@@ -145,6 +145,7 @@ void AudioEvent::Uninit()
 {
 	if (m_instance != nullptr)
 	{
+		m_instance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 		m_instance->release();
 	}
 }

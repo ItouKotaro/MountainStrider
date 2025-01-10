@@ -270,6 +270,7 @@
     <ClCompile Include="src\scripts\vehicle_action.cpp" />
     <ClCompile Include="src\scripts\vehicle_particle.cpp" />
     <ClCompile Include="src\scripts\vehicle_sound.cpp" />
+    <ClCompile Include="src\scripts\virtual_cursor.cpp" />
     <ClCompile Include="src\scripts\wreckage.cpp" />
     <ClCompile Include="src\utility\noise.cpp" />
   </ItemGroup>
@@ -350,6 +351,7 @@
     <ClInclude Include="src\scripts\vehicle_action.h" />
     <ClInclude Include="src\scripts\vehicle_particle.h" />
     <ClInclude Include="src\scripts\vehicle_sound.h" />
+    <ClInclude Include="src\scripts\virtual_cursor.h" />
     <ClInclude Include="src\scripts\wreckage.h" />
     <ClInclude Include="src\utility\noise.h" />
   </ItemGroup>

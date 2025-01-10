@@ -6,6 +6,7 @@
 //=============================================================
 #include "mt_result.h"
 #include "scene/game.h"
+#include "manager.h"
 
 #include "renderer.h"
 #include "component/2d/text.h"
@@ -18,6 +19,7 @@
 #include "scripts/result/result_view.h"
 #include "scripts/result/result_terrain.h"
 #include "component/other/button.h"
+#include "scripts/virtual_cursor.h"
 
 float ResultBase::m_beforeFuel = CVehicle::MAX_FUEL;
 float ResultBase::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
@@ -201,9 +203,9 @@ void ClearResult::Init()
 		page->AddObject(0, m_shopButton);
 		m_shopButton->transform->SetSize(500.0f, 140.0f);
 		m_shopButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
-		m_shopButton->AddComponent<CPolygon>();
-		m_shopButton->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		//m_addListButton->GetComponent<CPolygon>()->setClickEvent([this, page]() { page->SetPage(1); });
+		m_shopButton->AddComponent<ButtonUI>();
+		m_shopButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		m_shopButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() { page->SetPage(1); });
 
 		GameObject* pShopButtonText = new GameObject();
 		pShopButtonText->SetParent(m_shopButton);
@@ -221,8 +223,8 @@ void ClearResult::Init()
 		page->AddObject(0, m_addListButton);
 		m_addListButton->transform->SetSize(500.0f, 140.0f);
 		m_addListButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
-		m_addListButton->AddComponent<CPolygon>();
-		m_addListButton->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		m_addListButton->AddComponent<ButtonUI>();
+		m_addListButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 
 		GameObject* pListButtonText = new GameObject();
 		pListButtonText->SetParent(m_addListButton);
@@ -238,6 +240,14 @@ void ClearResult::Init()
 	// ページのリセット
 	page->AllHideObjects();
 	page->SetPage(0);
+
+	// 仮想カーソルの作成
+	GameObject* cursorObj = new GameObject();
+	cursorObj->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\cursor.png");
+	cursorObj->transform->SetSize(60.0f, 60.0f);
+	cursorObj->SetPriority(9);
+	cursorObj->AddComponent<VirtualCursor>();
+	Main::SetShowCursor(false);
 
 	// 前回の情報として保存
 	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
@@ -463,6 +473,14 @@ void GameOverResult::Init()
 		pListButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 		page->AddObject(0, pListButtonText);
 	}
+
+	// 仮想カーソルの作成
+	GameObject* cursorObj = new GameObject();
+	cursorObj->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\cursor.png");
+	cursorObj->transform->SetSize(60.0f, 60.0f);
+	cursorObj->SetPriority(9);
+	cursorObj->AddComponent<VirtualCursor>();
+	Main::SetShowCursor(false);
 
 	// 最終結果の初期化
 	InitFinalResult();
