@@ -8,26 +8,28 @@
 
 #include "component/2d/text.h"
 #include "component/2d/polygon.h"
-#include "component/other/button.h"
 #include "component/3d/motion.h"
-#include "component/3d/field.h"
 #include "scene/game.h"
 #include "renderer.h"
 #include "render/shadow_rb.h"
 #include "manager.h"
-#include "component/other/page.h"
 #include "component/3d/meshfield.h"
 #include "component/3d/mesh.h"
-
-#include "component/3d/movement_space.h"
+#include "component/other/audio.h"
 
 using namespace noise;
+
+AudioClip selectMoveSE;
+AudioClip fireSE;
 
 //=============================================================
 // [CTitleScene] 初期化
 //=============================================================
 void CTitleScene::Init()
 {
+	if (!selectMoveSE) selectMoveSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\select_move.mp3");
+	if (!fireSE) fireSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\TITLE\\fire.mp3", FMOD_3D | FMOD_LOOP_NORMAL);
+
 	// タイトルロゴ
 	GameObject* titleLogo = new GameObject();
 	titleLogo->AddComponent<CPolygon>()->SetTexture("data\\TEXTURE\\logo.png");
@@ -38,6 +40,7 @@ void CTitleScene::Init()
 	m_selectBar = new GameObject();
 	m_selectBar->AddComponent<CPolygon>();
 	m_selectBar->transform->SetSize(10.0f, 100.0f);
+	m_selectBar->AddComponent<AudioSource>();
 
 	// 項目を作成する
 	m_sStart = (new GameObject())->AddComponent<CText>();
@@ -77,6 +80,10 @@ void CTitleScene::Init()
 	firecampObj->transform->SetScale(0.7f);
 	firecampObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\TITLE\\campfire.x");
 
+	// 焚火サウンド
+	firecampObj->AddComponent<AudioSource>()->Play(fireSE);
+	firecampObj->GetComponent<AudioSource>()->GetChannel()->setVolume(10.0f);
+
 	// 焚火パーティクル
 	GameObject* fireParticleObj = new GameObject();
 	fireParticleObj->SetParent(firecampObj);
@@ -113,6 +120,7 @@ void CTitleScene::Init()
 	pCamera->AddComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight00.json");
 	pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
 	pCamera->transform->SetPos(0.0f, 20.0f, -48.0f);
+	pCamera->AddComponent<AudioListener>();
 
 	// ライト
 	GameObject* pLight = new GameObject();
@@ -225,6 +233,8 @@ void CTitleScene::UpdateControl()
 	short stickY = padInfo.sThumbLY;
 	static int stickCounter = 0;
 
+	SELECT oldSelect = m_select;
+
 	if (stickCounter > 0) stickCounter--;
 	if (stickCounter <= 0 && stickY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
@@ -255,6 +265,12 @@ void CTitleScene::UpdateControl()
 	// 正しい数値に直す
 	if (m_select < 0) m_select = SELECT_START;
 	if (m_select >= SELECT_MAX) m_select = static_cast<SELECT>(SELECT_MAX - 1);
+
+	// 前回の選択と異なるとき
+	if (oldSelect != m_select)
+	{
+		m_selectBar->GetComponent<AudioSource>()->PlayOneShot(selectMoveSE);
+	}
 }
 
 //=============================================================

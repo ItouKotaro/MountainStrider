@@ -234,9 +234,6 @@
     <ClCompile Include="src\scripts\camera_move.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\nature_produces.cpp">
-      <Filter>ソース ファイル\scripts</Filter>
-    </ClCompile>
     <ClCompile Include="src\scripts\status_ui.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
@@ -337,7 +334,10 @@
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
     <ClCompile Include="src\scripts\virtual_cursor.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\destructible.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -473,9 +473,6 @@
     <ClInclude Include="src\scripts\camera_move.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\nature_produces.h">
-      <Filter>ヘッダー ファイル\scripts</Filter>
-    </ClInclude>
     <ClInclude Include="src\scripts\status_ui.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
@@ -576,7 +573,10 @@
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\virtual_cursor.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\destructible.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

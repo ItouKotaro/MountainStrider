@@ -59,6 +59,7 @@ void AudioSource::Play(AudioClip audioClip)
 
 		// ƒ`ƒƒƒ“ƒlƒ‹‚ðì¬‚µAÄ¶‚·‚é
 		AudioManager::GetInstance()->GetCoreSystem()->playSound(m_audioClip, 0, false, &m_channel);
+		Update();
 	}
 }
 

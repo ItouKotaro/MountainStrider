@@ -72,19 +72,15 @@ void CGameScene::Init()
 		m_pTerrain = new Terrain();
 		m_pTerrain->SetSeed(rand());
 		m_pTerrain->Init();
+		m_pTerrain->LoadTerrainFile("data\\TERRAINS\\terrains.json");
 		m_pTerrain->Generate();
 	}
 
 	// 装飾を生成する
 	m_decoration = new DecorationManager();
 	m_decoration->Init(m_pTerrain);
-	m_decoration->AddDecorationType("data\\PREFAB\\props\\weed00.pref", 3);
-	m_decoration->AddDecorationType("data\\PREFAB\\tree\\tree00.pref");
-
-	for (int i = 0; i < 70000; i++)
-	{
-		m_decoration->GenerateDecoration();
-	}
+	m_decoration->LoadTerrainFile("data\\TERRAINS\\terrains.json");
+	m_decoration->Generate();
 
 	// 奈落
 	{
@@ -189,7 +185,7 @@ void CGameScene::Update()
 	}
 
 	// 地形を更新する
-	m_pTerrain->Update(m_pCamera->transform->GetWPos());
+	m_pTerrain->Update();
 
 	// 装飾の更新
 	m_decoration->Update(m_pCamera->transform->GetWPos());

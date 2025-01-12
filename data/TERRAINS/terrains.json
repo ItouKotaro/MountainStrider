@@ -2,6 +2,7 @@
 {
     "terrain":
     {
+        "generate_num": 30000,
         "height_color":
         [
             {
@@ -16,80 +17,51 @@
                 "color": [50, 166, 8, 255],
                 "height": -1.0
             }
-        ],
-        "slant_color":
-        [
-            {
-                "color": [178, 178, 178, 255],
-                "min": 300.0,
-                "max": 500.0
-            }
         ]
     },
 
-    "produces":
+    "decoration":
     [
         {
-            "name": "tree00",
             "path": "data\\PREFAB\\tree\\tree00.pref",
-            "size": 50.0,
-            "damage": 100.0,
+            "radius": 50.0,
+            "destructible": true,
+            "damage": 10.0,
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
             "chance": 10,
-            "limit_slant": [0.0, 0.4],
-            "adjacent_rate":
-            [
-                {
-                    "name": "tree01",
-                    "rate": 10.0
-                }
-            ]
+            "limit_slant": [0.0, 0.4]
         },
         {
-            "name": "tree01",
             "path": "data\\PREFAB\\tree\\tree01.pref",
-            "size": 50.0,
-            "damage": 100.0,
+            "radius": 50.0,
+            "destructible": true,
+            "damage": 10.0,
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
             "chance": 10,
-            "limit_slant": [0.0, 0.4],
-            "adjacent_rate":
-            [
-                {
-                    "name": "tree00",
-                    "rate": 10.0
-                }
-            ]
+            "limit_slant": [0.0, 0.4]
         },
         {
-            "name": "fallen_tree00",
             "path": "data\\PREFAB\\tree\\fallen_tree.pref",
-            "size": 20.0,
-            "damage": 50.0,
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 10.0,
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.0,
             "match_inclination": true,
-            "chance": 1,
-            "adjacent_rate":
-            [
-                {
-                    "name": "tree00",
-                    "rate": 10.0
-                }
-            ]
+            "chance": 1
         },
         {
-            "name": "grass00",
             "path": "data\\PREFAB\\props\\grass00.pref",
-            "size": 20.0,
-            "damage": 50.0,
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 10.0,
             "offset": 10.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.0,

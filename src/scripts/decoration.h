@@ -8,6 +8,7 @@
 #define _DECORATION_H_
 
 #include "scripts/terrain.h"
+#include "component.h"
 
 // 装飾管理
 class DecorationManager
@@ -27,11 +28,20 @@ public:
 		float offsetY;						// Yのオフセット
 		float randomAngle;				// ランダムな角度
 		bool isMatchInclination;		// 傾斜角に合わせるか
+		bool isDestructible;				// 破壊可能
+		float damage;					// ダメージ
 
 		// 条件
 		Range slantLimit;				// 傾斜角制限
 		Range heightLimit;				// 高度制限
 		float radiusSize;					// 半径サイズ
+	};
+
+	// デコレーションの設置データ
+	struct DecorationData
+	{
+		DecorationType* type;
+		Transform transform;
 	};
 
 public:
@@ -45,16 +55,19 @@ public:
 	//@brief デコレーションを生成する（単体）
 	void GenerateDecoration();
 
+	//@brief データを破棄する
+	void RemoveData(DecorationData* data);
+
+	//@brief 地形ファイルを読み込む
+	void LoadTerrainFile(const std::string path);
+
+	//@brief 生成する
+	void Generate();
+
 	static const int MAX_CHUNK = 25;
 	static const float CHUNK_DIVISION;
 	static const int DESTROY_LIMIT;
 private:
-	// デコレーションの設置データ
-	struct DecorationData
-	{
-		DecorationType* type;
-		Transform transform;
-	};
 
 	// デコレーションのゲームオブジェクト
 	struct DecorationObject
@@ -93,6 +106,7 @@ private:
 	std::vector<DecorationData*> m_decoData[MAX_CHUNK][MAX_CHUNK];	// 設置データ（チャンク管理）
 	std::vector<DecorationObject*> m_decoObjects;										// オブジェクト
 	Terrain* m_terrain;
+	int m_generateNum;
 
 	GameObject* m_debugText;
 

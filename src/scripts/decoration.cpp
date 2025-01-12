@@ -5,11 +5,12 @@
 //
 //=============================================================
 #include "decoration.h"
-
+#include "scripts/destructible.h"
 #include "component/2d/text.h"
 
 const float DecorationManager::CHUNK_DIVISION = (Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE) / (float)MAX_CHUNK;
 const int DecorationManager::DESTROY_LIMIT = 60;
+
 //=============================================================
 // [DecorationManager] 初期化
 //=============================================================
@@ -195,9 +196,32 @@ DecorationManager::DecorationType* DecorationManager::AddDecorationType(const st
 	type->randomAngle = 0.0f;
 	type->isMatchInclination = true;
 	type->radiusSize = 10.0f;
+	type->isDestructible = true;
+	type->damage = 0.0f;
 
 	m_decoType.push_back(type);
 	return type;
+}
+
+//=============================================================
+// [DecorationManager] データの削除
+//=============================================================
+void DecorationManager::RemoveData(DecorationData* data)
+{
+	// チャンクを取得する
+	int x, y;
+	GetChunk(&x, &y, data->transform.GetPos());
+
+	for (auto itr = m_decoData[x][y].begin(); itr != m_decoData[x][y].end(); itr++)
+	{
+		if (*itr == data)
+		{
+			m_decoData[x][y].erase(itr);
+			return;
+		}
+	}
+
+	assert("not found data");
 }
 
 //=============================================================
@@ -458,12 +482,17 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 	}
 	
 	if (targetDecoObj == nullptr)
-	{ // 条件に合うオブジェクトがなかった時
+	{ // 条件に合うオブジェクトがなかったとき（作成）
 		targetDecoObj = new DecorationObject();
 		targetDecoObj->decoDeta = decoData;
 		targetDecoObj->decoType = decoData->type;
 		targetDecoObj->gameObject = GameObject::LoadPrefab(decoData->type->path, decoData->transform);
 		targetDecoObj->destroyCounter = DESTROY_LIMIT;
+		if (decoData->type->isDestructible)
+		{
+			targetDecoObj->gameObject->AddComponent<Destructible>(this)->SetDecoData(decoData);
+		}
+
 		m_decoObjects.push_back(targetDecoObj);
 	}
 	else
@@ -473,6 +502,10 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 		targetDecoObj->gameObject->transform->SetQuaternion(decoData->transform.GetQuaternion());
 		targetDecoObj->gameObject->transform->SetScale(decoData->transform.GetScale());
 		targetDecoObj->destroyCounter = DESTROY_LIMIT;
+		if (targetDecoObj->gameObject->GetComponent<Destructible>() != nullptr)
+		{
+			targetDecoObj->gameObject->GetComponent<Destructible>()->SetDecoData(decoData);
+		}
 	}
 
 	// ゲームオブジェクトをアクティブにする
@@ -517,5 +550,112 @@ void DecorationManager::UpdateDestroyObjects()
 				if (itr == m_decoObjects.end()) return;
 			}
 		}
+	}
+}
+
+//=============================================================
+// [DecorationManager] 地形ファイルを読み込む
+//=============================================================
+#include "manager.h"
+#include <fstream>
+void DecorationManager::LoadTerrainFile(const std::string path)
+{
+	// jsonファイルを読み込む
+	std::ifstream ifs(path.c_str());
+
+	if (ifs.fail())
+	{ // ファイルの読み込みに失敗
+		MessageBox(CManager::GetInstance()->GetHWND(), "地形情報ファイルの読み込みに失敗しました", "エラー", MB_OK); //終了メッセージ
+		return;
+	}
+
+	// json形式に変換
+	std::string sInputData((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+	auto jInput = json::parse(sInputData);
+
+	// 生成数を読み込む
+	m_generateNum = 0;
+	if (jInput["terrain"].contains("generate_num"))
+	{
+		m_generateNum = jInput["terrain"]["generate_num"];
+	}
+	
+
+	// 生成物情報を読み込む
+	if (jInput.contains("decoration"))
+	{ // 生成物の項目があるとき
+		for (auto itr = jInput["decoration"].begin(); itr != jInput["decoration"].end(); itr++)
+		{
+			DecorationType* decoType = AddDecorationType((*itr)["path"]);
+
+			// サイズ
+			if ((*itr).contains("radius"))
+			{
+				decoType->radiusSize = (*itr)["radius"];
+			}
+
+			// 破壊設定
+			if ((*itr).contains("destructible"))
+			{
+				decoType->isDestructible = (*itr)["destructible"];
+			}
+
+			// ダメージ
+			if ((*itr).contains("damage"))
+			{
+				decoType->damage = (*itr)["damage"];
+			}
+
+			// オフセットY
+			if ((*itr).contains("offset"))
+			{
+				decoType->offsetY = (*itr)["offset"];
+			}
+
+			// ランダム角度
+			if ((*itr).contains("angle_range"))
+			{
+				decoType->randomAngle = (*itr)["angle_range"];
+			}
+
+			// 傾斜角に合わせるか
+			if ((*itr).contains("match_inclination"))
+			{
+				decoType->isMatchInclination = (*itr)["match_inclination"];
+			}
+
+			// 確率
+			if ((*itr).contains("chance"))
+			{
+				decoType->chance = (*itr)["chance"];
+			}
+
+			// 傾斜角度条件
+			if ((*itr).contains("limit_slant"))
+			{
+				decoType->slantLimit.min = (*itr)["limit_slant"][0];
+				decoType->slantLimit.max = (*itr)["limit_slant"][1];
+			}
+
+			// 高度条件
+			if ((*itr).contains("limit_height"))
+			{
+				decoType->heightLimit.min = (*itr)["limit_height"][0];
+				decoType->heightLimit.max = (*itr)["limit_height"][1];
+			}
+		}
+	}
+
+	ifs.close();
+}
+
+//=============================================================
+// [DecorationManager] 生成する
+//=============================================================
+void DecorationManager::Generate()
+{
+	for (int i = 0; i < m_generateNum; i++)
+	{
+		GenerateDecoration();
 	}
 }

@@ -766,6 +766,10 @@ void GameOverResult::InitFinalResult()
 	titleButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\go_title.png");
 	titleButton->transform->SetSize(145.0f, 568.0f);
 	titleButton->transform->SetPos(CRenderer::SCREEN_WIDTH - 145.0f, CRenderer::SCREEN_HEIGHT - 568.0f);
-	titleButton->GetComponent<ButtonUI>()->setClickEvent([]() {CSceneManager::GetInstance()->SetScene("title"); });
+	titleButton->GetComponent<ButtonUI>()->setClickEvent([&]() 
+		{
+			m_gameScene->ResetGame();
+			CSceneManager::GetInstance()->SetScene("title"); 
+		});
 	page->AddObject(1, titleButton);
 }
