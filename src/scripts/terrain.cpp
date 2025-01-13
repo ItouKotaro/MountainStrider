@@ -31,14 +31,14 @@ const float Terrain::TERRAIN_DISTANCE_HALF = Terrain::TERRAIN_DISTANCE / (float)
 //=============================================================
 void Terrain::Init()
 {
-	m_pShadowField = new GameObject("ShadowTerrain");
-	m_pShadowField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
-	m_pShadowField->transform->SetPos(0.0f, -10.0f);
-
 	// メッシュフィールドを作成する
 	m_pField = new GameObject;
 	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
 	m_pField->AddComponent<Road>();
+
+	m_pLimitField = new GameObject("LimitField");
+	m_pLimitField->AddComponent<CBoxCollider>(D3DXVECTOR3(TERRAIN_SCALE * (TERRAIN_SIZE - 3), 1.0f, TERRAIN_SCALE * (TERRAIN_SIZE - 3)));
+	//m_pShadowField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
 
 	m_terrainData = nullptr;
 }
@@ -65,7 +65,6 @@ void Terrain::Update()
 void Terrain::UninitTerrain()
 {
 	CCollision::RemoveCollision(m_pField);
-	CCollision::RemoveCollision(m_pShadowField);
 
 	if (m_terrainData != nullptr)
 	{
@@ -89,7 +88,6 @@ void Terrain::Generate()
 
 	// コリジョンを作成する
 	CCollision::Create(m_pField);
-	CCollision::Create(m_pShadowField);
 
 	// シード値を設定する
 	srand(m_seed);
@@ -105,7 +103,6 @@ void Terrain::Generate()
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
 	CCollision::GetCollision(m_pField)->SetFriction(100.0f);
 	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
-	CCollision::GetCollision(m_pShadowField)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
 	// 設定したシェープを適用する
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
@@ -202,6 +199,10 @@ void Terrain::GenerateTerrain()
 		}
 	}
 
+	// 制限の高さを変更する
+	m_pLimitField->transform->SetPos(0.0f, m_minHeight - 5.0f, 0.0f);
+	CCollision::GetCollision(m_pLimitField)->GetGhostObject()->getWorldTransform().getOrigin() = btVector3(0.0f, m_minHeight - 5.0f, 0.0f);
+
 	// 道を生成する
 	GenerateRoad();
 
@@ -214,7 +215,7 @@ void Terrain::GenerateTerrain()
 
 			// 高さを設定する
 			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, height);
-			m_pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, height);
+			//m_pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, height);
 		}
 	}
 

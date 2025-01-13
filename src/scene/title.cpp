@@ -27,7 +27,7 @@ AudioClip fireSE;
 //=============================================================
 void CTitleScene::Init()
 {
-	if (!selectMoveSE) selectMoveSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\select_move.mp3");
+	if (!selectMoveSE) selectMoveSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\select_move.mp3", FMOD_2D);
 	if (!fireSE) fireSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\TITLE\\fire.mp3", FMOD_3D | FMOD_LOOP_NORMAL);
 
 	// ƒ^ƒCƒgƒ‹ƒƒS

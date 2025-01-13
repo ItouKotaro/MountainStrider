@@ -40,7 +40,7 @@ public:
 	}
 
 	//@brief オーディオクリップの作成
-	AudioClip CreateClip(std::string filePath, FMOD_MODE mode = FMOD_3D, bool isStream = false);
+	AudioClip CreateClip(std::string filePath, FMOD_MODE mode = FMOD_2D, bool isStream = false);
 
 	//@brief オーディオバンクの読み込み
 	AudioBank LoadBank(std::string filePath);

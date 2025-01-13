@@ -59,6 +59,7 @@ private:
 	void UpdateStatusUI();				// ステータスUIの更新
 	void UpdateGroundDistance();		// 地面距離の更新
 
+	CCollision* m_limitField;
 	Pause* m_pause;
 	GameObject* m_pPlayer;
 	GameObject* m_pHandle;		// ハンドル

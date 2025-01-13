@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "shop.h"
+#include "component/other/audio.h"
 
 const float BuyButtonUI::EDGE_BOLD = 15.0f;
 const float BuyButtonUI::WIDTH = 280.0f;
@@ -18,11 +19,15 @@ const D3DXCOLOR BuyButtonUI::ITEM_COLOR = D3DCOLOR_RGBA(34, 130, 43, 255);
 const D3DXCOLOR BuyButtonUI::ITEM_COLOR_BOUGHT = D3DCOLOR_RGBA(2, 54, 7, 255);
 const D3DXCOLOR BuyButtonUI::PERK_COLOR = D3DCOLOR_RGBA(196, 0, 194, 255);
 const D3DXCOLOR BuyButtonUI::PERK_COLOR_BOUGHT = D3DCOLOR_RGBA(107, 22, 106, 255);
+AudioClip buySE;
 //=============================================================
 // [BuyButtonUI] 初期化
 //=============================================================
 void BuyButtonUI::Init()
 {
+	if (!buySE) buySE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\SHOP\\buy.mp3", FMOD_2D);
+	gameObject->AddComponent<AudioSource>();
+
 	m_progress = 0.0f;
 
 	// イメージ画像
@@ -186,6 +191,7 @@ void BuyButtonUI::Update()
 	{ // 購入確定
 		m_progress = 0.0f;
 		m_shopItem->onBuy();
+		gameObject->GetComponent<AudioSource>()->PlayOneShot(buySE);
 	}
 	else if (m_progress < 0.0f)
 	{

@@ -9,7 +9,7 @@
 #include "component/3d/mesh.h"
 #include "component/3d/meshfield.h"
 
-const int ShadowRenderBuffer::SHADOWMAP_SIZE = 4096;
+const int ShadowRenderBuffer::SHADOWMAP_SIZE = 2048;
 
 //=============================================================
 // [ShadowMapShader] 初期化
@@ -140,18 +140,18 @@ void ShadowRenderBuffer::Init()
 	}
 
 	// 深度バッファの作成
-	if (FAILED(device->CreateDepthStencilSurface(
-		SHADOWMAP_SIZE, SHADOWMAP_SIZE,
-		D3DFMT_D24S8,
-		D3DMULTISAMPLE_NONE,
-		0,
-		TRUE,
-		&m_dsShadow,
-		NULL
-	)))
-	{ // 失敗
-		MessageBoxA(NULL, "深度バッファの作成に失敗！", "エラー", MB_OK);
-	}
+	//if (FAILED(device->CreateDepthStencilSurface(
+	//	SHADOWMAP_SIZE, SHADOWMAP_SIZE,
+	//	D3DFMT_D24S8,
+	//	D3DMULTISAMPLE_NONE,
+	//	0,
+	//	TRUE,
+	//	&m_dsShadow,
+	//	NULL
+	//)))
+	//{ // 失敗
+	//	MessageBoxA(NULL, "深度バッファの作成に失敗！", "エラー", MB_OK);
+	//}
 
 	//m_shadowMapTex = new GameObject();
 	//m_shadowMapTex->AddComponent<CPolygon>()->BindTexture(m_shadowMap);

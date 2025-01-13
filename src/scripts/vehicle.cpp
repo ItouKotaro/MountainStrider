@@ -41,6 +41,7 @@ void CVehicle::Init()
 	m_measurePos = transform->GetWPos();
 	m_pStatusUI = nullptr;
 	m_fuelConsumption = 0.0f;
+	m_limitField = CCollision::GetCollision(GameObject::Find("LimitField"));
 
 	// プレイヤーを生成する
 	m_pPlayer = GameObject::LoadPrefab("data\\PREFAB\\player.pref");
@@ -392,9 +393,13 @@ void CVehicle::UpdateGroundDistance()
 			}
 
 			// もし地中に埋まっていた場合
-			if (RayCallback.m_collisionObject == CCollision::GetCollision(GameObject::Find("ShadowTerrain"))->GetGhostObject())
+			if (RayCallback.m_collisionObject == m_limitField->GetGhostObject())
 			{
-				SetPos({ transform->GetWPos().x, transform->GetWPos().y + 15.0f, transform->GetWPos().z });
+				if (fabsf(transform->GetWPos().x) < Terrain::TERRAIN_DISTANCE_HALF - Terrain::TERRAIN_SCALE &&
+					fabsf(transform->GetWPos().z) < Terrain::TERRAIN_DISTANCE_HALF - Terrain::TERRAIN_SCALE)
+				{
+					SetPos({ transform->GetWPos().x, transform->GetWPos().y + 15.0f, transform->GetWPos().z });
+				}
 			}
 		}
 	}
