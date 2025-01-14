@@ -103,6 +103,12 @@
     <Filter Include="ヘッダー ファイル\scripts\vehicle">
       <UniqueIdentifier>{a2dc662e-6aac-47ec-8255-b46bbfd86b50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scripts\event">
+      <UniqueIdentifier>{d1f1d1e3-0eaf-4732-8eaf-f2283272e77f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts\event">
+      <UniqueIdentifier>{aba3870f-ef39-4801-82c3-11ff28fe9bf6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -338,6 +344,9 @@
     </ClCompile>
     <ClCompile Include="src\scripts\destructible.cpp">
       <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\event\event_manager.cpp">
+      <Filter>ソース ファイル\scripts\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -577,6 +586,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\destructible.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\event\event_manager.h">
+      <Filter>ヘッダー ファイル\scripts\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
