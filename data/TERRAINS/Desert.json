@@ -1,0 +1,72 @@
+
+{
+    "terrain":
+    {
+        "generate_num": 30000,
+        "height_color":
+        [
+            {
+                "color": [255, 233, 168, 255],
+                "height": 1.0
+            },
+            {
+                "color": [255, 222, 130, 255],
+                "height": 0.5
+            },
+            {
+                "color": [242, 209, 116, 255],
+                "height": -1.0
+            }
+        ]
+    },
+
+    "decoration":
+    [
+        {
+            "path": "data\\PREFAB\\tree\\tree00.pref",
+            "radius": 50.0,
+            "destructible": true,
+            "damage": 10.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 10,
+            "limit_slant": [0.0, 0.4]
+        },
+        {
+            "path": "data\\PREFAB\\tree\\tree01.pref",
+            "radius": 50.0,
+            "destructible": true,
+            "damage": 10.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 10,
+            "limit_slant": [0.0, 0.4]
+        },
+        {
+            "path": "data\\PREFAB\\tree\\fallen_tree.pref",
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 10.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.0,
+            "match_inclination": true,
+            "chance": 1
+        },
+        {
+            "path": "data\\PREFAB\\props\\grass00.pref",
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 10.0,
+            "offset": 10.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.0,
+            "match_inclination": true,
+            "chance": 2
+        }
+    ]
+}

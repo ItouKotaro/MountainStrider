@@ -74,6 +74,7 @@ private:
 	int m_rollCount;			// 回転カウンター
 
 	SumActionPointText* m_sumPoints;
+	GameObject* m_actionSound;
 };
 
 #endif // !_VEHICLE_ACTION_H_

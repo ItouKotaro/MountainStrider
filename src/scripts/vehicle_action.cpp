@@ -7,12 +7,19 @@
 #include "vehicle_action.h"
 #include "scripts/vehicle.h"
 #include "scene/game.h"
+#include "component/other/audio.h"
+
+AudioClip actionSE;
 
 //=============================================================
 // [VehicleAction] ‰Šú‰»
 //=============================================================
 void VehicleAction::Init()
 {
+	if (!actionSE) actionSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\BIKE\\action00.mp3", FMOD_2D);
+	m_actionSound = new GameObject();
+	m_actionSound->AddComponent<AudioSource>();
+
 	m_isMeasure = false;
 	m_rolling = 0.0f;
 	m_rollCount = 0;
@@ -83,6 +90,10 @@ void VehicleAction::Update()
 			rollText->SetFade(0.02f);
 			rollText->SetCounter(120);
 			rollText->SetUp(2.0f);
+
+			// ‰¹‚ð–Â‚ç‚·
+			m_actionSound->GetComponent<AudioSource>()->Play(actionSE);
+			m_actionSound->GetComponent<AudioSource>()->GetChannel()->setPitch(0.5f + m_rollCount * 0.2f);
 		}
 	}
 }

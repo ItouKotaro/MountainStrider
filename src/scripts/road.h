@@ -25,12 +25,14 @@ public:
 	int IsIndexRouted(const int& x, const int& y);
 	void Generate();
 	void OutputText();
+	void SetTexture(const std::string& path) { m_texturePath = path; }
 private:
 	void CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& angle);
 	void CreateJumpStand(const D3DXVECTOR2& pos, const float& angle);
 
 	D3DXVECTOR2 m_currentPos;	// 現在の位置
 	int m_currentIdx;						// 現在の地点
+	std::string m_texturePath;
 
 	// ポリゴン管理
 	std::vector<SingleComponent<CMeshField>*> m_roadObj;

@@ -13,7 +13,7 @@
 //=============================================================
 void Road::Init()
 {
-
+	m_texturePath = "data\\TEXTURE\\ROAD\\dirt.png";
 }
 
 //=============================================================
@@ -247,7 +247,7 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	groundMesh->SetHeight(1, 0, vtxHeight[1]);
 	groundMesh->SetHeight(0, 1, vtxHeight[2]);
 	groundMesh->SetHeight(1, 1, vtxHeight[3]);
-	groundMesh->SetTexture("data\\TEXTURE\\ROAD\\dirt.png");
+	groundMesh->SetTexture(m_texturePath);
 	m_roadObj.push_back(groundMesh);
 }
 
