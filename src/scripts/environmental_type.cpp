@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "component/3d/particle.h"
 #include "render/shadow_rb.h"
+#include "component/3d/collision.h"
 
 //=============================================================
 // [WeatherRain] 雨パーティクル
@@ -45,15 +46,18 @@ void WeatherRain::Init()
 	particle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\rain.png");
 	particle->SetSize(5.0f, 9.0f);
 
-	// バイクを親に設定する
-	m_rainParticle->SetParent(GameObject::Find("Vehicle"));
+	// カメラを親に設定する
+	m_rainParticle->SetParent(GameObject::Find("Camera"));
+
+	// 地面の滑りやすさを変更する
+	CCollision::GetCollision(GameObject::Find("TerrainField"))->GetGhostObject()->setFriction(0.05f);
 
 	// 雨の音を再生する
 	m_rainSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\ENVIRONMENTAL\\rain.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
 	m_rainParticle->AddComponent<AudioSource>()->Play(m_rainSE);
 
 	// 環境の明るさを変更する
-	D3DXVECTOR4 ambient = static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->GetAmbient() * 0.4f;
+	D3DXVECTOR4 ambient = static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->GetAmbient() * 0.6f;
 	ambient.w = 1.0f;
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetAmbient(ambient);
 }
