@@ -83,6 +83,13 @@ void Destructible::OnTriggerEnter(GameObject* other)
 		// バイクにダメージを与える
 		vehicle->AddDamage(m_decoData->type->damage);
 
+		// ヒット音を鳴らす
+		if (m_decoData->type->hitSound != nullptr)
+		{
+			gameObject->GetComponent<AudioSource>()->Play(m_decoData->type->hitSound);
+			gameObject->GetComponent<AudioSource>()->GetChannel()->setVolume(m_decoData->type->volume);
+		}
+
 		// リジッドボディの追加
 		CCollision* collision = CCollision::GetCollision(gameObject);
 		if (collision != nullptr)

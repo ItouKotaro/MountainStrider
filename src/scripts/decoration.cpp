@@ -198,6 +198,8 @@ DecorationManager::DecorationType* DecorationManager::AddDecorationType(const st
 	type->radiusSize = 10.0f;
 	type->isDestructible = true;
 	type->damage = 0.0f;
+	type->hitSound = nullptr;
+	type->volume = 1.0f;
 
 	m_decoType.push_back(type);
 	return type;
@@ -491,6 +493,7 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 		if (decoData->type->isDestructible)
 		{
 			targetDecoObj->gameObject->AddComponent<Destructible>(this)->SetDecoData(decoData);
+			targetDecoObj->gameObject->AddComponent<AudioSource>();
 		}
 
 		m_decoObjects.push_back(targetDecoObj);
@@ -642,6 +645,27 @@ void DecorationManager::LoadTerrainFile(const std::string path)
 			{
 				decoType->heightLimit.min = (*itr)["limit_height"][0];
 				decoType->heightLimit.max = (*itr)["limit_height"][1];
+			}
+
+			// Õ“Ë‰¹
+			if ((*itr).contains("hit_sound"))
+			{
+				// ƒ‹[ƒv
+				if ((*itr).contains("loop") && (*itr)["loop"])
+				{ // —LŒø
+					decoType->hitSound = AudioManager::GetInstance()->CreateClip((*itr)["hit_sound"], FMOD_3D | FMOD_LOOP_NORMAL);
+				}
+				else
+				{ // –³Œø
+					decoType->hitSound = AudioManager::GetInstance()->CreateClip((*itr)["hit_sound"], FMOD_3D);
+				}
+				
+				
+				// ‰¹—Ê
+				if ((*itr).contains("volume"))
+				{
+					decoType->volume = (*itr)["volume"];
+				}
 			}
 		}
 	}

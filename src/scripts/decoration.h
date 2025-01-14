@@ -9,6 +9,7 @@
 
 #include "scripts/terrain.h"
 #include "component.h"
+#include "component/other/audio.h"
 
 // ‘•üŠÇ—
 class DecorationManager
@@ -30,6 +31,9 @@ public:
 		bool isMatchInclination;		// ŒXÎŠp‚É‡‚í‚¹‚é‚©
 		bool isDestructible;				// ”j‰ó‰Â”\
 		float damage;					// ƒ_ƒ[ƒW
+
+		AudioClip hitSound;			// Õ“Ë‰¹
+		float volume;						// ‰¹—Ê
 
 		// ğŒ
 		Range slantLimit;				// ŒXÎŠp§ŒÀ
