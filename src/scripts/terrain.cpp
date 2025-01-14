@@ -147,7 +147,7 @@ void Terrain::GenerateTerrain()
 	heightMapBuilder.SetBounds(0.0, 20.0, 0.0, 20.0);
 	heightMapBuilder.Build();
 
-	// 画像に書き出す
+	// テクスチャ画像に書き出す
 	utils::RendererImage renderer;
 	utils::Image image;
 	renderer.SetSourceNoiseMap(heightMap);
@@ -163,10 +163,26 @@ void Terrain::GenerateTerrain()
 	renderer.SetLightIntensity(4.5f);
 	renderer.Render();
 
+	// 結果表示用画像
+	utils::RendererImage convenienceRenderer;
+	utils::Image convenienceImage;
+	convenienceRenderer.SetSourceNoiseMap(heightMap);
+	convenienceRenderer.SetDestImage(convenienceImage);
+	convenienceRenderer.ClearGradient();
+	for (auto itr = m_heightColor.begin(); itr != m_heightColor.end(); itr++)
+	{
+		convenienceRenderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
+	}
+	convenienceRenderer.Render();
+
 	// ファイルに書き出す
 	utils::WriterBMP writer;
 	writer.SetSourceImage(image);
 	writer.SetDestFilename("data\\terrain.bmp");
+	writer.WriteDestFile();
+
+	writer.SetSourceImage(convenienceImage);
+	writer.SetDestFilename("data\\convenience.bmp");
 	writer.WriteDestFile();
 
 
