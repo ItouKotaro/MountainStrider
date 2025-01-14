@@ -53,6 +53,7 @@ public:
 	};
 	ENDTYPE m_endType;										// 終了理由
 private:
+	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する
 	void SpawnBike();												// バイクの生成
 	void ClearCondition();											// クリア条件
 

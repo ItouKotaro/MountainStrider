@@ -66,20 +66,30 @@ void CGameScene::Init()
 		CD3DLight::SetDefaultD3DLight(pLight);
 	}
 
+	// 読み込む地形ファイルを決定する
+	auto terrainFiles = GetTerrainFiles();
+	if (terrainFiles.empty())
+	{ // 一つも地形ファイルが存在しないとき
+		MessageBox(NULL, "地形ファイルが見つかりませんでした\ndata/TERRAINS フォルダ内に地形ファイルを入れてください", "エラー", MB_OK);
+		Main::ExitApplication();
+		return;
+	}
+	auto terrainPath = terrainFiles[rand() % terrainFiles.size()];
+
 	// 地面を作成
 	{
 		srand((unsigned int)clock());
 		m_pTerrain = new Terrain();
 		m_pTerrain->SetSeed(rand());
 		m_pTerrain->Init();
-		m_pTerrain->LoadTerrainFile("data\\TERRAINS\\terrains.json");
+		m_pTerrain->LoadTerrainFile(terrainPath);
 		m_pTerrain->Generate();
 	}
 
 	// 装飾を生成する
 	m_decoration = new DecorationManager();
 	m_decoration->Init(m_pTerrain);
-	m_decoration->LoadTerrainFile("data\\TERRAINS\\terrains.json");
+	m_decoration->LoadTerrainFile(terrainPath);
 	m_decoration->Generate();
 
 	// 奈落
@@ -410,4 +420,44 @@ void CGameScene::onClear()
 		// クリアトリガーを有効にする
 		m_endType = ENDTYPE_CLEAR;
 	}
+}
+
+//=============================================================
+// [CGameScene] 地形ファイル一覧を取得する
+//=============================================================
+std::vector<std::string> CGameScene::GetTerrainFiles()
+{
+	HANDLE hFind;
+	WIN32_FIND_DATA win32fd;
+	std::vector<std::string> file_names;
+
+	//探すファイル名指定　ワイルドカードを使用
+	std::string search_name = "data\\TERRAINS\\*.json";
+	//ファイル検索
+	hFind = FindFirstFile(search_name.c_str(), &win32fd);
+
+	//見つからなかったか
+	if (hFind == INVALID_HANDLE_VALUE)
+	{
+		return file_names;
+	}
+
+	//次のファイルがある限り読み込み続ける
+	do
+	{
+		//ディレクトリなら無視
+		if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {}
+		else
+		{
+			//ファイル名をパス付で取得
+			std::string fileName = win32fd.cFileName;
+			fileName.insert(0, "data\\TERRAINS\\");
+			file_names.push_back(fileName);
+		}
+	} while (FindNextFile(hFind, &win32fd));
+
+	//閉じる
+	FindClose(hFind);
+
+	return file_names;
 }
