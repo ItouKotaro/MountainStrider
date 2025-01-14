@@ -8,6 +8,7 @@
 #include "component/2d/polygon.h"
 #include "component/3d/mesh.h"
 #include "component/3d/meshfield.h"
+#include "component/3d/particle.h"
 
 const int ShadowRenderBuffer::SHADOWMAP_SIZE = 2048;
 
@@ -324,6 +325,12 @@ void ShadowRenderBuffer::RenderScene(bool renderShadow, const D3DXMATRIX* pmView
 						if (renderShadow && !Component::IsClassType<CMeshField>(*itrComp) &&
 							Benlib::PosPlaneDistance((*itrComp)->transform->GetWPos(), m_shadowPoint) > m_shadowRange)
 							break;
+
+						// パーティクルは除外する
+						if (renderShadow && Component::IsClassType<ParticleSystem>(*itrComp))
+						{
+							break;
+						}
 
 						// オブジェクトのマトリックスを設定する
 						D3DXMATRIXA16 mWorldView = (*itrComp)->transform->GetMatrix();

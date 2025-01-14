@@ -7,6 +7,8 @@
 #ifndef _ENVIRONMENTAL_TYPE_H_
 #define _ENVIRONMENTAL_TYPE_H_
 
+#include "component/other/audio.h"
+
 // “VŒóiŠî’êj
 class Weather
 {
@@ -39,15 +41,27 @@ public:
 	void Init() override { m_affectData.friction = 1.0f; }
 };
 
-// –¶
-class WeatherFog : public Weather
+// ‰J
+class WeatherRain : public Weather
 {
 public:
 	void Init() override;
 	void Uninit() override;
+	void Update() override;
 private:
-	float m_fogDensity;
+	GameObject* m_rainParticle;
+	AudioClip m_rainSE;
 };
+
+//// –¶
+//class WeatherFog : public Weather
+//{
+//public:
+//	void Init() override;
+//	void Uninit() override;
+//private:
+//	float m_fogDensity;
+//};
 
 // ‰J
 //class WeatherRain : public Weather

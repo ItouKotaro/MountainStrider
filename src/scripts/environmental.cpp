@@ -27,14 +27,10 @@ void EnvironmentalEffect::Init()
 
 	// “VŒó‚ðŒˆ‚ß‚é
 	Weather* weather;
-	if (rand() % 3 == 0)
-	{
-		weather = new WeatherFog();
-	}
-	else
-	{
-		weather = new WeatherClear();
-	}
+	int weatherRand = rand() % 2;
+	if (weatherRand == 0) weather = new WeatherClear();
+	else weather = new WeatherRain();
+
 	SetWeather(weather);
 }
 

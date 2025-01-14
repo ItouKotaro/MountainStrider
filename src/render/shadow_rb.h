@@ -65,7 +65,11 @@ public:
 	void Uninit() override;
 	void Render() override;
 
-	void SetAmbient(D3DXVECTOR4 ambient) { m_shader->SetLightAmbient(&ambient); }
+	void SetAmbient(D3DXVECTOR4 ambient) { 
+		m_ambient = ambient;
+		m_shader->SetLightAmbient(&ambient); 
+	}
+	D3DXVECTOR4 GetAmbient() { return m_ambient; }
 	void SetLightCamera(CCamera* camera) { m_lightCamera = camera; }
 	void SetShadowPoint(const D3DXVECTOR3& pos) { m_shadowPoint = pos; }
 	void SetShadowRange(const float& range) { m_shadowRange = range; }
@@ -76,6 +80,7 @@ private:
 
 	ShadowMapShader* m_shader = nullptr;	// シェーダー
 
+	D3DXVECTOR4 m_ambient;					// 明るさ
 	D3DLIGHT9 m_light;								// スポットライト
 	LPDIRECT3DTEXTURE9 m_shadowMap;	// シャドウマップ
 	LPDIRECT3DSURFACE9 m_dsShadow;		// 深度バッファ

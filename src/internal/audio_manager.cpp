@@ -75,6 +75,22 @@ AudioClip AudioManager::CreateClip(std::string filePath, FMOD_MODE mode, bool is
 }
 
 //=============================================================
+// [AudioManager] オーディオクリップの削除
+//=============================================================
+void AudioManager::RemoveClip(AudioClip clip)
+{
+	for (auto itr = m_audioClipList.begin(); itr != m_audioClipList.end(); itr++)
+	{
+		if (*itr == clip)
+		{
+			m_audioClipList.erase(itr);
+			clip->release();
+			return;
+		}
+	}
+}
+
+//=============================================================
 // [AudioManager] オーディオバンクの読み込み
 //=============================================================
 AudioBank AudioManager::LoadBank(std::string filePath)

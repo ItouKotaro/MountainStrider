@@ -42,6 +42,9 @@ public:
 	//@brief オーディオクリップの作成
 	AudioClip CreateClip(std::string filePath, FMOD_MODE mode = FMOD_2D, bool isStream = false);
 
+	//@brief オーディオクリップの削除
+	void RemoveClip(AudioClip clip);
+
 	//@brief オーディオバンクの読み込み
 	AudioBank LoadBank(std::string filePath);
 
