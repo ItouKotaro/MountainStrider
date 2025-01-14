@@ -22,6 +22,8 @@ using namespace noise;
 AudioClip selectMoveSE;
 AudioClip fireSE;
 
+bool g_once = true;
+
 //=============================================================
 // [CTitleScene] 初期化
 //=============================================================
@@ -128,18 +130,26 @@ void CTitleScene::Init()
 	pLight->transform->SetPos(-30.0f, 100.0f, -20.0f);
 	pLight->transform->LookAt({ 0.0f, 0.0f, 5.0f });
 
-	// 起動クレジット背景
-	GameObject* creditBG = new GameObject();
-	creditBG->AddComponent<CPolygon>();
-	creditBG->transform->SetSize(CRenderer::SCREEN_WIDTH, CRenderer::SCREEN_HEIGHT);
-
 	// 起動クレジット
-	GameObject* creditObj = new GameObject();
-	m_credit = creditObj->AddComponent<LaunchCredit>();
-	m_credit->AddCredit("data\\TEXTURE\\CREDIT\\FMOD.png", { 728.0f, 192.0f });
-	m_credit->SetShowTime(4.0f);
-	m_credit->SetBG(creditBG->GetComponent<CPolygon>());
-	m_credit->Start();
+	m_credit = nullptr;
+	if (g_once)
+	{
+		// 起動クレジット背景
+		GameObject* creditBG = new GameObject();
+		creditBG->AddComponent<CPolygon>();
+		creditBG->transform->SetSize(CRenderer::SCREEN_WIDTH, CRenderer::SCREEN_HEIGHT);
+
+		// クレジットロゴ
+		GameObject* creditObj = new GameObject();
+		m_credit = creditObj->AddComponent<LaunchCredit>();
+		m_credit->AddCredit("data\\TEXTURE\\CREDIT\\FMOD.png", { 728.0f, 192.0f });
+		m_credit->SetShowTime(4.0f);
+		m_credit->SetBG(creditBG->GetComponent<CPolygon>());
+		m_credit->Start();
+
+		g_once = false;
+	}
+
 
 	// 影用レンダーバッファの設定
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
@@ -177,7 +187,7 @@ void CTitleScene::Uninit()
 //=============================================================
 void CTitleScene::Update()
 {
-	if (!m_credit->IsEnded()) return;
+	if (m_credit != nullptr && !m_credit->IsEnded()) return;
 
 	// 操作の更新
 	UpdateControl();
