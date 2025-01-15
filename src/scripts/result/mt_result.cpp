@@ -205,7 +205,9 @@ void ClearResult::Init()
 		m_shopButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
 		m_shopButton->AddComponent<ButtonUI>();
 		m_shopButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		m_shopButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() { page->SetPage(1); });
+		m_shopButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() { 
+			page->SetPage(1); 
+			});
 
 		GameObject* pShopButtonText = new GameObject();
 		pShopButtonText->SetParent(m_shopButton);
@@ -249,6 +251,13 @@ void ClearResult::Init()
 	cursorObj->AddComponent<VirtualCursor>();
 	Main::SetShowCursor(false);
 
+	// BGMを再生する
+	m_volumeFade = 0.0f;
+	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\result.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
+	m_bgmObj = new GameObject();
+	m_bgmObj->AddComponent<AudioSource>()->Play(m_bgm);
+	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
+
 	// 前回の情報として保存
 	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
 	m_beforeEndurance = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance();
@@ -269,6 +278,9 @@ void ClearResult::Uninit()
 
 	// 背景の破棄
 	m_bg->Destroy();
+
+	// 音を削除する
+	AudioManager::GetInstance()->RemoveClip(m_bgm);
 }
 
 //=============================================================
@@ -278,6 +290,11 @@ void ClearResult::Update()
 {
 	// リザルトのアニメーション
 	UpdateResultAnim();
+
+	// BGMのフェード
+	m_volumeFade += BGM_FADE;
+	if (m_volumeFade > BGM_VOLUME) m_volumeFade = BGM_VOLUME;
+	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
 
 	// ショップを更新する
 	if (m_page->GetComponent<Pages>()->GetPage() == 1)
@@ -441,7 +458,9 @@ void GameOverResult::Init()
 		pFinalResultButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
 		pFinalResultButton->AddComponent<ButtonUI>();
 		pFinalResultButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		pFinalResultButton->GetComponent<ButtonUI>()->setClickEvent([page]() { page->SetPage(1); });
+		pFinalResultButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {
+			page->SetPage(1); 
+			});
 		page->AddObject(0, pFinalResultButton);
 
 		GameObject* pFinalResultButtonText = new GameObject();
@@ -482,6 +501,13 @@ void GameOverResult::Init()
 	cursorObj->AddComponent<VirtualCursor>();
 	Main::SetShowCursor(false);
 
+	// BGMを再生する
+	m_volumeFade = 0.0f;
+	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\gameover.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
+	m_bgmObj = new GameObject();
+	m_bgmObj->AddComponent<AudioSource>()->Play(m_bgm);
+	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
+
 	// 最終結果の初期化
 	InitFinalResult();
 
@@ -501,14 +527,22 @@ void GameOverResult::Uninit()
 {
 	// 背景の破棄
 	m_bg->Destroy();
+
+	// 音を削除する
+	AudioManager::GetInstance()->RemoveClip(m_bgm);
 }
 
 //=============================================================
-// [GameOverResult] クリア時の更新
+// [GameOverResult] ゲームオーバー時の更新
 //=============================================================
 void GameOverResult::Update()
 {
 	UpdateResultAnim();
+
+	// BGMのフェード
+	m_volumeFade += BGM_FADE;
+	if (m_volumeFade > BGM_VOLUME) m_volumeFade = BGM_VOLUME;
+	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
 }
 
 //=============================================================
@@ -766,7 +800,7 @@ void GameOverResult::InitFinalResult()
 	titleButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\go_title.png");
 	titleButton->transform->SetSize(145.0f, 568.0f);
 	titleButton->transform->SetPos(CRenderer::SCREEN_WIDTH - 145.0f, CRenderer::SCREEN_HEIGHT - 568.0f);
-	titleButton->GetComponent<ButtonUI>()->setClickEvent([&]() 
+	titleButton->GetComponent<ButtonUI>()->setClickEvent([this]()
 		{
 			m_gameScene->ResetGame();
 			CSceneManager::GetInstance()->SetScene("title"); 

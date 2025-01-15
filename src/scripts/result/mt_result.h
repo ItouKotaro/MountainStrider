@@ -9,6 +9,7 @@
 
 #include "gameobject.h"
 #include "scripts/shop/shop.h"
+#include "component/other/audio.h"
 
 class CGameScene;
 
@@ -77,6 +78,13 @@ private:
 	GameObject* m_enduranceView;	// 耐久値表示
 	GameObject* m_terrainImg;			// 地形画像
 
+	// 音
+	AudioClip m_bgm;
+	GameObject* m_bgmObj;
+	float m_volumeFade;
+	const float BGM_VOLUME = 0.2f;
+	const float BGM_FADE = 0.001f;
+
 	// ボタン
 	GameObject* m_addListButton;
 	GameObject* m_shopButton;
@@ -116,6 +124,13 @@ private:
 	GameObject* m_timeValue;			// 時間表示
 	GameObject* m_actionValue;			// アクション表示
 	GameObject* m_fuelValue;				// 燃費表示
+
+	// 音
+	AudioClip m_bgm;
+	GameObject* m_bgmObj;
+	float m_volumeFade;
+	const float BGM_VOLUME = 0.6f;
+	const float BGM_FADE = 0.004f;
 };
 
 

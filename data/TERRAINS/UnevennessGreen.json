@@ -32,7 +32,9 @@
             "angle_range": 0.1,
             "match_inclination": false,
             "chance": 10,
-            "limit_slant": [0.0, 0.4]
+            "limit_slant": [0.0, 0.4],
+            "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
+            "volume": 50.0
         },
         {
             "path": "data\\PREFAB\\tree\\tree01.pref",
@@ -44,7 +46,9 @@
             "angle_range": 0.1,
             "match_inclination": false,
             "chance": 10,
-            "limit_slant": [0.0, 0.4]
+            "limit_slant": [0.0, 0.4],
+            "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
+            "volume": 50.0
         },
         {
             "path": "data\\PREFAB\\tree\\fallen_tree.pref",
