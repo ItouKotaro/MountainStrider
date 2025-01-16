@@ -351,6 +351,9 @@
     <ClCompile Include="src\scripts\event\meteo.cpp">
       <Filter>ソース ファイル\scripts\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\event\tornado.cpp">
+      <Filter>ソース ファイル\scripts\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -594,6 +597,9 @@
       <Filter>ヘッダー ファイル\scripts\event</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\event\meteo.h">
+      <Filter>ヘッダー ファイル\scripts\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\event\tornado.h">
       <Filter>ヘッダー ファイル\scripts\event</Filter>
     </ClInclude>
   </ItemGroup>

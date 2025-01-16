@@ -97,6 +97,19 @@ public:
 		int max;
 	};
 
+	// パーティクルデータ
+	struct ParticleData
+	{
+		SingleComponent<Particle>* particle;		// パーティクル
+		D3DXVECTOR3 move;							// 動き
+		D3DXCOLOR color;									// 色
+		float size;												// サイズ
+
+		int lifeCounter;										// 寿命
+		int destroyCounter;								// 破棄カウンター
+		bool use;												// 使用しているか
+	};
+
 	ParticleSystem() :
 		m_gravity(0.0f),
 		m_size({ 5.0f, 5.0f }),
@@ -108,7 +121,8 @@ public:
 		m_shape(nullptr),
 		m_power({1.0f, 1.0f}),
 		m_lifetime({60, 60}),
-		m_texture(nullptr){}
+		m_texture(nullptr),
+		m_vortex(0.0f){}
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
@@ -171,6 +185,14 @@ public:
 	// @brief テクスチャの取得
 	ParticleModule::Texture* GetTexture() { return m_texture; }
 
+	// @brief 渦の設定
+	void SetVortex(const float& value) { m_vortex = value; }
+	// @brief 渦の取得
+	float GetVortex() { return m_vortex; }
+
+	// @brief 移動式の設定
+	void SetMoveEquation(std::function<D3DXVECTOR3(ParticleSystem::ParticleData*)> equation) { m_moveEquation = equation; }
+
 	// @brief パーティクルの総数
 	int GetNumParticles() { return static_cast<int>(m_particleData.size()); }
 
@@ -194,19 +216,10 @@ private:
 	Range m_angle;											// 回転
 	Range m_power;										// 力
 	RangeInt m_lifetime;									// 生存時間
+	float m_vortex;											// 渦
 
-	// パーティクルデータ
-	struct ParticleData
-	{
-		SingleComponent<Particle>* particle;		// パーティクル
-		D3DXVECTOR3 move;							// 動き
-		D3DXCOLOR color;									// 色
-		float size;												// サイズ
+	std::function<D3DXVECTOR3(ParticleSystem::ParticleData*)> m_moveEquation;
 
-		int lifeCounter;										// 寿命
-		int destroyCounter;								// 破棄カウンター
-		bool use;												// 使用しているか
-	};
 	std::vector<ParticleData> m_particleData;
 };
 

@@ -191,6 +191,9 @@ void ParticleSystem::Init()
 
 	// ƒeƒNƒXƒ`ƒƒ‚ð¶¬‚·‚é
 	m_texture = new ParticleModule::Texture();
+
+	// ˆÚ“®Ž®
+	m_moveEquation = [](ParticleSystem::ParticleData* data) {return data->move; };
 }
 
 //=============================================================
@@ -324,7 +327,14 @@ void ParticleSystem::UpdateParticles()
 		if (data->use)
 		{
 			// ˆÚ“®—Ê‚ð‰ÁŽZ‚·‚é
-			data->particle->transform->Translate(data->move);
+			data->particle->transform->Translate(m_moveEquation(data));
+
+			// ‰Q‚ðl—¶‚·‚é
+			D3DXVECTOR3 point = data->particle->transform->GetWPos() - transform->GetWPos();
+			D3DXMATRIX mtx;
+			D3DXMatrixRotationY(&mtx, m_vortex);
+			D3DXVec3TransformCoord(&point, &point, &mtx);
+			data->particle->transform->SetPos(transform->GetWPos() + point);
 
 			// d—Í‚ð‰ÁŽZ‚·‚é
 			data->move.y += m_gravity;
