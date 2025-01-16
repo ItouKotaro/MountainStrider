@@ -8,6 +8,8 @@
 #include "manager.h"
 #include "scene/game.h"
 
+#include "meteo.h"
+
 //=============================================================
 // [EventManager] 初期化
 //=============================================================
@@ -52,7 +54,6 @@ void EventManager::Update()
 	{
 		// イベントを起こす
 		AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
-		MessageBox(nullptr, "イベント実行", "アラート", MB_OK);
 
 		// 時間を設定する
 		SetRandomTime();
@@ -64,6 +65,21 @@ void EventManager::Update()
 		if (*itr != nullptr)
 		{
 			(*itr)->Update();
+
+			// イベントが終了しているか
+			if ((*itr)->GetEndEvent())
+			{
+				// イベントを破棄する
+				(*itr)->Uninit();
+				delete* itr;
+				itr = m_eventList.erase(itr);
+
+				// 最後のイベントの時
+				if (itr == m_eventList.end())
+				{
+					break;
+				}
+			}
 		}
 	}
 }
@@ -80,7 +96,7 @@ void EventManager::AddEvent(EVENTID eventID)
 	switch (eventID)
 	{
 	case EventManager::EVENTID_METEO:
-		//eventTemplate = new***;
+		eventTemplate = new MeteoEvent();
 		break;
 	}
 

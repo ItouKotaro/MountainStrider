@@ -113,3 +113,37 @@ void Destructible::OnTriggerEnter(GameObject* other)
 		m_isHit = true;
 	}
 }
+
+//=============================================================
+// [Destructible] 強制ヒット
+//=============================================================
+void Destructible::ForceHit(bool playSound)
+{
+	if (m_isHit) return;
+
+	// ヒット音を鳴らす
+	if (m_decoData->type->hitSound != nullptr && playSound)
+	{
+		gameObject->GetComponent<AudioSource>()->Play(m_decoData->type->hitSound);
+		gameObject->GetComponent<AudioSource>()->GetChannel()->setVolume(m_decoData->type->volume);
+	}
+
+	// リジッドボディの追加
+	CCollision* collision = CCollision::GetCollision(gameObject);
+	if (collision != nullptr)
+	{
+		collision->IsTrigger(false);
+		gameObject->AddComponent<CRigidBody>();
+	}
+
+	// デコレーションデータから削除する
+	if (m_decoData != nullptr)
+	{
+		m_decoManager->RemoveData(m_decoData);
+	}
+
+	// 開始時間を設定する
+	m_startTimer = START_TIME;
+
+	m_isHit = true;
+}

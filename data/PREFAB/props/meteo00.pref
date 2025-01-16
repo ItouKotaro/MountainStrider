@@ -1,0 +1,68 @@
+{
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\props\\meteo00.x",
+            "name": "model",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        }
+    },
+    "parent": {
+        "0": -1
+    },
+    "prefab": {
+        "collision": [
+            {
+                "offset": [
+                    0.20000000298023224,
+                    0.0,
+                    0.6000000238418579
+                ],
+                "radius": 9.100000381469727,
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "type": "sphere"
+            }
+        ],
+        "friction": 1.0,
+        "mass": 130.0,
+        "name": "METEO",
+        "rigidbody": true,
+        "tag": "HIT",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": false
+    }
+}

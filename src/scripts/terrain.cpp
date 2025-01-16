@@ -32,7 +32,7 @@ const float Terrain::TERRAIN_DISTANCE_HALF = Terrain::TERRAIN_DISTANCE / (float)
 void Terrain::Init()
 {
 	// メッシュフィールドを作成する
-	m_pField = new GameObject("TerrainField");
+	m_pField = new GameObject("TerrainField", "Field");
 	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
 	m_pField->AddComponent<Road>();
 

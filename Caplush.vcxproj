@@ -249,6 +249,7 @@
     <ClCompile Include="src\scripts\environmental.cpp" />
     <ClCompile Include="src\scripts\environmental_type.cpp" />
     <ClCompile Include="src\scripts\event\event_manager.cpp" />
+    <ClCompile Include="src\scripts\event\meteo.cpp" />
     <ClCompile Include="src\scripts\gem.cpp" />
     <ClCompile Include="src\scripts\item\items.cpp" />
     <ClCompile Include="src\scripts\item\item_manager.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="src\scripts\environmental.h" />
     <ClInclude Include="src\scripts\environmental_type.h" />
     <ClInclude Include="src\scripts\event\event_manager.h" />
+    <ClInclude Include="src\scripts\event\meteo.h" />
     <ClInclude Include="src\scripts\gem.h" />
     <ClInclude Include="src\scripts\item\items.h" />
     <ClInclude Include="src\scripts\item\item_manager.h" />

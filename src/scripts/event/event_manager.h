@@ -11,9 +11,20 @@
 class EventTemplate
 {
 public:
+	EventTemplate() : m_endEvent(false) {}
+
 	virtual void Init() = 0;
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
+
+	//@brief イベントを終了する
+	void EndEvent() { m_endEvent = true; }
+
+	//@brief イベントが終了しているかを取得する
+	bool GetEndEvent() { return m_endEvent; }
+
+private:
+	bool m_endEvent;
 };
 
 // イベント管理クラス
@@ -40,8 +51,8 @@ private:
 	float m_eventTimer;
 	std::vector<EventTemplate*> m_eventList;		// 現在のイベント
 
-	const int BASE_TIME = 60;
-	const int RANDOM_TIME = 40;
+	const int BASE_TIME = 10;
+	const int RANDOM_TIME = 10;
 };
 
 #endif // !_EVENT_MANAGER_H_

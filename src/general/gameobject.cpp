@@ -31,7 +31,7 @@ void GameObject::UpdateAll()
 		if ((*itr)->GetActive())
 		{ // アクティブのとき
 			// コンポーネントの更新処理を行う
-			for (auto itrComp = (*itr)->m_components.begin(); itrComp != (*itr)->m_components.end(); itrComp++)
+			for (auto itrComp = (*itr)->m_components.rbegin(); itrComp != (*itr)->m_components.rend(); itrComp++)
 			{
 				if ((*itrComp)->enabled)
 				{
