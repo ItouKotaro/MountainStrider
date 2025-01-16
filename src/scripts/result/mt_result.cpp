@@ -593,12 +593,12 @@ void GameOverResult::InitFinalResult()
 
 	// スコア計算
 	int score = 0;
-	score += GetAverageAction() * m_results.size();
+	score += GetAverageAction() * static_cast<int>(m_results.size());
 	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
 	{
 		score += (500 - (*itr).time) * 2;
 	}
-	score += m_results.size() * 1200;
+	score += static_cast<int>(m_results.size()) * 1200;
 
 	// ランク査定 ------------------------------------------------------------------------------------
 	enum RANK
@@ -651,7 +651,7 @@ void GameOverResult::InitFinalResult()
 	finalText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	finalText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	finalText->GetComponent<CText>()->SetFontSize(100);
-	finalText->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, 70.0f);
+	finalText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 70.0f);
 	page->AddObject(1, finalText);
 
 	// 最終スコア
@@ -660,7 +660,7 @@ void GameOverResult::InitFinalResult()
 	m_scoreText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_scoreText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_scoreText->GetComponent<CText>()->SetFontSize(200);
-	m_scoreText->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, 200.0f);
+	m_scoreText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 200.0f);
 	page->AddObject(1, m_scoreText);
 
 	// スコアバー

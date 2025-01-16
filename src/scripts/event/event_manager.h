@@ -23,8 +23,25 @@ public:
 	void Init();
 	void Uninit();
 	void Update();
+
+	// イベント
+	enum EVENTID
+	{
+		EVENTID_METEO = 0,		// 隕石
+		EVENTID_MAX
+	};
+
+	//@brief イベントを起こす
+	void AddEvent(EVENTID eventID);
 private:
+	//@brief ランダムな時間を設定する
+	void SetRandomTime();
+
+	float m_eventTimer;
 	std::vector<EventTemplate*> m_eventList;		// 現在のイベント
+
+	const int BASE_TIME = 60;
+	const int RANDOM_TIME = 40;
 };
 
 #endif // !_EVENT_MANAGER_H_

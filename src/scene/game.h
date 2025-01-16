@@ -14,6 +14,7 @@
 #include "scripts/decoration.h"
 #include "scripts/result/mt_result.h"
 #include "scripts/pause.h"
+#include "scripts/event/event_manager.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -64,6 +65,7 @@ private:
 	Terrain* m_pTerrain;											// 地形
 	EnvironmentalEffect* m_environmental;				// 環境
 	DecorationManager* m_decoration;						// 装飾
+	EventManager* m_events;									// イベント
 
 	GameObject* m_voidField;									// 奈落
 	GameObject* m_pCamera;									// カメラ

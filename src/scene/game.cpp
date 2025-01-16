@@ -112,6 +112,10 @@ void CGameScene::Init()
 	m_environmental = new EnvironmentalEffect();
 	m_environmental->Init();
 
+	// イベント
+	m_events = new EventManager();
+	m_events->Init();
+
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
 	m_pCamera->AddComponent<ResultCamera>();
@@ -153,6 +157,14 @@ void CGameScene::Uninit()
 		m_environmental->Uninit();
 		delete m_environmental;
 		m_environmental = nullptr;
+	}
+
+	// イベントの破棄
+	if (m_events != nullptr)
+	{
+		m_events->Uninit();
+		delete m_events;
+		m_events = nullptr;
 	}
 
 	// リザルトマネージャーの破棄
@@ -197,11 +209,14 @@ void CGameScene::Update()
 	// 地形を更新する
 	m_pTerrain->Update();
 
-	// 装飾の更新
+	// 装飾を更新する
 	m_decoration->Update(m_pCamera->transform->GetWPos());
 
 	// 環境効果を更新する
 	m_environmental->Update();
+
+	// イベントを更新する
+	m_events->Update();
 
 	// 未ゲームオーバー時
 	if (m_endType == ENDTYPE_NONE)

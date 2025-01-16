@@ -28,9 +28,6 @@ void DecorationManager::Init(Terrain* terrain)
 			LoadChunk(MAX_CHUNK / 2 + sx, MAX_CHUNK / 2 + sy);
 		}
 	}
-
-	m_debugText = new GameObject();
-	m_debugText->AddComponent<CText>();
 }
 
 //=============================================================
@@ -85,7 +82,6 @@ void DecorationManager::Update(const D3DXVECTOR3& pos)
 {
 	// 破棄カウンターの更新
 	UpdateDestroyObjects();
-	m_debugText->GetComponent<CText>()->SetText(std::to_string(m_decoObjects.size()));
 
 	// 現在位置のチャンクを取得する
 	int x, y;

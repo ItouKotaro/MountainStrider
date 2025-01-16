@@ -77,7 +77,7 @@ void ShopManager::Init(Pages* pages)
 	inventoryInfo->GetComponent<CText>()->SetAlign(CText::CENTER);
 	inventoryInfo->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	inventoryInfo->GetComponent<CText>()->SetFontSize(40);
-	inventoryInfo->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, CRenderer::SCREEN_HEIGHT - 60.0f);
+	inventoryInfo->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), static_cast<float>(CRenderer::SCREEN_HEIGHT - 60.0f));
 	m_pages->AddObject(1, inventoryInfo);
 
 	// 次へのボタンを作成する

@@ -112,8 +112,6 @@ private:
 	Terrain* m_terrain;
 	int m_generateNum;
 
-	GameObject* m_debugText;
-
 	// ‘O‰ñ‚Ìƒ`ƒƒƒ“ƒN
 	int m_oldChunkX, m_oldChunkY;
 };

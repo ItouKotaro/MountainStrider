@@ -5,12 +5,17 @@
 //
 //=============================================================
 #include "event_manager.h"
+#include "manager.h"
+#include "scene/game.h"
 
 //=============================================================
 // [EventManager] 初期化
 //=============================================================
 void EventManager::Init()
 {
+	// タイマーを設定する
+	SetRandomTime();
+
 
 }
 
@@ -19,7 +24,17 @@ void EventManager::Init()
 //=============================================================
 void EventManager::Uninit()
 {
-
+	// イベントを破棄する
+	for (auto itr = m_eventList.begin(); itr != m_eventList.end(); itr++)
+	{
+		if (*itr != nullptr)
+		{
+			(*itr)->Uninit();
+			delete* itr;
+			*itr = nullptr;
+		}
+	}
+	m_eventList.clear();
 }
 
 //=============================================================
@@ -27,5 +42,63 @@ void EventManager::Uninit()
 //=============================================================
 void EventManager::Update()
 {
+	// ポーズ時は更新しない
+	if (static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetPause()->GetPause())
+		return;
 
+	// タイマーを進める
+	m_eventTimer -= CManager::GetInstance()->GetDeltaTime();
+	if (m_eventTimer <= 0.0f)
+	{
+		// イベントを起こす
+		AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
+		MessageBox(nullptr, "イベント実行", "アラート", MB_OK);
+
+		// 時間を設定する
+		SetRandomTime();
+	}
+
+	// イベントを更新する
+	for (auto itr = m_eventList.begin(); itr != m_eventList.end(); itr++)
+	{
+		if (*itr != nullptr)
+		{
+			(*itr)->Update();
+		}
+	}
+}
+
+//=============================================================
+// [EventManager] イベントを起こす
+//=============================================================
+void EventManager::AddEvent(EVENTID eventID)
+{
+	EventTemplate* eventTemplate = nullptr;
+
+
+	// イベントIDに合わせて生成する
+	switch (eventID)
+	{
+	case EventManager::EVENTID_METEO:
+		//eventTemplate = new***;
+		break;
+	}
+
+
+	if (eventTemplate != nullptr)
+	{
+		// イベントの初期化
+		eventTemplate->Init();
+
+		// イベントリストに追加する
+		m_eventList.push_back(eventTemplate);
+	}
+}
+
+//=============================================================
+// [EventManager] ランダムな時間を設定する
+//=============================================================
+void EventManager::SetRandomTime()
+{
+	m_eventTimer = static_cast<float>(BASE_TIME + rand() % RANDOM_TIME);
 }

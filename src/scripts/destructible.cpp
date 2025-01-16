@@ -77,12 +77,15 @@ void Destructible::OnTriggerEnter(GameObject* other)
 	// バイクコンポーネントを取得する
 	CVehicle* vehicle = other->GetComponent<CVehicle>();
 
-	// バイクとの衝突処理
-	if (vehicle != nullptr)
+	// 衝突処理
+	if (vehicle != nullptr || other->GetTag() == "HIT")
 	{
 		// バイクにダメージを与える
-		vehicle->AddDamage(m_decoData->type->damage);
-
+		if (vehicle != nullptr)
+		{
+			vehicle->AddDamage(m_decoData->type->damage);
+		}
+		
 		// ヒット音を鳴らす
 		if (m_decoData->type->hitSound != nullptr)
 		{
