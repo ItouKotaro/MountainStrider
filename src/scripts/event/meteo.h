@@ -24,8 +24,8 @@ private:
 	float m_eventTimer;
 
 	const float METEO_RANGE = 600.0f;
-	const float EVENT_BASE_TIME = 50.0f;
-	const float EVENT_RANDOM_TIME = 20.0f;
+	const float EVENT_BASE_TIME = 10.0f;
+	const float EVENT_RANDOM_TIME = 10.0f;
 	const float GENERATE_BASE_TIME = 2.5f;
 	const float GENERATE_RANDOM_TIME = 3.0f;
 };

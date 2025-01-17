@@ -18,11 +18,25 @@ public:
 	void Update() override;
 
 private:
-	GameObject* m_tornade;
+	void UpdateMove();
+	void ResetMoveAngle();
+	void UpdateAction();
 
+	GameObject* m_tornade;
+	
+	float m_maxHeight, m_minHeight;
+
+	float m_moveAngle;		// Œü‚©‚¤•ûŒü
+	float m_moveTimer;		// ˆÚ“®ŽžŠÔ
 	float m_eventTimer;
 
-	const float TORNADO_HEIGHT = 100.0f;
+	const float MOVE_ANGLE_RANGE = D3DX_PI * 0.5f;
+	const float MOVE_BASE_TIME = 1.0f;
+	const float MOVE_RANDOM_TIME = 3.0f;
+	const float TORNADO_SPEED = 2.0f;
+	const float TORNADO_RANGE = 100.0f;
+	const float TORNADO_HEIGHT = 150.0f;
+
 	const float EVENT_BASE_TIME = 50.0f;
 	const float EVENT_RANDOM_TIME = 20.0f;
 };

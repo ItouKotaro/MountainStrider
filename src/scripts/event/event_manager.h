@@ -39,6 +39,7 @@ public:
 	enum EVENTID
 	{
 		EVENTID_METEO = 0,		// 隕石
+		EVENTID_TORNADO,			// トルネード
 		EVENTID_MAX
 	};
 
