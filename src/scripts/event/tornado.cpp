@@ -163,7 +163,7 @@ void TornadoEvent::UpdateAction()
 			// バイク
 			if ((*itr)->GetComponent<CVehicle>() != nullptr)
 			{
-				(*itr)->GetComponent<CVehicle>()->AddDamage(0.5f);
+				(*itr)->GetComponent<CVehicle>()->AddDamage(0.3f);
 
 				// トルネードに巻き込ませる
 				D3DXVECTOR3 dir = (m_tornade->transform->GetWPos() - (*itr)->transform->GetWPos());
