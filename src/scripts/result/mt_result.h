@@ -105,6 +105,14 @@ public:
 private:
 	void InitFinalResult();
 	void UpdateResultAnim();
+	enum PROG_STATE
+	{
+		P_FUEL,							// バイクの燃料
+		P_ENDURANCE,				// バイクの耐久値
+		P_END
+	};
+	PROG_STATE m_progState;	// 結果表示進行度
+	int m_progCounter;				// カウンター
 
 	GameObject* m_page;					// ページ
 	GameObject* m_mtText;				// マウンテンテキスト（ゲームオーバー表示）

@@ -54,8 +54,8 @@ void EventManager::Update()
 	if (m_eventTimer <= 0.0f)
 	{
 		// イベントを起こす
-		//AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
-		AddEvent(EVENTID_TORNADO);
+		AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
+		//AddEvent(EVENTID_TORNADO);
 
 		// 時間を設定する
 		SetRandomTime();

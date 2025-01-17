@@ -364,6 +364,10 @@ void GameOverResult::Init()
 	m_page->GetComponent<Pages>()->SetNumPage(2);
 	auto page = m_page->GetComponent<Pages>();
 
+	// 進捗
+	m_progState = PROG_STATE::P_FUEL;
+	m_progCounter = 120;
+
 	// ゲームオーバーテキスト
 	{
 		m_mtText = new GameObject("MtClearText", "UI");
@@ -553,6 +557,30 @@ void GameOverResult::UpdateResultAnim()
 	// 背景のフェード
 	float currentAlpha = m_bg->GetComponent<CPolygon>()->GetColor().a;
 	m_bg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, currentAlpha + (0.5f - currentAlpha) * 0.02f));
+
+	// バイクの情報を表示
+	if (m_progState == GameOverResult::P_FUEL)
+	{
+		if (m_progCounter == 80)
+		{
+			m_fuelView->GetComponent<ResultViewBar>()->StartAnim();
+		}
+	}
+	if (m_progState == GameOverResult::P_ENDURANCE)
+	{
+		if (m_progCounter == 80)
+		{
+			m_enduranceView->GetComponent<ResultViewBar>()->StartAnim();
+		}
+	}
+
+	// 次の状態に移行する処理
+	m_progCounter--;
+	if (m_progCounter <= 0 && m_progState != P_END)
+	{
+		m_progState = static_cast<PROG_STATE>(m_progState + 1);
+		m_progCounter = 80;
+	}
 }
 
 //=============================================================
