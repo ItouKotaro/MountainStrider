@@ -68,7 +68,8 @@ public:
 	//@brief ê∂ê¨Ç∑ÇÈ
 	void Generate();
 
-	static const int MAX_CHUNK = 25;
+	static const int MAX_CHUNK = 100;
+	static const int LOAD_RANGE = 5;
 	static const float CHUNK_DIVISION;
 	static const int DESTROY_LIMIT;
 private:

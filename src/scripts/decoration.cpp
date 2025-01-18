@@ -100,9 +100,9 @@ void DecorationManager::Update(const D3DXVECTOR3& pos)
 	std::vector<ChunkPos> loadChunk;
 
 	// 周辺チャンク 3x3 を読み込み対象にする
-	for (int sx = -1; sx < 2; sx++)
+	for (int sx = -LOAD_RANGE; sx < LOAD_RANGE + 1; sx++)
 	{
-		for (int sy = -1; sy < 2; sy++)
+		for (int sy = -LOAD_RANGE; sy < LOAD_RANGE + 1; sy++)
 		{
 			// 範囲チェック
 			if (x + sx < 0 || y + sy < 0 ||
@@ -118,9 +118,9 @@ void DecorationManager::Update(const D3DXVECTOR3& pos)
 	}
 
 	// 範囲から外れたチャンクをアンロードする
-	for (int sx = -1; sx < 2; sx++)
+	for (int sx = -LOAD_RANGE; sx < LOAD_RANGE + 1; sx++)
 	{
-		for (int sy = -1; sy < 2; sy++)
+		for (int sy = -LOAD_RANGE; sy < LOAD_RANGE + 1; sy++)
 		{
 			// アンロード対象か
 			bool isUnloadTarget = true;
@@ -144,15 +144,15 @@ void DecorationManager::Update(const D3DXVECTOR3& pos)
 	}
 
 	// 新しく読み込むチャンクをロードする
-	for (int sx = -1; sx < 2; sx++)
+	for (int sx = -LOAD_RANGE; sx < LOAD_RANGE + 1; sx++)
 	{
-		for (int sy = -1; sy < 2; sy++)
+		for (int sy = -LOAD_RANGE; sy < LOAD_RANGE + 1; sy++)
 		{
 			// 新しいロード対象か
 			bool isLoadTarget = true;
-			for (int ox = -1; ox < 2; ox++)
+			for (int ox = -LOAD_RANGE; ox < LOAD_RANGE + 1; ox++)
 			{
-				for (int oy = -1; oy < 2; oy++)
+				for (int oy = -LOAD_RANGE; oy < LOAD_RANGE + 1; oy++)
 				{
 					if (sx + x == ox + m_oldChunkX &&
 						sy + y == oy + m_oldChunkY)

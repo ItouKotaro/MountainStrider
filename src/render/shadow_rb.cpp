@@ -311,6 +311,10 @@ void ShadowRenderBuffer::RenderScene(bool renderShadow, const D3DXMATRIX* pmView
 
 		// オブジェクトを描画する
 		auto allGameObjects = GameObject::GetAllGameObjects();
+
+		// シェーダー開始
+		m_shader->Begin();
+
 		for (auto itr = allGameObjects.begin(); itr != allGameObjects.end(); itr++)
 		{
 			if ((*itr)->GetActive() && (*itr)->GetVisible())
@@ -333,26 +337,21 @@ void ShadowRenderBuffer::RenderScene(bool renderShadow, const D3DXMATRIX* pmView
 						}
 
 						// オブジェクトのマトリックスを設定する
-						D3DXMATRIXA16 mWorldView = (*itrComp)->transform->GetMatrix();
+						D3DXMATRIX mWorldView = (*itrComp)->transform->GetMatrix();
 						D3DXMatrixMultiply(&mWorldView, &mWorldView, pmView);
 						m_shader->SetWorldView(&mWorldView);
 
-						// シェーダー開始
-						m_shader->Begin();
-
 						// パス描画
-						for (UINT i = 0; i < m_shader->GetNumPass(); i++)
-						{
-							(*itrComp)->SetShader(m_shader, i);
-							(*itrComp)->Draw();
-						}
+						(*itrComp)->SetShader(m_shader, 0);
+						(*itrComp)->Draw();
 
-						// シェーダー終了
-						m_shader->End();
 					}
 				}
 			}
 		}
+
+		// シェーダー終了
+		m_shader->End();
 
 		// UIの描画
 		if (!renderShadow)
