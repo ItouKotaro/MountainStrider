@@ -14,10 +14,29 @@
                 "height": 0.5
             },
             {
-                "color": [50, 166, 8, 255],
+                "color": [101, 191, 125, 255],
+                "height": -0.8
+            },
+            {
+                "color": [125, 65, 0, 255],
                 "height": -1.0
             }
-        ]
+        ],
+        "lake":
+        {
+            "height": -0.3,
+            "fuel_damage": 1.5,
+            "endurance_damage": 0.0,
+            "textures":
+            [
+                {
+                    "path": "data\\TEXTURE\\LAKE\\water00.png",
+                    "color": [255, 255, 255, 200],
+                    "loop": 150,
+                    "move": [0.002, 0.003]
+                }
+            ]
+        }
     },
 
     "decoration":
@@ -33,6 +52,7 @@
             "match_inclination": false,
             "chance": 10,
             "limit_slant": [0.0, 0.4],
+            
             "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
             "volume": 50.0
         },
@@ -47,6 +67,7 @@
             "match_inclination": false,
             "chance": 10,
             "limit_slant": [0.0, 0.4],
+            "limit_height": [-0.3, 1.0],
             "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
             "volume": 50.0
         },
@@ -70,6 +91,7 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.0,
             "match_inclination": true,
+            "limit_height": [-0.3, 1.0],
             "chance": 2,
             "hit_sound": "data\\SOUND\\SE\\HIT\\grass.mp3",
             "volume": 50.0,

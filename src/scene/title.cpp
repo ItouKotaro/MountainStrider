@@ -160,6 +160,7 @@ void CTitleScene::Init()
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(600.0f);
 
 	Main::SetShowCursor(true);
+	CGameScene::ResetGame();
 }
 
 //=============================================================
@@ -167,6 +168,7 @@ void CTitleScene::Init()
 //=============================================================
 void CTitleScene::Uninit()
 {
+	m_field->Destroy();
 	CCollision::RemoveCollision(m_field);
 
 	if (m_terrainData != nullptr)

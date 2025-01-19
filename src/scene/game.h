@@ -15,6 +15,7 @@
 #include "scripts/result/mt_result.h"
 #include "scripts/pause.h"
 #include "scripts/event/event_manager.h"
+#include "scripts/lake.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -27,7 +28,7 @@ public:
 	void Draw() override;			// 描画
 	void LastUninit() override;	// 最終終了
 
-	void ResetGame();				// ゲームのリセット
+	static void ResetGame();				// ゲームのリセット
 
 	void onGameOver();			// ゲームオーバー処理
 	void onClear();					// クリア処理
@@ -66,6 +67,7 @@ private:
 	EnvironmentalEffect* m_environmental;				// 環境
 	DecorationManager* m_decoration;						// 装飾
 	EventManager* m_events;									// イベント
+	LakeManager* m_lake;										// 湖
 
 	GameObject* m_voidField;									// 奈落
 	GameObject* m_pCamera;									// カメラ

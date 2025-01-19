@@ -20,14 +20,6 @@ void DecorationManager::Init(Terrain* terrain)
 
 	m_oldChunkX = 0;
 	m_oldChunkY = 0;
-
-	for (int sx = -1; sx < 2; sx++)
-	{
-		for (int sy = -1; sy < 2; sy++)
-		{
-			LoadChunk(MAX_CHUNK / 2 + sx, MAX_CHUNK / 2 + sy);
-		}
-	}
 }
 
 //=============================================================
@@ -296,7 +288,7 @@ void DecorationManager::GenerateDecoration()
 	pos = rayReachPoint[3];
 
 	// 高度制限の条件を満たしていないとき
-	float heightRate = (pos.y - m_terrain->GetMinHeight()) / static_cast<float>(m_terrain->GetMaxHeight() - m_terrain->GetMinHeight());
+	float heightRate = (pos.y - m_terrain->GetMinHeight()) / static_cast<float>(m_terrain->GetMaxHeight() - m_terrain->GetMinHeight()) * 2.0f - 1.0f;
 	if (!(decoType->heightLimit.min <= heightRate &&
 		heightRate <= decoType->heightLimit.max))
 	{
@@ -473,7 +465,8 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 
 		// 空のオブジェクトを見つけたとき（種類一致）
 		if (targetDecoObj == nullptr && 
-			(*itr)->decoDeta == nullptr && (*itr)->decoType == decoData->type)
+			(*itr)->decoDeta == nullptr && (*itr)->decoType == decoData->type &&
+			(*itr)->gameObject != nullptr && (*itr)->gameObject->transform != nullptr)
 		{
 			targetDecoObj = *itr;
 		}

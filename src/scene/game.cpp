@@ -12,6 +12,7 @@
 #include "component/2d/text.h"
 #include "component/3d/field.h"
 #include "component/other/audio.h"
+#include "component/3d/particle.h"
 
 #include "scripts/vehicle.h"
 #include "scripts/terrain.h"
@@ -24,10 +25,9 @@
 #include "scripts/item/item_slot.h"
 
 #include "render/shadow_rb.h"
-
-#include "component/3d/particle.h"
-
 #include <noise/noise.h>
+
+#include "scripts/lake.h"
 
 //=============================================================
 // [CGameScene] 初期化
@@ -40,6 +40,11 @@ void CGameScene::Init()
 	m_travellingDatas.clear();
 	m_score = 0;
 	m_pause = nullptr;
+
+	//GameObject* lake = new GameObject();
+	//lake->transform->SetPos(0.0f, -50.0f, 0.0f);
+	//lake->AddComponent<LakeField>()->SetSize(Terrain::TERRAIN_DISTANCE, Terrain::TERRAIN_DISTANCE);
+	//lake->GetComponent<LakeField>()->SetTexture("data\\TEXTURE\\PROP\\wood000.jpg", 120, {0.002f, 0.001f});
 
 	// ポーズ
 	m_pause = new Pause();
@@ -102,6 +107,10 @@ void CGameScene::Init()
 
 	// バイクの生成
 	SpawnBike();
+
+	// 湖を作成
+	m_lake = new LakeManager();
+	m_lake->Init(m_pTerrain, terrainPath);
 
 	// アイテムスロット
 	m_pItemSlot = new GameObject("ItemSlot", "UI");
@@ -208,6 +217,9 @@ void CGameScene::Update()
 
 	// 地形を更新する
 	m_pTerrain->Update();
+
+	// 湖を更新する
+	m_lake->Update();
 
 	// 装飾を更新する
 	m_decoration->Update(m_pCamera->transform->GetWPos());

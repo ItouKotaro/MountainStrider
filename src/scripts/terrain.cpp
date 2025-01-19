@@ -38,7 +38,9 @@ void Terrain::Init()
 
 	m_pLimitField = new GameObject("LimitField");
 	m_pLimitField->AddComponent<CBoxCollider>(D3DXVECTOR3(TERRAIN_SCALE * (TERRAIN_SIZE - 3), 1.0f, TERRAIN_SCALE * (TERRAIN_SIZE - 3)));
-	//m_pShadowField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
+
+	// “–‚½‚è”»’è‚ðXV‚·‚é
+	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	m_terrainData = nullptr;
 }
@@ -155,7 +157,7 @@ void Terrain::GenerateTerrain()
 	renderer.ClearGradient();
 	for (auto itr = m_heightColor.begin(); itr != m_heightColor.end(); itr++)
 	{
-		renderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
+		renderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), 255));
 	}
 	renderer.EnableLight();
 	renderer.SetLightContrast(0.01f);
@@ -171,7 +173,7 @@ void Terrain::GenerateTerrain()
 	convenienceRenderer.ClearGradient();
 	for (auto itr = m_heightColor.begin(); itr != m_heightColor.end(); itr++)
 	{
-		convenienceRenderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), static_cast<noise::uint8>((*itr).color.a * 255)));
+		convenienceRenderer.AddGradientPoint((*itr).height, utils::Color(static_cast<noise::uint8>((*itr).color.r * 255), static_cast<noise::uint8>((*itr).color.g * 255), static_cast<noise::uint8>((*itr).color.b * 255), 255));
 	}
 	convenienceRenderer.Render();
 

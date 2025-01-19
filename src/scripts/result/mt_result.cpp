@@ -830,7 +830,6 @@ void GameOverResult::InitFinalResult()
 	titleButton->transform->SetPos(CRenderer::SCREEN_WIDTH - 145.0f, CRenderer::SCREEN_HEIGHT - 568.0f);
 	titleButton->GetComponent<ButtonUI>()->setClickEvent([this]()
 		{
-			m_gameScene->ResetGame();
 			CSceneManager::GetInstance()->SetScene("title"); 
 		});
 	page->AddObject(1, titleButton);

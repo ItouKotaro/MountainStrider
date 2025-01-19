@@ -256,6 +256,7 @@
     <ClCompile Include="src\scripts\item\items.cpp" />
     <ClCompile Include="src\scripts\item\item_manager.cpp" />
     <ClCompile Include="src\scripts\item\item_slot.cpp" />
+    <ClCompile Include="src\scripts\lake.cpp" />
     <ClCompile Include="src\scripts\pause.cpp" />
     <ClCompile Include="src\scripts\result\mt_result.cpp" />
     <ClCompile Include="src\scripts\result\result_camera.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="src\scripts\item\items.h" />
     <ClInclude Include="src\scripts\item\item_manager.h" />
     <ClInclude Include="src\scripts\item\item_slot.h" />
+    <ClInclude Include="src\scripts\lake.h" />
     <ClInclude Include="src\scripts\pause.h" />
     <ClInclude Include="src\scripts\result\mt_result.h" />
     <ClInclude Include="src\scripts\result\result_camera.h" />
