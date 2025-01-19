@@ -43,6 +43,8 @@ void Terrain::Init()
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	m_terrainData = nullptr;
+	m_lakeEnabled = false;
+	m_lakeHeight = 0.0f;
 }
 
 //=============================================================
@@ -304,6 +306,27 @@ void Terrain::GenerateRoad()
 			routeData[x][y] += static_cast<int>(disNear * 25);
 		}
 	}
+
+	// 湖はポイントを減点する
+	if (m_lakeEnabled)
+	{
+		float rate = (m_lakeHeight + 1.0f) / static_cast<float>(2.0f);
+		float lakeHeight = m_minHeight + (m_maxHeight - m_minHeight) * rate;
+
+		for (int x = 0; x < TERRAIN_SIZE; x++)
+		{
+			for (int y = 0; y < TERRAIN_SIZE; y++)
+			{
+				float height = GetVertexHeight(x, y);
+				if (height <= lakeHeight)
+				{
+					// 200点減点
+					routeData[x][y] -= 400;
+				}
+			}
+		}
+	}
+
 
 	// 道選択 ------------------------------------------------
 	for (int i = 0; i < 2; i++)
@@ -694,6 +717,17 @@ void Terrain::LoadTerrainFile(const std::string path)
 				{
 					AddSlantColor((*itr)["min"], (*itr)["max"], D3DCOLOR_RGBA((*itr)["color"][0], (*itr)["color"][1], (*itr)["color"][2], (*itr)["color"][3]));
 				}
+			}
+		}
+
+		// 湖の高度を取得する
+		if (jInput["terrain"].contains("lake"))
+		{
+			m_lakeEnabled = true;
+
+			if (jInput["terrain"]["lake"].contains("height"))
+			{
+				m_lakeHeight = jInput["terrain"]["lake"]["height"];
 			}
 		}
 	}

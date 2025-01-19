@@ -36,10 +36,11 @@ private:
 class LakeManager
 {
 public:
-	LakeManager() : m_height(0.0f), m_fuelDamage(0.0f), m_enduranceDamage(0.0f){}
+	LakeManager() : m_enabled(false), m_height(0.0f), m_fuelDamage(0.0f), m_enduranceDamage(0.0f){}
 	void Init(Terrain* terrain, const std::string& path);
 	void Update();
 private:
+	bool m_enabled;
 	float m_height;
 	float m_fuelDamage;
 	float m_enduranceDamage;

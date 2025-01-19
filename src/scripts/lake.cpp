@@ -30,6 +30,8 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 
 	if (jInput.contains("terrain") && jInput["terrain"].contains("lake"))
 	{
+		m_enabled = true;
+
 		// ŒÎ‚Ì‚‚³‚ðÝ’è‚·‚é
 		if (jInput["terrain"]["lake"].contains("height"))
 		{
@@ -104,7 +106,7 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 void LakeManager::Update()
 {
 	D3DXVECTOR3 pos = m_vehicle->transform->GetWPos();
-	if (pos.y <= m_height &&
+	if (m_enabled && pos.y <= m_height &&
 		-Terrain::TERRAIN_DISTANCE_HALF <= pos.x && pos.x <= Terrain::TERRAIN_DISTANCE_HALF &&
 		-Terrain::TERRAIN_DISTANCE_HALF <= pos.z && pos.z <= Terrain::TERRAIN_DISTANCE_HALF)
 	{

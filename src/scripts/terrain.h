@@ -54,6 +54,9 @@ private:
 	float m_maxHeight;	// 最高高度
 	float m_minHeight;	// 最低高度
 
+	bool m_lakeEnabled;	// 湖の有効状態
+	float m_lakeHeight;	// 湖の高さ
+
 	// 頂点の高さを取得する
 	float GetVertexHeight(const int& x, const int& y);
 	// 頂点の高さを設定する
