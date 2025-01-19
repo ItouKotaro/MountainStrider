@@ -10,6 +10,13 @@
 #include "component.h"
 #include "component/3d/meshfield.h"
 
+// 道のフィールド
+class RoadMesh : public CMeshField
+{
+public:
+	void Draw() override;
+};
+
 // 道
 class Road : public Component
 {
@@ -35,7 +42,7 @@ private:
 	std::string m_texturePath;
 
 	// ポリゴン管理
-	std::vector<SingleComponent<CMeshField>*> m_roadObj;
+	std::vector<SingleComponent<RoadMesh>*> m_roadObj;
 
 	// ポイント情報
 	struct PointData

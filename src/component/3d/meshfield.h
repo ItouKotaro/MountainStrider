@@ -13,9 +13,9 @@
 class CMeshField : public Component
 {
 public:
-	void Init() override;
-	void Uninit() override;
-	void Draw() override;
+	virtual void Init() override;
+	virtual void Uninit() override;
+	virtual void Draw() override;
 
 	void BindTexture(LPDIRECT3DTEXTURE9 texture) { m_pTexture = texture; }
 	void SetTexture(const std::string& sPath);

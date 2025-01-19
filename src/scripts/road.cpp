@@ -6,6 +6,7 @@
 //=============================================================
 #include "road.h"
 #include "terrain.h"
+#include "renderer.h"
 #include <fstream>
 
 //=============================================================
@@ -238,7 +239,7 @@ void Road::CreateRoad(const D3DXVECTOR2& pos, const float& size, const float& an
 	}
 
 	// 地面を生成する
-	SingleComponent<CMeshField>* groundMesh = new SingleComponent<CMeshField>();
+	SingleComponent<RoadMesh>* groundMesh = new SingleComponent<RoadMesh>();
 	groundMesh->Init();
 	groundMesh->Create(1, 1, size);
 	groundMesh->transform->SetPos({ pos.x, 1.5f + Benlib::RandomFloat(0.0f, 0.5f), pos.y });
@@ -343,4 +344,20 @@ void Road::OutputText()
 		outputRoute << std::endl;
 	}
 	outputRoute.close();
+}
+
+//=============================================================
+// [RoadMesh] 描画
+//=============================================================
+void RoadMesh::Draw()
+{
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();		// デバイスを取得
+
+	// Zバッファの書き込みを無効にする
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
+	CMeshField::Draw();
+
+	// Zバッファの書き込みを有効に戻す
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
