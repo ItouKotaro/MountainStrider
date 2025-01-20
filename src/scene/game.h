@@ -16,6 +16,7 @@
 #include "scripts/pause.h"
 #include "scripts/event/event_manager.h"
 #include "scripts/lake.h"
+#include "scripts/play_guide.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -70,6 +71,7 @@ private:
 	DecorationManager* m_decoration;						// 装飾
 	EventManager* m_events;									// イベント
 	LakeManager* m_lake;										// 湖
+	PlayGuideManager* m_playGuide;						// プレイガイド
 
 	GameObject* m_voidField;									// 奈落
 	GameObject* m_pCamera;									// カメラ

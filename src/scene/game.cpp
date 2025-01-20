@@ -127,6 +127,10 @@ void CGameScene::Init()
 	m_events = new EventManager();
 	m_events->Init();
 
+	// プレイガイド
+	m_playGuide = new PlayGuideManager();
+	m_playGuide->Init();
+
 	// カメラの移動設定を行う
 	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
 	m_pCamera->AddComponent<ResultCamera>();
@@ -184,6 +188,14 @@ void CGameScene::Uninit()
 		m_events = nullptr;
 	}
 
+	// プレイガイドの破棄
+	if (m_playGuide != nullptr)
+	{
+		m_playGuide->Uninit();
+		delete m_playGuide;
+		m_playGuide = nullptr;
+	}
+
 	// リザルトマネージャーの破棄
 	if (m_result != nullptr)
 	{
@@ -237,6 +249,9 @@ void CGameScene::Update()
 
 	// イベントを更新する
 	m_events->Update();
+
+	// プレイガイドを更新する
+	m_playGuide->Update();
 
 	// 未ゲームオーバー時
 	if (m_endType == ENDTYPE_NONE)
