@@ -162,6 +162,12 @@ void CGameScene::Uninit()
 		m_decoration = nullptr;
 	}
 
+	// 湖の破棄
+	if (m_lake != nullptr)
+	{
+		delete m_lake;
+	}
+
 	// 環境効果の破棄
 	if (m_environmental != nullptr)
 	{
@@ -371,8 +377,8 @@ void CGameScene::onGameOver()
 		// アイテムスロットを非表示にする
 		m_pItemSlot->SetActive(false);
 
-		// カーソルを表示する
-		Main::SetShowCursor(true);
+		// スコアを削る
+		m_score -= m_score * 0.5f;
 
 		// 走行距離を計算する
 		float mileage = 0.0f;
@@ -419,8 +425,8 @@ void CGameScene::onClear()
 		// アイテムスロットを非表示にする
 		m_pItemSlot->SetActive(false);
 
-		// カーソルを表示する
-		Main::SetShowCursor(true);
+		// 進行スコアを加算する
+		CGameScene::AddScore(CLEAR_POINT);
 
 		// 走行距離を計算する
 		float mileage = 0.0f;

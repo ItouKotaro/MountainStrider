@@ -31,11 +31,13 @@ void GameObject::UpdateAll()
 		if ((*itr)->GetActive())
 		{ // アクティブのとき
 			// コンポーネントの更新処理を行う
-			for (auto itrComp = (*itr)->m_components.rbegin(); itrComp != (*itr)->m_components.rend(); itrComp++)
+			for (UINT i = 0; i < (*itr)->m_components.size(); i++)
 			{
-				if ((*itrComp)->enabled)
+				const auto irev = (*itr)->m_components.size() - 1 - i;
+
+				if ((*itr)->m_components[irev]->enabled)
 				{
-					(*itrComp)->Update();
+					(*itr)->m_components[irev]->Update();
 				}
 			}
 		}

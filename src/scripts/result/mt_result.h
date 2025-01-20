@@ -40,11 +40,23 @@ public:
 	static float GetBeforeFuel() { return m_beforeFuel; }
 	static float GetBeforeEndurance() { return m_beforeEndurance; }
 protected:
+	void InitFinalResult(int pageNum);
+
 	CGameScene* m_gameScene;
 	static float m_beforeFuel;							// 前回の燃料
 	static float m_beforeEndurance;					// 前回の耐久値
 	static UINT m_goalCount;							// 踏破回数
 	static std::vector<ResultData> m_results;	// 結果
+	GameObject* m_page;			// ページ管理
+
+	// 最終結果用
+	GameObject* m_scoreText;				// スコア
+	GameObject* m_timeRate;				// 時間の評価
+	GameObject* m_actionRate;			// アクションの評価
+	GameObject* m_fuelRate;				// 燃費の評価
+	GameObject* m_timeValue;			// 時間表示
+	GameObject* m_actionValue;			// アクション表示
+	GameObject* m_fuelValue;				// 燃費表示
 };
 
 // クリア時のリザルト
@@ -56,8 +68,6 @@ public:
 	void Uninit() override;
 	void Update() override;
 	void Draw() override;
-
-	static const int NEXT_MOUNTAINPOINT = 2500;
 private:
 	void UpdateResultAnim();
 	enum PROG_STATE
@@ -69,8 +79,6 @@ private:
 	};
 	PROG_STATE m_progState;	// 結果表示進行度
 	int m_progCounter;				// カウンター
-
-	GameObject* m_page;			// ページ管理
 
 	GameObject* m_bg;						// 背景
 	GameObject* m_mtText;				// マウンテンテキスト（山の踏破数）
@@ -105,7 +113,7 @@ public:
 	void Update() override;
 	void Draw() override;
 private:
-	void InitFinalResult();
+	
 	void UpdateResultAnim();
 	enum PROG_STATE
 	{
@@ -116,7 +124,6 @@ private:
 	PROG_STATE m_progState;	// 結果表示進行度
 	int m_progCounter;				// カウンター
 
-	GameObject* m_page;					// ページ
 	GameObject* m_mtText;				// マウンテンテキスト（ゲームオーバー表示）
 
 	GameObject* m_bg;						// 背景
@@ -125,15 +132,6 @@ private:
 	GameObject* m_fuelView;				// 燃料表示
 	GameObject* m_enduranceView;	// 耐久値表示
 	GameObject* m_terrainImg;			// 地形画像
-
-	// 最終結果用
-	GameObject* m_scoreText;				// スコア
-	GameObject* m_timeRate;				// 時間の評価
-	GameObject* m_actionRate;			// アクションの評価
-	GameObject* m_fuelRate;				// 燃費の評価
-	GameObject* m_timeValue;			// 時間表示
-	GameObject* m_actionValue;			// アクション表示
-	GameObject* m_fuelValue;				// 燃費表示
 
 	// 音
 	AudioClip m_bgm;

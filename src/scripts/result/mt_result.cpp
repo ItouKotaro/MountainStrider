@@ -104,7 +104,7 @@ void ClearResult::Init()
 	// ページの初期化
 	m_page = new GameObject("PageManager");
 	m_page->AddComponent<Pages>();
-	m_page->GetComponent<Pages>()->SetNumPage(2);
+	m_page->GetComponent<Pages>()->SetNumPage(3);
 	auto page = m_page->GetComponent<Pages>();
 		
 	// ショップを生成する
@@ -208,9 +208,6 @@ void ClearResult::Init()
 		m_nextButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {
 			// 次のページへ
 			page->SetPage(1); 
-
-			// 進行スコアを加算する
-			CGameScene::AddScore(NEXT_MOUNTAINPOINT);
 			});
 
 		GameObject* nextButtonText = new GameObject();
@@ -223,7 +220,7 @@ void ClearResult::Init()
 		nextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
 
-	// リスト追加
+	// 終了
 	{
 		m_endButton = new GameObject("EndMountain");
 		page->AddObject(0, m_endButton);
@@ -231,6 +228,7 @@ void ClearResult::Init()
 		m_endButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
 		m_endButton->AddComponent<ButtonUI>();
 		m_endButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		m_endButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {page->SetPage(2); });
 
 		GameObject* endButtonText = new GameObject();
 		endButtonText->SetParent(m_endButton);
@@ -242,6 +240,9 @@ void ClearResult::Init()
 		endButtonText->GetComponent<CText>()->SetText("<color=0,0,0>諦める");
 		endButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
+
+	// 最終結果の初期化
+	InitFinalResult(2);
 
 	// ページのリセット
 	page->AllHideObjects();
@@ -517,7 +518,7 @@ void GameOverResult::Init()
 	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
 
 	// 最終結果の初期化
-	InitFinalResult();
+	InitFinalResult(1);
 
 	// 前回の情報として保存
 	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
@@ -595,9 +596,9 @@ void GameOverResult::Draw()
 }
 
 //=============================================================
-// [GameOverResult] 最終結果
+// [ResultBase] 最終結果
 //=============================================================
-void GameOverResult::InitFinalResult()
+void ResultBase::InitFinalResult(int pageNum)
 {
 	auto page = m_page->GetComponent<Pages>();
 
@@ -624,13 +625,12 @@ void GameOverResult::InitFinalResult()
 	sprintf(&fuelTextPara[0], "%.1f<size=40>Km/L", fuelConsumption);
 
 	// スコア計算
-	int score = 0;
+	int score = CGameScene::GetScore();
 	score += GetAverageAction() * static_cast<int>(m_results.size());
 	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
 	{
-		score += (500 - (*itr).time) * 2;
+		score += (120 - (*itr).time) * 2;
 	}
-	score += static_cast<int>(m_results.size()) * 1200;
 
 	// ランク査定 ------------------------------------------------------------------------------------
 	enum RANK
@@ -684,7 +684,7 @@ void GameOverResult::InitFinalResult()
 	finalText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	finalText->GetComponent<CText>()->SetFontSize(100);
 	finalText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 70.0f);
-	page->AddObject(1, finalText);
+	page->AddObject(pageNum, finalText);
 
 	// 最終スコア
 	m_scoreText = new GameObject();
@@ -693,7 +693,7 @@ void GameOverResult::InitFinalResult()
 	m_scoreText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_scoreText->GetComponent<CText>()->SetFontSize(200);
 	m_scoreText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 200.0f);
-	page->AddObject(1, m_scoreText);
+	page->AddObject(pageNum, m_scoreText);
 
 	// スコアバー
 	GameObject* scoreBar = new GameObject();
@@ -701,7 +701,7 @@ void GameOverResult::InitFinalResult()
 	scoreBar->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 	scoreBar->transform->SetSize(CRenderer::SCREEN_WIDTH - 500.0f, 6.0f);
 	scoreBar->transform->SetPos(250.0f, 380.0f);
-	page->AddObject(1, scoreBar);
+	page->AddObject(pageNum, scoreBar);
 
 	// タイム枠
 	GameObject* timeFrame = new GameObject();
@@ -709,7 +709,7 @@ void GameOverResult::InitFinalResult()
 	timeFrame->transform->SetSize(350.0f, 540.0f);
 	timeFrame->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 175.0f - 450.0f, 460.0f);
 	timeFrame->SetPriority(7);
-	page->AddObject(1, timeFrame);
+	page->AddObject(pageNum, timeFrame);
 	
 	GameObject* timeTextBG = new GameObject();
 	timeTextBG->AddComponent<CPolygon>();
@@ -717,7 +717,7 @@ void GameOverResult::InitFinalResult()
 	timeTextBG->SetParent(timeFrame);
 	timeTextBG->transform->SetSize(340.0f, 140.0f);
 	timeTextBG->transform->SetPos(5.0f, 5.0f);
-	page->AddObject(1, timeTextBG);
+	page->AddObject(pageNum, timeTextBG);
 
 	GameObject* timeText = new GameObject();
 	timeText->SetParent(timeFrame);
@@ -726,14 +726,14 @@ void GameOverResult::InitFinalResult()
 	timeText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	timeText->GetComponent<CText>()->SetFontSize(60);
 	timeText->GetComponent<CText>()->SetAlign(CText::CENTER);
-	page->AddObject(1, timeText);
+	page->AddObject(pageNum, timeText);
 
 	m_timeRate = new GameObject();
 	m_timeRate->transform->SetPos(75.0f, 170.0f);
 	m_timeRate->transform->SetSize(200.0f, 200.0f);
 	m_timeRate->SetParent(timeFrame);
 	m_timeRate->AddComponent<CPolygon>()->SetTexture(GetRankPath(timeRank));
-	page->AddObject(1, m_timeRate);
+	page->AddObject(pageNum, m_timeRate);
 
 	m_timeValue = new GameObject();
 	m_timeValue->transform->SetPos(0.0f, 350.0f);
@@ -742,7 +742,7 @@ void GameOverResult::InitFinalResult()
 	m_timeValue->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_timeValue->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_timeValue->GetComponent<CText>()->SetFontSize(60);
-	page->AddObject(1, m_timeValue);
+	page->AddObject(pageNum, m_timeValue);
 
 	// アクション枠
 	GameObject* actionFrame = new GameObject();
@@ -750,7 +750,7 @@ void GameOverResult::InitFinalResult()
 	actionFrame->transform->SetSize(350.0f, 540.0f);
 	actionFrame->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 175.0f, 460.0f);
 	actionFrame->SetPriority(7);
-	page->AddObject(1, actionFrame);
+	page->AddObject(pageNum, actionFrame);
 
 	GameObject* actionTextBG = new GameObject();
 	actionTextBG->AddComponent<CPolygon>();
@@ -758,7 +758,7 @@ void GameOverResult::InitFinalResult()
 	actionTextBG->SetParent(actionFrame);
 	actionTextBG->transform->SetSize(340.0f, 140.0f);
 	actionTextBG->transform->SetPos(5.0f, 5.0f);
-	page->AddObject(1, actionTextBG);
+	page->AddObject(pageNum, actionTextBG);
 
 	GameObject* actionText = new GameObject();
 	actionText->SetParent(actionFrame);
@@ -767,14 +767,14 @@ void GameOverResult::InitFinalResult()
 	actionText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	actionText->GetComponent<CText>()->SetFontSize(60);
 	actionText->GetComponent<CText>()->SetAlign(CText::CENTER);
-	page->AddObject(1, actionText);
+	page->AddObject(pageNum, actionText);
 
 	m_actionRate = new GameObject();
 	m_actionRate->transform->SetPos(75.0f, 170.0f);
 	m_actionRate->transform->SetSize(200.0f, 200.0f);
 	m_actionRate->SetParent(actionFrame);
 	m_actionRate->AddComponent<CPolygon>()->SetTexture(GetRankPath(actionRank));
-	page->AddObject(1, m_actionRate);
+	page->AddObject(pageNum, m_actionRate);
 
 	m_actionValue = new GameObject();
 	m_actionValue->transform->SetPos(0.0f, 350.0f);
@@ -783,7 +783,7 @@ void GameOverResult::InitFinalResult()
 	m_actionValue->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_actionValue->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_actionValue->GetComponent<CText>()->SetFontSize(60);
-	page->AddObject(1, m_actionValue);
+	page->AddObject(pageNum, m_actionValue);
 
 	// 燃費枠
 	GameObject* fuelFrame = new GameObject();
@@ -791,7 +791,7 @@ void GameOverResult::InitFinalResult()
 	fuelFrame->transform->SetSize(350.0f, 540.0f);
 	fuelFrame->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 175.0f + 450.0f, 460.0f);
 	fuelFrame->SetPriority(7);
-	page->AddObject(1, fuelFrame);
+	page->AddObject(pageNum, fuelFrame);
 
 	GameObject* fuelTextBG = new GameObject();
 	fuelTextBG->AddComponent<CPolygon>();
@@ -799,7 +799,7 @@ void GameOverResult::InitFinalResult()
 	fuelTextBG->SetParent(fuelFrame);
 	fuelTextBG->transform->SetSize(340.0f, 140.0f);
 	fuelTextBG->transform->SetPos(5.0f, 5.0f);
-	page->AddObject(1, fuelTextBG);
+	page->AddObject(pageNum, fuelTextBG);
 
 	GameObject* fuelText = new GameObject();
 	fuelText->SetParent(fuelFrame);
@@ -808,14 +808,14 @@ void GameOverResult::InitFinalResult()
 	fuelText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	fuelText->GetComponent<CText>()->SetFontSize(60);
 	fuelText->GetComponent<CText>()->SetAlign(CText::CENTER);
-	page->AddObject(1, fuelText);
+	page->AddObject(pageNum, fuelText);
 
 	m_fuelRate = new GameObject();
 	m_fuelRate->transform->SetPos(75.0f, 170.0f);
 	m_fuelRate->transform->SetSize(200.0f, 200.0f);
 	m_fuelRate->SetParent(fuelFrame);
 	m_fuelRate->AddComponent<CPolygon>()->SetTexture(GetRankPath(fuelRank));
-	page->AddObject(1, m_fuelRate);
+	page->AddObject(pageNum, m_fuelRate);
 
 	m_fuelValue = new GameObject();
 	m_fuelValue->transform->SetPos(0.0f, 350.0f);
@@ -824,7 +824,7 @@ void GameOverResult::InitFinalResult()
 	m_fuelValue->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	m_fuelValue->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_fuelValue->GetComponent<CText>()->SetFontSize(60);
-	page->AddObject(1, m_fuelValue);
+	page->AddObject(pageNum, m_fuelValue);
 
 	// タイトルへ
 	GameObject* titleButton = new GameObject();
@@ -836,5 +836,5 @@ void GameOverResult::InitFinalResult()
 		{
 			CSceneManager::GetInstance()->SetScene("title"); 
 		});
-	page->AddObject(1, titleButton);
+	page->AddObject(pageNum, titleButton);
 }

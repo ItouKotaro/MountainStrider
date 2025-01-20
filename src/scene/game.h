@@ -36,6 +36,7 @@ public:
 	GameObject* GetBike() { return m_pBike; }
 
 	static void AddScore(const int& score) { m_score += score; }
+	static int GetScore() { return m_score; }
 	Pause* GetPause() { return m_pause; }
 
 	// 走行データ
@@ -83,6 +84,9 @@ private:
 
 	// ポーズ
 	Pause* m_pause;
+
+	// 定数
+	const int CLEAR_POINT = 0;
 };
 
 #endif // !_GAME_H_

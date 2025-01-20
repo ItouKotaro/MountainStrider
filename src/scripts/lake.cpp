@@ -99,6 +99,8 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 			}
 		}
 	}
+
+	ifs.close();
 }
 
 //=============================================================

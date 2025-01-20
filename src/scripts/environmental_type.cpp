@@ -20,7 +20,7 @@ public:
 	{
 		ResultData data;
 		data.direction.x = Benlib::RandomFloat(-1.0f, 1.0f);
-		data.direction.y = Benlib::RandomFloat(-10.0f, -20.0f);
+		data.direction.y = Benlib::RandomFloat(-20.0f, -10.0f);
 		data.direction.z = Benlib::RandomFloat(-1.0f, 1.0f);
 
 		data.position.x = Benlib::RandomFloat(-RADIUS, RADIUS);
