@@ -35,7 +35,7 @@ public:
 	Terrain* GetTerrain() { return m_pTerrain; }
 	GameObject* GetBike() { return m_pBike; }
 
-	void AddScore(const int& score) { m_score += score; }
+	static void AddScore(const int& score) { m_score += score; }
 	Pause* GetPause() { return m_pause; }
 
 	// 走行データ
@@ -54,6 +54,8 @@ public:
 		ENDTYPE_GAMEOVER,									// ゲームオーバー
 	};
 	ENDTYPE m_endType;										// 終了理由
+	
+	static const int NEXT_MOUNTAINPOINT = 2500;
 private:
 	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する
 	void SpawnBike();												// バイクの生成
@@ -78,7 +80,7 @@ private:
 	// リザルトデータ用
 	DWORD m_startTime;										// 開始時間
 	int m_highSpeed;												// 最高速度
-	int m_score;														// スコア
+	static int m_score;												// スコア
 
 	// ポーズ
 	Pause* m_pause;

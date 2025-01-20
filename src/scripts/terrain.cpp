@@ -320,7 +320,7 @@ void Terrain::GenerateRoad()
 				float height = GetVertexHeight(x, y);
 				if (height <= lakeHeight)
 				{
-					// 200“_Œ¸“_
+					// Œ¸“_
 					routeData[x][y] -= 400;
 				}
 			}

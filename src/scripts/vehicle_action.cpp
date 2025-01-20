@@ -63,13 +63,7 @@ void VehicleAction::Update()
 
 			// スコアを計算する
 			int addScore = 0;
-			addScore += m_rollCount * 60;	// 基礎スコア
-			addScore += static_cast<int>(pBike->GetSpeed());
-
-			if (m_rollCount > 5)
-			{
-				addScore += (m_rollCount - 5) * (m_rollCount - 5) * 120;
-			}
+			addScore += (m_rollCount * 20) * (static_cast<int>(pBike->GetSpeed()) / static_cast<float>(50.0f));	// 基礎スコア
 
 			// 合計値に加算する
 			m_sumPoints->AddPoints(addScore);
@@ -215,7 +209,8 @@ void SumActionPointText::Update()
 	else
 	{ // 終了
 		// ポイントを加算する
-		static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->AddScore(m_points);
+		CGameScene::AddScore(m_points);
+		//static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->AddScore(m_points);
 
 		m_text->SetAlpha(0.0f);
 		m_points = 0;
