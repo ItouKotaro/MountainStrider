@@ -36,8 +36,8 @@ public:
 	const float GetDeltaTime() { return m_fDeltaTime; }													// デルタタイムの取得
 	void SetPause(const bool& bPause) { m_bPause = bPause; }											// ポーズの設定
 	const bool GetPause() { return m_bPause; }																// ポーズの取得
-	void SetMouseWheel(const int& nMouseWheel) { m_nMouseWheel = nMouseWheel; }	// マウスホイールの設定（ユーザーの使用禁止）
-	const int GetMouseWheel() { return m_nMouseWheel; }												// マウスホイールの取得
+	void SetMouseWheel(const float& mouseWheel) { m_mouseWheel = mouseWheel; }		// マウスホイールの設定（ユーザーの使用禁止）
+	float GetMouseWheel() { return m_mouseWheel; }														// マウスホイールの取得
 
 	struct CursorPos
 	{
@@ -53,7 +53,7 @@ public:
 private:
 	int m_nFPS;												// FPS値
 	float m_fDeltaTime;									// デルタタイム
-	int m_nMouseWheel;									// マウスホイール値
+	float m_mouseWheel;									// マウスホイール値
 	POINT m_cursorPos;									// マウス位置
 	bool m_bPause;											// ポーズ
 	HWND m_hwnd;										// ハンドル

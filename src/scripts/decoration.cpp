@@ -180,7 +180,7 @@ DecorationManager::DecorationType* DecorationManager::AddDecorationType(const st
 	type->chance = chance;
 	type->offsetY = offsetY;
 	type->slantLimit = { 0.0f, D3DX_PI };
-	type->heightLimit = { 0.0f, 1.0f };
+	type->heightLimit = { -1.0f, 1.0f };
 	type->randomAngle = 0.0f;
 	type->isMatchInclination = true;
 	type->radiusSize = 10.0f;

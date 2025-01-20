@@ -258,6 +258,7 @@
     <ClCompile Include="src\scripts\item\item_slot.cpp" />
     <ClCompile Include="src\scripts\lake.cpp" />
     <ClCompile Include="src\scripts\pause.cpp" />
+    <ClCompile Include="src\scripts\play_guide.cpp" />
     <ClCompile Include="src\scripts\result\mt_result.cpp" />
     <ClCompile Include="src\scripts\result\result_camera.cpp" />
     <ClCompile Include="src\scripts\result\result_data.cpp" />
@@ -277,7 +278,6 @@
     <ClCompile Include="src\scripts\vehicle_sound.cpp" />
     <ClCompile Include="src\scripts\virtual_cursor.cpp" />
     <ClCompile Include="src\scripts\wreckage.cpp" />
-    <ClCompile Include="src\utility\noise.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -343,6 +343,7 @@
     <ClInclude Include="src\scripts\item\item_slot.h" />
     <ClInclude Include="src\scripts\lake.h" />
     <ClInclude Include="src\scripts\pause.h" />
+    <ClInclude Include="src\scripts\play_guide.h" />
     <ClInclude Include="src\scripts\result\mt_result.h" />
     <ClInclude Include="src\scripts\result\result_camera.h" />
     <ClInclude Include="src\scripts\result\result_data.h" />
@@ -362,7 +363,6 @@
     <ClInclude Include="src\scripts\vehicle_sound.h" />
     <ClInclude Include="src\scripts\virtual_cursor.h" />
     <ClInclude Include="src\scripts\wreckage.h" />
-    <ClInclude Include="src\utility\noise.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

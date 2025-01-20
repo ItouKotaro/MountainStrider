@@ -31,8 +31,7 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
-            "chance": 10,
-            "limit_slant": [0.0, 0.4]
+            "chance": 10
         },
         {
             "path": "data\\PREFAB\\tree\\tree01.pref",
@@ -43,8 +42,7 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
-            "chance": 10,
-            "limit_slant": [0.0, 0.4]
+            "chance": 10
         },
         {
             "path": "data\\PREFAB\\tree\\fallen_tree.pref",

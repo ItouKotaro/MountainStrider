@@ -13,5 +13,10 @@
     {
         "key": ["f","p:y"],
         "input": "trigger"
+    },
+    "toggle-item":
+    {
+        "key": ["r","p:b"],
+        "input": "trigger"
     }
 }

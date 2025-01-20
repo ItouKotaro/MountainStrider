@@ -54,6 +54,19 @@ void ItemSlot::Init()
 		}
 	}
 
+	// 切り替えガイドを作成する
+	m_itemSlotToggleGuide = new SingleComponent<CPolygon>();
+	m_itemSlotToggleGuide->Init();
+	m_itemSlotToggleGuide->SetParent(gameObject);
+	m_itemSlotToggleGuide->transform->SetPos(110.0f, 30.0f, 0.0f);
+	m_itemSlotToggleGuide->transform->SetSize(100.0f, 100.0f);
+
+	// 操作デバイスで表示するガイドを変更する
+	m_itemSlotToggleGuide->SetTexture(
+		INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER ?
+		"data\\TEXTURE\\UI\\item_toggle_c.png" : "data\\TEXTURE\\UI\\item_toggle_m.png"
+	);
+
 	// 音を作成する
 	m_seManager = new GameObject();
 	m_seManager->AddComponent<AudioSource>();
@@ -77,6 +90,9 @@ void ItemSlot::Uninit()
 		delete m_itemTexture[i];
 	}
 
+	m_itemSlotToggleGuide->Uninit();
+	delete m_itemSlotToggleGuide;
+
 	m_seManager->Destroy();
 }
 
@@ -86,18 +102,16 @@ void ItemSlot::Uninit()
 void ItemSlot::Update()
 {
 	// 選択位置を変更する
-	m_scroll += CManager::GetInstance()->GetMouseWheel();
-	if (m_scroll > 150)
+	float scroll = CManager::GetInstance()->GetMouseWheel();
+	if (scroll > 10.0f)
 	{
 		m_selectIdx--;
-		m_scroll = 0;
 	}
-	else if (m_scroll < -150)
+	else if (scroll < -10.0f)
 	{
 		m_selectIdx++;
-		m_scroll = 0;
 	}
-	if (INPUT_INSTANCE->onTrigger("p:b"))
+	if (INPUT_INSTANCE->onInput("toggle-item"))
 	{
 		if (m_selectIdx == 0) m_selectIdx = 1;
 		else if (m_selectIdx == 1) m_selectIdx = 0;
@@ -144,6 +158,14 @@ void ItemSlot::Update()
 		m_itemBG[i]->Update();
 		m_itemTexture[i]->Update();
 	}
+
+	m_itemSlotToggleGuide->Update();
+
+	// 操作デバイスで表示するガイドを変更する
+	m_itemSlotToggleGuide->SetTexture(
+		INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER ?
+		"data\\TEXTURE\\UI\\item_toggle_c.png" : "data\\TEXTURE\\UI\\item_toggle_m.png"
+	);
 }
 
 //=============================================================
@@ -157,4 +179,6 @@ void ItemSlot::DrawUI()
 		m_itemBG[i]->DrawUI();
 		m_itemTexture[i]->DrawUI();
 	}
+
+	m_itemSlotToggleGuide->DrawUI();
 }

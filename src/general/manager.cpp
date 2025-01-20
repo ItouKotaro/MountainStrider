@@ -109,6 +109,8 @@ void CManager::Update()
 
 	// シーンの更新
 	CSceneManager::GetInstance()->Update();
+
+	m_mouseWheel = 0.0f;
 }
 
 //=============================================================

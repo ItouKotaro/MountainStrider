@@ -105,7 +105,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	dwFrameCount = 0;
 	dwFPSLastTime = timeGetTime();
 
-	std::thread th2([&]() {
+	std::thread mainLoopThread([&]() {
 		while (!g_isEnded)
 		{
 			dwCurrentTime = timeGetTime();		// 現在時刻を取得
@@ -139,9 +139,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				// 死亡フラグのついたオブジェクトを破棄する
 				GameObject::DestroyDeathFlag();
 
-				// マウスホイール値を初期化
-				CManager::GetInstance()->SetMouseWheel(0);
-
 				dwFrameCount++; // フレームカウントを加算
 			}
 		}
@@ -174,63 +171,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		}
 	}
 
-	th2.join();
-
-	//// メッセージループ
-	//while (1)
-	//{
-	//	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != 0)
-	//	{ // Windowsの処理
-	//		if (msg.message == WM_QUIT)
-	//		{ // WM_QUITメッセージ
-	//			break;
-	//		}
-	//		else
-	//		{
-	//			TranslateMessage(&msg);
-	//			DispatchMessage(&msg);
-	//		}
-	//	}
-	//	else
-	//	{ // DirectXの処理
-	//		dwCurrentTime = timeGetTime();		// 現在時刻を取得
-
-	//		if ((dwCurrentTime - dwFPSLastTime) >= 500)
-	//		{ // 0.5秒経過毎
-	//			// FPSを計測
-	//			CManager::GetInstance()->SetFPS((dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime));
-	//			dwFPSLastTime = dwCurrentTime;							// 計測した時刻を記録
-	//			dwFrameCount = 0;												// フレームカウントをクリア
-	//		}
-
-	//		if ((dwCurrentTime - dwExecLastTime) >= (1000 / FIXED_FPS))
-	//		{ // 60分の1秒経過
-
-	//			// デルタタイムを設定する
-	//			CManager::GetInstance()->SetDeltaTime((dwCurrentTime - dwExecLastTime) * 0.001f);
-
-	//			//処理開始時刻
-	//			dwExecLastTime = dwCurrentTime;
-
-	//			// 更新処理
-	//			CManager::GetInstance()->Update();
-
-	//			// 描画処理
-	//			CManager::GetInstance()->Draw();
-
-	//			// シーンの変更処理
-	//			CSceneManager::GetInstance()->ChangingScene();
-
-	//			// 死亡フラグのついたオブジェクトを破棄する
-	//			GameObject::DestroyDeathFlag();
-
-	//			// マウスホイール値を初期化
-	//			CManager::GetInstance()->SetMouseWheel(0);
-	//			
-	//			dwFrameCount++; // フレームカウントを加算
-	//		}
-	//	}
-	//}
+	// メインループのスレッドが終わるまで待つ
+	mainLoopThread.join();
 
 	// 分解能を戻す
 	timeEndPeriod(1);
@@ -287,7 +229,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// マウスホイールの移動量を取得
 		CManager::GetInstance()->SetMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
 		return 0;
-		break;
 
 	case WM_DESTROY:
 		//WM_QUITメッセージを送る

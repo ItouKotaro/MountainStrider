@@ -225,9 +225,6 @@
     <ClCompile Include="src\internal\util.cpp">
       <Filter>ソース ファイル\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\utility\noise.cpp">
-      <Filter>ソース ファイル\utility</Filter>
-    </ClCompile>
     <ClCompile Include="src\component\3d\meshfield.cpp">
       <Filter>ソース ファイル\component\3d</Filter>
     </ClCompile>
@@ -357,6 +354,9 @@
     <ClCompile Include="src\scripts\lake.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\play_guide.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -475,9 +475,6 @@
     </ClInclude>
     <ClInclude Include="src\internal\util.h">
       <Filter>ヘッダー ファイル\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utility\noise.h">
-      <Filter>ヘッダー ファイル\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\component\3d\meshfield.h">
       <Filter>ヘッダー ファイル\component\3d</Filter>
@@ -606,6 +603,9 @@
       <Filter>ヘッダー ファイル\scripts\event</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\lake.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\play_guide.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
