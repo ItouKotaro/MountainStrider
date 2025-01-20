@@ -86,7 +86,8 @@ private:
 	Pause* m_pause;
 
 	// íËêî
-	const int CLEAR_POINT = 0;
+	const int CLEAR_POINT = 2500;
+	const float EXTENSION_DISTANCE = 150.0f;
 };
 
 #endif // !_GAME_H_

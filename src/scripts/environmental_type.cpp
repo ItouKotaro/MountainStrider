@@ -55,11 +55,6 @@ void WeatherRain::Init()
 	// ‰J‚Ì‰¹‚ğÄ¶‚·‚é
 	m_rainSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\ENVIRONMENTAL\\rain.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
 	m_rainParticle->AddComponent<AudioSource>()->Play(m_rainSE);
-
-	// ŠÂ‹«‚Ì–¾‚é‚³‚ğ•ÏX‚·‚é
-	D3DXVECTOR4 ambient = static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->GetAmbient() * 0.6f;
-	ambient.w = 1.0f;
-	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetAmbient(ambient);
 }
 
 //=============================================================

@@ -349,19 +349,18 @@ void CGameScene::SpawnBike()
 //=============================================================
 void CGameScene::ClearCondition()
 {
-	float terrainLength = static_cast<float>(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE / 2.0f);
 	D3DXVECTOR3 vehiclePos = m_pBike->transform->GetWPos();
 
-	if (vehiclePos.x < -terrainLength || vehiclePos.x > terrainLength ||
-		vehiclePos.z < -terrainLength || vehiclePos.z > terrainLength)
+	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
+		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
 	{
 		onClear();
 	}
 
-	//if (vehiclePos.y < m_pTerrain->GetMinHeight() - 5.0f)
-	//{
-	//	onClear();
-	//}
+	if (vehiclePos.y < m_pTerrain->GetMinHeight() - 5.0f)
+	{
+		onClear();
+	}
 }
 
 //=============================================================
@@ -378,7 +377,7 @@ void CGameScene::onGameOver()
 		m_pItemSlot->SetActive(false);
 
 		// スコアを削る
-		m_score -= m_score * 0.5f;
+		m_score -= static_cast<int>(m_score * 0.5f);
 
 		// 走行距離を計算する
 		float mileage = 0.0f;

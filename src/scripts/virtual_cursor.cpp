@@ -31,12 +31,12 @@ void VirtualCursor::Update()
 	if (stickX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE || XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE < stickX ||
 		stickY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE || XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE < stickY)
 	{
-		float angle = atan2f(stickX, -stickY);
+		float angle = atan2f((float)stickX, (float)-stickY);
 
 		POINT p;
 		GetCursorPos(&p);
-		p.x += sinf(angle) * 18.0f;
-		p.y += cosf(angle) * 18.0f;
+		p.x += static_cast<LONG>(sinf(angle) * 18.0f);
+		p.y += static_cast<LONG>(cosf(angle) * 18.0f);
 		SetCursorPos(p.x, p.y);
 	}
 

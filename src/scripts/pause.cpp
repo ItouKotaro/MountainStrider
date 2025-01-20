@@ -33,7 +33,7 @@ void Pause::Init()
 	m_pauseText->AddComponent<CText>()->SetText("<size=150>PAUSE");
 	m_pauseText->GetComponent<CText>()->SetAlign(CText::CENTER);
 	m_pauseText->GetComponent<CText>()->SetFont("07“S•rƒSƒVƒbƒN");
-	m_pauseText->transform->SetPos(CRenderer::SCREEN_WIDTH / 2, 150.0f);
+	m_pauseText->transform->SetPos(static_cast<float>(CRenderer::SCREEN_WIDTH / 2), 150.0f);
 	m_pauseText->SetPriority(9);
 	page->AddObject(1, m_pauseText);
 

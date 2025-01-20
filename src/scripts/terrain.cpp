@@ -407,7 +407,7 @@ void Terrain::GenerateRoad()
 					}
 					if (nearRoad > 1)
 					{
-						routeData[currentX + x][currentY + y] *= 0.2f;
+						routeData[currentX + x][currentY + y] = static_cast<int>(routeData[currentX + x][currentY + y] * 0.2f);
 					}
 
 					if (routeData[currentX + x][currentY + y] > high)
