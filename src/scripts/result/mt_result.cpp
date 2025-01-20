@@ -199,44 +199,48 @@ void ClearResult::Init()
 
 	// 次の山へ or 終了
 	{
-		m_shopButton = new GameObject("NextMountain");
-		page->AddObject(0, m_shopButton);
-		m_shopButton->transform->SetSize(500.0f, 140.0f);
-		m_shopButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
-		m_shopButton->AddComponent<ButtonUI>();
-		m_shopButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		m_shopButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() { 
+		m_nextButton = new GameObject("NextMountain");
+		page->AddObject(0, m_nextButton);
+		m_nextButton->transform->SetSize(500.0f, 140.0f);
+		m_nextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
+		m_nextButton->AddComponent<ButtonUI>();
+		m_nextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		m_nextButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {
+			// 次のページへ
 			page->SetPage(1); 
+
+			// 進行スコアを加算する
+			CGameScene::AddScore(NEXT_MOUNTAINPOINT);
 			});
 
-		GameObject* pShopButtonText = new GameObject();
-		pShopButtonText->SetParent(m_shopButton);
-		page->AddObject(0, pShopButtonText);
-		pShopButtonText->transform->SetPos(250.0f, 35.0f);
-		pShopButtonText->AddComponent<CText>();
-		pShopButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pShopButtonText->GetComponent<CText>()->SetText("<color=0,0,0>Shop →");
-		pShopButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		GameObject* nextButtonText = new GameObject();
+		nextButtonText->SetParent(m_nextButton);
+		page->AddObject(0, nextButtonText);
+		nextButtonText->transform->SetPos(250.0f, 35.0f);
+		nextButtonText->AddComponent<CText>();
+		nextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		nextButtonText->GetComponent<CText>()->SetText("<color=0,0,0>次へ進む");
+		nextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
 
 	// リスト追加
 	{
-		m_addListButton = new GameObject("NextMountain");
-		page->AddObject(0, m_addListButton);
-		m_addListButton->transform->SetSize(500.0f, 140.0f);
-		m_addListButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
-		m_addListButton->AddComponent<ButtonUI>();
-		m_addListButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
+		m_endButton = new GameObject("EndMountain");
+		page->AddObject(0, m_endButton);
+		m_endButton->transform->SetSize(500.0f, 140.0f);
+		m_endButton->transform->SetPos((CRenderer::SCREEN_WIDTH/2 - 250.0f) - 400.0f, 850.0f);
+		m_endButton->AddComponent<ButtonUI>();
+		m_endButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 
-		GameObject* pListButtonText = new GameObject();
-		pListButtonText->SetParent(m_addListButton);
-		page->AddObject(0, pListButtonText);
-		pListButtonText->transform->SetPos(250.0f, 35.0f);
-		pListButtonText->AddComponent<CText>();
-		pListButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pListButtonText->GetComponent<CText>()->SetFontSize(80);
-		pListButtonText->GetComponent<CText>()->SetText("<color=0,0,0>リストに追加");
-		pListButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		GameObject* endButtonText = new GameObject();
+		endButtonText->SetParent(m_endButton);
+		page->AddObject(0, endButtonText);
+		endButtonText->transform->SetPos(250.0f, 35.0f);
+		endButtonText->AddComponent<CText>();
+		endButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		endButtonText->GetComponent<CText>()->SetFontSize(80);
+		endButtonText->GetComponent<CText>()->SetText("<color=0,0,0>諦める");
+		endButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
 
 	// ページのリセット

@@ -93,9 +93,6 @@ void ShopManager::Init(Pages* pages)
 		loadingPoly->transform->SetSize(1220.0f, 304.0f);
 		loadingPoly->transform->SetPos(CRenderer::SCREEN_WIDTH / 2 - 610.0f, CRenderer::SCREEN_HEIGHT / 2 - 152.0f);
 
-		// ƒXƒRƒA‚ð‰ÁŽZ‚·‚é
-		CGameScene::AddScore(CGameScene::NEXT_MOUNTAINPOINT);
-
 		CSceneManager::GetInstance()->ReloadScene(); 
 		});
 	m_pages->AddObject(1, nextButton);

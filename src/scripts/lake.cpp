@@ -7,6 +7,7 @@
 #include "lake.h"
 #include "renderer.h"
 #include "internal/data_manager.h"
+#include "scene/game.h"
 
 //=============================================================
 // [LakeManager] ‰Šú‰»
@@ -105,6 +106,8 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 //=============================================================
 void LakeManager::Update()
 {
+	if (!m_vehicle->gameObject->GetActive()) return;
+
 	D3DXVECTOR3 pos = m_vehicle->transform->GetWPos();
 	if (m_enabled && pos.y <= m_height &&
 		-Terrain::TERRAIN_DISTANCE_HALF <= pos.x && pos.x <= Terrain::TERRAIN_DISTANCE_HALF &&

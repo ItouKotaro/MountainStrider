@@ -56,6 +56,8 @@ public:
 	void Uninit() override;
 	void Update() override;
 	void Draw() override;
+
+	static const int NEXT_MOUNTAINPOINT = 2500;
 private:
 	void UpdateResultAnim();
 	enum PROG_STATE
@@ -86,8 +88,8 @@ private:
 	const float BGM_FADE = 0.001f;
 
 	// ボタン
-	GameObject* m_addListButton;
-	GameObject* m_shopButton;
+	GameObject* m_endButton;
+	GameObject* m_nextButton;
 
 	ShopManager* m_shopManager;		// ショップ管理
 };
