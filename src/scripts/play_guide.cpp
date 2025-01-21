@@ -157,13 +157,22 @@ void PlayGuideUI::Init()
 	m_progressBar->transform->SetSize(0.0f, PROGRESSBAR_HEIGHT);
 	m_progressBar->SetColor(D3DCOLOR_RGBA(228, 92, 255, 255));
 
+	// ガイドブックアイコンの作成
+	m_bookIcon = new SingleComponent<CPolygon>();
+	m_bookIcon->Init();
+	m_bookIcon->SetParent(gameObject);
+	m_bookIcon->transform->SetPos(SEGMENT_WIDTH + 10.0f, 12.0f);
+	m_bookIcon->transform->SetSize(BOOKICON_SIZE, BOOKICON_SIZE);
+	m_bookIcon->SetTexture("data\\TEXTURE\\UI\\guide_book.png");
+	m_bookIcon->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 0.0f));
+
 	// テキストの作成
 	m_text = new SingleComponent<CText>();
 	m_text->Init();
 	m_text->SetParent(gameObject);
 	m_text->SetFont("07鉄瓶ゴシック");
 	m_text->SetFontSize(60);
-	m_text->transform->SetPos(40.0f, 15.0f);
+	m_text->transform->SetPos(BOOKICON_SIZE + 50.0f, 18.0f);
 	m_text->SetAlpha(0.0f);
 }
 
@@ -188,6 +197,12 @@ void PlayGuideUI::Uninit()
 	{
 		m_progressBar->Uninit();
 		delete m_progressBar;
+	}
+
+	if (m_bookIcon != nullptr)
+	{
+		m_bookIcon->Uninit();
+		delete m_bookIcon;
 	}
 
 	if (m_text != nullptr)
@@ -220,6 +235,7 @@ void PlayGuideUI::Update()
 		m_alpha = m_text->GetAlpha();
 		m_alpha += (1.0f - m_alpha) * 0.08f;
 		m_text->SetAlpha(m_alpha);
+		m_bookIcon->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, m_alpha));
 	}
 
 	// プログレスバーの更新
@@ -258,6 +274,7 @@ void PlayGuideUI::Update()
 	m_segment->Update();
 	m_bg->Update();
 	m_progressBar->Update();
+	m_bookIcon->Update();
 	m_text->Update();
 }
 
@@ -269,6 +286,7 @@ void PlayGuideUI::DrawUI()
 	m_segment->DrawUI();
 	m_bg->DrawUI();
 	m_progressBar->DrawUI();
+	m_bookIcon->DrawUI();
 	m_text->DrawUI();
 }
 

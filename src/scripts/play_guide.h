@@ -38,12 +38,14 @@ private:
 	SingleComponent<CPolygon>* m_bg;
 	SingleComponent<CPolygon>* m_progressBar;
 	SingleComponent<CText>* m_text;
+	SingleComponent<CPolygon>* m_bookIcon;
 	float m_alpha;
 
 	// íËêî
 	const D3DXVECTOR2 SIZE = { 550.0f, 200.0f };
 	const float SEGMENT_WIDTH = 20.0f;
 	const float PROGRESSBAR_HEIGHT = 10.0f;
+	const float BOOKICON_SIZE = 60.0f;
 };
 
 // ÉKÉCÉhäÓíÍ
