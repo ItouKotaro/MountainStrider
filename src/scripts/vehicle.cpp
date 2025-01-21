@@ -264,24 +264,24 @@ void CVehicle::LandingControlVehicle()
 	}
 
 	// ŒX‚«’²®
-	if (INPUT_INSTANCE->onPress("w") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	if (INPUT_INSTANCE->onInput("forward") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
 	}
-	if (INPUT_INSTANCE->onPress("s") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	if (INPUT_INSTANCE->onInput("behind") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
 	}
 	
 	// •ûŒü“]Š·
 	float fSteeringVelocity = 0.0f;
-	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	if (INPUT_INSTANCE->onInput("left") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY()) * -3.0f, 0.0f, cosf(transform->GetRotY()) * -3.0f};
 		fSteeringVelocity += STEERING_VALUE;
 
 	}
-	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	if (INPUT_INSTANCE->onInput("right") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {sinf(transform->GetRotY()) * 3.0f, 0.0f, cosf(transform->GetRotY()) * 3.0f};
 		fSteeringVelocity -= STEERING_VALUE;
@@ -313,12 +313,12 @@ void CVehicle::FlyingControlVehicle()
 	short stickLY = pGamepadDev->GetState().Gamepad.sThumbLY;
 
 	// ‰ñ“]
-	if (INPUT_INSTANCE->onPress("a") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	if (INPUT_INSTANCE->onInput("left") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {0.0f, -5.5f, 0.0f};
 
 	}
-	if (INPUT_INSTANCE->onPress("d") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	if (INPUT_INSTANCE->onInput("right") || stickLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 	{
 		angularVelocity += {0.0f, 5.5f, 0.0f};
 	}

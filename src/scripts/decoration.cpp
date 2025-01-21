@@ -207,6 +207,7 @@ void DecorationManager::RemoveData(DecorationData* data)
 		if (*itr == data)
 		{
 			m_decoData[x][y].erase(itr);
+			delete data;
 			return;
 		}
 	}

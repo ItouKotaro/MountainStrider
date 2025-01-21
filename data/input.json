@@ -9,6 +9,26 @@
         "key": ["lshift","p:x"],
         "input": "trigger"
     },
+    "left":
+    {
+        "key": ["a","p:left"],
+        "input": "press"
+    },
+    "right":
+    {
+        "key": ["d","p:right"],
+        "input": "press"
+    },
+    "forward":
+    {
+        "key": ["w","p:up"],
+        "input": "press"
+    },
+    "behind":
+    {
+        "key": ["s","p:down"],
+        "input": "press"
+    },
     "use-item":
     {
         "key": ["f","p:y"],

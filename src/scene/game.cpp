@@ -111,8 +111,8 @@ void CGameScene::Init()
 	SpawnBike();
 
 	// 湖を作成
-	m_lake = new LakeManager();
-	m_lake->Init(m_pTerrain, terrainPath);
+	//m_lake = new LakeManager();
+	//m_lake->Init(m_pTerrain, terrainPath);
 
 	// アイテムスロット
 	m_pItemSlot = new GameObject("ItemSlot", "UI");
@@ -239,7 +239,7 @@ void CGameScene::Update()
 	m_pTerrain->Update();
 
 	// 湖を更新する
-	m_lake->Update();
+	//m_lake->Update();
 
 	// 装飾を更新する
 	m_decoration->Update(m_pCamera->transform->GetWPos());
@@ -251,7 +251,10 @@ void CGameScene::Update()
 	m_events->Update();
 
 	// プレイガイドを更新する
-	m_playGuide->Update();
+	if (m_playGuide != nullptr)
+	{
+		m_playGuide->Update();
+	}
 
 	// 未ゲームオーバー時
 	if (m_endType == ENDTYPE_NONE)
@@ -391,6 +394,14 @@ void CGameScene::onGameOver()
 		// アイテムスロットを非表示にする
 		m_pItemSlot->SetActive(false);
 
+		// プレイガイドを非表示にする
+		if (m_playGuide != nullptr)
+		{
+			m_playGuide->Uninit();
+			delete m_playGuide;
+			m_playGuide = nullptr;
+		}
+
 		// スコアを削る
 		m_score -= static_cast<int>(m_score * 0.5f);
 
@@ -438,6 +449,14 @@ void CGameScene::onClear()
 
 		// アイテムスロットを非表示にする
 		m_pItemSlot->SetActive(false);
+
+		// プレイガイドを非表示にする
+		if (m_playGuide != nullptr)
+		{
+			m_playGuide->Uninit();
+			delete m_playGuide;
+			m_playGuide = nullptr;
+		}
 
 		// 進行スコアを加算する
 		CGameScene::AddScore(CLEAR_POINT);
