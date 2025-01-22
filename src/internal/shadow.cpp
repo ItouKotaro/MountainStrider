@@ -15,7 +15,7 @@ using namespace std;
 
 // 変数の定義
 const bool CShadow::USE_SHADOW = false;
-const std::string CShadow::SHADOW_VOLUME_PATH = "./data/SHADER/ShadowVolume.fx";		// シャドウボリュームのパス
+const std::string CShadow::SHADOW_VOLUME_PATH = "./data/SHADER/ShadowVolume.cfx";		// シャドウボリュームのパス
 const float CShadow::FAR_CLIP = 1000.0f;
 const float CShadow::ADJACENCY_EPSILON = 0.0001f;
 const float CShadow::EXTRUDE_EPSILON = 0.01f;
@@ -450,7 +450,7 @@ bool CShadow::IsDeviceAcceptableShadow(LPDIRECT3D9 pObject, LPDIRECT3DDEVICE9 pD
 void CShadow::InitVertexDeclarationShadow(LPDIRECT3DDEVICE9 pDevice)
 {
     // シャドウエフェクトファイルを読み込む
-    DWORD dwShaderFlags = D3DXFX_NOT_CLONEABLE;
+    DWORD dwShaderFlags = D3DXFX_NOT_CLONEABLE | D3DXSHADER_SKIPVALIDATION;
 #if defined( _DEBUG )
     dwShaderFlags |= D3DXSHADER_DEBUG;
 #endif

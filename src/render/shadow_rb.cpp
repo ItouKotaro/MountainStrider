@@ -22,10 +22,10 @@ bool ShadowMapShader::Init()
 
 	// リソースにあるZ値プロットシェーダプログラムを読み込む
 	D3DXCreateEffectFromFile(device,
-		"data\\SHADER\\ShadowMap.fx",
+		"data\\SHADER\\ShadowMap.cfx",
 		nullptr,
 		nullptr,
-		0,
+		D3DXSHADER_SKIPVALIDATION,
 		nullptr,
 		&m_effect,
 		nullptr);
