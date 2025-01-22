@@ -28,7 +28,7 @@ void VehicleAction::Init()
 	// 合計ポイント用テキスト
 	GameObject* sumObj = new GameObject("SumPoints", "UI");
 	m_sumPoints = sumObj->AddComponent<SumActionPointText>();
-	m_sumPoints->transform->SetPos(1500.0f, 300.0f);
+	m_sumPoints->transform->SetPos(CRenderer::SCREEN_WIDTH-50.0f, 300.0f);
 	m_sumPoints->Reset();
 }
 
@@ -68,14 +68,13 @@ void VehicleAction::Update()
 			// 合計値に加算する
 			m_sumPoints->AddPoints(addScore);
 
-
 			// 表示テキストを決める
 			char pointText[24];
 			if (m_rollCount % 2 == 0)
 				sprintf(&pointText[0], "+%d回転", static_cast<int>(m_rollCount /2));
 			else
 				sprintf(&pointText[0], "+%.1f回転", m_rollCount * 0.5f);
-
+			
 			// 表示
 			GameObject* addRollText = new GameObject();
 			addRollText->transform->SetPos(1300.0f, 600.0f);
@@ -171,6 +170,8 @@ void SumActionPointText::Init()
 	m_text->Init();
 	m_text->SetParent(gameObject);
 	m_text->SetFont("07鉄瓶ゴシック");
+	m_text->SetAlign(CText::RIGHT);
+	m_text->SetFontSize(150);
 
 	m_points = 0;
 	m_viewPoints = 0;
@@ -210,7 +211,6 @@ void SumActionPointText::Update()
 	{ // 終了
 		// ポイントを加算する
 		CGameScene::AddScore(m_points);
-		//static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->AddScore(m_points);
 
 		m_text->SetAlpha(0.0f);
 		m_points = 0;

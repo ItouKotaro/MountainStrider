@@ -76,7 +76,9 @@ void CBillboard::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();		// デバイスを取得
 	D3DXMATRIX mtx;
-	D3DXMATRIX mtxView, mtxTrans;		// 取得用マトリックス
+	D3DXMATRIX mtxView;
+
+	Component::BeginPass();
 
 	// ライトを無効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -86,7 +88,10 @@ void CBillboard::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
-	// ワールドマトリックスの初期化
+	// ワールドマトリックスの設定
+	if (!IsEnabledShader()) pDevice->SetTransform(D3DTS_WORLD, &mtx);
+
+	// マトリックスの初期化
 	D3DXMatrixIdentity(&mtx);
 
 	// ビューマトリックスを取得
@@ -98,13 +103,13 @@ void CBillboard::Draw()
 	mtx._42 = 0.0f;
 	mtx._43 = 0.0f;
 
-	// オブジェクトのマトリックスを掛ける
-	D3DXMatrixRotationZ(&mtx, transform->GetWRotZ());
-	mtxTrans = transform->GetTranslationMatrix();
-	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
+	D3DXMATRIX rotMtx;
+	D3DXMatrixRotationZ(&rotMtx, transform->GetWRot().z);
+	mtx *= rotMtx;
 
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &mtx);
+	// オブジェクトのマトリックスを掛ける
+	D3DXMATRIX mtxTrans = transform->GetTranslationMatrix();
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -113,12 +118,20 @@ void CBillboard::Draw()
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	// テクスチャの設定
-	pDevice->SetTexture(0, m_pTexture);
+	if (!IsEnabledShader()) pDevice->SetTexture(0, m_pTexture);
+
+	Shader::ParamData paramData;
+	paramData.color = m_color;
+	paramData.texture = m_pTexture;
+	paramData.mtx = mtx;
+	Component::SetParam(paramData);
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
 		0, //描画する最初の頂点インデックス
 		2);				//描画するプリミティブ数
+
+	Component::EndPass();
 
 	// ライトを有効に戻す
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);

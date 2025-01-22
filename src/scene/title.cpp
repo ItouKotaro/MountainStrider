@@ -170,6 +170,7 @@ void CTitleScene::Uninit()
 {
 	m_field->Destroy();
 	CCollision::RemoveCollision(m_field);
+	CPhysics::GetInstance()->Update();
 
 	if (m_terrainData != nullptr)
 	{
