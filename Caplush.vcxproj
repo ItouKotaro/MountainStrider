@@ -259,6 +259,7 @@
     <ClCompile Include="src\scripts\lake.cpp" />
     <ClCompile Include="src\scripts\pause.cpp" />
     <ClCompile Include="src\scripts\play_guide.cpp" />
+    <ClCompile Include="src\scripts\ranking_system.cpp" />
     <ClCompile Include="src\scripts\result\mt_result.cpp" />
     <ClCompile Include="src\scripts\result\result_camera.cpp" />
     <ClCompile Include="src\scripts\result\result_data.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="src\scripts\lake.h" />
     <ClInclude Include="src\scripts\pause.h" />
     <ClInclude Include="src\scripts\play_guide.h" />
+    <ClInclude Include="src\scripts\ranking_system.h" />
     <ClInclude Include="src\scripts\result\mt_result.h" />
     <ClInclude Include="src\scripts\result\result_camera.h" />
     <ClInclude Include="src\scripts\result\result_data.h" />

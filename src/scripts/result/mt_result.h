@@ -40,7 +40,7 @@ public:
 	static float GetBeforeFuel() { return m_beforeFuel; }
 	static float GetBeforeEndurance() { return m_beforeEndurance; }
 protected:
-	void InitFinalResult(int pageNum);
+	void FinalResult(bool isSuccess);
 
 	CGameScene* m_gameScene;
 	static float m_beforeFuel;							// 前回の燃料
@@ -57,6 +57,8 @@ protected:
 	GameObject* m_timeValue;			// 時間表示
 	GameObject* m_actionValue;			// アクション表示
 	GameObject* m_fuelValue;				// 燃費表示
+
+	const int CLEAR_POINT = 2500;
 };
 
 // クリア時のリザルト

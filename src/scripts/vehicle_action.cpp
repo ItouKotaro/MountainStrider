@@ -210,7 +210,7 @@ void SumActionPointText::Update()
 	else
 	{ // 終了
 		// ポイントを加算する
-		CGameScene::AddScore(m_points);
+		CGameScene::AddActionPoint(m_points);
 
 		m_text->SetAlpha(0.0f);
 		m_points = 0;

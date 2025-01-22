@@ -29,7 +29,7 @@
 
 #include "scripts/lake.h"
 
-int CGameScene::m_score = 0;
+int CGameScene::m_actionPoint = 0;
 
 //=============================================================
 // [CGameScene] 初期化
@@ -40,7 +40,7 @@ void CGameScene::Init()
 	m_endType = ENDTYPE_NONE;
 	m_travellingCount = 0;
 	m_travellingDatas.clear();
-	m_score = 0;
+	m_actionPoint = 0;
 	m_pause = nullptr;
 
 	//GameObject* lake = new GameObject();
@@ -64,7 +64,6 @@ void CGameScene::Init()
 		m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 		m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
 		m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
-		//m_pCamera->AddComponent<AudioListener>();
 	}
 
 	// ライトを作成
@@ -111,8 +110,8 @@ void CGameScene::Init()
 	SpawnBike();
 
 	// 湖を作成
-	//m_lake = new LakeManager();
-	//m_lake->Init(m_pTerrain, terrainPath);
+	m_lake = new LakeManager();
+	m_lake->Init(m_pTerrain, terrainPath);
 
 	// アイテムスロット
 	m_pItemSlot = new GameObject("ItemSlot", "UI");
@@ -224,6 +223,11 @@ void CGameScene::Update()
 		onClear();
 	}
 
+	if (INPUT_INSTANCE->onTrigger("l"))
+	{
+		onGameOver();
+	}
+
 	// ポーズ
 	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("p:start"))
 	{
@@ -239,7 +243,7 @@ void CGameScene::Update()
 	m_pTerrain->Update();
 
 	// 湖を更新する
-	//m_lake->Update();
+	m_lake->Update();
 
 	// 装飾を更新する
 	m_decoration->Update(m_pCamera->transform->GetWPos());
@@ -330,8 +334,7 @@ void CGameScene::ResetGame()
 	// アイテムの情報をリセット
 	ItemManager::GetInstance()->AllRemoveItem();
 
-	// スコアをリセット
-	m_score = 0;
+	m_actionPoint = 0;
 }
 
 //=============================================================
@@ -403,9 +406,6 @@ void CGameScene::onGameOver()
 			m_playGuide = nullptr;
 		}
 
-		// スコアを削る
-		m_score -= static_cast<int>(m_score * 0.5f);
-
 		// 走行距離を計算する
 		float mileage = 0.0f;
 		for (UINT i = 0; i < m_travellingDatas.size(); i++)
@@ -459,9 +459,6 @@ void CGameScene::onClear()
 			m_playGuide = nullptr;
 		}
 
-		// 進行スコアを加算する
-		CGameScene::AddScore(CLEAR_POINT);
-
 		// 走行距離を計算する
 		float mileage = 0.0f;
 		for (UINT i = 0; i < m_travellingDatas.size(); i++)
@@ -476,7 +473,7 @@ void CGameScene::onClear()
 		ResultBase::ResultData data;
 		data.time = (timeGetTime() - m_startTime) / 1000;
 		data.highSpeed = m_highSpeed;
-		data.action = m_score;
+		data.action = m_actionPoint;
 		data.mileage = mileage;
 		data.fuel = m_pBike->GetComponent<CVehicle>()->GetFuelConsumption();
 		ResultBase::AddResult(data);

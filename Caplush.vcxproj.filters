@@ -357,6 +357,9 @@
     <ClCompile Include="src\scripts\play_guide.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\ranking_system.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -606,6 +609,9 @@
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\play_guide.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\ranking_system.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>

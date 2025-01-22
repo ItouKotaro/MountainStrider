@@ -36,8 +36,8 @@ public:
 	Terrain* GetTerrain() { return m_pTerrain; }
 	GameObject* GetBike() { return m_pBike; }
 
-	static void AddScore(const int& score) { m_score += score; }
-	static int GetScore() { return m_score; }
+	static void AddActionPoint(const int& point) { m_actionPoint += point; }
+	static int GetActionPoint() { return m_actionPoint; }
 	Pause* GetPause() { return m_pause; }
 
 	// 走行データ
@@ -82,13 +82,12 @@ private:
 	// リザルトデータ用
 	DWORD m_startTime;										// 開始時間
 	int m_highSpeed;												// 最高速度
-	static int m_score;												// スコア
+	static int m_actionPoint;										// スコア
 
 	// ポーズ
 	Pause* m_pause;
 
 	// 定数
-	const int CLEAR_POINT = 2500;
 	const float EXTENSION_DISTANCE = 150.0f;
 };
 
