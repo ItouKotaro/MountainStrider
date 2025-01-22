@@ -464,7 +464,7 @@ void GameOverResult::Init()
 	{
 		GameObject* pFinalResultButton = new GameObject("FinalResult");
 		pFinalResultButton->transform->SetSize(500.0f, 140.0f);
-		pFinalResultButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
+		pFinalResultButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f), 850.0f);
 		pFinalResultButton->AddComponent<ButtonUI>();
 		pFinalResultButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 		pFinalResultButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {
@@ -480,26 +480,6 @@ void GameOverResult::Init()
 		pFinalResultButtonText->GetComponent<CText>()->SetText("<color=0,0,0>最終結果へ");
 		pFinalResultButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 		page->AddObject(0, pFinalResultButtonText);
-	}
-
-	// リスト追加
-	{
-		GameObject* pListButton = new GameObject("NextMountain");
-		pListButton->transform->SetSize(500.0f, 140.0f);
-		pListButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) - 400.0f, 850.0f);
-		pListButton->AddComponent<ButtonUI>();
-		pListButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
-		page->AddObject(0, pListButton);
-
-		GameObject* pListButtonText = new GameObject();
-		pListButtonText->SetParent(pListButton);
-		pListButtonText->transform->SetPos(250.0f, 35.0f);
-		pListButtonText->AddComponent<CText>();
-		pListButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
-		pListButtonText->GetComponent<CText>()->SetFontSize(80);
-		pListButtonText->GetComponent<CText>()->SetText("<color=0,0,0>リストに追加");
-		pListButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
-		page->AddObject(0, pListButtonText);
 	}
 
 	// 仮想カーソルの作成
