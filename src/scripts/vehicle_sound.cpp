@@ -21,7 +21,7 @@ void VehicleSound::Init()
 	m_soundObj->SetParent(gameObject);
 	m_soundObj->AddComponent<AudioEvent>()->SetEventDesc(vehicleDesc);
 	m_vehicleSound = m_soundObj->GetComponent<AudioEvent>()->GetInstance();
-	m_vehicleSound->setVolume(5.0f);
+	m_vehicleSound->setVolume(2.0f);
 	m_vehicleSound->setParameterByName("RPM", 10.0f);
 	m_vehicleSound->start();
 }

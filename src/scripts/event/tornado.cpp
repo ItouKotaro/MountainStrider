@@ -9,8 +9,9 @@
 #include "component/3d/particle.h"
 #include "scripts/destructible.h"
 #include "scripts/vehicle.h"
-
 #include "scene/game.h"
+
+AudioClip TornadoEvent::m_tornadeSE = nullptr;
 
 //=============================================================
 // トルネード用パーティクル
@@ -45,10 +46,29 @@ private:
 //=============================================================
 void TornadoEvent::Init()
 {
+	// 音の読み込み
+	if (!m_tornadeSE) m_tornadeSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\EVENT\\tornade.mp3", FMOD_3D | FMOD_LOOP_NORMAL);
+	
 	// トルネードを作成する
 	m_tornade = new GameObject();
-	m_tornade->transform->SetPos(GameObject::Find("Vehicle")->transform->GetWPos());
 
+	// 位置を決める
+	D3DXVECTOR3 confPos;
+	D3DXVECTOR3 vehiclePos = GameObject::Find("Vehicle")->transform->GetWPos();
+	do
+	{
+		confPos = { Benlib::RandomFloat(-GENERATE_RADIUS, GENERATE_RADIUS), 0.0f, Benlib::RandomFloat(-GENERATE_RADIUS, GENERATE_RADIUS) };
+		confPos += vehiclePos;
+	} while (Benlib::PosPlaneDistance(confPos, vehiclePos) <= GENERATE_MIN_DISTANCE);
+	m_tornade->transform->SetPos(confPos);
+
+
+	// 音の設定
+	m_tornade->AddComponent<AudioSource>()->Play(m_tornadeSE);
+	m_tornade->GetComponent<AudioSource>()->GetChannel()->setVolume(80.0f);
+	m_tornade->GetComponent<AudioSource>()->GetChannel()->set3DMinMaxDistance(800.0f, TORNADO_RANGE);
+
+	// パーティクルの設定
 	auto particle = m_tornade->AddComponent<ParticleSystem>();
 	particle->SetShape(new TornadoParticle());
 	particle->SetVortex(0.1f);
@@ -131,7 +151,7 @@ void TornadoEvent::UpdateMove()
 
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-	if (RayCallback.hasHit() && CCollision::GetGameObjectFromCollisionObj(RayCallback.m_collisionObject)->GetName() == "TerrainField")
+	if (RayCallback.hasHit())
 	{ // 地面に接触したとき
 		m_tornade->transform->SetPos(m_tornade->transform->GetPos().x, RayCallback.m_hitPointWorld.getY(), m_tornade->transform->GetPos().z);
 	}
@@ -152,7 +172,7 @@ void TornadoEvent::UpdateAction()
 			// オブジェクト
 			if ((*itr)->GetComponent<Destructible>() != nullptr)
 			{
-				(*itr)->GetComponent<Destructible>()->ForceHit();
+				(*itr)->GetComponent<Destructible>()->ForceHit(false);
 
 				// トルネードに巻き込ませる
 				D3DXVECTOR3 dir = (m_tornade->transform->GetWPos() - (*itr)->transform->GetWPos()) * 0.5f;

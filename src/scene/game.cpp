@@ -64,7 +64,7 @@ void CGameScene::Init()
 		m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 		m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
 		m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
-		m_pCamera->AddComponent<AudioListener>();
+		//m_pCamera->AddComponent<AudioListener>();
 	}
 
 	// ライトを作成
@@ -355,6 +355,7 @@ void CGameScene::SpawnBike()
 	m_pBike = new GameObject("Vehicle");
 	m_pBike->AddComponent<CVehicle>();
 	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
+	m_pBike->AddComponent<AudioListener>();
 
 	// ステータスUIを生成
 	m_pStatusUI = new GameObject("StatusUI", "UI");

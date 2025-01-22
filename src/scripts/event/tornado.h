@@ -36,9 +36,13 @@ private:
 	const float TORNADO_SPEED = 2.0f;
 	const float TORNADO_RANGE = 100.0f;
 	const float TORNADO_HEIGHT = 150.0f;
+	const float GENERATE_MIN_DISTANCE = 200.0f;
+	const float GENERATE_RADIUS = 600.0f;
 
 	const float EVENT_BASE_TIME = 50.0f;
 	const float EVENT_RANDOM_TIME = 20.0f;
+
+	static AudioClip m_tornadeSE;
 };
 
 #endif // !_TORNADO_EVENT_H_

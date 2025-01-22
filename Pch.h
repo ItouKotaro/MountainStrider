@@ -25,6 +25,7 @@
 #include "input_system.h"
 #include "gameobject.h"
 #include "benlib.h"
+#include "component/other/audio.h"
 class CInputSystem;
 #define INPUT_INSTANCE	(CInputSystem::GetInstance())
 

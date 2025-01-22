@@ -105,13 +105,9 @@ void AudioListener::Update()
 
 	// ‘O•û
 	FMOD_VECTOR forward = { 0.0f, 0.0f, 0.0f };
-	D3DXMATRIX rotMtx = transform->GetRotationMatrix();
-	D3DXVECTOR3 posR = { 0.0f, 0.0f, 1.0f };
-	D3DXVec3TransformCoord(&posR, &posR, &rotMtx);
-	D3DXVec3Normalize(&posR, &posR);
-	forward.x = posR.x;
+	forward.x = sinf(transform->GetWRot().y);
 	forward.y = 0.0f;
-	forward.z = posR.z;
+	forward.z = cosf(transform->GetWRot().y);
 
 	// ã•ûŒü
 	FMOD_VECTOR up;
