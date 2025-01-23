@@ -10,6 +10,7 @@
 #include "component.h"
 #include "vehicle.h"
 #include "terrain.h"
+#include "lake.h"
 #include "component/3d/particle.h"
 
 // 車両のパーティクル管理
@@ -29,6 +30,7 @@ private:
 
 	CVehicle* m_vehicle;
 	Terrain* m_terrain;
+	LakeManager* m_lake;
 	GameObject* m_trajectory;
 	float m_backParticleTimer;
 
@@ -41,6 +43,7 @@ private:
 	const float BP_SPEED_RATE = 0.01f;
 	const float BP_EXPANSE_VALUE = 5.0f;
 	const float BP_GRAVITY = -80.0f;
+	const float BG_LAKE_SPACE = 20.0f;
 };
 
 #endif // !_VEHICLE_PARTICLE_H_

@@ -43,11 +43,6 @@ void CGameScene::Init()
 	m_actionPoint = 0;
 	m_pause = nullptr;
 
-	//GameObject* lake = new GameObject();
-	//lake->transform->SetPos(0.0f, -50.0f, 0.0f);
-	//lake->AddComponent<LakeField>()->SetSize(Terrain::TERRAIN_DISTANCE, Terrain::TERRAIN_DISTANCE);
-	//lake->GetComponent<LakeField>()->SetTexture("data\\TEXTURE\\PROP\\wood000.jpg", 120, {0.002f, 0.001f});
-
 	// ポーズ
 	m_pause = new Pause();
 	m_pause->Init();
@@ -59,11 +54,11 @@ void CGameScene::Init()
 
 	// カメラの作成
 	{
-		m_pCamera = new GameObject("Camera", "Camera");
-		m_pCamera->AddComponent<CCamera>();
-		m_pCamera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
-		m_pCamera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
-		m_pCamera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
+		m_camera = new GameObject("Camera", "Camera");
+		m_camera->AddComponent<CCamera>();
+		m_camera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
+		m_camera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
+		m_camera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
 	}
 
 	// ライトを作成
@@ -85,16 +80,16 @@ void CGameScene::Init()
 	// 地面を作成
 	{
 		srand((unsigned int)clock());
-		m_pTerrain = new Terrain();
-		m_pTerrain->SetSeed(rand());
-		m_pTerrain->Init();
-		m_pTerrain->LoadTerrainFile(terrainPath);
-		m_pTerrain->Generate();
+		m_terrain = new Terrain();
+		m_terrain->SetSeed(rand());
+		m_terrain->Init();
+		m_terrain->LoadTerrainFile(terrainPath);
+		m_terrain->Generate();
 	}
 
 	// 装飾を生成する
 	m_decoration = new DecorationManager();
-	m_decoration->Init(m_pTerrain);
+	m_decoration->Init(m_terrain);
 	m_decoration->LoadTerrainFile(terrainPath);
 	m_decoration->Generate();
 
@@ -103,7 +98,7 @@ void CGameScene::Init()
 		m_voidField = new GameObject("Void");
 		m_voidField->AddComponent<CField>();
 		m_voidField->GetComponent<CField>()->Set(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2, Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2);
-		m_voidField->transform->SetPos(0.0f, m_pTerrain->GetMinHeight() - 20.0f, 0.0f);
+		m_voidField->transform->SetPos(0.0f, m_terrain->GetMinHeight() - 20.0f, 0.0f);
 	}
 
 	// バイクの生成
@@ -111,12 +106,12 @@ void CGameScene::Init()
 
 	// 湖を作成
 	m_lake = new LakeManager();
-	m_lake->Init(m_pTerrain, terrainPath);
+	m_lake->Init(m_terrain, terrainPath);
 
 	// アイテムスロット
-	m_pItemSlot = new GameObject("ItemSlot", "UI");
-	m_pItemSlot->AddComponent<ItemSlot>();
-	m_pItemSlot->transform->SetPos(CRenderer::SCREEN_WIDTH - 400.0f, 30.0f);
+	m_itemSlot = new GameObject("ItemSlot", "UI");
+	m_itemSlot->AddComponent<ItemSlot>();
+	m_itemSlot->transform->SetPos(CRenderer::SCREEN_WIDTH - 400.0f, 30.0f);
 
 	// 環境効果
 	m_environmental = new EnvironmentalEffect();
@@ -131,15 +126,15 @@ void CGameScene::Init()
 	m_playGuide->Init();
 
 	// カメラの移動設定を行う
-	m_pCamera->AddComponent<CCameraMove>()->SetTarget(m_pBike);
-	m_pCamera->AddComponent<ResultCamera>();
+	m_camera->AddComponent<CCameraMove>()->SetTarget(m_bike);
+	m_camera->AddComponent<ResultCamera>();
 
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
 
 	// カメラをレンダーバッファに追加する
 	CRenderer::GetInstance()->RegisterRenderBuffer<ShadowRenderBuffer>("main");
-	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_pCamera->GetComponent<CCamera>());
+	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetCamera(m_camera->GetComponent<CCamera>());
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetLightCamera(m_environmental->GetLightCamera());
 	Main::SetShowCursor(false);
 }
@@ -150,11 +145,11 @@ void CGameScene::Init()
 void CGameScene::Uninit()
 {
 	// 地形の破棄
-	if (m_pTerrain != nullptr)
+	if (m_terrain != nullptr)
 	{
-		m_pTerrain->Uninit();
-		delete m_pTerrain;
-		m_pTerrain = nullptr;
+		m_terrain->Uninit();
+		delete m_terrain;
+		m_terrain = nullptr;
 	}
 
 	// 装飾の破棄
@@ -240,13 +235,13 @@ void CGameScene::Update()
 	}
 
 	// 地形を更新する
-	m_pTerrain->Update();
+	m_terrain->Update();
 
 	// 湖を更新する
 	m_lake->Update();
 
 	// 装飾を更新する
-	m_decoration->Update(m_pCamera->transform->GetWPos());
+	m_decoration->Update(m_camera->transform->GetWPos());
 
 	// 環境効果を更新する
 	m_environmental->Update();
@@ -264,21 +259,21 @@ void CGameScene::Update()
 	if (m_endType == ENDTYPE_NONE)
 	{
 		// カメラの情報を記録する
-		m_pCamera->GetComponent<ResultCamera>()->RecordData();
+		m_camera->GetComponent<ResultCamera>()->RecordData();
 
 		// 走行データを記録する
 		m_travellingCount++;
 		if (m_travellingCount >= 20)
 		{
 			TravellingData travelling;
-			travelling.pos = m_pBike->transform->GetWPos();
-			travelling.rot = m_pBike->transform->GetWQuaternion();
+			travelling.pos = m_bike->transform->GetWPos();
+			travelling.rot = m_bike->transform->GetWQuaternion();
 			m_travellingDatas.push_back(travelling);
 			m_travellingCount = 0;
 		}
 
 		// 最高速度を記録する
-		int bikeSpeed = static_cast<int>(m_pBike->GetComponent<CVehicle>()->GetSpeed());
+		int bikeSpeed = static_cast<int>(m_bike->GetComponent<CVehicle>()->GetSpeed());
 		m_highSpeed = m_highSpeed < bikeSpeed ? bikeSpeed : m_highSpeed;
 
 		// クリア条件
@@ -292,7 +287,7 @@ void CGameScene::Update()
 		m_result->Update();
 
 		// バイクを無効化する
-		m_pBike->SetActive(false);
+		m_bike->SetActive(false);
 	}
 }
 
@@ -355,15 +350,15 @@ void CGameScene::SpawnBike()
 	}
 
 	// バイクを生成する
-	m_pBike = new GameObject("Vehicle");
-	m_pBike->AddComponent<CVehicle>();
-	m_pBike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
-	m_pBike->AddComponent<AudioListener>();
+	m_bike = new GameObject("Vehicle");
+	m_bike->AddComponent<CVehicle>();
+	m_bike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
+	m_bike->AddComponent<AudioListener>();
 
 	// ステータスUIを生成
-	m_pStatusUI = new GameObject("StatusUI", "UI");
-	m_pStatusUI->AddComponent<CStatusUI>();
-	m_pBike->GetComponent<CVehicle>()->SetStatusUI(m_pStatusUI->GetComponent<CStatusUI>());
+	m_statusUI = new GameObject("StatusUI", "UI");
+	m_statusUI->AddComponent<CStatusUI>();
+	m_bike->GetComponent<CVehicle>()->SetStatusUI(m_statusUI->GetComponent<CStatusUI>());
 }
 
 //=============================================================
@@ -371,7 +366,7 @@ void CGameScene::SpawnBike()
 //=============================================================
 void CGameScene::ClearCondition()
 {
-	D3DXVECTOR3 vehiclePos = m_pBike->transform->GetWPos();
+	D3DXVECTOR3 vehiclePos = m_bike->transform->GetWPos();
 
 	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
 		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
@@ -379,7 +374,7 @@ void CGameScene::ClearCondition()
 		onClear();
 	}
 
-	if (vehiclePos.y < m_pTerrain->GetMinHeight() - 5.0f)
+	if (vehiclePos.y < m_terrain->GetMinHeight() - 5.0f)
 	{
 		onClear();
 	}
@@ -393,10 +388,10 @@ void CGameScene::onGameOver()
 	if (m_endType == ENDTYPE_NONE)
 	{ // 1回のみの処理
 		// ステータスUIを非表示にする
-		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
+		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
 		// アイテムスロットを非表示にする
-		m_pItemSlot->SetActive(false);
+		m_itemSlot->SetActive(false);
 
 		// プレイガイドを非表示にする
 		if (m_playGuide != nullptr)
@@ -422,7 +417,7 @@ void CGameScene::onGameOver()
 		data.highSpeed = m_highSpeed;
 		data.action = 50;
 		data.mileage = mileage;
-		data.fuel = m_pBike->GetComponent<CVehicle>()->GetFuelConsumption();
+		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
 		ResultBase::AddResult(data);
 
 		// ゲームオーバーリザルトの初期化
@@ -430,8 +425,8 @@ void CGameScene::onGameOver()
 		m_result->Init();
 
 		// リザルトカメラを起動する
-		m_pCamera->GetComponent<ResultCamera>()->Play();
-		m_pCamera->GetComponent<CCameraMove>()->enabled = false;
+		m_camera->GetComponent<ResultCamera>()->Play();
+		m_camera->GetComponent<CCameraMove>()->enabled = false;
 
 		// ゲームオーバートリガーを有効にする
 		m_endType = ENDTYPE_GAMEOVER;
@@ -446,10 +441,10 @@ void CGameScene::onClear()
 	if (m_endType == ENDTYPE_NONE)
 	{ // 1回のみの処理
 		// ステータスUIを非表示にする
-		m_pStatusUI->GetComponent<CStatusUI>()->SetVisible(false);
+		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
 
 		// アイテムスロットを非表示にする
-		m_pItemSlot->SetActive(false);
+		m_itemSlot->SetActive(false);
 
 		// プレイガイドを非表示にする
 		if (m_playGuide != nullptr)
@@ -475,7 +470,7 @@ void CGameScene::onClear()
 		data.highSpeed = m_highSpeed;
 		data.action = m_actionPoint;
 		data.mileage = mileage;
-		data.fuel = m_pBike->GetComponent<CVehicle>()->GetFuelConsumption();
+		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
 		ResultBase::AddResult(data);
 
 		// クリアリザルトの初期化
@@ -483,8 +478,8 @@ void CGameScene::onClear()
 		m_result->Init();
 
 		// リザルトカメラを起動する
-		m_pCamera->GetComponent<ResultCamera>()->Play();
-		m_pCamera->GetComponent<CCameraMove>()->enabled = false;
+		m_camera->GetComponent<ResultCamera>()->Play();
+		m_camera->GetComponent<CCameraMove>()->enabled = false;
 
 		// クリアトリガーを有効にする
 		m_endType = ENDTYPE_CLEAR;

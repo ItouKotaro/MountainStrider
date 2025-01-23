@@ -53,6 +53,14 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 			m_enduranceDamage = jInput["terrain"]["lake"]["endurance_damage"];
 		}
 
+		// 基本色を設定する
+		if (jInput["terrain"]["lake"].contains("base_color"))
+		{
+			m_baseColor = D3DCOLOR_RGBA(
+				jInput["terrain"]["lake"]["base_color"][0], jInput["terrain"]["lake"]["base_color"][1], jInput["terrain"]["lake"]["base_color"][2], jInput["terrain"]["lake"]["base_color"][3]
+			);
+		}
+
 		// テクスチャを設定する
 		if (jInput["terrain"]["lake"].contains("textures"))
 		{

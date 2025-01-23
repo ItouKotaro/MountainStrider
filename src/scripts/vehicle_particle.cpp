@@ -23,6 +23,10 @@ void VehicleParticle::Init()
 	// 地形を取得する
 	m_terrain = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain();
 
+	// 池を取得する
+	m_lake = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetLake();
+
+
 	// 軌跡の追加
 	m_trajectory = new GameObject();
 	m_trajectory->AddComponent<CTrajectory>()->SetShow(true);
@@ -43,6 +47,10 @@ void VehicleParticle::Uninit()
 //=============================================================
 void VehicleParticle::Update()
 {
+	// 池を取得する
+	if (m_lake == nullptr)
+		m_lake = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetLake();
+
 	// 軌跡の更新
 	UpdateTrajectory();
 
@@ -80,6 +88,8 @@ void VehicleParticle::UpdateTrajectory()
 //=============================================================
 void VehicleParticle::UpdateBackParticle()
 {
+	if (!m_vehicle || !m_lake) return;
+
 	// クールタイムが終わっていないとき
 	if (m_backParticleTimer > 0.0f)
 	{
@@ -89,6 +99,10 @@ void VehicleParticle::UpdateBackParticle()
 
 	// 空中に浮かんでいるとき
 	if (m_vehicle->GetFlying())
+		return;
+
+	// 池の中のとき
+	if (m_lake->IsEnabled() && m_vehicle->transform->GetWPos().y < m_lake->GetHeight() - BG_LAKE_SPACE)
 		return;
 
 	// 速さによってクールダウンタイムを変更する
@@ -123,6 +137,12 @@ void VehicleParticle::UpdateBackParticle()
 
 	// 現在位置から色を決める
 	auto heightColor = m_terrain->GetHeightColor(transform->GetWPos().y);
+
+	// 池の場合は色を変更する
+	if (m_lake->IsEnabled() && m_vehicle->transform->GetWPos().y < m_lake->GetHeight())
+	{
+		heightColor = m_lake->GetBaseColor();
+	}
 
 	// 実体を生成する
 	boxObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\vehicle_box.x");
