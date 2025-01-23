@@ -29,6 +29,8 @@ public:
 	D3DXCOLOR GetHeightColor(const float& height);
 	// 指定の位置の色を取得する
 	D3DXCOLOR GetVertexColor(const int& x, const int& y);
+	// 頂点の高さを取得する
+	float GetVertexHeight(const int& x, const int& y);
 
 	static const int TERRAIN_SIZE = 150;
 	static const float TERRAIN_SCALE;
@@ -62,8 +64,6 @@ private:
 	bool m_lakeEnabled;	// 湖の有効状態
 	float m_lakeHeight;	// 湖の高さ
 
-	// 頂点の高さを取得する
-	float GetVertexHeight(const int& x, const int& y);
 	// 頂点の高さを設定する
 	void SetVertexHeight(const int& x, const int& y, const float& height);
 

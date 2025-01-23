@@ -139,7 +139,7 @@ void VehicleParticle::UpdateBackParticle()
 	auto heightColor = m_terrain->GetHeightColor(transform->GetWPos().y);
 
 	// ’r‚Ìê‡‚ÍF‚ð•ÏX‚·‚é
-	if (m_lake->IsEnabled() && m_vehicle->transform->GetWPos().y < m_lake->GetHeight())
+	if (m_lake->IsEnabled() && m_vehicle->transform->GetWPos().y < m_lake->GetHeight() + BG_LAKE_TOP)
 	{
 		heightColor = m_lake->GetBaseColor();
 	}

@@ -15,6 +15,7 @@ const int ResultTerrain::SIZE = 500;
 const float ResultTerrain::TRAVELLING_POINT_SIZE = 5.0f;
 const int ResultTerrain::TRAVELLING_FRAME = 2;
 const int ResultTerrain::TRAVELLING_ENDFRAME = 120;
+const float ResultTerrain::POINT_SIZE = SIZE / (float)Terrain::TERRAIN_SIZE;
 //=============================================================
 // [ResultTerrain] 初期化
 //=============================================================
@@ -46,10 +47,24 @@ void ResultTerrain::Init()
 	m_terrainVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(SIZE * -0.5f, SIZE * -0.5f, 0.0f) + transform->GetWPos();
-	pVtx[1].pos = D3DXVECTOR3(SIZE * 0.5f, SIZE * -0.5f, 0.0f) + transform->GetWPos();
-	pVtx[2].pos = D3DXVECTOR3(SIZE * -0.5f, SIZE * 0.5f, 0.0f) + transform->GetWPos();
-	pVtx[3].pos = D3DXVECTOR3(SIZE * 0.5f, SIZE * 0.5f, 0.0f) + transform->GetWPos();
+	pVtx[0].pos = D3DXVECTOR3(SIZE * -0.5f, SIZE * -0.5f, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(SIZE * 0.5f, SIZE * -0.5f, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(SIZE * -0.5f, SIZE * 0.5f, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(SIZE * 0.5f, SIZE * 0.5f, 0.0f);
+
+	// サイズと回転
+	D3DXMATRIX rollMtx;
+	D3DXMatrixIdentity(&rollMtx);
+	D3DXMatrixRotationZ(&rollMtx, MAP_ROLL);
+	D3DXVec3TransformCoord(&pVtx[0].pos, &pVtx[0].pos, &rollMtx);
+	D3DXVec3TransformCoord(&pVtx[1].pos, &pVtx[1].pos, &rollMtx);
+	D3DXVec3TransformCoord(&pVtx[2].pos, &pVtx[2].pos, &rollMtx);
+	D3DXVec3TransformCoord(&pVtx[3].pos, &pVtx[3].pos, &rollMtx);
+
+	pVtx[0].pos += transform->GetWPos();
+	pVtx[1].pos += transform->GetWPos();
+	pVtx[2].pos += transform->GetWPos();
+	pVtx[3].pos += transform->GetWPos();
 
 	// rhwの設定
 	pVtx[0].rhw = 1.0f;
@@ -84,12 +99,16 @@ void ResultTerrain::Init()
 		// 頂点座標の設定
 		D3DXVECTOR3 pos = (travellingData[i].pos / static_cast<float>((Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE))) * SIZE;
 		pos.y = pos.z;
-		pos += transform->GetWPos();
 		pos.z = 0.0f;
 		pVtx[0].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * -0.5f, TRAVELLING_POINT_SIZE * -0.5f, 0.0f) + pos;
 		pVtx[1].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * 0.5f, TRAVELLING_POINT_SIZE * -0.5f, 0.0f) + pos;
 		pVtx[2].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * -0.5f, TRAVELLING_POINT_SIZE * 0.5f, 0.0f) + pos;
 		pVtx[3].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * 0.5f, TRAVELLING_POINT_SIZE * 0.5f, 0.0f) + pos;
+
+		pVtx[0].pos += transform->GetWPos();
+		pVtx[1].pos += transform->GetWPos();
+		pVtx[2].pos += transform->GetWPos();
+		pVtx[3].pos += transform->GetWPos();
 
 		// rhwの設定
 		pVtx[0].rhw = 1.0f;
@@ -115,7 +134,12 @@ void ResultTerrain::Init()
 
 	// 頂点バッファをアンロックする
 	m_travellingVtxBuff->Unlock();
+
+	// 池マップの初期化
+	InitLakeMap();
 }
+
+
 
 //=============================================================
 // [ResultTerrain] 終了
@@ -136,10 +160,18 @@ void ResultTerrain::Uninit()
 		m_terrainVtxBuff = nullptr;
 	}
 
+	// 走行マップの破棄
 	if (m_travellingVtxBuff != nullptr)
 	{
 		m_travellingVtxBuff->Release();
 		m_travellingVtxBuff = nullptr;
+	}
+
+	// 池マップの破棄
+	if (m_lakeVtxBuff != nullptr)
+	{
+		m_lakeVtxBuff->Release();
+		m_lakeVtxBuff = nullptr;
 	}
 }
 
@@ -205,6 +237,25 @@ void ResultTerrain::DrawUI()
 		2); //描画するプリミティブ数
 
 
+	// 池データの描画
+	for (unsigned int i = 0; i < m_numLake; i++)
+	{
+		// 頂点バッファをデータストリームに設定
+		pDevice->SetStreamSource(0, m_lakeVtxBuff, 0, sizeof(VERTEX_2D));
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		// テクスチャの設定
+		pDevice->SetTexture(0, nullptr);
+
+		// ポリゴンの描画
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
+			i * 4, //描画する最初の頂点インデックス
+			2); //描画するプリミティブ数
+	}
+
+
 	// 走行データの描画
 	for (unsigned int i = 0; i < travellingData.size(); i++)
 	{
@@ -225,4 +276,107 @@ void ResultTerrain::DrawUI()
 				2); //描画するプリミティブ数
 		}
 	}
+}
+
+//=============================================================
+// [ResultTerrain] 池マップの初期化
+//=============================================================
+void ResultTerrain::InitLakeMap()
+{
+	struct LakePos
+	{
+		int x, y;
+	};
+
+	// 池の位置を取得する
+	auto terrain = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain();
+	auto lake = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetLake();
+	std::vector<LakePos> lakePosList;
+	m_numLake = 0;
+
+	// 池がないときは終了する
+	if (!lake->IsEnabled())
+		return;
+
+	for (int x = 0; x < Terrain::TERRAIN_SIZE; x++)
+	{
+		for (int y = 0; y < Terrain::TERRAIN_SIZE; y++)
+		{
+			float height = lake->GetHeight();
+			float current = terrain->GetVertexHeight(x, y);
+			if (current < height)
+			{
+				LakePos pos;
+				pos.x = (Terrain::TERRAIN_SIZE-1) -x;
+				pos.y = y;
+				lakePosList.push_back(pos);
+				m_numLake++;
+			}
+		}
+	}
+
+	if (m_numLake <= 0)
+		return;
+
+
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
+
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * m_numLake, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_lakeVtxBuff, nullptr);
+	VERTEX_2D* pVtx; //頂点情報へのポインタ
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_lakeVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (auto itr = lakePosList.begin(); itr != lakePosList.end(); itr++)
+	{
+		D3DXVECTOR3 putPos;
+		putPos.x = (*itr).x * POINT_SIZE - SIZE *0.5f;
+		putPos.y = (*itr).y * POINT_SIZE - SIZE * 0.5f;
+		putPos.z = 0.0f;
+
+		// 頂点座標の設定
+		pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f) + putPos ;
+		pVtx[1].pos = D3DXVECTOR3(POINT_SIZE, 0.0f, 0.0f) + putPos;
+		pVtx[2].pos = D3DXVECTOR3(0.0f, POINT_SIZE, 0.0f) + putPos;
+		pVtx[3].pos = D3DXVECTOR3(POINT_SIZE, POINT_SIZE, 0.0f) + putPos;
+
+		// サイズと回転
+		D3DXMATRIX rollMtx;
+		D3DXMatrixIdentity(&rollMtx);
+		D3DXMatrixRotationZ(&rollMtx, LAKE_ROLL);
+		D3DXVec3TransformCoord(&pVtx[0].pos, &pVtx[0].pos, &rollMtx);
+		D3DXVec3TransformCoord(&pVtx[1].pos, &pVtx[1].pos, &rollMtx);
+		D3DXVec3TransformCoord(&pVtx[2].pos, &pVtx[2].pos, &rollMtx);
+		D3DXVec3TransformCoord(&pVtx[3].pos, &pVtx[3].pos, &rollMtx);
+
+		pVtx[0].pos += transform->GetWPos();
+		pVtx[1].pos += transform->GetWPos();
+		pVtx[2].pos += transform->GetWPos();
+		pVtx[3].pos += transform->GetWPos();
+
+		// rhwの設定
+		pVtx[0].rhw = 1.0f;
+		pVtx[1].rhw = 1.0f;
+		pVtx[2].rhw = 1.0f;
+		pVtx[3].rhw = 1.0f;
+
+		// 頂点カラー
+		pVtx[0].col = lake->GetBaseColor();
+		pVtx[1].col = lake->GetBaseColor();
+		pVtx[2].col = lake->GetBaseColor();
+		pVtx[3].col = lake->GetBaseColor();
+
+		// テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+		pVtx += 4;
+	}
+
+	// 頂点バッファをアンロックする
+	m_lakeVtxBuff->Unlock();
 }
