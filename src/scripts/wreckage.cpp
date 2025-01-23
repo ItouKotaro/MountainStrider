@@ -8,7 +8,7 @@
 
 // Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
 const float CWreckage::FADE_VALUE = 0.03f;
-const int CWreckage::START_TIME = 2000;
+const int CWreckage::START_TIME = 500;
 
 //=============================================================
 // [CWreckage] ‰Šú‰»
