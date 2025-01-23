@@ -25,6 +25,11 @@ public:
 	float GetMaxHeight() { return m_maxHeight; }
 	void LoadTerrainFile(const std::string path);
 
+	// 指定の高度の色を取得する
+	D3DXCOLOR GetHeightColor(const float& height);
+	// 指定の位置の色を取得する
+	D3DXCOLOR GetVertexColor(const int& x, const int& y);
+
 	static const int TERRAIN_SIZE = 150;
 	static const float TERRAIN_SCALE;
 	static const float TERRAIN_DISTANCE;
@@ -73,10 +78,6 @@ private:
 	void AddHeightColor(const float& height, const D3DXCOLOR& color);
 	// 傾斜カラーを追加する
 	void AddSlantColor(const float& minHeight, const float& maxHeight, const D3DXCOLOR& color, const float& rate = 1.0f);
-	// 指定の高度の色を取得する
-	D3DXCOLOR GetHeightColor(const float& height);
-	// 指定の位置の色を取得する
-	D3DXCOLOR GetVertexColor(const int& x, const int& y);
 
 	// 高度カラー
 	struct HeightColor

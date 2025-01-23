@@ -29,7 +29,12 @@ public:
 	std::vector<LPDIRECT3DTEXTURE9>* GetTextures() { return &m_apTexture; }
 	void SetAlpha(const float& fAlpha);
 	float* GetAlpha() { return m_fAlpha; }
+	void SetColor(const D3DXCOLOR& color) { m_color = color; }
+	D3DXCOLOR GetColor() { return m_color; }
+	void SetCustomColor(const bool& enabled) { m_customColor = enabled; }
 private:
+	bool m_customColor;
+	D3DXCOLOR m_color;
 	float* m_fAlpha;																// 不透明度
 	LPD3DXMESH m_pMesh;													// メッシュへのポインタ
 	ID3DXMesh* m_pShadowMesh;											// 影メッシュ

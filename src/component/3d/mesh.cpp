@@ -91,6 +91,14 @@ void CMesh::Draw()
 			fAlpha = pMat[nCntMat].MatD3D.Diffuse.a;
 		}
 
+		// 色
+		if (m_customColor)
+		{
+			pMat[nCntMat].MatD3D.Diffuse.r = m_color.r;
+			pMat[nCntMat].MatD3D.Diffuse.g = m_color.g;
+			pMat[nCntMat].MatD3D.Diffuse.b = m_color.b;
+		}
+
 		// マテリアルの設定
 		pMat[nCntMat].MatD3D.Diffuse.a = fAlpha;
 		if (!IsEnabledShader()) pDevice->SetMaterial(&pMat[nCntMat].MatD3D);

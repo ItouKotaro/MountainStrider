@@ -6,6 +6,11 @@
 //=============================================================
 #include "vehicle_particle.h"
 #include "scripts/trajectory.h"
+#include "component/3d/mesh.h"
+#include "component/3d/collision.h"
+#include "scripts/wreckage.h"
+#include "manager.h"
+#include "scene/game.h"
 
 //=============================================================
 // [VehicleParticle] 初期化
@@ -15,9 +20,15 @@ void VehicleParticle::Init()
 	// バイクを取得する
 	m_vehicle = gameObject->GetComponent<CVehicle>();
 
+	// 地形を取得する
+	m_terrain = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain();
+
 	// 軌跡の追加
 	m_trajectory = new GameObject();
 	m_trajectory->AddComponent<CTrajectory>()->SetShow(true);
+
+	// 後方パーティクルの初期化
+	m_backParticleTimer = 0.0f;
 }
 
 //=============================================================
@@ -34,6 +45,9 @@ void VehicleParticle::Update()
 {
 	// 軌跡の更新
 	UpdateTrajectory();
+
+	// 後方パーティクルの更新
+	UpdateBackParticle();
 }
 
 //=============================================================
@@ -59,4 +73,67 @@ void VehicleParticle::UpdateTrajectory()
 	D3DXVec3TransformCoord(&pos1, &pos1, &mtx);
 
 	trajectory->AddTrajectory(pos0, pos1);
+}
+
+//=============================================================
+// [VehicleParticle] 後方パーティクルの更新
+//=============================================================
+void VehicleParticle::UpdateBackParticle()
+{
+	// クールタイムが終わっていないとき
+	if (m_backParticleTimer > 0.0f)
+	{
+		m_backParticleTimer -= CManager::GetInstance()->GetDeltaTime();
+		return;
+	}
+
+	// 空中に浮かんでいるとき
+	if (m_vehicle->GetFlying())
+		return;
+
+	// 速さによってクールダウンタイムを変更する
+	float speed = m_vehicle->GetSpeed();
+
+	if (speed < BP_MIN_GENERATE) return;
+	else if (speed < 25.0f) m_backParticleTimer = 0.4f;
+	else if (speed < 35.0f) m_backParticleTimer = 0.3f;
+	else if (speed < 50.0f) m_backParticleTimer = 0.2f;
+	else if (speed < 60.0f) m_backParticleTimer = 0.15f;
+	else if (speed < 80.0f) m_backParticleTimer = 0.1f;
+	else m_backParticleTimer = 0.05f;
+
+	// ランダム要素
+	m_backParticleTimer += Benlib::RandomFloat(-BP_RANDOM_TIME, BP_RANDOM_TIME);
+
+	// ボックスを生成する
+	GameObject* boxObj = new GameObject("VehicleParticle", "Particle");
+
+	// 生成位置を決める
+	D3DXVECTOR3 generatePos = { Benlib::RandomFloat(-BP_RANDOM_WIDTH, BP_RANDOM_WIDTH), 0.0f, BP_BACK_RANGE };
+	D3DXMATRIX mtx = transform->GetMatrix();
+	D3DXVec3TransformCoord(&generatePos, &generatePos, &mtx);
+	boxObj->transform->SetPos(generatePos);
+
+	// サイズを決める
+	float size = Benlib::RandomFloat(BP_MIN_SIZE, BP_MIN_SIZE + speed * BP_SPEED_RATE);
+	boxObj->transform->SetScale(size);
+
+	// 回転を決める
+	boxObj->transform->SetRot(Benlib::RandomFloat(0.0f, D3DX_PI * 2.0f), Benlib::RandomFloat(0.0f, D3DX_PI * 2.0f), 0.0f);
+
+	// 現在位置から色を決める
+	auto heightColor = m_terrain->GetHeightColor(transform->GetWPos().y);
+
+	// 実体を生成する
+	boxObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\vehicle_box.x");
+	boxObj->GetComponent<CMesh>()->SetColor(heightColor * 0.7f);
+	boxObj->GetComponent<CMesh>()->SetCustomColor(true);
+	boxObj->AddComponent<CBoxCollider>(D3DXVECTOR3(size, size, size) * 2.0f);
+	boxObj->AddComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(
+		btVector3(sinf(transform->GetRot().y +D3DX_PI *0.5f) * Benlib::RandomFloat(-BP_EXPANSE_VALUE, BP_EXPANSE_VALUE),
+			Benlib::RandomFloat(30.0f, 30.0f + speed * 0.2f),
+			cosf(transform->GetRot().y + D3DX_PI * 0.5f) * Benlib::RandomFloat(-BP_EXPANSE_VALUE, BP_EXPANSE_VALUE))
+	);
+	boxObj->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, BP_GRAVITY, 0.0f));
+	boxObj->AddComponent<CWreckage>();
 }
