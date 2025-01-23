@@ -175,7 +175,7 @@ void CCameraMove::UpdateTPS()
 	btVector3 End = Start + btVector3(posS.x, posS.y, posS.z);
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-	if (RayCallback.hasHit())
+	if (RayCallback.hasHit() && CCollision::GetGameObjectFromCollisionObj(RayCallback.m_collisionObject)->GetName() != "VehicleParticle")
 	{ // ƒqƒbƒg‚µ‚½‚Æ‚«
 		D3DXVECTOR3 minPos = { 0.0f, 0.0f, 20.0f };
 		D3DXVec3TransformCoord(&minPos, &minPos, &mtxS);

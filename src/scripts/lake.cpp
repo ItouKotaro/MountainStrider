@@ -14,6 +14,15 @@
 //=============================================================
 void LakeManager::Init(Terrain* terrain, const std::string& path)
 {
+	// SEを読み込む
+	m_underwaterSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\ENVIRONMENTAL\\underwater.mp3", FMOD_2D | FMOD_LOOP_NORMAL);
+	m_diveWaterSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\divewater.mp3", FMOD_2D);
+	
+	m_audioPlayer = new GameObject();
+	m_audioPlayer->AddComponent<AudioSource>();
+	m_audioPlayer->GetComponent<AudioSource>()->Play(m_underwaterSE);
+	m_audioPlayer->GetComponent<AudioSource>()->SetPause(true);
+
 	// バイクを取得する
 	m_vehicle = GameObject::Find("Vehicle")->GetComponent<CVehicle>();
 
@@ -119,13 +128,39 @@ void LakeManager::Update()
 	if (!m_vehicle->gameObject->GetActive()) return;
 
 	D3DXVECTOR3 pos = m_vehicle->transform->GetWPos();
-	if (m_enabled && pos.y <= m_height &&
+	if (m_enabled && pos.y <= m_height - LAKE_INDEPTH &&
 		-Terrain::TERRAIN_DISTANCE_HALF <= pos.x && pos.x <= Terrain::TERRAIN_DISTANCE_HALF &&
 		-Terrain::TERRAIN_DISTANCE_HALF <= pos.z && pos.z <= Terrain::TERRAIN_DISTANCE_HALF)
 	{
 		// ダメージを与える
 		m_vehicle->AddDamage(m_enduranceDamage);
 		m_vehicle->AddFuel(-m_fuelDamage);
+
+		// 音を再生する
+		m_audioPlayer->GetComponent<AudioSource>()->SetPause(false);
+
+		// 水中に入ったときの処理
+		if (!m_isUnderWater)
+		{
+			m_audioPlayer->GetComponent<AudioSource>()->PlayOneShot(m_diveWaterSE);
+		}
+
+		// 水中状態
+		m_isUnderWater = true;
+	}
+	else
+	{
+		// 音を停止させる
+		m_audioPlayer->GetComponent<AudioSource>()->SetPause(true);
+
+		// 水中から出たとき処理
+		if (m_isUnderWater)
+		{
+			m_audioPlayer->GetComponent<AudioSource>()->PlayOneShot(m_diveWaterSE);
+		}
+
+		// 水中状態
+		m_isUnderWater = false;
 	}
 }
 

@@ -34,7 +34,8 @@ private:
 class MeteoCollision : public Component
 {
 public:
-	void Update();
+	void Init() override;
+	void Update() override;
 	void HitAction();
 private:
 	const float RANGE = 150.0f;

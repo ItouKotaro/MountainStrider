@@ -7,6 +7,7 @@
 #include "meteo.h"
 #include "manager.h"
 
+#include "component/3d/particle.h"
 #include "component/3d/collision.h"
 #include "scripts/destructible.h"
 #include "scripts/vehicle.h"
@@ -74,6 +75,35 @@ void MeteoEvent::Generate()
 	// è¦Î‚ð’Ç‰Á‚·‚é
 	GameObject* meteoObj = GameObject::LoadPrefab("data\\PREFAB\\props\\meteo00.pref", trans);
 	meteoObj->AddComponent<MeteoCollision>();
+}
+
+class MeteoParticle : public ParticleModule::Shape
+{
+public:
+	ResultData GetResult() override
+	{
+		ResultData data;
+		float angle = Benlib::RandomFloat(0.0f, D3DX_PI * 2.0f);
+		float radius = Benlib::RandomFloat(0.0f, 10.0f);
+		data.position = { sinf(angle) * radius, -10.0f, cosf(angle) * radius };
+		data.direction = { sinf(angle), 1.0f, cosf(angle) };
+		return data;
+	}
+};
+
+//=============================================================
+// [MeteoCollision] ‰Šú‰»
+//=============================================================
+void MeteoCollision::Init()
+{
+	GameObject* particleObj = new GameObject();
+	particleObj->SetParent(gameObject);
+	auto particle = particleObj->AddComponent<ParticleSystem>();
+	particle->SetShape(new MeteoParticle());
+	particle->GetEmission()->SetRateOverTime(30.0f);
+	particle->SetGravity(-0.1f);
+	particle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\smoke00.png");
+
 }
 
 //=============================================================

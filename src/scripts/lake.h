@@ -47,8 +47,14 @@ private:
 	float m_height;
 	float m_fuelDamage;
 	float m_enduranceDamage;
+	bool m_isUnderWater;
 	D3DXCOLOR m_baseColor;
 	CVehicle* m_vehicle;
+	GameObject* m_audioPlayer;
+	AudioClip m_underwaterSE;
+	AudioClip m_diveWaterSE;
+
+	const float LAKE_INDEPTH = 3.0f;
 };
 
 #endif // !_LAKE_H_
