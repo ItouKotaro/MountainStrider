@@ -49,10 +49,15 @@ public:
 	void Update();
 	bool GetPress(const std::string& key);
 	bool GetTrigger(const std::string& key);
+	void SetVibration(const int& powerL, const int& powerR, const float& time);
 	XINPUT_STATE& GetState() { return m_aJoyKeyState; }
 private:
 	XINPUT_STATE m_aJoyKeyState;
 	XINPUT_STATE m_aJoyKeyStateTrigger;
+
+	// バイブレーション
+	float m_vibrationTimer;
+	XINPUT_VIBRATION m_vibration;
 };
 
 // マウスデバイス

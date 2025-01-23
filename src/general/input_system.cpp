@@ -554,6 +554,19 @@ void CGamepadDevice::Update()
 		m_aJoyKeyStateTrigger.Gamepad.wButtons = (m_aJoyKeyState.Gamepad.wButtons ^ joykeyState.Gamepad.wButtons) & joykeyState.Gamepad.wButtons;
 		m_aJoyKeyState = joykeyState;
 	}
+
+	// バイブレーションの終了処理
+	if (m_vibrationTimer > 0.0f)
+	{
+		m_vibrationTimer -= CManager::GetInstance()->GetDeltaTime();
+
+		if (m_vibrationTimer <= 0.0f)
+		{
+			m_vibration.wLeftMotorSpeed = 0;
+			m_vibration.wRightMotorSpeed = 0;
+			XInputSetState(0, &m_vibration);
+		}
+	}
 }
 
 //=============================================================
@@ -590,6 +603,21 @@ bool CGamepadDevice::GetTrigger(const std::string& key)
 		}
 	}
 	return false;
+}
+
+//=============================================================
+// [CGamepadDevice] バイブレーションを設定する
+//=============================================================
+void CGamepadDevice::SetVibration(const int& powerL, const int& powerR, const float& time)
+{
+	m_vibrationTimer = time;
+
+	// バイブレーションスタート
+	m_vibration.wLeftMotorSpeed = static_cast<WORD>(powerL);
+	m_vibration.wRightMotorSpeed = static_cast<WORD>(powerR);
+
+	// 適用する
+	XInputSetState(0, &m_vibration);
 }
 
 

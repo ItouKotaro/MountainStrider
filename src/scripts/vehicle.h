@@ -51,6 +51,7 @@ public:
 
 	static const float FLYING_DISTANCE;			// 飛んでいると判断する距離
 	static const float GROUND_DISTANCE;			// 地面と判断する距離
+	static const int VIBRATION_VALUE;				// バイブレーションの強さ
 
 private:
 	void LandingControlVehicle();		// 地面時の操作

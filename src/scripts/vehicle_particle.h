@@ -44,7 +44,7 @@ private:
 	const float BP_EXPANSE_VALUE = 5.0f;
 	const float BP_GRAVITY = -80.0f;
 	const float BG_LAKE_SPACE = 20.0f;
-	const float BG_LAKE_TOP = 5.0f;
+	const float BG_LAKE_TOP = 10.0f;
 };
 
 #endif // !_VEHICLE_PARTICLE_H_

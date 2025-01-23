@@ -27,6 +27,7 @@ const float CVehicle::MAX_FUEL = 3000.0f;
 const float CVehicle::MAX_ENDURANCE = 300.0f;
 const float CVehicle::FLYING_DISTANCE = 30.0f;
 const float CVehicle::GROUND_DISTANCE = 5.0f;
+const int CVehicle::VIBRATION_VALUE = 10000;
 
 float CVehicle::m_fuel = CVehicle::MAX_FUEL;
 float CVehicle::m_endurance = CVehicle::MAX_ENDURANCE;
@@ -248,10 +249,15 @@ void CVehicle::LandingControlVehicle()
 		// エンジン力を取得する
 		float fEngineForce = INPUT_INSTANCE->onInput("accel") || pGamepadDev->GetState().Gamepad.bRightTrigger ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
 
+		// モーターを有効にする
 		pBackHinge->enableMotor(3, INPUT_INSTANCE->onInput("accel"));
 
 		// タイヤを回転させる
 		pBackHinge->setTargetVelocity(3, fEngineForce);
+
+		// バイブレーション
+		if (INPUT_INSTANCE->onInput("accel") && INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)
+			INPUT_INSTANCE->GetInstance()->GetInputDevice<CGamepadDevice>()->SetVibration(VIBRATION_VALUE, VIBRATION_VALUE, 0.2f);
 
 		// 燃料を減らす
 		m_fuel -= fEngineForce * 0.01f;

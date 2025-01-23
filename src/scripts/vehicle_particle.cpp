@@ -146,7 +146,7 @@ void VehicleParticle::UpdateBackParticle()
 
 	// ŽÀ‘Ì‚ð¶¬‚·‚é
 	boxObj->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\vehicle_box.x");
-	boxObj->GetComponent<CMesh>()->SetColor(heightColor * 0.7f);
+	boxObj->GetComponent<CMesh>()->SetColor(heightColor);
 	boxObj->GetComponent<CMesh>()->SetCustomColor(true);
 	boxObj->AddComponent<CBoxCollider>(D3DXVECTOR3(size, size, size) * 2.0f);
 	boxObj->AddComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(
