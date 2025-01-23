@@ -13,7 +13,7 @@
 const std::string ResultTerrain::TERRAIN_TEX = "data\\convenience.bmp";
 const int ResultTerrain::SIZE = 500;
 const float ResultTerrain::TRAVELLING_POINT_SIZE = 5.0f;
-const int ResultTerrain::TRAVELLING_FRAME = 2;
+const int ResultTerrain::TRAVELLING_FRAME = 1;
 const int ResultTerrain::TRAVELLING_ENDFRAME = 120;
 const float ResultTerrain::POINT_SIZE = SIZE / (float)Terrain::TERRAIN_SIZE;
 //=============================================================

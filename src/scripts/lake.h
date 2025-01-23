@@ -38,6 +38,7 @@ class LakeManager
 public:
 	LakeManager() : m_enabled(false), m_height(0.0f), m_fuelDamage(0.0f), m_enduranceDamage(0.0f), m_baseColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)){}
 	void Init(Terrain* terrain, const std::string& path);
+	void Uninit();
 	void Update();
 	bool IsEnabled() { return m_enabled; }
 	D3DXCOLOR GetBaseColor() { return m_baseColor; }

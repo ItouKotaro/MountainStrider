@@ -49,6 +49,8 @@ public:
 	static const float MAX_FUEL;						// 燃料の最大値
 	static const float MAX_ENDURANCE;			// 耐久値の最大値
 
+	static const float GRAVITY;							// 重力
+
 	static const float FLYING_DISTANCE;			// 飛んでいると判断する距離
 	static const float GROUND_DISTANCE;			// 地面と判断する距離
 	static const int VIBRATION_VALUE;				// バイブレーションの強さ

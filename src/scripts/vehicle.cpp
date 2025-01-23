@@ -28,6 +28,7 @@ const float CVehicle::MAX_ENDURANCE = 300.0f;
 const float CVehicle::FLYING_DISTANCE = 30.0f;
 const float CVehicle::GROUND_DISTANCE = 5.0f;
 const int CVehicle::VIBRATION_VALUE = 10000;
+const float CVehicle::GRAVITY = -80.0f;
 
 float CVehicle::m_fuel = CVehicle::MAX_FUEL;
 float CVehicle::m_endurance = CVehicle::MAX_ENDURANCE;
@@ -55,7 +56,7 @@ void CVehicle::Init()
 	CCollision::GetCollision(gameObject)->SetMass(300.0f);
 	gameObject->AddComponent<CRigidBody>();
 	gameObject->GetComponent<CRigidBody>()->EnableAlwayActive();
-	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, -80.0f, 0.0f));
+	gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setGravity(btVector3(0.0f, GRAVITY, 0.0f));
 	gameObject->AddComponent<VehicleAction>();
 	gameObject->AddComponent<VehicleSound>();
 	gameObject->AddComponent<VehicleParticle>();

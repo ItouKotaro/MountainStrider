@@ -28,19 +28,27 @@ void GameObject::UpdateAll()
 	// 更新処理を行う
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if ((*itr)->GetActive())
-		{ // アクティブのとき
-			// コンポーネントの更新処理を行う
-			for (UINT i = 0; i < (*itr)->m_components.size(); i++)
-			{
-				const auto irev = (*itr)->m_components.size() - 1 - i;
-
-				if ((*itr)->m_components[irev]->enabled)
+		try
+		{
+			if ((*itr)->GetActive())
+			{ // アクティブのとき
+				// コンポーネントの更新処理を行う
+				for (UINT i = 0; i < (*itr)->m_components.size(); i++)
 				{
-					(*itr)->m_components[irev]->Update();
+					const auto irev = (*itr)->m_components.size() - 1 - i;
+
+					if ((*itr)->m_components[irev]->enabled)
+					{
+						(*itr)->m_components[irev]->Update();
+					}
 				}
 			}
 		}
+		catch (const std::exception&)
+		{
+			MessageBox(nullptr, (*itr)->GetName().c_str(), "エラー", MB_OK);
+		}
+	
 	}
 }
 

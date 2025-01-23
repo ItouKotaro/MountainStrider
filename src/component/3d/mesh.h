@@ -9,6 +9,7 @@
 
 #include <component.h>
 #include "main.h"
+#include "component/3d/camera.h"
 
 // メッシュ
 class CMesh : public Component
@@ -32,6 +33,10 @@ public:
 	void SetColor(const D3DXCOLOR& color) { m_color = color; }
 	D3DXCOLOR GetColor() { return m_color; }
 	void SetCustomColor(const bool& enabled) { m_customColor = enabled; }
+
+	static void SetCamera(CCamera* camera) { m_camera = camera; }
+
+	static const float CAMERA_ALPHA_DISTANCE;
 private:
 	bool m_customColor;
 	D3DXCOLOR m_color;
@@ -41,6 +46,8 @@ private:
 	LPD3DXBUFFER m_pBuffMat;												// マテリアルへのポインタ
 	DWORD m_dwNumMat;														// マテリアルの数
 	std::vector<LPDIRECT3DTEXTURE9> m_apTexture;				// テクスチャ
+
+	static CCamera* m_camera;
 };
 
 #endif // !_MESH_H_

@@ -173,6 +173,12 @@ void SumActionPointText::Init()
 	m_text->SetAlign(CText::RIGHT);
 	m_text->SetFontSize(150);
 
+	m_bg = new SingleComponent<CPolygon>();
+	m_bg->Init();
+	m_bg->SetParent(gameObject);
+	m_bg->SetColor(D3DCOLOR_RGBA(59, 33, 87, 255));
+
+
 	m_points = 0;
 	m_viewPoints = 0;
 	m_textScale = 1.0f;
@@ -185,6 +191,9 @@ void SumActionPointText::Uninit()
 {
 	m_text->Uninit();
 	delete m_text;
+
+	m_bg->Uninit();
+	delete m_bg;
 }
 
 //=============================================================
@@ -216,6 +225,19 @@ void SumActionPointText::Update()
 		m_points = 0;
 		m_viewPoints = 0;
 	}
+
+	// ”wŒi‚ÌƒTƒCƒY‚ÆˆÊ’u‚ð’²®‚·‚é
+	m_bg->transform->SetSize(m_bg->transform->GetSize().x + (std::to_string(m_viewPoints).length() * 85.0f - m_bg->transform->GetSize().x) * 0.08f, 140.0f);
+	float anim = m_bg->transform->GetSize().x - (std::to_string(m_viewPoints).length()) * 85.0f;
+	m_bg->transform->SetPos(std::to_string(m_viewPoints).length() * -85.0f - anim, -15.0f);
+
+	// “§–¾“x‚Ì•ÏX
+	D3DXCOLOR bgColor = m_bg->GetColor();
+	bgColor.a = m_text->GetAlpha();
+	m_bg->SetColor(bgColor);
+
+	// ”wŒi‚ÌXV
+	m_bg->Update();
 }
 
 //=============================================================
@@ -223,6 +245,7 @@ void SumActionPointText::Update()
 //=============================================================
 void SumActionPointText::DrawUI()
 {
+	m_bg->DrawUI();
 	m_text->DrawUI();
 }
 

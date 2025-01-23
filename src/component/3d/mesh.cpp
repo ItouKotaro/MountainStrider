@@ -9,6 +9,9 @@
 #include <Shlwapi.h>								// ファイル存在チェックに使用
 #pragma comment(lib, "Shlwapi.lib")			// ファイル存在チェックに使用
 
+CCamera* CMesh::m_camera = nullptr;
+const float CMesh::CAMERA_ALPHA_DISTANCE = 80.0f;
+
 //=============================================================
 // [CMesh] コンストラクタ
 //=============================================================
@@ -101,6 +104,24 @@ void CMesh::Draw()
 
 		// マテリアルの設定
 		pMat[nCntMat].MatD3D.Diffuse.a = fAlpha;
+
+		// カメラとの距離で透明度を特別に変更する
+		if (m_camera != nullptr)
+		{
+			float distance = Benlib::PosDistance(m_camera->transform->GetWPos(), transform->GetWPos());
+
+			// 透明範囲内の時
+			if (distance < CAMERA_ALPHA_DISTANCE)
+			{
+				float alpha = distance / (float)CAMERA_ALPHA_DISTANCE - 0.05f;
+				pMat[nCntMat].MatD3D.Diffuse.a = alpha;
+
+				// Zバッファの書き込みを無効にする
+				pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+			}
+		}
+
+		// マテリアル適用
 		if (!IsEnabledShader()) pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
 		// テクスチャの設定
@@ -124,6 +145,9 @@ void CMesh::Draw()
 
 		// モデル（パーツ）の描画
 		m_pMesh->DrawSubset(nCntMat);
+
+		// Zバッファの書き込みを無効にする
+		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 		// マテリアル設定を戻す
 		pMat[nCntMat].MatD3D.Diffuse.a = fBeforeAlpha;

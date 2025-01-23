@@ -13,6 +13,7 @@
 #include "component/3d/field.h"
 #include "component/other/audio.h"
 #include "component/3d/particle.h"
+#include "component/3d/mesh.h"
 
 #include "scripts/vehicle.h"
 #include "scripts/terrain.h"
@@ -59,6 +60,7 @@ void CGameScene::Init()
 		m_camera->GetComponent<CCamera>()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 255));
 		m_camera->GetComponent<CCamera>()->m_fClippingPlanesFar = 5000.0f;
 		m_camera->GetComponent<CCamera>()->GetSkybox()->LoadSkybox("data\\SKYBOX\\daylight.json");
+		CMesh::SetCamera(m_camera->GetComponent<CCamera>());
 	}
 
 	// ライトを作成
@@ -144,6 +146,9 @@ void CGameScene::Init()
 //=============================================================
 void CGameScene::Uninit()
 {
+	// メッシュに設定したカメラをリセットする
+	CMesh::SetCamera(nullptr);
+
 	// 地形の破棄
 	if (m_terrain != nullptr)
 	{
@@ -163,7 +168,9 @@ void CGameScene::Uninit()
 	// 湖の破棄
 	if (m_lake != nullptr)
 	{
+		m_lake->Uninit();
 		delete m_lake;
+		m_lake = nullptr;
 	}
 
 	// 環境効果の破棄

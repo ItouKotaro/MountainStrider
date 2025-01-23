@@ -97,8 +97,8 @@ void VehicleParticle::UpdateBackParticle()
 		return;
 	}
 
-	// ‹ó’†‚É•‚‚©‚ñ‚Å‚¢‚é‚Æ‚«
-	if (m_vehicle->GetFlying())
+	// ’n–Ê‚É‚Â‚¢‚Ä‚¢‚È‚¢‚Æ‚«
+	if (m_vehicle->GetGroundDistance() > CVehicle::GROUND_DISTANCE)
 		return;
 
 	// ’r‚Ì’†‚Ì‚Æ‚«
@@ -139,7 +139,7 @@ void VehicleParticle::UpdateBackParticle()
 	auto heightColor = m_terrain->GetHeightColor(transform->GetWPos().y);
 
 	// ’r‚Ìê‡‚ÍF‚ð•ÏX‚·‚é
-	if (m_lake->IsEnabled() && m_vehicle->transform->GetWPos().y < m_lake->GetHeight() + BG_LAKE_TOP)
+	if (m_lake->IsEnabled() && m_vehicle->transform->GetWPos().y < m_lake->GetHeight())
 	{
 		heightColor = m_lake->GetBaseColor();
 	}

@@ -108,6 +108,7 @@ void ResultViewBar::Update()
 
 	// 現在の進行度を計算する
 	m_viewProgress = m_viewBefore + ((m_viewObjective - m_viewBefore) / ANIM_FRAME) * (m_animCounter+1);
+	if (m_viewProgress < 0.0f) m_viewProgress = 0.0f;
 
 	// 進行度を更新する
 	m_viewBar->SetProgress(m_viewProgress);

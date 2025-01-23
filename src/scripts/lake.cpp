@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "internal/data_manager.h"
 #include "scene/game.h"
+#include "component/3d/collision.h"
 
 //=============================================================
 // [LakeManager] 初期化
@@ -80,7 +81,7 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 				auto lakeField = lakeFieldObj->AddComponent<LakeField>();
 
 				// サイズを設定する
-				lakeField->SetSize(Terrain::TERRAIN_DISTANCE, Terrain::TERRAIN_DISTANCE);
+				lakeField->SetSize(Terrain::TERRAIN_DISTANCE * 1.5f, Terrain::TERRAIN_DISTANCE * 1.5f);
 
 				std::string lakePath = "";
 				int lakeLoop = 1;
@@ -121,6 +122,15 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 }
 
 //=============================================================
+// [LakeManager] 終了
+//=============================================================
+void LakeManager::Uninit()
+{
+	AudioManager::GetInstance()->RemoveClip(m_underwaterSE);
+	AudioManager::GetInstance()->RemoveClip(m_diveWaterSE);
+}
+
+//=============================================================
 // [LakeManager] 更新
 //=============================================================
 void LakeManager::Update()
@@ -135,6 +145,11 @@ void LakeManager::Update()
 		// ダメージを与える
 		m_vehicle->AddDamage(m_enduranceDamage);
 		m_vehicle->AddFuel(-m_fuelDamage);
+
+		// 浮力
+		m_vehicle->gameObject->GetComponent<CRigidBody>()->GetRigidBody()->applyCentralForce(
+			btVector3(sinf(m_vehicle->transform->GetWRot().y) * 10000.0f, 15000.0f, cosf(m_vehicle->transform->GetWRot().y) * 10000.0f)
+		);
 
 		// 音を再生する
 		m_audioPlayer->GetComponent<AudioSource>()->SetPause(false);

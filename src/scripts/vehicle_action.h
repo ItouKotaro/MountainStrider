@@ -32,6 +32,7 @@ public:
 	}
 private:
 	SingleComponent<CText>* m_text;
+	SingleComponent<CPolygon>* m_bg;
 	int m_points;
 	int m_viewPoints;
 	float m_textScale;
