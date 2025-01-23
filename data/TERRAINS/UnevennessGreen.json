@@ -27,7 +27,7 @@
             "height": -0.3,
             "fuel_damage": 1.5,
             "endurance_damage": 0.0,
-            "base_color": [0, 0, 255, 255],
+            "base_color": [90, 168, 219, 200],
             "textures":
             [
                 {
