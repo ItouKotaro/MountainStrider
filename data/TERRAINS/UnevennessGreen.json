@@ -44,17 +44,17 @@
     {
         "morning":
         {
-            "path": "data\\SOUND\\BGM\\result.mp3",
+            "path": "data\\SOUND\\BGM\\green00.mp3",
             "volume": 1.0
         },
         "daytime":
         {
-            "path": "data\\SOUND\\BGM\\result.mp3",
+            "path": "data\\SOUND\\BGM\\green00.mp3",
             "volume": 1.0
         },
         "night":
         {
-            "path": "data\\SOUND\\BGM\\result.mp3",
+            "path": "data\\SOUND\\BGM\\green00.mp3",
             "volume": 1.0
         }
     },

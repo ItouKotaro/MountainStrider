@@ -104,7 +104,7 @@ void ClearResult::Init()
 
 	// BGM‚ðÄ¶‚·‚é
 	m_volumeFade = 0.0f;
-	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\result.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
+	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\SYSTEM\\result.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
 	m_clickSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\click.mp3", FMOD_2D);
 
 	m_bgmObj = new GameObject();
@@ -506,7 +506,7 @@ void GameOverResult::Init()
 
 	// BGM‚ðÄ¶‚·‚é
 	m_volumeFade = 0.0f;
-	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\gameover.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
+	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\SYSTEM\\gameover.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
 	m_bgmObj = new GameObject();
 	m_bgmObj->AddComponent<AudioSource>()->Play(m_bgm);
 	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);

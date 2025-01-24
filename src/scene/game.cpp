@@ -117,7 +117,7 @@ void CGameScene::Init()
 
 	// 環境効果
 	m_environmental = new EnvironmentalEffect();
-	m_environmental->Init();
+	m_environmental->Init(terrainPath);
 
 	// イベント
 	m_events = new EventManager();

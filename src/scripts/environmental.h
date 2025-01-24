@@ -15,7 +15,7 @@ class EnvironmentalEffect
 {
 public:
 	EnvironmentalEffect() : m_time(TIME::MORNING), m_weather(nullptr) {}
-	void Init();
+	void Init(const std::string path);
 	void Uninit();
 	void Update();
 	CCamera* GetLightCamera() { return m_light->GetComponent<CCamera>(); }
@@ -42,6 +42,9 @@ private:
 	Weather* m_weather;	// 天候
 	GameObject* m_light;	// ライト（影用）
 	GameObject* m_vehicle;// バイク（追跡用）
+
+	AudioClip m_bgmClip;
+	GameObject* m_bgm;	// BGM
 };
 
 #endif // !_ENVIRONMENTAL_H_
