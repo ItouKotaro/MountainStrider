@@ -31,6 +31,10 @@ private:
 	SingleComponent<ButtonUI>* m_backArrow;
 	SingleComponent<ButtonUI>* m_nextArrow;
 
+	// ‰¹
+	SingleComponent<AudioSource>* m_sePlayer;
+	AudioClip m_clickSE;
+
 	// î•ñƒpƒlƒ‹
 	Item* m_infoItem;
 	SingleComponent<CPolygon>* m_infoEdge;

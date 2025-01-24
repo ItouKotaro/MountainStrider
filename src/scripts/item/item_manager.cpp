@@ -67,18 +67,34 @@ Item* ItemManager::GetCarryOn(int idx)
 //=============================================================
 // [ItemManager] éùÇøâ^Ç—ÉAÉCÉeÉÄÇ…ê›íËÇ∑ÇÈ
 //=============================================================
-void ItemManager::ToggleCarryOn(Item* item)
+bool ItemManager::ToggleCarryOn(Item* item)
 {
 	if (m_carryOn[0] == item)
+	{
 		m_carryOn[0] = nullptr;
+		return true;
+	}
 	else if (m_carryOn[1] == item)
+	{
 		m_carryOn[1] = nullptr;
+		return true;
+	}
 	else
 	{
 		if (m_carryOn[0] == nullptr)
+		{
 			m_carryOn[0] = item;
+			return true;
+		}
 		else if (m_carryOn[1] == nullptr)
+		{
 			m_carryOn[1] = item;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 

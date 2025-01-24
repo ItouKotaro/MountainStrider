@@ -36,7 +36,7 @@ public:
 	Item* GetCarryOn(int idx);
 
 	// アイテムの持ち込みに設定する
-	void ToggleCarryOn(Item* item);
+	bool ToggleCarryOn(Item* item);
 private:
 	Item* m_carryOn[2];						// 持ち込みアイテム
 	std::vector<Item*> m_inventory;	// インベントリ

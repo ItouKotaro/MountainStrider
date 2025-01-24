@@ -86,6 +86,11 @@ void InventoryUI::Init()
 	m_infoDescription->SetParent(m_infoBG->transform);
 	m_infoDescription->SetAlign(CText::CENTER);
 	m_infoDescription->transform->SetPos(250.0f, 95.0f);
+
+	// ‰¹‚Ì¶¬
+	m_clickSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\click.mp3", FMOD_2D);
+	m_sePlayer = new SingleComponent<AudioSource>();
+	m_sePlayer->Init();
 }
 
 //=============================================================
@@ -122,6 +127,11 @@ void InventoryUI::Uninit()
 		m_itemTexture[i]->Uninit();
 		delete m_itemTexture[i];
 	}
+
+	m_sePlayer->Uninit();
+	delete m_sePlayer;
+
+	AudioManager::GetInstance()->RemoveClip(m_clickSE);
 }
 
 //=============================================================
@@ -181,7 +191,12 @@ void InventoryUI::Update()
 				// ƒNƒŠƒbƒN‚³‚ê‚½‚Æ‚«
 				if (INPUT_INSTANCE->onTrigger("lclick"))
 				{
-					ItemManager::GetInstance()->ToggleCarryOn(pInventory->at(m_headIdx + i));
+					// Ø‚è‘Ö‚¦‚é
+					if (ItemManager::GetInstance()->ToggleCarryOn(pInventory->at(m_headIdx + i)))
+					{
+						// ‰¹‚ð–Â‚ç‚·
+						m_sePlayer->PlayOneShot(m_clickSE);
+					}
 				}
 			}
 		}
@@ -206,6 +221,7 @@ void InventoryUI::Update()
 	m_infoBG->Update();
 	m_infoName->Update();
 	m_infoDescription->Update();
+	m_sePlayer->Update();
 
 	for (int i = 0; i < 4; i++)
 	{
