@@ -143,13 +143,21 @@ void LakeManager::Update()
 		-Terrain::TERRAIN_DISTANCE_HALF <= pos.z && pos.z <= Terrain::TERRAIN_DISTANCE_HALF)
 	{
 		// ƒ_ƒ[ƒW‚ð—^‚¦‚é
-		m_vehicle->AddDamage(m_enduranceDamage);
-		m_vehicle->AddFuel(-m_fuelDamage);
+		if (m_vehicle->gameObject->GetActive())
+		{
+			m_vehicle->AddDamage(m_enduranceDamage);
+			m_vehicle->AddFuel(-m_fuelDamage);
+		}
 
 		// •‚—Í
 		m_vehicle->gameObject->GetComponent<CRigidBody>()->GetRigidBody()->applyCentralForce(
-			btVector3(sinf(m_vehicle->transform->GetWRot().y) * 10000.0f, 15000.0f, cosf(m_vehicle->transform->GetWRot().y) * 10000.0f)
+			btVector3(0.0f, 15000.0f, 0.0f)
 		);
+
+		btVector3 linerVelocity = m_vehicle->gameObject->GetComponent<CRigidBody>()->GetRigidBody()->getLinearVelocity();
+		linerVelocity.setX(linerVelocity.getX() * LAKE_RESISTANCE);
+		linerVelocity.setZ(linerVelocity.getZ() * LAKE_RESISTANCE);
+		m_vehicle->gameObject->GetComponent<CRigidBody>()->GetRigidBody()->setLinearVelocity(linerVelocity);
 
 		// ‰¹‚ðÄ¶‚·‚é
 		m_audioPlayer->GetComponent<AudioSource>()->SetPause(false);

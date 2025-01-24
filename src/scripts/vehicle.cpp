@@ -191,6 +191,9 @@ void CVehicle::SetPos(const D3DXVECTOR3& pos)
 //=============================================================
 void CVehicle::AddDamage(const float& value)
 {
+	if (!gameObject->GetActive())
+		return;
+
 	// ‘Ï‹v’l‚ğŒ¸‚ç‚·
 	m_endurance -= value;
 

@@ -40,6 +40,25 @@
         }
     },
 
+    "music":
+    {
+        "morning":
+        {
+            "path": "data\\SOUND\\BGM\\result.mp3",
+            "volume": 1.0
+        },
+        "daytime":
+        {
+            "path": "data\\SOUND\\BGM\\result.mp3",
+            "volume": 1.0
+        },
+        "night":
+        {
+            "path": "data\\SOUND\\BGM\\result.mp3",
+            "volume": 1.0
+        }
+    },
+
     "decoration":
     [
         {

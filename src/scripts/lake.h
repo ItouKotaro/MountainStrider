@@ -56,6 +56,7 @@ private:
 	AudioClip m_diveWaterSE;
 
 	const float LAKE_INDEPTH = 3.0f;
+	const float LAKE_RESISTANCE = 0.99f;
 };
 
 #endif // !_LAKE_H_

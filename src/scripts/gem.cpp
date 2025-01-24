@@ -40,7 +40,7 @@ void Gem::OnTriggerEnter(GameObject* other)
 {
 	if (other->GetName() == "Vehicle")
 	{
-		ShopManager::AddPoint(1);
+		ShopManager::AddPoint(5);
 		gameObject->Destroy();
 	}
 }

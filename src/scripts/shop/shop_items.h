@@ -40,6 +40,9 @@ public:
 	// 購入時の処理
 	virtual bool onBuy() = 0;
 
+	// 価格を設定する
+	void SetPrice(const int& price) { m_price = price; }
+
 	// 価格を取得する
 	int GetPrice();
 
@@ -117,7 +120,7 @@ private:
 class ShopFuelTank : public ShopItem
 {
 public:
-	ShopFuelTank() : ShopItem(TYPE::ITEM, 5, "燃料タンク", "燃料を即時回復します", "data\\TEXTURE\\ITEM\\fuel_tank.png", "燃料が+300回復します\n遠回りしたい人におすすめ") {}
+	ShopFuelTank() : ShopItem(TYPE::ITEM, 8, "燃料タンク", "燃料を即時回復します", "data\\TEXTURE\\ITEM\\fuel_tank.png", "燃料が+300回復します\n遠回りしたい人におすすめ") {}
 	bool onBuy() override;
 };
 
@@ -125,7 +128,7 @@ public:
 class ShopToolBox : public ShopItem
 {
 public:
-	ShopToolBox() : ShopItem(TYPE::ITEM, 5, "工具箱", "耐久値を即時回復します", "data\\TEXTURE\\ITEM\\toolbox.png", "耐久値が+100回復します\nよく衝突事故を起こす人には必須アイテム") {}
+	ShopToolBox() : ShopItem(TYPE::ITEM, 8, "工具箱", "耐久値を即時回復します", "data\\TEXTURE\\ITEM\\toolbox.png", "耐久値が+100回復します\nよく衝突事故を起こす人には必須アイテム") {}
 	bool onBuy() override;
 };
 
