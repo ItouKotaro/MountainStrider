@@ -13,6 +13,7 @@
 #include "scripts/item/item_manager.h"
 
 float ShopItem::m_saleDiscount = 0.0f;
+AudioClip ShopItem::m_buySE = nullptr;
 
 //=============================================================
 // [ShopItem] ‰¿Ši‚ÌŽæ“¾
@@ -27,6 +28,15 @@ int ShopItem::GetPrice()
 //=============================================================
 bool ShopItem::Pay()
 {
+	// ‰¹
+	if (m_buySE == nullptr) m_buySE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\SHOP\\buy.mp3", FMOD_2D);
+	if (m_sePlayer == nullptr)
+	{
+		m_sePlayer = new GameObject();
+		m_sePlayer->AddComponent<AudioSource>();
+	}
+	m_sePlayer->GetComponent<AudioSource>()->PlayOneShot(m_buySE);
+
 	return m_shopManager->PayPoint(this->GetPrice());
 }
 

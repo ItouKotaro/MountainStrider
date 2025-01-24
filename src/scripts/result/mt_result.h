@@ -93,6 +93,7 @@ private:
 
 	// ‰¹
 	AudioClip m_bgm;
+	AudioClip m_clickSE;
 	GameObject* m_bgmObj;
 	float m_volumeFade;
 	const float BGM_VOLUME = 0.2f;

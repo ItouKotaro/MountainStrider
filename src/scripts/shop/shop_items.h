@@ -32,7 +32,7 @@ public:
 		m_texturePath = texturePath;
 		m_price = price;
 	}
-	virtual ~ShopItem() {}
+	virtual ~ShopItem() { m_sePlayer->Destroy(); }
 
 	// ショップマネージャーを設定する
 	void SetShopManager(ShopManager* shopManager) { m_shopManager = shopManager; }
@@ -83,6 +83,10 @@ protected:
 	int m_price;							// 価格
 	float m_discount;					// 割引率
 	static float m_saleDiscount;		// セール割引率
+
+	// サウンド
+	GameObject* m_sePlayer;
+	static AudioClip m_buySE;
 };
 
 // 燃料

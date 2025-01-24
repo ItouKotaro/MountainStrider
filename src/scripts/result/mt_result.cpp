@@ -102,6 +102,15 @@ void ClearResult::Init()
 	m_progState = P_MTTEXT;
 	m_progCounter = 120;
 
+	// BGMを再生する
+	m_volumeFade = 0.0f;
+	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\result.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
+	m_clickSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\click.mp3", FMOD_2D);
+
+	m_bgmObj = new GameObject();
+	m_bgmObj->AddComponent<AudioSource>()->Play(m_bgm);
+	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
+
 	// ページの初期化
 	m_page = new GameObject("PageManager");
 	m_page->AddComponent<Pages>();
@@ -207,6 +216,9 @@ void ClearResult::Init()
 		m_nextButton->AddComponent<ButtonUI>();
 		m_nextButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 		m_nextButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {
+			// 音を鳴らす
+			m_bgmObj->GetComponent<AudioSource>()->PlayOneShot(m_clickSE, 2.0f);
+
 			// 次のページへ
 			page->SetPage(1); 
 			});
@@ -230,7 +242,13 @@ void ClearResult::Init()
 		m_endButton->AddComponent<ButtonUI>();
 		m_endButton->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\RESULT\\button.png");
 		m_endButton->GetComponent<ButtonUI>()->setClickEvent([this, page]() {
+			// 音を鳴らす
+			m_bgmObj->GetComponent<AudioSource>()->PlayOneShot(m_clickSE, 2.0f);
+
+			// 空白のページに切り替える
 			page->SetPage(2);
+
+			// 最終結果画面を生成する
 			FinalResult(true);
 			});
 
@@ -257,13 +275,6 @@ void ClearResult::Init()
 	cursorObj->AddComponent<VirtualCursor>();
 	Main::SetShowCursor(false);
 
-	// BGMを再生する
-	m_volumeFade = 0.0f;
-	m_bgm = AudioManager::GetInstance()->CreateClip("data\\SOUND\\BGM\\result.mp3", FMOD_2D | FMOD_LOOP_NORMAL, true);
-	m_bgmObj = new GameObject();
-	m_bgmObj->AddComponent<AudioSource>()->Play(m_bgm);
-	m_bgmObj->GetComponent<AudioSource>()->GetChannel()->setVolume(m_volumeFade);
-
 	// 前回の情報として保存
 	m_beforeFuel = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel();
 	m_beforeEndurance = m_gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance();
@@ -287,6 +298,7 @@ void ClearResult::Uninit()
 
 	// 音を削除する
 	AudioManager::GetInstance()->RemoveClip(m_bgm);
+	AudioManager::GetInstance()->RemoveClip(m_clickSE);
 }
 
 //=============================================================

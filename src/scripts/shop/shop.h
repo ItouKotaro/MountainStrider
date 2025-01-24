@@ -48,6 +48,9 @@ private:
 	GameObject* m_ptText;		// ポイントテキスト
 	CGameScene* m_gameScene;
 
+	// 音
+	AudioClip m_buySE;
+
 	// ショップアイテムの管理
 	FuelItem m_fuelItem;									// 燃料アイテム
 	EnduranceItem m_enduranceItem;				// 耐久値アイテム

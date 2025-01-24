@@ -30,6 +30,9 @@ void ShopManager::Init(Pages* pages)
 	m_viewPoints = m_points;
 	m_pointsCounter = 0;
 
+	// 音を生成する
+	m_buySE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\SHOP\\buy.mp3", FMOD_2D);
+
 	// アイテムのリスト追加処理
 	RegisterItemList();
 
@@ -191,7 +194,7 @@ void ShopManager::InitTopDisplay()
 		buttonObj->transform->SetPos(idx == 0 ? D3DXVECTOR2(230.0f, 180.0f) : D3DXVECTOR2(440.0f, 180.0f));
 		buttonObj->AddComponent<ButtonUI>();
 		buttonObj->GetComponent<ButtonUI>()->SetTexture("data\\TEXTURE\\SHOP\\maintenance_buy.png");
-		buttonObj->GetComponent<ButtonUI>()->setClickEvent([this, idx]() {
+		buttonObj->GetComponent<ButtonUI>()->setClickEvent([this, buttonObj, idx]() {
 			if (idx ==0) m_fuelItem.onBuy();
 			else m_enduranceItem.onBuy();
 			});
@@ -255,6 +258,9 @@ void ShopManager::Uninit()
 		}
 	}
 	m_perkList.clear();
+
+	// 音を破棄する
+	AudioManager::GetInstance()->RemoveClip(m_buySE);
 }
 
 //=============================================================
