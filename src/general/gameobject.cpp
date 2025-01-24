@@ -28,6 +28,8 @@ void GameObject::UpdateAll()
 	// XVˆ—‚ðs‚¤
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
+		if (*itr == nullptr) continue;
+
 		try
 		{
 			if ((*itr)->GetActive())

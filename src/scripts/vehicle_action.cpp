@@ -107,6 +107,17 @@ void VehicleAction::onFlyBegin()
 //=============================================================
 void VehicleAction::onFlyEnd()
 {
+	// バイクのブースト
+	float rollNorm = fmod(fabsf(m_rolling), D3DX_PI * 2.0f);
+	if (m_rollCount > 0 && ((D3DX_PI * 1.6f <= rollNorm && rollNorm <= D3DX_PI * 2.0f) || rollNorm <= D3DX_PI * 0.4f))
+	{
+		btVector3 velocity = CCollision::GetCollision(gameObject)->GetRigidBody()->getLinearVelocity();
+		velocity.setY(0.0f);
+		CCollision::GetCollision(gameObject)->GetRigidBody()->setLinearVelocity(velocity);
+		CCollision::GetCollision(gameObject)->GetRigidBody()->applyCentralImpulse(
+			btVector3(sinf(transform->GetWRot().y) * -15000.0f * (m_rollCount / 2), 0.0f, cosf(transform->GetWRot().y) * -15000.0f * (m_rollCount / 2)));
+	}
+
 	m_rolling = 0.0f;
 	m_isMeasure = false;
 }
