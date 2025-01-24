@@ -25,38 +25,27 @@
         "morning":
         {
             "path": "data\\SOUND\\BGM\\desert00.mp3",
-            "volume": 1.0
+            "volume": 0.5
         },
         "daytime":
         {
             "path": "data\\SOUND\\BGM\\desert00.mp3",
-            "volume": 1.0
+            "volume": 0.5
         },
         "night":
         {
             "path": "data\\SOUND\\BGM\\desert00.mp3",
-            "volume": 1.0
+            "volume": 0.5
         }
     },
 
     "decoration":
     [
         {
-            "path": "data\\PREFAB\\tree\\tree00.pref",
-            "radius": 50.0,
+            "path": "data\\PREFAB\\props\\cactus00.pref",
+            "radius": 20.0,
             "destructible": true,
-            "damage": 10.0,
-            "offset": 0.0,
-            "adjacent_distance": 100.0,
-            "angle_range": 0.1,
-            "match_inclination": false,
-            "chance": 10
-        },
-        {
-            "path": "data\\PREFAB\\tree\\tree01.pref",
-            "radius": 50.0,
-            "destructible": true,
-            "damage": 10.0,
+            "damage": 15.0,
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,

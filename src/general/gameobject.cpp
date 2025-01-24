@@ -46,7 +46,18 @@ void GameObject::UpdateAll()
 		}
 		catch (const std::exception&)
 		{
-			MessageBox(nullptr, (*itr)->GetName().c_str(), "エラー", MB_OK);
+			std::string errData;
+			errData = "名前: " + (*itr)->GetName() +"\n";
+			errData += "タグ: " + (*itr)->GetTag() + "\n";
+			errData += "コンポーネント一覧 -> ";
+
+			for (auto compItr = (*itr)->m_components.begin(); compItr != (*itr)->m_components.end(); compItr++)
+			{
+				errData += typeid(**compItr).name();
+				errData += "\n";
+			}
+			
+			MessageBox(nullptr, errData.c_str(), "エラー", MB_OK);
 		}
 	
 	}
