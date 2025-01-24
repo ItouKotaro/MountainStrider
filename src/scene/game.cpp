@@ -124,8 +124,11 @@ void CGameScene::Init()
 	m_events->Init();
 
 	// プレイガイド
-	m_playGuide = new PlayGuideManager();
-	m_playGuide->Init();
+	if (ResultBase::GetNumOfStep() == 0)
+	{
+		m_playGuide = new PlayGuideManager();
+		m_playGuide->Init();
+	}
 
 	// カメラの移動設定を行う
 	m_camera->AddComponent<CCameraMove>()->SetTarget(m_bike);

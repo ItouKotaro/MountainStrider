@@ -36,6 +36,7 @@ public:
 	static void Reset();
 	static int GetAverageTime();
 	static int GetAverageAction();
+	static int GetNumOfStep() { return static_cast<int>(m_results.size()); }
 
 	static float GetBeforeFuel() { return m_beforeFuel; }
 	static float GetBeforeEndurance() { return m_beforeEndurance; }
