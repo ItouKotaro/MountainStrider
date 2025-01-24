@@ -47,10 +47,13 @@ void Destructible::Update()
 		std::vector<GameObject*> pMeshList = gameObject->GetChildren(true);
 		for (auto itr = pMeshList.begin(); itr != pMeshList.end(); itr++)
 		{
-			CMesh* mesh = (*itr)->GetComponent<CMesh>();
-			if (mesh != nullptr)
+			if (GameObject::IsExist(*itr))
 			{
-				mesh->SetAlpha(m_fade);
+				CMesh* mesh = (*itr)->GetComponent<CMesh>();
+				if (mesh != nullptr)
+				{
+					mesh->SetAlpha(m_fade);
+				}
 			}
 		}
 

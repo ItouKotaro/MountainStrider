@@ -247,7 +247,20 @@ void GameObject::DestroyDeathFlag()
 	{
 		if (m_gameObjects[i]->m_bDeathFlag)
 		{ // 死亡フラグがついているとき
-			delete m_gameObjects[i];
+			GameObject* destroyObj = m_gameObjects[i];
+
+			// ゲームオブジェクトの登録を解除する
+			for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
+			{
+				if (*itr == destroyObj)
+				{
+					m_gameObjects.erase(itr);
+					break;
+				}
+			}
+
+			delete destroyObj;
+			destroyObj = nullptr;
 		}
 	}
 }
@@ -366,16 +379,6 @@ GameObject::~GameObject()
 
 	// コリジョンを削除する
 	CCollision::RemoveCollision(this);
-
-	// ゲームオブジェクトの登録を解除する
-	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
-	{
-		if (*itr == this)
-		{
-			m_gameObjects.erase(itr);
-			break;
-		}
-	}
 }
 
 //=============================================================
