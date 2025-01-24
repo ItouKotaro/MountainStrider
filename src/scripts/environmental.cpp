@@ -7,6 +7,7 @@
 #include "environmental.h"
 
 #include "render/shadow_rb.h"
+#include "scripts/result/mt_result.h"
 
 //=============================================================
 // [EnvironmentalEffect] ‰Šú‰»
@@ -23,13 +24,24 @@ void EnvironmentalEffect::Init()
 
 	// ŠÔ‚ğŒˆ‚ß‚é
 	TIME time = static_cast<TIME>(rand() % TIME::MAX);
+	if (ResultBase::GetNumOfStep() == 0)
+	{ // ‰‰ñ
+		time = TIME::MORNING;
+	}
 	SetTime(time);
 
 	// “VŒó‚ğŒˆ‚ß‚é
 	Weather* weather;
-	int weatherRand = rand() % 2;
-	if (weatherRand == 0) weather = new WeatherClear();
-	else weather = new WeatherRain();
+	if (ResultBase::GetNumOfStep() == 0)
+	{ // ‰‰ñ
+		weather = new WeatherClear();
+	}
+	else
+	{
+		int weatherRand = rand() % 2;
+		if (weatherRand == 0) weather = new WeatherClear();
+		else weather = new WeatherRain();
+	}
 
 	SetWeather(weather);
 }
