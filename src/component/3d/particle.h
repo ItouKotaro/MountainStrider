@@ -197,6 +197,7 @@ public:
 	int GetNumParticles() { return static_cast<int>(m_particleData.size()); }
 
 	static const int DESTROY_TIME = 60;
+	const float RENDER_DISTANCE = 800.0f;
 private:
 	void UpdateGenerator();
 	void UpdateParticles();

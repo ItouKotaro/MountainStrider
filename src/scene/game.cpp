@@ -234,25 +234,28 @@ void CGameScene::Update()
 		return;
 	}
 
-	// 地形を更新する
-	m_terrain->Update();
-
-	// 湖を更新する
-	m_lake->Update();
-
-	// 装飾を更新する
-	m_decoration->Update(m_camera->transform->GetWPos());
-
-	// 環境効果を更新する
-	m_environmental->Update();
-
-	// イベントを更新する
-	m_events->Update();
-
-	// プレイガイドを更新する
-	if (m_playGuide != nullptr)
+	if (m_endType == ENDTYPE_NONE)
 	{
-		m_playGuide->Update();
+		// 地形を更新する
+		m_terrain->Update();
+
+		// 湖を更新する
+		m_lake->Update();
+
+		// 装飾を更新する
+		m_decoration->Update(m_camera->transform->GetWPos());
+
+		// 環境効果を更新する
+		m_environmental->Update();
+
+		// イベントを更新する
+		m_events->Update();
+
+		// プレイガイドを更新する
+		if (m_playGuide != nullptr)
+		{
+			m_playGuide->Update();
+		}
 	}
 
 	// 未ゲームオーバー時

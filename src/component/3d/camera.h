@@ -56,6 +56,9 @@ public:
 	void SetColor(D3DXCOLOR col) { m_backColor = col; }
 	D3DXCOLOR GetColor() { return m_backColor; }
 
+	// 現在のカメラを取得
+	static CCamera* GetCurrentCamera() { return m_currentCamera; }
+
 private:
 	D3DXCOLOR m_backColor;				// 背景色
 	D3DXVECTOR3 m_vecU;					// 上向きベクトル
@@ -70,6 +73,7 @@ private:
 
 	CSkybox* m_pSkybox;					// スカイボックス
 	float m_fAmbient;							// 明るさ
+	static CCamera* m_currentCamera;	// 現在のカメラ
 };
 
 #endif

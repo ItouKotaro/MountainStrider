@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "manager.h"
 
+CCamera* CCamera::m_currentCamera = nullptr;
+
 //=============================================================
 // [CCamera] 初期化
 //=============================================================
@@ -130,4 +132,7 @@ void CCamera::SetCamera(const bool& isSet)
 	// ビューポートの設定
 	if (isSet)
 		pDevice->SetViewport(&m_viewport);
+
+	// 現在のカメラに設定する
+	m_currentCamera = this;
 }

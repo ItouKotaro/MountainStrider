@@ -24,19 +24,7 @@ public:
 		m_shader = nullptr;
 		m_pass = 0;
 	}
-	virtual ~Component() {
-		if (this->gameObject != nullptr)
-		{
-			for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
-			{
-				if (*itr == this)
-				{
-					SAFE_ERASE(m_pComponents, itr)
-					break;
-				}
-			}
-		}
-	}
+	virtual ~Component() {}
 
 	/*
 	@brief 初期化処理
@@ -123,11 +111,18 @@ public:
 	*/
 	static std::vector<Component*> GetComponents(bool bOnlyActive = false) {
 		std::vector<Component*> result;
-		for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
+
+		auto gameObjects = GameObject::GetAllGameObjects();
+		for (auto objItr = gameObjects.begin(); objItr != gameObjects.end(); objItr++)
 		{
-			if (!bOnlyActive || (bOnlyActive && (*itr)->enabled && (*itr)->gameObject->GetActive()))
-				result.push_back(*itr);
+			auto components = (*objItr)->GetComponents();
+			for (auto itr = components.begin(); itr != components.end(); itr++)
+			{
+				if (!bOnlyActive || (bOnlyActive && (*itr)->enabled && (*itr)->gameObject->GetActive()))
+					result.push_back(*itr);
+			}
 		}
+
 		return result;
 	}
 
@@ -138,7 +133,9 @@ public:
 	*/
 	template<class T> static std::vector<T*> GetComponents(const bool& includeChild = false, const bool& bOnlyActive = false) {
 		std::vector<T*> result;
-		for (auto itr = m_pComponents.begin(); itr != m_pComponents.end(); itr++)
+
+		auto components = Component::GetComponents();
+		for (auto itr = components.begin(); itr != components.end(); itr++)
 		{
 			if (includeChild)
 			{ // 子を含むとき
@@ -213,11 +210,6 @@ public:
 	*/
 	void AttachGameObject(GameObject* attachObj);
 
-	/*
-	@brief コンポーネントのソート
-	*/
-	static void Sort();
-
 	// @brief 有効状態か
 	bool enabled;
 
@@ -258,7 +250,7 @@ private:
 	bool m_attached;
 
 	// @brief コンポーネントリスト
-	static std::vector<Component*> m_pComponents;
+	//static std::vector<Component*> m_pComponents;
 };
 
 

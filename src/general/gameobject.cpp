@@ -35,13 +35,12 @@ void GameObject::UpdateAll()
 			if ((*itr)->GetActive())
 			{ // アクティブのとき
 				// コンポーネントの更新処理を行う
-				for (UINT i = 0; i < (*itr)->m_components.size(); i++)
+				int idx = static_cast<int>((*itr)->m_components.size());
+				for (int i = idx - 1; i >= 0; idx--)
 				{
-					const auto irev = (*itr)->m_components.size() - 1 - i;
-
-					if ((*itr)->m_components[irev]->enabled)
+					if ((*itr)->m_components[i]->enabled)
 					{
-						(*itr)->m_components[irev]->Update();
+						(*itr)->m_components[i]->Update();
 					}
 				}
 			}
@@ -255,22 +254,15 @@ void GameObject::DestroyAll(bool bIncludeNot)
 //=============================================================
 void GameObject::DestroyDeathFlag()
 {
-	int idx = static_cast<int>(m_gameObjects.size());
+	int idx = m_gameObjects.size();
 	for (int i = idx - 1; i >= 0; i--)
 	{
 		if (m_gameObjects[i]->m_bDeathFlag)
 		{ // 死亡フラグがついているとき
 			GameObject* destroyObj = m_gameObjects[i];
 
-			// ゲームオブジェクトの登録を解除する
-			for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
-			{
-				if (*itr == destroyObj)
-				{
-					m_gameObjects.erase(itr);
-					break;
-				}
-			}
+			//// ゲームオブジェクトの登録を解除する
+			m_gameObjects.erase(m_gameObjects.begin() + i);
 
 			delete destroyObj;
 			destroyObj = nullptr;
@@ -403,9 +395,6 @@ void GameObject::SetPriority(int nPriority)
 
 	// ゲームオブジェクトを優先度順にソートする
 	std::sort(m_gameObjects.begin(), m_gameObjects.end(), [](GameObject* obj1, GameObject* obj2) {return obj1->GetPriority() < obj2->GetPriority(); });
-	
-	// コンポーネントをソートする
-	Component::Sort();
 }
 
 //=============================================================

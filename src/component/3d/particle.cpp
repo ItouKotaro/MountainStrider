@@ -366,9 +366,10 @@ void ParticleSystem::UpdateParticles()
 void ParticleSystem::UpdateDestroy()
 {
 	// 使われなくなったパーティクルの破棄カウンタを進める
-	for (auto itr = m_particleData.begin(); itr != m_particleData.end(); itr++)
+	int idx = m_particleData.size();
+	for (int i = idx - 1; i >= 0; i--)
 	{
-		ParticleData* data = &(*itr);
+		ParticleData* data = &m_particleData[i];
 
 		if (!data->use)
 		{ // 使われていないとき
@@ -379,7 +380,7 @@ void ParticleSystem::UpdateDestroy()
 			{
 				data->particle->Uninit();
 				delete data->particle;
-				SAFE_ERASE(m_particleData, itr);
+				m_particleData.erase(m_particleData.begin() + i);
 			}
 		}
 	}
@@ -390,6 +391,13 @@ void ParticleSystem::UpdateDestroy()
 //=============================================================
 void ParticleSystem::Draw()
 {
+	// 現在のカメラから一定距離離れている場合はスキップ
+	if (CCamera::GetCurrentCamera() != nullptr &&
+		Benlib::PosPlaneDistance(transform->GetWPos(), CCamera::GetCurrentCamera()->transform->GetWPos()) > RENDER_DISTANCE)
+	{
+		return;
+	}
+
 	for (auto itr = m_particleData.begin(); itr != m_particleData.end(); itr++)
 	{
 		if ((*itr).use)

@@ -157,9 +157,6 @@ public:
 		// コンポーネントを追加する
 		m_components.push_back(component);
 
-		// ソートを行う
-		Component::Sort();
-
 		// コンポーネントの初期化処理を実行する
 		component->Init();
 

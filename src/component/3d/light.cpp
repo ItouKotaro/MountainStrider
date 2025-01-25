@@ -27,7 +27,10 @@ void CD3DLight::Uninit()
 	std::vector<CD3DLight*> lightList = GetComponents<CD3DLight>(false, true);
 
 	// ÅŒã”ö‚Ìƒ‰ƒCƒg‚ð–³Œø‚É‚·‚é
-	pDevice->LightEnable(static_cast<DWORD>(lightList.size() - 1), FALSE);
+	if (lightList.size() > 0)
+	{
+		pDevice->LightEnable(static_cast<DWORD>(lightList.size() - 1), FALSE);
+	}
 }
 
 //=============================================================
