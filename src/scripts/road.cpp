@@ -119,8 +119,8 @@ void Road::Generate()
 
 		// 初期地点を設定する
 		m_currentIdx = 0;
-		m_currentPos.x = (*itr)[m_currentIdx].x;
-		m_currentPos.y = (*itr)[m_currentIdx].y;
+		m_currentPos.x = static_cast<float>((*itr)[m_currentIdx].x);
+		m_currentPos.y = static_cast<float>((*itr)[m_currentIdx].y);
 
 		// ジャンプ台をどこで設置するか
 		int numJumpStand = rand() % 5 + 3;

@@ -366,7 +366,7 @@ void ParticleSystem::UpdateParticles()
 void ParticleSystem::UpdateDestroy()
 {
 	// 使われなくなったパーティクルの破棄カウンタを進める
-	int idx = m_particleData.size();
+	int idx = static_cast<int>(m_particleData.size());
 	for (int i = idx - 1; i >= 0; i--)
 	{
 		ParticleData* data = &m_particleData[i];

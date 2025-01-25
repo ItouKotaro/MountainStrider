@@ -63,7 +63,7 @@ void VehicleAction::Update()
 
 			// スコアを計算する
 			int addScore = 0;
-			addScore += (m_rollCount * 20) * (static_cast<int>(pBike->GetSpeed()) / static_cast<float>(50.0f));	// 基礎スコア
+			addScore += static_cast<int>((m_rollCount * 20) * (static_cast<int>(pBike->GetSpeed()) / static_cast<float>(50.0f)));	// 基礎スコア
 
 			// 合計値に加算する
 			m_sumPoints->AddPoints(addScore);

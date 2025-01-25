@@ -36,7 +36,7 @@ void GameObject::UpdateAll()
 			{ // アクティブのとき
 				// コンポーネントの更新処理を行う
 				int idx = static_cast<int>((*itr)->m_components.size());
-				for (int i = idx - 1; i >= 0; idx--)
+				for (int i = idx - 1; i >= 0; i--)
 				{
 					if ((*itr)->m_components[i]->enabled)
 					{
@@ -254,7 +254,7 @@ void GameObject::DestroyAll(bool bIncludeNot)
 //=============================================================
 void GameObject::DestroyDeathFlag()
 {
-	int idx = m_gameObjects.size();
+	int idx = static_cast<int>(m_gameObjects.size());
 	for (int i = idx - 1; i >= 0; i--)
 	{
 		if (m_gameObjects[i]->m_bDeathFlag)

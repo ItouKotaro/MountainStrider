@@ -85,7 +85,7 @@ float Benlib::RandomFloat(const float& min, const float& max)
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<> dist(min, max);
-	return dist(gen);
+	return static_cast<float>(dist(gen));
 }
 
 float Benlib::DegreeToRadian(const int& nDegree)

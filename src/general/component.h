@@ -248,9 +248,6 @@ private:
 
 	// @brief アタッチ済みか
 	bool m_attached;
-
-	// @brief コンポーネントリスト
-	//static std::vector<Component*> m_pComponents;
 };
 
 

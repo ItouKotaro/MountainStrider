@@ -238,7 +238,7 @@ void ResultTerrain::DrawUI()
 
 
 	// 池データの描画
-	for (unsigned int i = 0; i < m_numLake; i++)
+	for (int i = 0; i < m_numLake; i++)
 	{
 		// 頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, m_lakeVtxBuff, 0, sizeof(VERTEX_2D));
