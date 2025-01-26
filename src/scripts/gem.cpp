@@ -7,6 +7,7 @@
 #include "gem.h"
 #include "shop/shop.h"
 #include "component/3d/particle.h"
+#include "component/3d/mesh.h"
 
 //=============================================================
 // [Gem] 初期化
@@ -22,6 +23,9 @@ void Gem::Init()
 	ParticleModule::Emission* emission = new ParticleModule::Emission();
 	emission->SetRateOverTime(1.5f);
 	m_particle->GetComponent<ParticleSystem>()->SetEmission(emission);
+
+	// カメラを取得する
+	m_camera = GameObject::Find("Camera");
 }
 
 //=============================================================
@@ -31,6 +35,10 @@ void Gem::Update()
 {
 	// 回転
 	transform->Rotate(0.0f, 0.02f, 0.0f);
+
+	// カメラの位置によって表示するかを決める
+	gameObject->FindNameChildren("model")->GetComponent<CMesh>()->enabled
+		= Benlib::PosPlaneDistance(transform->GetWPos(), m_camera->transform->GetWPos()) <= RENDER_DISTANCE;
 }
 
 //=============================================================
