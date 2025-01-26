@@ -448,7 +448,7 @@ void JumpGuide::Update()
 {
 	if (m_vehicle->GetComponent<CVehicle>()->GetGroundDistance() <= CVehicle::GROUND_DISTANCE && INPUT_INSTANCE->onInput("jump"))
 	{
-		m_progress += 0.25f;
+		m_progress += 0.35f;
 	}
 
 	if (INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)
