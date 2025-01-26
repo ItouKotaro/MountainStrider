@@ -78,6 +78,7 @@ private:
 	GameObject* m_camera;									// カメラ
 	GameObject* m_bike;										// バイク
 	GameObject* m_statusUI;								// ステータスUI
+	GameObject* m_speedmeterUI;						// スピードメーターUI
 	GameObject* m_itemSlot;								// アイテムスロット
 
 	// リザルトデータ用

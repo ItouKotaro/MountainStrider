@@ -62,11 +62,18 @@ void ShopManager::Init(Pages* pages)
 	for (int i = 0; i < 6; i++)
 	{
 		m_shopItems[i] = new GameObject();
-		m_shopItems[i]->AddComponent<BuyButtonUI>(i < 3 ? m_itemList[0] : m_itemList[1]);
 		m_shopItems[i]->transform->SetPos(300.0f * i + 40.0f, 350.0f);
 		m_shopItems[i]->transform->Translate(i < 3 ? 0.0f : 60.0f, 0.0f, 0.0f);
 		m_pages->AddObject(1, m_shopItems[i]);
 	}
+
+	// アイテムを設定する
+	m_shopItems[0]->AddComponent<BuyButtonUI>(m_itemList[0]);
+	m_shopItems[1]->AddComponent<BuyButtonUI>(m_itemList[1]);
+	m_shopItems[2]->AddComponent<BuyButtonUI>(m_itemList[2]);
+	m_shopItems[3]->AddComponent<BuyButtonUI>(m_itemList[0]);
+	m_shopItems[4]->AddComponent<BuyButtonUI>(m_itemList[1]);
+	m_shopItems[5]->AddComponent<BuyButtonUI>(m_itemList[2]);
 
 	// インベントリを作成する
 	m_inventory = new GameObject("Inventory", "UI");
@@ -314,6 +321,7 @@ void ShopManager::RegisterItemList()
 	// アイテムの登録
 	m_itemList.push_back(new ShopFuelTank);
 	m_itemList.push_back(new ShopToolBox);
+	m_itemList.push_back(new ShopExplosionBoost);
 
 	// パークの登録
 }

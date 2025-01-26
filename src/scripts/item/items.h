@@ -29,4 +29,14 @@ private:
 	int m_amount;
 };
 
+// ブースト
+class ExplosionBoostItem : public Item
+{
+public:
+	ExplosionBoostItem() : Item("爆発ブースト", "爆発的にブーストする\n前へ勢いよく加速する", "data\\TEXTURE\\ITEM\\explosion_boost.png") {}
+	void onUse() override;
+private:
+	const float POWER = 50000.0f;
+};
+
 #endif // !_ITEMS_H_

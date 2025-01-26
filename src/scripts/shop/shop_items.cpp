@@ -99,7 +99,7 @@ bool ShopFuelTank::onBuy()
 }
 
 //=============================================================
-// [ShopToolBox]w“üŽž
+// [ShopToolBox] w“üŽž
 //=============================================================
 bool ShopToolBox::onBuy()
 {
@@ -107,6 +107,20 @@ bool ShopToolBox::onBuy()
 	{ // Žx•¥‚¦‚½Žž
 		// H‹ï” ‚ðƒCƒ“ƒxƒ“ƒgƒŠ‚É’Ç‰Á
 		ItemManager::GetInstance()->AddItem(new ToolBoxItem());
+		return true;
+	}
+	return false;
+}
+
+//=============================================================
+// [ShopExplosionBoost] w“üŽž
+//=============================================================
+bool ShopExplosionBoost::onBuy()
+{
+	if (this->Pay())
+	{ // Žx•¥‚¦‚½Žž
+		// ”š”­ƒu[ƒXƒg‚ðƒCƒ“ƒxƒ“ƒgƒŠ‚É’Ç‰Á
+		ItemManager::GetInstance()->AddItem(new ExplosionBoostItem());
 		return true;
 	}
 	return false;

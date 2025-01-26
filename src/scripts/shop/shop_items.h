@@ -132,5 +132,13 @@ public:
 	bool onBuy() override;
 };
 
+// 爆発ブースト
+class ShopExplosionBoost : public ShopItem
+{
+public:
+	ShopExplosionBoost() : ShopItem(TYPE::ITEM, 15, "爆発ブースト", "前方へ超加速します", "data\\TEXTURE\\ITEM\\explosion_boost.png", "爆発的にブーストする\n前へ勢いよく加速する") {}
+	bool onBuy() override;
+};
+
 
 #endif // !_SHOP_ITEMS_H_

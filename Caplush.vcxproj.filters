@@ -360,6 +360,9 @@
     <ClCompile Include="src\scripts\ranking_system.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\speedmeter_ui.cpp">
+      <Filter>ソース ファイル\scripts\vehicle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -613,6 +616,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\ranking_system.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\speedmeter_ui.h">
+      <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

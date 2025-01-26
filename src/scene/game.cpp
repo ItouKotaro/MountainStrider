@@ -24,6 +24,7 @@
 #include "scripts/item/item_manager.h"
 #include "scripts/shop/shop.h"
 #include "scripts/item/item_slot.h"
+#include "scripts/speedmeter_ui.h"
 
 #include "render/shadow_rb.h"
 #include <noise/noise.h>
@@ -223,6 +224,11 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
+	if (INPUT_INSTANCE->onTrigger("@"))
+	{
+		onClear();
+	}
+
 	// ポーズ
 	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("p:start"))
 	{
@@ -364,6 +370,10 @@ void CGameScene::SpawnBike()
 	m_statusUI = new GameObject("StatusUI", "UI");
 	m_statusUI->AddComponent<CStatusUI>();
 	m_bike->GetComponent<CVehicle>()->SetStatusUI(m_statusUI->GetComponent<CStatusUI>());
+
+	// スピードメーターUIを生成
+	m_speedmeterUI = new GameObject("SpeedMeterUI", "UI");
+	m_speedmeterUI->AddComponent<SpeedMeterUI>(m_bike->GetComponent<CVehicle>());
 }
 
 //=============================================================

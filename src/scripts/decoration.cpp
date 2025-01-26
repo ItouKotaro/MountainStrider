@@ -490,6 +490,8 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 	}
 	else
 	{ // 条件に合うオブジェクトが見つかったとき
+		if (!GameObject::IsExist(targetDecoObj->gameObject)) return;
+
 		targetDecoObj->decoDeta = decoData;
 		targetDecoObj->gameObject->transform->SetPos(decoData->transform.GetPos());
 		targetDecoObj->gameObject->transform->SetQuaternion(decoData->transform.GetQuaternion());
