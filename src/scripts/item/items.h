@@ -39,4 +39,14 @@ private:
 	const float POWER = 50000.0f;
 };
 
+// ‚Ä‚é‚Ä‚é–Vå
+class TeruTezuBouzuItem : public Item
+{
+public:
+	TeruTezuBouzuItem() : Item("‚Ä‚é‚Ä‚é–Vå", "°‚ê‚ª–K‚ê‚é‚ÆŒ¾‚í‚ê‚Ä‚¢‚é", "data\\TEXTURE\\ITEM\\teruterubouzu.png") {}
+	void onUse() override;
+private:
+
+};
+
 #endif // !_ITEMS_H_

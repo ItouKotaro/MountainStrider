@@ -125,3 +125,17 @@ bool ShopExplosionBoost::onBuy()
 	}
 	return false;
 }
+
+//=============================================================
+// [ShopTeruTeruBouzu] w“üŽž
+//=============================================================
+bool ShopTeruTeruBouzu::onBuy()
+{
+	if (this->Pay())
+	{ // Žx•¥‚¦‚½Žž
+		// ‚Ä‚é‚Ä‚é–VŽå‚ðƒCƒ“ƒxƒ“ƒgƒŠ‚É’Ç‰Á
+		ItemManager::GetInstance()->AddItem(new TeruTezuBouzuItem());
+		return true;
+	}
+	return false;
+}

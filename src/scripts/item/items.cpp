@@ -64,3 +64,18 @@ void ExplosionBoostItem::onUse()
 	// アイテム削除
 	RemoveItem();
 }
+
+//=============================================================
+// [TeruTezuBouzuItem] 使用
+//=============================================================
+void TeruTezuBouzuItem::onUse()
+{
+	// ゲームシーンを取得する
+	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+
+	// 晴れにする
+	gameScene->GetEnvironmental()->SetWeather(new WeatherClear());
+
+	// アイテム削除
+	RemoveItem();
+}

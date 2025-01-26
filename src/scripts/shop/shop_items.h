@@ -140,5 +140,13 @@ public:
 	bool onBuy() override;
 };
 
+// ‚Ä‚é‚Ä‚é–Vå
+class ShopTeruTeruBouzu : public ShopItem
+{
+public:
+	ShopTeruTeruBouzu() : ShopItem(TYPE::ITEM, 15, "‚Ä‚é‚Ä‚é–Vå", "°‚ê‚ª–K‚ê‚éH", "data\\TEXTURE\\ITEM\\teruterubouzu.png", "°‚ê‚ª–K‚ê‚é‚ÆŒ¾‚í‚ê‚Ä‚¢‚é\nˆ«“VŒó‚Ég‚Á‚Ä‚İ‚é‚Æ...") {}
+	bool onBuy() override;
+};
+
 
 #endif // !_SHOP_ITEMS_H_

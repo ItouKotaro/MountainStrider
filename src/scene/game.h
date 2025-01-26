@@ -33,9 +33,11 @@ public:
 
 	void onGameOver();			// ゲームオーバー処理
 	void onClear();					// クリア処理
+
 	Terrain* GetTerrain() { return m_terrain; }
 	LakeManager* GetLake() { return m_lake; }
 	GameObject* GetBike() { return m_bike; }
+	EnvironmentalEffect* GetEnvironmental() { return m_environmental; }
 
 	static void AddActionPoint(const int& point) { m_actionPoint += point; }
 	static int GetActionPoint() { return m_actionPoint; }

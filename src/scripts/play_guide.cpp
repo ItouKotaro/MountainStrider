@@ -519,7 +519,7 @@ void ActionGuide::Update()
 	if (m_vehicle->GetComponent<CVehicle>()->GetFlying() && (fabsf(stickLX) >= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
 		INPUT_INSTANCE->onInput("left") || INPUT_INSTANCE->onInput("right")))
 	{
-		m_progress += 0.004f;
+		m_progress += 0.01f;
 	}
 
 	if (INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)

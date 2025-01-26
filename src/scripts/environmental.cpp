@@ -103,6 +103,7 @@ void EnvironmentalEffect::Uninit()
 	{
 		m_weather->Uninit();
 		delete m_weather;
+		m_weather = nullptr;
 	}
 
 	// BGM‚ð”jŠü‚·‚é
@@ -167,6 +168,13 @@ void EnvironmentalEffect::SetTime(const TIME& time)
 //=============================================================
 void EnvironmentalEffect::SetWeather(Weather* weather)
 {
+	if (m_weather != nullptr)
+	{
+		m_weather->Uninit();
+		delete m_weather;
+		m_weather = nullptr;
+	}
+
 	m_weather = weather;
 	m_weather->Init();
 }
