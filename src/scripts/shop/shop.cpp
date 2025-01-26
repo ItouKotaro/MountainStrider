@@ -72,7 +72,7 @@ void ShopManager::Init(Pages* pages)
 	m_shopItems[1]->AddComponent<BuyButtonUI>(m_itemList[1]);
 	m_shopItems[2]->AddComponent<BuyButtonUI>(m_itemList[2]);
 	m_shopItems[3]->AddComponent<BuyButtonUI>(m_itemList[3]);
-	m_shopItems[4]->AddComponent<BuyButtonUI>(m_itemList[1]);
+	m_shopItems[4]->AddComponent<BuyButtonUI>(m_itemList[4]);
 	m_shopItems[5]->AddComponent<BuyButtonUI>(m_itemList[2]);
 
 	// インベントリを作成する
@@ -323,6 +323,7 @@ void ShopManager::RegisterItemList()
 	m_itemList.push_back(new ShopToolBox);
 	m_itemList.push_back(new ShopExplosionBoost);
 	m_itemList.push_back(new ShopTeruTeruBouzu);
+	m_itemList.push_back(new ShopMyRoad);
 
 	// パークの登録
 }

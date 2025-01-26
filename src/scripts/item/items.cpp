@@ -79,3 +79,29 @@ void TeruTezuBouzuItem::onUse()
 	// アイテム削除
 	RemoveItem();
 }
+
+//=============================================================
+// [MyRoadItem] 使用
+//=============================================================
+void MyRoadItem::onUse()
+{
+	// ゲームシーンを取得する
+	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+
+	// バイクを取得する
+	auto bike = gameScene->GetBike();
+
+	// バイクの位置と方向から道を設置する位置情報を設定する
+	Transform roadTrans;
+	roadTrans.SetPos(
+		D3DXVECTOR3(sinf(bike->transform->GetWRot().y + D3DX_PI) * FRONT_LENGTH, SET_HEIGHT, cosf(bike->transform->GetWRot().y + D3DX_PI) * FRONT_LENGTH) +
+		bike->transform->GetWPos()
+	);
+	roadTrans.SetRot(0.0f, bike->transform->GetWRot().y, 0.0f);
+	
+	// 生成する
+	GameObject::LoadPrefab("data\\PREFAB\\myroad.pref", roadTrans);
+
+	// アイテム削除
+	RemoveItem();
+}

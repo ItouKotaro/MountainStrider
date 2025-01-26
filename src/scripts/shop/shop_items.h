@@ -144,7 +144,15 @@ public:
 class ShopTeruTeruBouzu : public ShopItem
 {
 public:
-	ShopTeruTeruBouzu() : ShopItem(TYPE::ITEM, 15, "てるてる坊主", "晴れが訪れる？", "data\\TEXTURE\\ITEM\\teruterubouzu.png", "晴れが訪れると言われている\n悪天候時に使ってみると...") {}
+	ShopTeruTeruBouzu() : ShopItem(TYPE::ITEM, 10, "てるてる坊主", "晴れが訪れる？", "data\\TEXTURE\\ITEM\\teruterubouzu.png", "晴れが訪れると言われている\n悪天候時に使ってみると...") {}
+	bool onBuy() override;
+};
+
+// マイロード
+class ShopMyRoad : public ShopItem
+{
+public:
+	ShopMyRoad() : ShopItem(TYPE::ITEM, 10, "マイロード", "我が道が出現する", "data\\TEXTURE\\ITEM\\myroad.png", "目の前に道が現れる\n液体で濡れたくない人に") {}
 	bool onBuy() override;
 };
 

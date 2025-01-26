@@ -139,3 +139,17 @@ bool ShopTeruTeruBouzu::onBuy()
 	}
 	return false;
 }
+
+//=============================================================
+// [ShopMyRoad] 購入時
+//=============================================================
+bool ShopMyRoad::onBuy()
+{
+	if (this->Pay())
+	{ // 支払えた時
+		// マイロードをインベントリに追加
+		ItemManager::GetInstance()->AddItem(new MyRoadItem());
+		return true;
+	}
+	return false;
+}

@@ -46,7 +46,17 @@ public:
 	TeruTezuBouzuItem() : Item("てるてる坊主", "晴れが訪れると言われている", "data\\TEXTURE\\ITEM\\teruterubouzu.png") {}
 	void onUse() override;
 private:
+};
 
+// マイロード
+class MyRoadItem : public Item
+{
+public:
+	MyRoadItem() : Item("マイロード", "我が道が出現する", "data\\TEXTURE\\ITEM\\myroad.png") {}
+	void onUse() override;
+private:
+	const float FRONT_LENGTH = 180.0f;
+	const float SET_HEIGHT = -5.0f;
 };
 
 #endif // !_ITEMS_H_
