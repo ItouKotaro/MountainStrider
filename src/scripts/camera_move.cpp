@@ -73,17 +73,8 @@ void CCameraMove::Update()
 		}
 	}
 
-	bool flying = m_pTarget->GetComponent<CVehicle>()->GetFlying();
-
+	// TPS視点の更新
 	UpdateTPS();
-	//if (!flying)
-	//{
-	//	UpdateFPS();
-	//}
-	//else
-	//{
-	//	UpdateTPS();
-	//}
 
 	if (m_moveCounter > 0)
 	{
@@ -124,14 +115,14 @@ void CCameraMove::UpdateFPS()
 	}
 
 	// 視点
-	D3DXVECTOR3 fpsPos = D3DXVECTOR3(0.0f, 40.0f, -10.0f);
+	D3DXVECTOR3 fpsPos = D3DXVECTOR3(0.0f, 20.0f, -10.0f);
 	D3DXMATRIX fpsMtx = m_pTarget->transform->GetMatrix();
 	D3DXVec3TransformCoord(&fpsPos, &fpsPos, &fpsMtx);
 	m_posS = fpsPos;
 
 	// 注視点
-	fpsPos = D3DXVECTOR3(0.0f, 35.0f, 40.0f);
-	fpsPos += {sinf(m_cameraRot.y) * 50.0f, sinf(m_cameraRot.x) * -50.0f, cosf(m_cameraRot.y) * 50.0f};
+	fpsPos = D3DXVECTOR3(0.0f, 20.0f, -10.0f);
+	fpsPos += {sinf(m_cameraRot.y + D3DX_PI) * 50.0f, sinf(m_cameraRot.x) * -50.0f, cosf(m_cameraRot.y + D3DX_PI) * 50.0f};
 	D3DXVec3TransformCoord(&fpsPos, &fpsPos, &fpsMtx);
 	pCamera->SetPosR(fpsPos);
 }
