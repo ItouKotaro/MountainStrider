@@ -2,7 +2,7 @@
 {
     "terrain":
     {
-        "generate_num": 30000,
+        "generate_num": 8000,
         "height_color":
         [
             {
@@ -50,7 +50,51 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
-            "chance": 10
+            "chance": 2
+        },
+        {
+            "path": "data\\PREFAB\\props\\cactus01.pref",
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 15.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 2
+        },
+        {
+            "path": "data\\PREFAB\\props\\cactus02.pref",
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 15.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 2
+        },
+        {
+            "path": "data\\PREFAB\\props\\cactus03.pref",
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 15.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 2
+        },
+        {
+            "path": "data\\PREFAB\\props\\cactus04.pref",
+            "radius": 20.0,
+            "destructible": true,
+            "damage": 15.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 2
         },
         {
             "path": "data\\PREFAB\\tree\\fallen_tree.pref",

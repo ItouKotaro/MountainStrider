@@ -1,0 +1,69 @@
+{
+    "object": {
+        "0": {
+            "friction": 1.0,
+            "model": "data\\MODEL\\props\\cactus01.x",
+            "name": "model",
+            "shadow": true,
+            "tag": "",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "trigger": false
+        }
+    },
+    "parent": {
+        "0": -1
+    },
+    "prefab": {
+        "collision": [
+            {
+                "height": 36.099998474121094,
+                "offset": [
+                    -0.4000000059604645,
+                    25.5,
+                    -0.8999999761581421
+                ],
+                "radius": 5.800000190734863,
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.10000000149011612
+                ],
+                "type": "capsule"
+            }
+        ],
+        "friction": 1.0,
+        "mass": 70.0,
+        "name": "cactus",
+        "rigidbody": false,
+        "tag": "",
+        "transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "trigger": true
+    }
+}
