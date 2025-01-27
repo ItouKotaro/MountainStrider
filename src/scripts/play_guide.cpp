@@ -309,7 +309,7 @@ void AccelGuide::Init(GameObject* parent)
 	m_controlImg->SetParent(parent);
 	m_controlImg->transform->SetPos(35.0f, 90.0f);
 	m_controlImg->transform->SetSize(70.0f, 70.0f);
-	m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\button_a.png");
+	m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\ltrigger.png");
 	m_controlImg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
 
 	m_pressText = new GameObject();
@@ -324,22 +324,28 @@ void AccelGuide::Init(GameObject* parent)
 //=============================================================
 void AccelGuide::Update()
 {
-	if (INPUT_INSTANCE->onInput("accel"))
+	// アクセルを踏んでいるか
+	auto pGamepadDev = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>();
+	bool isAccel = (INPUT_INSTANCE->onInput("accel") ||
+		pGamepadDev->GetState().Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD ||
+		pGamepadDev->GetState().Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+
+	if (isAccel)
 	{
 		m_progress += 0.005f;
 	}
 
 	if (INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)
 	{
-		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\button_a.png");
-		m_controlImg->transform->SetSize(70.0f, 70.0f);
-		m_pressText->transform->SetPos(140.0f, 100.0f);
+		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\ltrt.png");
+		m_controlImg->transform->SetSize(240.0f, 80.0f);
+		m_pressText->transform->SetPos(300.0f, 110.0f);
 	}
 	else
 	{
-		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\KEYBOARD\\key_space.png");
-		m_controlImg->transform->SetSize(210.0f, 70.0f);
-		m_pressText->transform->SetPos(260.0f, 100.0f);
+		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\KEYBOARD\\key_w.png");
+		m_controlImg->transform->SetSize(70.0f, 70.0f);
+		m_pressText->transform->SetPos(120.0f, 100.0f);
 	}
 	
 	// 透明度
@@ -434,7 +440,7 @@ void JumpGuide::Init(GameObject* parent)
 	m_controlImg->SetParent(parent);
 	m_controlImg->transform->SetPos(35.0f, 90.0f);
 	m_controlImg->transform->SetSize(70.0f, 70.0f);
-	m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\button_x.png");
+	m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\ax.png");
 	m_controlImg->GetComponent<CPolygon>()->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
 
 	// バイクを取得する
@@ -453,12 +459,12 @@ void JumpGuide::Update()
 
 	if (INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)
 	{
-		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\button_x.png");
-		m_controlImg->transform->SetSize(70.0f, 70.0f);
+		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\CONTROLLER\\ax.png");
+		m_controlImg->transform->SetSize(180.0f, 70.0f);
 	}
 	else
 	{
-		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\KEYBOARD\\key_shift.png");
+		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\KEYBOARD\\key_space.png");
 		m_controlImg->transform->SetSize(225.0f, 80.0f);
 	}
 

@@ -10,7 +10,6 @@
 #include <thread>
 
 const CText::FontData CText::LoadFonts[] = {
-    {"data\\FONT\\ZenKakuGothicNew-Bold.ttf", "Zen Kaku Gothic New"},
     {"data\\FONT\\Tetsubin-Gothic.otf", "07“S•rƒSƒVƒbƒN"},
 };
 

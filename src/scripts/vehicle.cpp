@@ -250,17 +250,22 @@ void CVehicle::LandingControlVehicle()
 	auto pBackHinge = m_pBackTire->GetComponent<CHinge2Constraint>()->GetHinge2();
 	if (m_fuel > 0.0f)
 	{ // 燃料があるとき
+		// アクセルを踏んでいるか
+		bool isAccel = (INPUT_INSTANCE->onInput("accel") ||
+			pGamepadDev->GetState().Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD ||
+			pGamepadDev->GetState().Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+
 		// エンジン力を取得する
-		float fEngineForce = INPUT_INSTANCE->onInput("accel") || pGamepadDev->GetState().Gamepad.bRightTrigger ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
+		float fEngineForce = isAccel ? ENGINEFORCE_VALUE : MIN_ENGINEFORCE_VALUE;
 
 		// モーターを有効にする
-		pBackHinge->enableMotor(3, INPUT_INSTANCE->onInput("accel"));
+		pBackHinge->enableMotor(3, isAccel);
 
 		// タイヤを回転させる
 		pBackHinge->setTargetVelocity(3, fEngineForce);
 
 		// バイブレーション
-		if (INPUT_INSTANCE->onInput("accel") && INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)
+		if (isAccel && INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER)
 			INPUT_INSTANCE->GetInstance()->GetInputDevice<CGamepadDevice>()->SetVibration(VIBRATION_VALUE, VIBRATION_VALUE, 0.2f);
 
 		// 燃料を減らす
@@ -271,16 +276,6 @@ void CVehicle::LandingControlVehicle()
 	{ // 燃料がないとき
 		// タイヤの回転を止める
 		pBackHinge->setTargetVelocity(3, 0.0f);
-	}
-
-	// 傾き調整
-	if (INPUT_INSTANCE->onInput("forward") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
-	}
-	if (INPUT_INSTANCE->onInput("behind") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-	{
-		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
 	}
 	
 	// 方向転換

@@ -23,7 +23,16 @@ public:
 	void DrawUI() override;
 private:
 	SingleComponent<CText>* m_speedText;
+	LPDIRECT3DVERTEXBUFFER9 m_vtxBuff;	// í∏ì_èÓïÒ
+
 	CVehicle* m_vehicle;
+
+	// íËêî
+	const int BAR_NUM = 15;
+	const float BAR_WIDTH = 50.0f;
+	const float BAR_SPACE = 10.0f;
+	const float BAR_TOP = 100.0f;
+	const float BAR_RIGHT = 500.0f;
 };
 
 #endif // !_SPEEDMETER_UI_H_

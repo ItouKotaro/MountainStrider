@@ -1,12 +1,12 @@
 {
     "accel":
     {
-        "key": ["space","p:a"],
+        "key": ["w", "lshift"],
         "input": "press"
     },
     "jump":
     {
-        "key": ["lshift","p:x"],
+        "key": ["space", "p:a", "p:x"],
         "input": "trigger"
     },
     "left":
