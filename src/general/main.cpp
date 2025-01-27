@@ -196,35 +196,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	switch (uMsg)
 	{
-	case WM_KEYDOWN:
-
-		switch (wParam)
-		{
-		case VK_ESCAPE:
-			nID = MessageBox(hWnd, "終了しますか？", "確認", MB_YESNO); //終了メッセージ
-			if (nID == IDYES)
-			{ // 「はい」を選択したとき
-				DestroyWindow(hWnd); //ウィンドウを破棄
-			}
-			break;
-		}
-		break;
-
-	case WM_CLOSE:
-
-		nID = MessageBox(hWnd, "終了しますか？", "確認", MB_YESNO); //終了メッセージ
-
-		if (nID == IDYES)
-		{ //「はい」を選択したとき
-			DestroyWindow(hWnd); //ウィンドウを破棄
-		}
-		else
-		{ //「いいえ」を選択したとき
-			return 0; //イベントをキャンセル
-		}
-
-		break;
-
 	case WM_MOUSEWHEEL:
 		// マウスホイールの移動量を取得
 		CManager::GetInstance()->SetMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));

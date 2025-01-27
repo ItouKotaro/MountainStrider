@@ -224,13 +224,8 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
-	if (INPUT_INSTANCE->onTrigger("@"))
-	{
-		onClear();
-	}
-
 	// ポーズ
-	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("p:start"))
+	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("esc") || INPUT_INSTANCE->onTrigger("p:start"))
 	{
 		m_pause->SetPause(!m_pause->GetPause());
 	}
@@ -372,8 +367,8 @@ void CGameScene::SpawnBike()
 	m_bike->GetComponent<CVehicle>()->SetStatusUI(m_statusUI->GetComponent<CStatusUI>());
 
 	// スピードメーターUIを生成
-	m_speedmeterUI = new GameObject("SpeedMeterUI", "UI");
-	m_speedmeterUI->AddComponent<SpeedMeterUI>(m_bike->GetComponent<CVehicle>());
+	//m_speedmeterUI = new GameObject("SpeedMeterUI", "UI");
+	//m_speedmeterUI->AddComponent<SpeedMeterUI>(m_bike->GetComponent<CVehicle>());
 }
 
 //=============================================================
