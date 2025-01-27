@@ -126,23 +126,25 @@ void Terrain::Generate()
 //=============================================================
 void Terrain::GenerateTerrain()
 {
-	module::Perlin myModule;
 	utils::NoiseMap heightMap;
-
-	// シードを設定する
-	myModule.SetSeed(rand());
-
-	module::ScaleBias scaled;
-	scaled.SetSourceModule(0, myModule);
-	scaled.SetScale(100.0f);
-
-	// 地形を生成する
 	utils::NoiseMapBuilderPlane heightMapBuilder;
-	heightMapBuilder.SetSourceModule(scaled);
-	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
-	heightMapBuilder.SetBounds(0.0, 20.0, 0.0, 20.0);
-	heightMapBuilder.Build();
+
+	// 地形IDに基づく生成処理
+	if (m_terrainID == 0)
+	{
+		module::Perlin myModule;
+		myModule.SetSeed(rand());
+		module::ScaleBias scaled;
+		scaled.SetSourceModule(0, myModule);
+		scaled.SetScale(100.0f);
+
+		// 地形を生成する
+		heightMapBuilder.SetSourceModule(scaled);
+		heightMapBuilder.SetDestNoiseMap(heightMap);
+		heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
+		heightMapBuilder.SetBounds(0.0, 20.0, 0.0, 20.0);
+		heightMapBuilder.Build();
+	}
 
 	// テクスチャ画像に書き出す
 	utils::RendererImage renderer;
@@ -689,6 +691,13 @@ void Terrain::LoadTerrainFile(const std::string path)
 	// 地形情報を読み込む
 	if (jInput.contains("terrain"))
 	{
+		// 地形ID
+		m_terrainID = 0;
+		if (jInput["terrain"].contains("id"))
+		{
+			m_terrainID = jInput["terrain"]["id"];
+		}
+
 		// 高度カラー
 		if (jInput["terrain"].contains("height_color"))
 		{

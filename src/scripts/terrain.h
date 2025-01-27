@@ -64,6 +64,8 @@ private:
 	bool m_lakeEnabled;	// 湖の有効状態
 	float m_lakeHeight;	// 湖の高さ
 
+	int m_terrainID;			// 地形ID
+
 	// 頂点の高さを設定する
 	void SetVertexHeight(const int& x, const int& y, const float& height);
 
