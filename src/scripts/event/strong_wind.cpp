@@ -40,7 +40,11 @@ void StrongWindEvent::Update()
 {
 	// 力を加える
 	CCollision::GetCollision(m_vehicle)->GetRigidBody()->applyCentralForce(
-		btVector3(sinf(m_angle) * m_power, 0.0f, cosf(m_angle) * m_power)
+		btVector3(sinf(m_angle) * m_power, -m_power * 0.5f, cosf(m_angle) * m_power)
+	);
+
+	CCollision::GetCollision(m_vehicle)->GetRigidBody()->setAngularVelocity(
+		btVector3(sinf(m_angle) * m_power * 2.0f, 0.0f, cosf(m_angle) * m_power * 2.0f)
 	);
 
 	// タイマーを進める

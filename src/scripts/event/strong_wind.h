@@ -22,8 +22,8 @@ private:
 	float m_power;
 	float m_eventTimer;
 
-	const float MIN_POWER = 100.0f;
-	const float MAX_POWER = 200.0f;
+	const float MIN_POWER = 1000.0f;
+	const float MAX_POWER = 2000.0f;
 	const float EVENT_BASE_TIME = 10.0f;
 	const float EVENT_RANDOM_TIME = 10.0f;
 };
