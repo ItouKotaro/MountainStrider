@@ -278,6 +278,16 @@ void CVehicle::LandingControlVehicle()
 		pBackHinge->setTargetVelocity(3, 0.0f);
 	}
 	
+	// ŒX‚«’²®
+	if (INPUT_INSTANCE->onInput("forward") || stickLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * -0.8f};
+	}
+	if (INPUT_INSTANCE->onInput("behind") || stickLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		angularVelocity += {sinf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f, 0.0f, cosf(transform->GetRotY() + D3DX_PI * 0.5f) * 0.8f};
+	}
+
 	// •ûŒü“]Š·
 	float fSteeringVelocity = 0.0f;
 	if (INPUT_INSTANCE->onInput("left") || stickLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)

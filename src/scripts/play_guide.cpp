@@ -343,9 +343,9 @@ void AccelGuide::Update()
 	}
 	else
 	{
-		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\KEYBOARD\\key_w.png");
-		m_controlImg->transform->SetSize(70.0f, 70.0f);
-		m_pressText->transform->SetPos(120.0f, 100.0f);
+		m_controlImg->GetComponent<CPolygon>()->SetTexture("data\\TEXTURE\\UI\\KEYBOARD\\key_shift.png");
+		m_controlImg->transform->SetSize(225.0f, 80.0f);
+		m_pressText->transform->SetPos(280.0f, 105.0f);
 	}
 	
 	// “§–¾“x

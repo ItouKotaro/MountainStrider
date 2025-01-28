@@ -1,7 +1,7 @@
 {
     "accel":
     {
-        "key": ["w", "lshift"],
+        "key": ["lshift"],
         "input": "press"
     },
     "jump":
