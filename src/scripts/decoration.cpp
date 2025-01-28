@@ -7,6 +7,7 @@
 #include "decoration.h"
 #include "scripts/destructible.h"
 #include "component/2d/text.h"
+#include "scripts/mine.h"
 
 const float DecorationManager::CHUNK_DIVISION = (Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE) / (float)MAX_CHUNK;
 const int DecorationManager::DESTROY_LIMIT = 60;
@@ -484,6 +485,12 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 		{
 			targetDecoObj->gameObject->AddComponent<Destructible>(this)->SetDecoData(decoData);
 			targetDecoObj->gameObject->AddComponent<AudioSource>();
+		}
+
+		// “ÁŽêƒ^ƒO‚Ìê‡
+		if (targetDecoObj->gameObject->GetTag() == "MINE")
+		{ // ’n—‹
+			targetDecoObj->gameObject->AddComponent<LandMine>();
 		}
 
 		m_decoObjects.push_back(targetDecoObj);

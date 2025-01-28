@@ -257,6 +257,7 @@
     <ClCompile Include="src\scripts\item\item_manager.cpp" />
     <ClCompile Include="src\scripts\item\item_slot.cpp" />
     <ClCompile Include="src\scripts\lake.cpp" />
+    <ClCompile Include="src\scripts\mine.cpp" />
     <ClCompile Include="src\scripts\pause.cpp" />
     <ClCompile Include="src\scripts\play_guide.cpp" />
     <ClCompile Include="src\scripts\ranking_system.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="src\scripts\item\item_manager.h" />
     <ClInclude Include="src\scripts\item\item_slot.h" />
     <ClInclude Include="src\scripts\lake.h" />
+    <ClInclude Include="src\scripts\mine.h" />
     <ClInclude Include="src\scripts\pause.h" />
     <ClInclude Include="src\scripts\play_guide.h" />
     <ClInclude Include="src\scripts\ranking_system.h" />

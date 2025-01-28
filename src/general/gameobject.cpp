@@ -261,7 +261,7 @@ void GameObject::DestroyDeathFlag()
 		{ // 死亡フラグがついているとき
 			GameObject* destroyObj = m_gameObjects[i];
 
-			//// ゲームオブジェクトの登録を解除する
+			// ゲームオブジェクトの登録を解除する
 			m_gameObjects.erase(m_gameObjects.begin() + i);
 
 			delete destroyObj;

@@ -240,7 +240,7 @@ void ParticleSystem::Uninit()
 void ParticleSystem::Update()
 {
 	// 生成処理
-	UpdateGenerator();
+	if (m_isPlaying) UpdateGenerator();
 
 	// パーティクルの更新
 	UpdateParticles();

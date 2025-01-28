@@ -117,6 +117,20 @@
             "hit_sound": "data\\SOUND\\SE\\HIT\\grass.mp3",
             "volume": 50.0,
             "loop": true
+        },
+        {
+            "path": "data\\PREFAB\\mine.pref",
+            "radius": 50.0,
+            "destructible": true,
+            "damage": 10.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": true,
+            "chance": 2,
+            
+            "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
+            "volume": 50.0
         }
     ]
 }

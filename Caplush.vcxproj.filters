@@ -363,6 +363,9 @@
     <ClCompile Include="src\scripts\speedmeter_ui.cpp">
       <Filter>ソース ファイル\scripts\vehicle</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\mine.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -619,6 +622,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\speedmeter_ui.h">
       <Filter>ヘッダー ファイル\scripts\vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\mine.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

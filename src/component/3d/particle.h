@@ -111,6 +111,7 @@ public:
 	};
 
 	ParticleSystem() :
+		m_isPlaying(true),
 		m_gravity(0.0f),
 		m_size({ 5.0f, 5.0f }),
 		m_angle({ 0.0f, 0.0f }),
@@ -127,6 +128,11 @@ public:
 	void Uninit() override;
 	void Update() override;
 	void Draw() override;
+
+	// @brief Ä¶‚·‚é
+	void Play() { m_isPlaying = true; }
+	// @brief ’â~‚·‚é
+	void Stop() { m_isPlaying = false; }
 
 	// @brief d—Í‚Ìİ’è
 	void SetGravity(const float& gravity) { m_gravity = -gravity; }
@@ -218,6 +224,8 @@ private:
 	Range m_power;										// —Í
 	RangeInt m_lifetime;									// ¶‘¶ŠÔ
 	float m_vortex;											// ‰Q
+
+	bool m_isPlaying;										// Ä¶’†‚©
 
 	std::function<D3DXVECTOR3(ParticleSystem::ParticleData*)> m_moveEquation;
 
