@@ -20,6 +20,9 @@ void StrongWindEvent::Init()
 	
 	// —Í‚ðŒˆ‚ß‚é
 	m_power = Benlib::RandomFloat(MIN_POWER, MAX_POWER);
+
+	// ƒCƒxƒ“ƒgŽžŠÔ‚ðÝ’è‚·‚é
+	m_eventTimer = EVENT_BASE_TIME + Benlib::RandomFloat(0.0f, EVENT_RANDOM_TIME);
 }
 
 //=============================================================
@@ -36,7 +39,7 @@ void StrongWindEvent::Uninit()
 void StrongWindEvent::Update()
 {
 	// —Í‚ð‰Á‚¦‚é
-	CCollision::GetCollision(m_vehicle)->GetRigidBody()->applyCentralPushImpulse(
+	CCollision::GetCollision(m_vehicle)->GetRigidBody()->applyCentralForce(
 		btVector3(sinf(m_angle) * m_power, 0.0f, cosf(m_angle) * m_power)
 	);
 
