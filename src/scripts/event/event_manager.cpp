@@ -10,6 +10,7 @@
 
 #include "meteo.h"
 #include "tornado.h"
+#include "strong_wind.h"
 
 //=============================================================
 // [EventManager] 初期化
@@ -54,8 +55,8 @@ void EventManager::Update()
 	if (m_eventTimer <= 0.0f)
 	{
 		// イベントを起こす
-		AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
-		//AddEvent(EVENTID_TORNADO);
+		//AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
+		AddEvent(EVENTID_STRONGWIND);
 
 		// 時間を設定する
 		SetRandomTime();
@@ -102,6 +103,9 @@ void EventManager::AddEvent(EVENTID eventID)
 		break;
 	case EventManager::EVENTID_TORNADO:
 		eventTemplate = new TornadoEvent();
+		break;
+	case EventManager::EVENTID_STRONGWIND:
+		eventTemplate = new StrongWindEvent();
 		break;
 	}
 

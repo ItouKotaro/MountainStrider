@@ -40,6 +40,7 @@ public:
 	{
 		EVENTID_METEO = 0,		// 隕石
 		EVENTID_TORNADO,			// トルネード
+		EVENTID_STRONGWIND,	// 強風
 		EVENTID_MAX
 	};
 
