@@ -11,6 +11,7 @@
 #include "component/2d/text.h"
 #include "scripts/camera_move.h"
 #include "internal/physics.h"
+#include "scene/game.h"
 
 //=============================================================
 // [Pause] 初期化
@@ -105,11 +106,18 @@ void Pause::SetPause(const bool& enabled)
 	m_pausePage->GetComponent<Pages>()->SetPage(enabled ? 1 : 0);
 	m_isPause = enabled;
 
+	// カーソルの非表示
 	if (!enabled) Main::SetShowCursor(false);
 
 	// 物理設定
 	CPhysics::GetInstance()->SetUpdatePhysics(!m_isPause);
-	GameObject::Find("Camera")->GetComponent<CCameraMove>()->enabled = !enabled;
+
+	// カメラの有効・無効化
+	auto endType = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetEndType();
+	if (endType == CGameScene::ENDTYPE_NONE)
+	{
+		GameObject::Find("Camera")->GetComponent<CCameraMove>()->enabled = !enabled;
+	}
 }
 
 //=============================================================

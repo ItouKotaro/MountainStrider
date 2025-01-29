@@ -60,6 +60,7 @@ protected:
 	GameObject* m_fuelValue;				// 燃費表示
 
 	const int CLEAR_POINT = 2500;
+	const int END_POINT = 5000;
 };
 
 // クリア時のリザルト

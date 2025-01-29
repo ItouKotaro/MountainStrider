@@ -224,6 +224,11 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
+	if (INPUT_INSTANCE->onTrigger("@"))
+	{
+		onClear();
+	}
+
 	// ポーズ
 	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("esc") || INPUT_INSTANCE->onTrigger("p:start"))
 	{

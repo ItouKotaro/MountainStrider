@@ -625,6 +625,12 @@ void ResultBase::FinalResult(bool isSuccess)
 	}
 	score += CLEAR_POINT * static_cast<int>(isSuccess ? m_results.size() : m_results.size() - 1);
 
+	// 成功していた場合は終了ポイントを加算する
+	if (isSuccess)
+	{
+		score += END_POINT;
+	}
+
 	// 失敗していた時は半分にする
 	if (!isSuccess)
 	{

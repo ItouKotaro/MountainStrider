@@ -59,6 +59,7 @@ public:
 		ENDTYPE_GAMEOVER,									// ゲームオーバー
 	};
 	ENDTYPE m_endType;										// 終了理由
+	ENDTYPE GetEndType() { return m_endType; }
 
 private:
 	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する
