@@ -48,7 +48,7 @@
             }
         ],
         "friction": 1.0,
-        "mass": 120.0,
+        "mass": 250.0,
         "name": "tree00",
         "rigidbody": false,
         "tag": "",
