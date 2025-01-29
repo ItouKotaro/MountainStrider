@@ -29,6 +29,7 @@ bool g_isActiveWindow;
 bool g_isEnded = false;
 bool g_showCursor = true;
 bool g_beforeShowCursor = true;
+
 //=============================================================
 // メイン関数
 //=============================================================
@@ -39,11 +40,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(1424590);
 #endif
-
-	DWORD dwCurrentTime;	// 現在時刻
-	DWORD dwExecLastTime;	// 最後に処理した時刻
-	DWORD dwFrameCount;		// フレームカウント
-	DWORD dwFPSLastTime;	// 最後にFPSを計測した時刻
 
 	WNDCLASSEX wcex =
 	{
@@ -96,53 +92,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	// マネージャーの生成・初期化
 	CManager::GetInstance()->Init(hInstance, hWnd, TRUE);
 
-	// 分解能を設定
-	timeBeginPeriod(1);
-	dwCurrentTime = 0;							// 初期化する
-	dwExecLastTime = timeGetTime();		// 現在時刻を取得
+	// Mainの生成
+	Main* mainApp = new Main();
 
-	// FPS計測の初期化
-	dwFrameCount = 0;
-	dwFPSLastTime = timeGetTime();
-
-	std::thread mainLoopThread([&]() {
-		while (!g_isEnded)
-		{
-			dwCurrentTime = timeGetTime();		// 現在時刻を取得
-
-			if ((dwCurrentTime - dwFPSLastTime) >= 500)
-			{ // 0.5秒経過毎
-				// FPSを計測
-				CManager::GetInstance()->SetFPS((dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime));
-				dwFPSLastTime = dwCurrentTime;							// 計測した時刻を記録
-				dwFrameCount = 0;												// フレームカウントをクリア
-			}
-
-			if ((dwCurrentTime - dwExecLastTime) >= (1000 / FIXED_FPS))
-			{ // 60分の1秒経過
-
-				// デルタタイムを設定する
-				CManager::GetInstance()->SetDeltaTime((dwCurrentTime - dwExecLastTime) * 0.001f);
-
-				//処理開始時刻
-				dwExecLastTime = dwCurrentTime;
-
-				// 更新処理
-				CManager::GetInstance()->Update();
-
-				// 描画処理
-				CManager::GetInstance()->Draw();
-
-				// シーンの変更処理
-				CSceneManager::GetInstance()->ChangingScene();
-
-				// 死亡フラグのついたオブジェクトを破棄する
-				GameObject::DestroyDeathFlag();
-
-				dwFrameCount++; // フレームカウントを加算
-			}
-		}
-		});
+	// スレッド開始
+	mainApp->ThreadStart();
 
 	while (!g_isEnded)
 	{
@@ -172,13 +126,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	}
 
 	// メインループのスレッドが終わるまで待つ
-	mainLoopThread.join();
-
-	// 分解能を戻す
-	timeEndPeriod(1);
+	mainApp->ThreadJoin();
 
 	// マネージャーの終了・解放
 	CManager::GetInstance()->Uninit();
+
+	// Mainの破棄
+	if (mainApp != nullptr)
+	{
+		delete mainApp;
+		mainApp = nullptr;
+	}
 
 	// ウィンドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
@@ -211,7 +169,102 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //=============================================================
-// アクティブウィンドウか
+// [Main] コンストラクタ
+//=============================================================
+Main::Main()
+{
+	// 分解能を設定
+	timeBeginPeriod(1);
+	m_dwCurrentTime = 0;							// 初期化する
+	m_dwExecLastTime = timeGetTime();		// 現在時刻を取得
+
+	// FPS計測の初期化
+	m_dwFrameCount = 0;
+	m_dwFPSLastTime = timeGetTime();
+}
+
+//=============================================================
+// [Main] デストラクタ
+//=============================================================
+Main::~Main()
+{
+	// 分解能を戻す
+	timeEndPeriod(1);
+
+	// スレッドを破棄する
+	if (m_thread != nullptr)
+	{
+		delete m_thread;
+		m_thread = nullptr;
+	}
+}
+
+//=============================================================
+// [Main] スレッドの開始
+//=============================================================
+void Main::ThreadStart()
+{
+	// スレッドを作成する
+	m_thread = new std::thread(&Main::MainLoop, this);
+}
+
+//=============================================================
+// [Main] スレッドが終了するまで待つ
+//=============================================================
+void Main::ThreadJoin()
+{
+	if (m_thread != nullptr)
+	{
+		m_thread->join();
+	}
+}
+
+//=============================================================
+// [Main] メインループ
+//=============================================================
+void Main::MainLoop()
+{
+	while (!g_isEnded)
+	{
+		m_dwCurrentTime = timeGetTime();		// 現在時刻を取得
+
+		if ((m_dwCurrentTime - m_dwFPSLastTime) >= 500)
+		{ // 0.5秒経過毎
+			// FPSを計測
+			CManager::GetInstance()->SetFPS((m_dwFrameCount * 1000) / (m_dwCurrentTime - m_dwFPSLastTime));
+			m_dwFPSLastTime = m_dwCurrentTime;							// 計測した時刻を記録
+			m_dwFrameCount = 0;												// フレームカウントをクリア
+		}
+
+		if ((m_dwCurrentTime - m_dwExecLastTime) >= (1000 / FIXED_FPS))
+		{ // 60分の1秒経過
+
+			// デルタタイムを設定する
+			CManager::GetInstance()->SetDeltaTime((m_dwCurrentTime - m_dwExecLastTime) * 0.001f);
+
+			//処理開始時刻
+			m_dwExecLastTime = m_dwCurrentTime;
+
+			// 更新処理
+			CManager::GetInstance()->Update();
+
+			// 描画処理
+			CManager::GetInstance()->Draw();
+
+			// シーンの変更処理
+			CSceneManager::GetInstance()->ChangingScene();
+
+			// 死亡フラグのついたオブジェクトを破棄する
+			GameObject::DestroyDeathFlag();
+
+			// フレームカウントを加算
+			m_dwFrameCount++;
+		}
+	}
+}
+
+//=============================================================
+// [Main] アクティブウィンドウか
 //=============================================================
 bool Main::IsActiveWindow()
 {
@@ -219,7 +272,7 @@ bool Main::IsActiveWindow()
 }
 
 //=============================================================
-// アプリケーション終了命令
+// [Main] アプリケーション終了命令
 //=============================================================
 void Main::ExitApplication()
 {
@@ -227,7 +280,7 @@ void Main::ExitApplication()
 }
 
 //=============================================================
-// カーソルの表示
+// [Main] カーソルの表示
 //=============================================================
 void Main::SetShowCursor(const bool& show)
 {

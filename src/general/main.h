@@ -7,6 +7,8 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+#include <thread>
+
 // マクロ定義
 #define CLASS_NAME			"WindowClass"	// クラス名
 #define WINDOW_NAME	"MountainStrider"			// ウィンドウ名
@@ -15,11 +17,25 @@
 // プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-namespace Main
+class Main final
 {
-	bool IsActiveWindow();
-	void ExitApplication();
-	void SetShowCursor(const bool& show);
-}
+public:
+	Main();
+	~Main();
+	void ThreadStart();
+	void ThreadJoin();
+
+	static bool IsActiveWindow();
+	static void ExitApplication();
+	static void SetShowCursor(const bool& show);
+private:
+	void MainLoop();
+
+	std::thread* m_thread;
+	DWORD m_dwCurrentTime;
+	DWORD m_dwExecLastTime;
+	DWORD m_dwFrameCount;
+	DWORD m_dwFPSLastTime;
+};
 
 #endif
