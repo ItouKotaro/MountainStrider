@@ -91,6 +91,7 @@ private:
 	GameObject* m_fuelView;				// 燃料表示
 	GameObject* m_enduranceView;	// 耐久値表示
 	GameObject* m_terrainImg;			// 地形画像
+	GameObject* m_descriptionUI;		// 説明UI
 
 	// 音
 	AudioClip m_bgm;
@@ -99,6 +100,9 @@ private:
 	float m_volumeFade;
 	const float BGM_VOLUME = 0.2f;
 	const float BGM_FADE = 0.001f;
+	const std::string DESC_END_TEXTURE = "data\\TEXTURE\\RESULT\\desc_end.png";
+	const std::string DESC_NEXT_TEXTURE = "data\\TEXTURE\\RESULT\\desc_next.png";
+	const D3DXVECTOR2 DESC_SIZE = { 620.0f, 297.0f };
 
 	// ボタン
 	GameObject* m_endButton;

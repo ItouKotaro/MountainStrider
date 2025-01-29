@@ -229,6 +229,7 @@ void ClearResult::Init()
 		nextButtonText->transform->SetPos(250.0f, 35.0f);
 		nextButtonText->AddComponent<CText>();
 		nextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
+		nextButtonText->GetComponent<CText>()->SetFontSize(80);
 		nextButtonText->GetComponent<CText>()->SetText("<color=0,0,0>次へ進む");
 		nextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
@@ -262,6 +263,14 @@ void ClearResult::Init()
 		endButtonText->GetComponent<CText>()->SetText("<color=0,0,0>諦める");
 		endButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
 	}
+
+	// 説明UIを作成する
+	m_descriptionUI = new GameObject();
+	m_descriptionUI->transform->SetSize(DESC_SIZE);
+	m_descriptionUI->AddComponent<CPolygon>();
+	m_descriptionUI->GetComponent<CPolygon>()->SetTexture(DESC_END_TEXTURE);
+	m_descriptionUI->SetVisible(false);
+	page->AddObject(0, m_descriptionUI);
 
 	// ページのリセット
 	page->AllHideObjects();
@@ -317,6 +326,27 @@ void ClearResult::Update()
 	// ショップを更新する
 	if (m_page->GetComponent<Pages>()->GetPage() == 1)
 		m_shopManager->Update();
+
+	// 説明UIの更新
+	if (m_endButton->GetComponent<ButtonUI>()->GetOnCursor())
+	{ // 終了ボタンにカーソルがあるとき
+		m_descriptionUI->GetComponent<CPolygon>()->SetTexture(DESC_END_TEXTURE);
+		m_descriptionUI->transform->SetPos(m_endButton->transform->GetWPos() + D3DXVECTOR3(-60.0f, -280.0f, 0.0f));
+		m_descriptionUI->GetComponent<CPolygon>()->Update();
+		m_descriptionUI->SetVisible(true);
+	}
+	else if (m_nextButton->GetComponent<ButtonUI>()->GetOnCursor())
+	{ // 次の山ボタンにカーソルがあるとき
+		m_descriptionUI->GetComponent<CPolygon>()->SetTexture(DESC_NEXT_TEXTURE);
+		m_descriptionUI->transform->SetPos(m_nextButton->transform->GetWPos() + D3DXVECTOR3(-60.0f, -280.0f, 0.0f));
+		m_descriptionUI->GetComponent<CPolygon>()->Update();
+		m_descriptionUI->SetVisible(true);
+	}
+	else
+	{ // どのボタンにもカーソルがないとき
+		// 非表示
+		m_descriptionUI->SetVisible(false);
+	}
 }
 
 //=============================================================

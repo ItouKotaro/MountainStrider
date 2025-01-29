@@ -32,10 +32,16 @@ void ButtonUI::Update()
 
 		// ボタンの色を変更
 		SetColor(D3DCOLOR_RGBA(190, 190, 190, 255));
+
+		// 状態を変更する
+		m_isOnCursor = true;
 	}
 	else
 	{
 		// ボタンの色を変更
 		SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
+
+		// 状態を変更する
+		m_isOnCursor = false;
 	}
 }
