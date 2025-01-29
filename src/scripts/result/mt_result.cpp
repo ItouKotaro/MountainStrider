@@ -209,8 +209,8 @@ void ClearResult::Init()
 
 	// 次の山へ or 終了
 	{
+		// 次へ進むボタンを生成する
 		m_nextButton = new GameObject("NextMountain");
-		page->AddObject(0, m_nextButton);
 		m_nextButton->transform->SetSize(500.0f, 140.0f);
 		m_nextButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f) + 400.0f, 850.0f);
 		m_nextButton->AddComponent<ButtonUI>();
@@ -222,20 +222,23 @@ void ClearResult::Init()
 			// 次のページへ
 			page->SetPage(1); 
 			});
+		page->AddObject(0, m_nextButton);
 
+		// 次へ進むボタンのテキストを生成する
 		GameObject* nextButtonText = new GameObject();
 		nextButtonText->SetParent(m_nextButton);
-		page->AddObject(0, nextButtonText);
 		nextButtonText->transform->SetPos(250.0f, 35.0f);
 		nextButtonText->AddComponent<CText>();
 		nextButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		nextButtonText->GetComponent<CText>()->SetFontSize(80);
 		nextButtonText->GetComponent<CText>()->SetText("<color=0,0,0>次へ進む");
 		nextButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
+		page->AddObject(0, nextButtonText);
 	}
 
 	// 終了
 	{
+		// 終了ボタンを生成する
 		m_endButton = new GameObject("EndMountain");
 		page->AddObject(0, m_endButton);
 		m_endButton->transform->SetSize(500.0f, 140.0f);
@@ -253,6 +256,7 @@ void ClearResult::Init()
 			FinalResult(true);
 			});
 
+		// 終了ボタンのテキストを生成する
 		GameObject* endButtonText = new GameObject();
 		endButtonText->SetParent(m_endButton);
 		page->AddObject(0, endButtonText);
@@ -505,6 +509,7 @@ void GameOverResult::Init()
 
 	// 最終結果
 	{
+		// 最終結果ボタンを生成する
 		GameObject* pFinalResultButton = new GameObject("FinalResult");
 		pFinalResultButton->transform->SetSize(500.0f, 140.0f);
 		pFinalResultButton->transform->SetPos((CRenderer::SCREEN_WIDTH / 2 - 250.0f), 850.0f);
@@ -516,10 +521,12 @@ void GameOverResult::Init()
 			});
 		page->AddObject(0, pFinalResultButton);
 
+		// 最終結果ボタンのテキストを生成する
 		GameObject* pFinalResultButtonText = new GameObject();
 		pFinalResultButtonText->SetParent(pFinalResultButton);
 		pFinalResultButtonText->transform->SetPos(250.0f, 35.0f);
 		pFinalResultButtonText->AddComponent<CText>();
+		pFinalResultButtonText->GetComponent<CText>()->SetFontSize(80);
 		pFinalResultButtonText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		pFinalResultButtonText->GetComponent<CText>()->SetText("<color=0,0,0>最終結果へ");
 		pFinalResultButtonText->GetComponent<CText>()->SetFont("07鉄瓶ゴシック");
