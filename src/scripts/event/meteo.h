@@ -38,6 +38,7 @@ public:
 	void Update() override;
 	void HitAction();
 private:
+	GameObject* m_particle;
 	const float RANGE = 150.0f;
 	const float VEHICLE_DAMAGE = 20.0f;
 };

@@ -96,14 +96,14 @@ public:
 //=============================================================
 void MeteoCollision::Init()
 {
-	GameObject* particleObj = new GameObject();
-	particleObj->SetParent(gameObject);
-	auto particle = particleObj->AddComponent<ParticleSystem>();
+	m_particle = new GameObject();
+	m_particle->SetParent(gameObject);
+	auto particle = m_particle->AddComponent<ParticleSystem>();
 	particle->SetShape(new MeteoParticle());
 	particle->GetEmission()->SetRateOverTime(30.0f);
 	particle->SetGravity(-0.1f);
+	particle->SetSize(50.0f);
 	particle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\smoke00.png");
-
 }
 
 //=============================================================
@@ -135,6 +135,9 @@ void MeteoCollision::HitAction()
 {
 	gameObject->Destroy(gameObject->GetComponent<CRigidBody>());
 	CCollision::GetCollision(gameObject)->UpdateCollision();
+
+	// パーティクルを止める
+	m_particle->GetComponent<ParticleSystem>()->Stop();
 
 	// 周囲のオブジェクトを吹き飛ばす
 	std::vector<GameObject*> allObjects = GameObject::GetAllGameObjects();
