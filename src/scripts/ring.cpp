@@ -30,7 +30,7 @@ void PointRing::Update()
 //=============================================================
 void PointRing::OnTriggerExit(GameObject* other)
 {
-	if (other->GetComponent<CVehicle>() != nullptr)
+	if (!m_isUsed && other->GetComponent<CVehicle>() != nullptr)
 	{
 		// ‰¹‚ð¶¬‚·‚é
 		if (!m_throughSE) m_throughSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\HIT\\ring.mp3");
@@ -46,5 +46,7 @@ void PointRing::OnTriggerExit(GameObject* other)
 
 		// ‰¹‚ð–Â‚ç‚·
 		gameObject->AddComponent<AudioSource>()->Play(m_throughSE);
+
+		m_isUsed = true;
 	}
 }

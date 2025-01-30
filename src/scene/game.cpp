@@ -78,6 +78,16 @@ void CGameScene::Init()
 
 	// 取得したパスの中から1つをランダムで取得して格納する
 	auto terrainPath = terrainFiles[rand() % terrainFiles.size()];
+	
+	// 展示会のみの処理
+	if (ResultBase::GetNumOfStep() == 0)
+	{
+		terrainPath = "data\\TERRAINS\\UnevennessGreen.json";
+	}
+	else if (ResultBase::GetNumOfStep() == 1)
+	{
+		terrainPath = "data\\TERRAINS\\Desert.json";
+	}
 
 	// 地面を作成
 	{

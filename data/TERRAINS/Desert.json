@@ -18,7 +18,23 @@
                 "color": [242, 209, 116, 255],
                 "height": -1.0
             }
-        ]
+        ],
+        "lake":
+        {
+            "height": -0.8,
+            "fuel_damage": 0.0,
+            "endurance_damage": 0.0,
+            "base_color": [90, 168, 219, 200],
+            "textures":
+            [
+                {
+                    "path": "data\\TEXTURE\\LAKE\\water00.png",
+                    "color": [255, 255, 255, 200],
+                    "loop": 150,
+                    "move": [0.001, 0.001]
+                }
+            ]
+        }
     },
 
     "music":
@@ -50,8 +66,11 @@
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
+            "limit_height": [-0.8, 1.0],
             "match_inclination": false,
-            "chance": 2
+            "chance": 15,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\cactus.mp3",
+            "volume": 100.0
         },
         {
             "path": "data\\PREFAB\\props\\cactus01.pref",
@@ -61,8 +80,11 @@
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
+            "limit_height": [-0.8, 1.0],
             "match_inclination": false,
-            "chance": 2
+            "chance": 15,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\cactus.mp3",
+            "volume": 100.0
         },
         {
             "path": "data\\PREFAB\\props\\cactus02.pref",
@@ -72,8 +94,11 @@
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
+            "limit_height": [-0.8, 1.0],
             "match_inclination": false,
-            "chance": 2
+            "chance": 10,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\cactus.mp3",
+            "volume": 100.0
         },
         {
             "path": "data\\PREFAB\\props\\cactus03.pref",
@@ -83,8 +108,11 @@
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
+            "limit_height": [-0.8, 1.0],
             "match_inclination": false,
-            "chance": 2
+            "chance": 10,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\cactus.mp3",
+            "volume": 100.0
         },
         {
             "path": "data\\PREFAB\\props\\cactus04.pref",
@@ -94,8 +122,11 @@
             "offset": 0.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
+            "limit_height": [-0.8, 1.0],
             "match_inclination": false,
-            "chance": 2
+            "chance": 15,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\cactus.mp3",
+            "volume": 100.0
         },
         {
             "path": "data\\PREFAB\\tree\\fallen_tree.pref",
@@ -106,7 +137,9 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.0,
             "match_inclination": true,
-            "chance": 1
+            "chance": 5,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\cactus.mp3",
+            "volume": 100.0
         },
         {
             "path": "data\\PREFAB\\props\\grass00.pref",
@@ -116,8 +149,37 @@
             "offset": 10.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.0,
+            "limit_height": [-0.9, 1.0],
             "match_inclination": true,
-            "chance": 2
+            "chance": 10,
+            "hit_sound": "data\\SOUND\\SE\\HIT\\grass.mp3",
+            "volume": 50.0,
+            "loop": true
+        },
+        {
+            "path": "data\\PREFAB\\golden_ring.pref",
+            "radius": 50.0,
+            "destructible": false,
+            "offset": 25.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 1
+        },
+        {
+            "path": "data\\PREFAB\\mine.pref",
+            "radius": 50.0,
+            "destructible": true,
+            "damage": 10.0,
+            "offset": 0.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "limit_height": [-0.8, 1.0],
+            "match_inclination": true,
+            "chance": 1,
+            
+            "hit_sound": "data\\SOUND\\SE\\HIT\\mine.mp3",
+            "volume": 50.0
         }
     ]
 }
