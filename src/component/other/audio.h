@@ -14,14 +14,16 @@
 class AudioSource : public Component
 {
 public:
-	AudioSource() : m_audioClip(nullptr), m_channel(nullptr){}
+	AudioSource() : m_audioClip(nullptr), m_channel(nullptr), m_isEndDestroy(false){}
 	void Uninit() override;
 	void Update() override;
 	void Play(AudioClip audioClip);
 	void PlayOneShot(AudioClip audioClip, float volume = 1.0f);
+	void IsEndDestroy() { m_isEndDestroy = true; }
 	void SetPause(bool isPause);
 	FMOD::Channel* GetChannel() { return m_channel; }
 private:
+	bool m_isEndDestroy;
 	AudioClip m_audioClip;
 	FMOD::Channel* m_channel;
 	std::vector<FMOD::Channel*> m_oneShots;

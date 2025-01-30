@@ -9,11 +9,17 @@
 #include "component/3d/particle.h"
 #include "component/3d/mesh.h"
 
+AudioClip Gem::m_pickupSE = nullptr;
+
 //=============================================================
 // [Gem] 初期化
 //=============================================================
 void Gem::Init()
 {
+	// 音の生成
+	if (!m_pickupSE) m_pickupSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\HIT\\gem.mp3");
+
+	// パーティクルの作成
 	m_particle = new GameObject();
 	m_particle->transform->SetPos(0.0f, -15.0f, 0.0f);
 	m_particle->SetParent(gameObject);
@@ -49,6 +55,13 @@ void Gem::OnTriggerEnter(GameObject* other)
 	if (other->GetName() == "Vehicle")
 	{
 		ShopManager::AddPoint(5);
+
+		// 音を鳴らす
+		GameObject* sePlayer = new GameObject();
+		sePlayer->AddComponent<AudioSource>()->Play(m_pickupSE);
+		sePlayer->GetComponent<AudioSource>()->IsEndDestroy();
+
+		// 破棄する
 		gameObject->Destroy();
 	}
 }

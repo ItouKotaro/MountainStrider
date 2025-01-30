@@ -18,6 +18,7 @@ private:
 	GameObject* m_particle;
 	GameObject* m_camera;
 
+	static AudioClip m_pickupSE;
 	const float RENDER_DISTANCE = 1500.0f;
 };
 

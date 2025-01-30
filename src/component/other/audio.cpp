@@ -28,6 +28,18 @@ void AudioSource::Update()
 		FMOD_VECTOR pos = { transform->GetWPos().x, transform->GetWPos().y, transform->GetWPos().z };
 		FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
 		m_channel->set3DAttributes(&pos, &vel);
+
+		// I—¹‚µ‚½‚ç”jŠü‚·‚éê‡
+		if (m_isEndDestroy)
+		{
+			bool isPlaying;
+			m_channel->isPlaying(&isPlaying);
+			if (!isPlaying)
+			{ // Ä¶‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚«
+				// ”jŠü‚·‚é
+				gameObject->Destroy();
+			}
+		}
 	}
 
 	for (auto itr = m_oneShots.begin(); itr != m_oneShots.end(); itr++)
