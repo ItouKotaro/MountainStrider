@@ -109,7 +109,7 @@
             "radius": 20.0,
             "destructible": true,
             "damage": 10.0,
-            "offset": 10.0,
+            "offset": 8.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.0,
             "match_inclination": true,
@@ -130,7 +130,7 @@
             "match_inclination": true,
             "chance": 1,
             
-            "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
+            "hit_sound": "data\\SOUND\\SE\\HIT\\mine.mp3",
             "volume": 50.0
         },
         {

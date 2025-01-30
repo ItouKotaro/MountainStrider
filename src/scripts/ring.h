@@ -18,7 +18,7 @@ public:
 private:
 	static AudioClip m_throughSE;
 
-	const int POINT = 10;
+	const int POINT = 5;
 	const float ROLL_ANGLE = 0.02f;
 };
 

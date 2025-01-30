@@ -14,11 +14,20 @@
 //=============================================================
 void LandMine::Init()
 {
+	// パーティクルを作成する
 	m_particle = new GameObject();
 	auto particle = m_particle->AddComponent<ParticleSystem>();
 	particle->SetShape(new ParticleShape::SphereShape());
 	particle->GetEmission()->SetRateOverTime(50.0f);
 	particle->Stop();
+}
+
+//=============================================================
+// [LandMine] 終了
+//=============================================================
+void LandMine::Uninit()
+{
+	m_particle->Destroy();
 }
 
 //=============================================================
@@ -36,6 +45,10 @@ void LandMine::OnTriggerEnter(GameObject* other)
 {
 	if (other->GetComponent<CVehicle>() != nullptr)
 	{ // バイクと接触したとき
+
+		// パーティクルを再生する
+		m_particle->GetComponent<ParticleSystem>()->Play();
+
 		// 吹き飛ばす
 		auto dir = transform->GetWPos() - other->transform->GetWPos();
 		D3DXVec3Normalize(&dir, &dir);
@@ -45,6 +58,6 @@ void LandMine::OnTriggerEnter(GameObject* other)
 		other->GetComponent<CVehicle>()->AddDamage(DAMAGE);
 
 		// 自らを破棄する
-		gameObject->GetComponent<Destructible>()->ForceRemove();
+		gameObject->GetComponent<Destructible>()->ForceHit();
 	}
 }

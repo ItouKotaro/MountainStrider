@@ -14,11 +14,12 @@ class LandMine : public Component
 {
 public:
 	void Init() override;
+	void Uninit() override;
 	void Update() override;
 	void OnTriggerEnter(GameObject* other) override;
 private:
 	GameObject* m_particle;
-	const float DAMAGE = 100.0f;
+	const float DAMAGE = 50.0f;
 };
 
 #endif // !_LAND_MINE_H_
