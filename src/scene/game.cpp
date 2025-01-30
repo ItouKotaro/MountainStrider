@@ -45,6 +45,9 @@ void CGameScene::Init()
 	m_actionPoint = 0;
 	m_pause = nullptr;
 
+	// 乱数のシード設定
+	srand((unsigned int)clock());
+
 	// ポーズ
 	m_pause = new Pause();
 	m_pause->Init();
@@ -64,12 +67,6 @@ void CGameScene::Init()
 		CMesh::SetCamera(m_camera->GetComponent<CCamera>());
 	}
 
-	// ライトを作成
-	{
-		GameObject* pLight = new GameObject("Light");
-		CD3DLight::SetDefaultD3DLight(pLight);
-	}
-
 	// 読み込む地形ファイルを決定する
 	auto terrainFiles = GetTerrainFiles();
 	if (terrainFiles.empty())
@@ -78,11 +75,12 @@ void CGameScene::Init()
 		Main::ExitApplication();
 		return;
 	}
+
+	// 取得したパスの中から1つをランダムで取得して格納する
 	auto terrainPath = terrainFiles[rand() % terrainFiles.size()];
 
 	// 地面を作成
 	{
-		srand((unsigned int)clock());
 		m_terrain = new Terrain();
 		m_terrain->SetSeed(rand());
 		m_terrain->Init();

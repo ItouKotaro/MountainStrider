@@ -74,7 +74,7 @@ void CVehicle::Init()
 	m_pHandle->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\handle.x");
 
 	// ‘O—Ö‚Ì¶¬
-	m_pFrontTire = new GameObject;
+	m_pFrontTire = new GameObject("FrontTire", "Vehicle");
 	m_pFrontTire->transform->Translate(0.0f, 0.0f, -12.5f);
 	m_pFrontTire->AddComponent<CCylinderCollider>(3.5f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pFrontTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\front.x");
@@ -85,7 +85,7 @@ void CVehicle::Init()
 	m_pFrontTire->GetComponent<CRigidBody>()->EnableAlwayActive();
 
 	// Œã—Ö‚Ì¶¬
-	m_pBackTire = new GameObject;
+	m_pBackTire = new GameObject("BackTire", "Vehicle");
 	m_pBackTire->transform->Translate(0.0f, 0.0f, 6.0f);
 	m_pBackTire->AddComponent<CCylinderCollider>(3.5f, 1.05f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, D3DX_PI * 0.5f));
 	m_pBackTire->AddComponent<CMesh>()->LoadMeshX("data\\MODEL\\MOTOR_BIKE\\back.x");
