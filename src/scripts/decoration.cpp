@@ -21,8 +21,8 @@ void DecorationManager::Init(Terrain* terrain)
 {
 	m_terrain = terrain;
 
-	m_oldChunkX = 0;
-	m_oldChunkY = 0;
+	m_oldChunkX = -1;
+	m_oldChunkY = -1;
 }
 
 //=============================================================
@@ -498,6 +498,8 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 		targetDecoObj->decoType = decoData->type;
 		targetDecoObj->gameObject = GameObject::LoadPrefab(decoData->type->path, decoData->transform);
 		targetDecoObj->destroyCounter = DESTROY_LIMIT;
+
+		// 破壊可能オブジェクトのとき
 		if (decoData->type->isDestructible)
 		{
 			targetDecoObj->gameObject->AddComponent<Destructible>(this)->SetDecoData(decoData);

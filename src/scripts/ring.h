@@ -16,6 +16,8 @@ public:
 	void Update() override;
 	void OnTriggerExit(GameObject* other) override;
 private:
+	static AudioClip m_throughSE;
+
 	const int POINT = 10;
 	const float ROLL_ANGLE = 0.02f;
 };
