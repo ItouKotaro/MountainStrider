@@ -20,6 +20,7 @@ public:
 	void OnTriggerEnter(GameObject* other) override;
 	void SetDecoData(DecorationManager::DecorationData* data) { m_decoData = data; }
 	void ForceHit(bool playSound = true);
+	void ForceRemove();
 
 	static const float FADE_VALUE;
 	static const float START_TIME;

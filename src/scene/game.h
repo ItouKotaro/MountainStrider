@@ -38,6 +38,7 @@ public:
 	LakeManager* GetLake() { return m_lake; }
 	GameObject* GetBike() { return m_bike; }
 	EnvironmentalEffect* GetEnvironmental() { return m_environmental; }
+	DecorationManager* GetDecoration() { return m_decoration; }
 
 	static void AddActionPoint(const int& point) { m_actionPoint += point; }
 	static int GetActionPoint() { return m_actionPoint; }

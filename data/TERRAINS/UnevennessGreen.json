@@ -3,6 +3,7 @@
     "terrain":
     {
         "generate_num": 30000,
+        "gem_num": 300,
         "height_color":
         [
             {
@@ -70,7 +71,7 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
-            "chance": 10,
+            "chance": 30,
             "limit_height": [-0.3, 1.0],
             "limit_slant": [0.0, 0.4],
             
@@ -86,7 +87,7 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
-            "chance": 10,
+            "chance": 30,
             "limit_slant": [0.0, 0.4],
             "limit_height": [-0.3, 1.0],
             "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
@@ -101,7 +102,7 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.0,
             "match_inclination": true,
-            "chance": 1
+            "chance": 15
         },
         {
             "path": "data\\PREFAB\\props\\grass00.pref",
@@ -113,7 +114,7 @@
             "angle_range": 0.0,
             "match_inclination": true,
             "limit_height": [-0.3, 1.0],
-            "chance": 2,
+            "chance": 15,
             "hit_sound": "data\\SOUND\\SE\\HIT\\grass.mp3",
             "volume": 50.0,
             "loop": true
@@ -127,10 +128,20 @@
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": true,
-            "chance": 2,
+            "chance": 1,
             
             "hit_sound": "data\\SOUND\\SE\\HIT\\tree.mp3",
             "volume": 50.0
+        },
+        {
+            "path": "data\\PREFAB\\golden_ring.pref",
+            "radius": 50.0,
+            "destructible": false,
+            "offset": 30.0,
+            "adjacent_distance": 100.0,
+            "angle_range": 0.1,
+            "match_inclination": false,
+            "chance": 1
         }
     ]
 }

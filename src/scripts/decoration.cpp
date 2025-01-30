@@ -7,7 +7,9 @@
 #include "decoration.h"
 #include "scripts/destructible.h"
 #include "component/2d/text.h"
+
 #include "scripts/mine.h"
+#include "scripts/ring.h"
 
 const float DecorationManager::CHUNK_DIVISION = (Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE) / (float)MAX_CHUNK;
 const int DecorationManager::DESTROY_LIMIT = 60;
@@ -214,6 +216,21 @@ void DecorationManager::RemoveData(DecorationData* data)
 	}
 
 	assert("not found data");
+}
+
+//=============================================================
+// [DecorationManager] データの削除
+//=============================================================
+void DecorationManager::RemoveData(GameObject* gameObject)
+{
+	for (auto itr = m_decoObjects.begin(); itr != m_decoObjects.end(); itr++)
+	{
+		if ((*itr)->gameObject == gameObject)
+		{
+			RemoveData((*itr)->decoDeta);
+			break;
+		}
+	}
 }
 
 //=============================================================
@@ -491,6 +508,10 @@ void DecorationManager::ActiveData(DecorationData* decoData)
 		if (targetDecoObj->gameObject->GetTag() == "MINE")
 		{ // 地雷
 			targetDecoObj->gameObject->AddComponent<LandMine>();
+		}
+		else if (targetDecoObj->gameObject->GetTag() == "RING")
+		{ // リング
+			targetDecoObj->gameObject->AddComponent<PointRing>();
 		}
 
 		m_decoObjects.push_back(targetDecoObj);

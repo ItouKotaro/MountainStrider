@@ -3,6 +3,7 @@
     "terrain":
     {
         "generate_num": 8000,
+        "gem_num": 300,
         "height_color":
         [
             {

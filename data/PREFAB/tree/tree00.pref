@@ -64,6 +64,6 @@
                 0.0
             ]
         },
-        "trigger": false
+        "trigger": true
     }
 }

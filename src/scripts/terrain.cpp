@@ -122,7 +122,7 @@ void Terrain::Generate()
 	m_field->GetComponent<Road>()->Generate();
 
 	// ジェムの生成
-	for (int i = 0; i < 150; i++)
+	for (int i = 0; i < m_gemNum; i++)
 	{
 		GenerateGem();
 	}
@@ -701,6 +701,13 @@ void Terrain::LoadTerrainFile(const std::string path)
 		if (jInput["terrain"].contains("id"))
 		{
 			m_terrainID = jInput["terrain"]["id"];
+		}
+
+		// ジェム
+		m_gemNum = 0;
+		if (jInput["terrain"].contains("gem_num"))
+		{
+			m_gemNum = jInput["terrain"]["gem_num"];
 		}
 
 		// 高度カラー

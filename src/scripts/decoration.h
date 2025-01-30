@@ -62,6 +62,9 @@ public:
 	//@brief データを破棄する
 	void RemoveData(DecorationData* data);
 
+	//@brief データを破棄する
+	void RemoveData(GameObject* gameObject);
+
 	//@brief 地形ファイルを読み込む
 	void LoadTerrainFile(const std::string path);
 

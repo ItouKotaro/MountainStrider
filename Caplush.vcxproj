@@ -267,6 +267,7 @@
     <ClCompile Include="src\scripts\result\result_data.cpp" />
     <ClCompile Include="src\scripts\result\result_terrain.cpp" />
     <ClCompile Include="src\scripts\result\result_view.cpp" />
+    <ClCompile Include="src\scripts\ring.cpp" />
     <ClCompile Include="src\scripts\road.cpp" />
     <ClCompile Include="src\scripts\shop\buy_button.cpp" />
     <ClCompile Include="src\scripts\shop\inventory.cpp" />
@@ -357,6 +358,7 @@
     <ClInclude Include="src\scripts\result\result_data.h" />
     <ClInclude Include="src\scripts\result\result_terrain.h" />
     <ClInclude Include="src\scripts\result\result_view.h" />
+    <ClInclude Include="src\scripts\ring.h" />
     <ClInclude Include="src\scripts\road.h" />
     <ClInclude Include="src\scripts\shop\buy_button.h" />
     <ClInclude Include="src\scripts\shop\inventory.h" />

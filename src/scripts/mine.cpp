@@ -7,6 +7,7 @@
 #include "mine.h"
 #include "vehicle.h"
 #include "component/3d/particle.h"
+#include "destructible.h"
 
 //=============================================================
 // [LandMine] ‰Šú‰»
@@ -44,6 +45,6 @@ void LandMine::OnTriggerEnter(GameObject* other)
 		other->GetComponent<CVehicle>()->AddDamage(DAMAGE);
 
 		// Ž©‚ç‚ð”jŠü‚·‚é
-		gameObject->Destroy();
+		gameObject->GetComponent<Destructible>()->ForceRemove();
 	}
 }

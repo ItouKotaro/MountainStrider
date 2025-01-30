@@ -19,11 +19,6 @@ const float Destructible::START_TIME = 3.5f;
 //=============================================================
 void Destructible::Init()
 {
-	CCollision* collision = CCollision::GetCollision(gameObject);
-	if (collision != nullptr)
-	{
-		collision->IsTrigger(true);
-	}
 }
 
 //=============================================================
@@ -148,5 +143,21 @@ void Destructible::ForceHit(bool playSound)
 	// 開始時間を設定する
 	m_startTimer = START_TIME;
 
+	m_isHit = true;
+}
+
+//=============================================================
+// [Destructible] 強制削除
+//=============================================================
+void Destructible::ForceRemove()
+{
+	// デコレーションデータから削除する
+	if (!m_isHit && m_decoData != nullptr)
+	{
+		m_decoManager->RemoveData(m_decoData);
+	}
+
+	m_startTimer = 0.0f;
+	m_fade = 0.0f;
 	m_isHit = true;
 }

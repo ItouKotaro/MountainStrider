@@ -59,6 +59,7 @@ private:
 	GameObject* m_limitField;								// 制限フィールド
 	float* m_terrainData;										// 高度データ
 	btHeightfieldTerrainShape* m_terrainShape;	// 地形コリジョンシェイプ
+	int m_gemNum;												// ジェムの数
 
 	float m_maxHeight;	// 最高高度
 	float m_minHeight;	// 最低高度

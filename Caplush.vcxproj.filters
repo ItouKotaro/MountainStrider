@@ -372,6 +372,9 @@
     <ClCompile Include="src\scripts\terrain_type.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\ring.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -636,6 +639,9 @@
       <Filter>ヘッダー ファイル\scripts\event</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\terrain_type.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\ring.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
