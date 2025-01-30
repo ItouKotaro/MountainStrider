@@ -12,6 +12,9 @@
 #include "scripts/destructible.h"
 #include "scripts/vehicle.h"
 
+AudioClip MeteoCollision::m_fallSE = nullptr;
+AudioClip MeteoCollision::m_landingSE = nullptr;
+
 //=============================================================
 // [MeteoEvent] 初期化
 //=============================================================
@@ -96,6 +99,7 @@ public:
 //=============================================================
 void MeteoCollision::Init()
 {
+	// パーティクルを作成する
 	m_particle = new GameObject();
 	m_particle->SetParent(gameObject);
 	auto particle = m_particle->AddComponent<ParticleSystem>();
@@ -104,6 +108,17 @@ void MeteoCollision::Init()
 	particle->SetGravity(-0.1f);
 	particle->SetSize(50.0f);
 	particle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\smoke00.png");
+
+	// 音の生成
+	if (!m_fallSE) m_fallSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\EVENT\\meteo_fall.mp3", FMOD_3D, FMOD_LOOP_NORMAL);
+	if (!m_landingSE) m_landingSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\EVENT\\meteo_landing.mp3", FMOD_3D);
+
+	// 音再生オブジェクトの生成
+	m_se = new GameObject();
+	m_se->SetParent(gameObject);
+	m_se->AddComponent<AudioSource>()->Play(m_fallSE);
+	m_se->GetComponent<AudioSource>()->GetChannel()->set3DMinMaxDistance(1000.0f, 10.0f);
+	m_se->GetComponent<AudioSource>()->GetChannel()->setVolume(100.0f);
 }
 
 //=============================================================
@@ -133,8 +148,15 @@ void MeteoCollision::Update()
 //=============================================================
 void MeteoCollision::HitAction()
 {
+	// リジッドボディを外す
 	gameObject->Destroy(gameObject->GetComponent<CRigidBody>());
 	CCollision::GetCollision(gameObject)->UpdateCollision();
+
+	// 爆発音を生成する
+	m_se->GetComponent<AudioSource>()->Play(m_landingSE);
+	m_se->GetComponent<AudioSource>()->GetChannel()->setVolume(100.0f);
+	m_se->GetComponent<AudioSource>()->GetChannel()->set3DMinMaxDistance(2000.0f, 10.0f);
+	m_se->GetComponent<AudioSource>()->IsEndDestroy();
 
 	// パーティクルを止める
 	m_particle->GetComponent<ParticleSystem>()->Stop();

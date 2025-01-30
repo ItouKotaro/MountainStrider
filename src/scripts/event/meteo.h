@@ -39,6 +39,11 @@ public:
 	void HitAction();
 private:
 	GameObject* m_particle;
+	GameObject* m_se;
+
+	static AudioClip m_fallSE;
+	static AudioClip m_landingSE;
+
 	const float RANGE = 150.0f;
 	const float VEHICLE_DAMAGE = 20.0f;
 };
