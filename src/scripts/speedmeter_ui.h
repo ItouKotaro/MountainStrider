@@ -22,17 +22,24 @@ public:
 	void Update() override;
 	void DrawUI() override;
 private:
+	void UpdateMeter();
+
 	SingleComponent<CText>* m_speedText;
-	LPDIRECT3DVERTEXBUFFER9 m_vtxBuff;	// í∏ì_èÓïÒ
+	SingleComponent<CPolygon>* m_speedBG;
+	SingleComponent<CPolygon>* m_meterBG;
+	SingleComponent<CPolygon>* m_needle;
+	
+	Transform* m_meter;
+	float m_showAngle;
 
 	CVehicle* m_vehicle;
 
 	// íËêî
 	const int BAR_NUM = 15;
-	const float BAR_WIDTH = 50.0f;
+	const float BAR_WIDTH = 20.0f;
 	const float BAR_SPACE = 10.0f;
 	const float BAR_TOP = 100.0f;
-	const float BAR_RIGHT = 500.0f;
+	const float BAR_RIGHT = 10.0f;
 };
 
 #endif // !_SPEEDMETER_UI_H_

@@ -349,10 +349,10 @@ void CVehicle::UpdateSpeedMeter()
 {
 	// 60ƒtƒŒ[ƒ€–ˆ‚ÅKm/h‚ÉŠ·ŽZ
 	m_measureCounter++;
-	if (m_measureCounter >= 60)
+	if (m_measureCounter >= 5)
 	{
-		float fDistance = Benlib::PosDistance(transform->GetWPos(), m_measurePos);
-		m_fSpeed = fDistance / 2.0f;
+		float fDistance = Benlib::PosPlaneDistance(transform->GetWPos(), m_measurePos);
+		m_fSpeed = fDistance * 5.0f;
 		m_measureCounter = 0;
 		m_measurePos = transform->GetWPos();
 	}

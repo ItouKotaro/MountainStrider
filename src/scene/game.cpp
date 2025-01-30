@@ -371,6 +371,7 @@ void CGameScene::SpawnBike()
 
 	// スピードメーターUIを生成
 	m_speedmeterUI = new GameObject("SpeedMeterUI", "UI");
+	m_speedmeterUI->transform->SetPos(CRenderer::SCREEN_WIDTH - 380.0f, CRenderer::SCREEN_HEIGHT - 350.0f);
 	m_speedmeterUI->AddComponent<SpeedMeterUI>(m_bike->GetComponent<CVehicle>());
 }
 
@@ -402,6 +403,9 @@ void CGameScene::onGameOver()
 	{ // 1回のみの処理
 		// ステータスUIを非表示にする
 		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
+
+		// スピードメーターを非表示にする
+		m_speedmeterUI->SetActive(false);
 
 		// アイテムスロットを非表示にする
 		m_itemSlot->SetActive(false);
@@ -455,6 +459,9 @@ void CGameScene::onClear()
 	{ // 1回のみの処理
 		// ステータスUIを非表示にする
 		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
+
+		// スピードメーターを非表示にする
+		m_speedmeterUI->SetActive(false);
 
 		// アイテムスロットを非表示にする
 		m_itemSlot->SetActive(false);

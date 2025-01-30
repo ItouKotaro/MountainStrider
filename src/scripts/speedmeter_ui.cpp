@@ -17,69 +17,39 @@ void SpeedMeterUI::Init()
 	m_speedText->Init();
 	m_speedText->SetParent(gameObject);
 	m_speedText->SetFont("07鉄瓶ゴシック");
+	m_speedText->SetFontSize(50);
+	m_speedText->SetAlign(CText::CENTER);
+	m_speedText->transform->SetPos(160.0f, 250.0f);
 
-	// デバイスへのポインタ
-	LPDIRECT3DDEVICE9 device = CRenderer::GetInstance()->GetDevice();
+	// スピードテキストの背景
+	m_speedBG = new SingleComponent<CPolygon>();
+	m_speedBG->Init();
+	m_speedBG->SetParent(gameObject);
+	m_speedBG->SetColor(D3DCOLOR_RGBA(42, 71, 184, 150));
+	m_speedBG->transform->SetPos(70.0f, 240.0f);
+	m_speedBG->transform->SetSize(162.5f, 60.0f);
 
-	// 頂点バッファの生成
-	device->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * BAR_NUM, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_vtxBuff, nullptr);
-	VERTEX_2D* vtx;
+	// メーターの生成
+	m_meterBG = new SingleComponent<CPolygon>();
+	m_meterBG->Init();
+	m_meterBG->SetParent(gameObject);
+	m_meterBG->SetTexture("data\\TEXTURE\\UI\\meter.png");
+	m_meterBG->transform->SetSize(300.0f, 300.0f);
 
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	m_vtxBuff->Lock(0, 0, (void**)&vtx, 0);
+	// 針の軸
+	m_showAngle = D3DX_PI * 0.27f;
+	m_meter = new Transform();
+	m_meter->SetParent(gameObject->transform);
+	m_meter->SetPos(150.0f, 170.0f);
+	m_meter->SetRot(m_showAngle);
 
-	for (int i = 0; i < BAR_NUM; i++)
-	{
-		// バーの高さを算出する
-		float height = i * i * 10.0f + 1.0f;
-
-		// 頂点座標の設定
-		vtx[0].pos = D3DXVECTOR3(0.0f, height, 0.0f);
-		vtx[1].pos = D3DXVECTOR3(BAR_WIDTH, height, 0.0f);
-		vtx[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		vtx[3].pos = D3DXVECTOR3(BAR_WIDTH, 0.0f, 0.0f);
-
-		// スペース
-		vtx[0].pos.x += (BAR_WIDTH + BAR_SPACE) * i + BAR_RIGHT;
-		vtx[1].pos.x += (BAR_WIDTH + BAR_SPACE) * i + BAR_RIGHT;
-		vtx[2].pos.x += (BAR_WIDTH + BAR_SPACE) * i + BAR_RIGHT;
-		vtx[3].pos.x += (BAR_WIDTH + BAR_SPACE) * i + BAR_RIGHT;
-
-		vtx[0].pos.y += BAR_TOP;
-		vtx[1].pos.y += BAR_TOP;
-		vtx[2].pos.y += BAR_TOP;
-		vtx[3].pos.y += BAR_TOP;
-
-		// トランスフォームの基づく位置に移動する
-		vtx[0].pos += transform->GetWPos();
-		vtx[1].pos += transform->GetWPos();
-		vtx[2].pos += transform->GetWPos();
-		vtx[3].pos += transform->GetWPos();
-
-		// rhwの設定
-		vtx[0].rhw = 1.0f;
-		vtx[1].rhw = 1.0f;
-		vtx[2].rhw = 1.0f;
-		vtx[3].rhw = 1.0f;
-
-		// 頂点カラー
-		vtx[0].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-		vtx[1].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-		vtx[2].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-		vtx[3].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-
-		// テクスチャ座標の設定
-		vtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		vtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		vtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		vtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-		// 次のポインターへ
-		vtx += 4;
-	}
-
-	// 頂点バッファをアンロックする
-	m_vtxBuff->Unlock();
+	// 針の生成
+	m_needle = new SingleComponent<CPolygon>();
+	m_needle->Init();
+	m_needle->SetParent(m_meter);
+	m_needle->SetTexture("data\\TEXTURE\\UI\\needle.png");
+	m_needle->transform->SetPos(-10.0f, -10.0f);
+	m_needle->transform->SetSize(20.0f, 150.0f);
 }
 
 //=============================================================
@@ -90,12 +60,16 @@ void SpeedMeterUI::Uninit()
 	m_speedText->Uninit();
 	delete m_speedText;
 
-	// 頂点バッファの破棄
-	if (m_vtxBuff != nullptr)
-	{
-		m_vtxBuff->Release();
-		m_vtxBuff = nullptr;
-	}
+	m_speedBG->Uninit();
+	delete m_speedBG;
+
+	m_meterBG->Uninit();
+	delete m_meterBG;
+
+	m_needle->Uninit();
+	delete m_needle;
+
+	delete m_meter;
 }
 
 //=============================================================
@@ -104,13 +78,31 @@ void SpeedMeterUI::Uninit()
 void SpeedMeterUI::Update()
 {
 	// スピードテキストを更新する
-	char cSpeedText[12];
-	sprintf(&cSpeedText[0], "%.1fKm/h", m_vehicle->GetSpeed());
+	char cSpeedText[24];
+	sprintf(&cSpeedText[0], "%.1f<size=20>Km/h", m_vehicle->GetSpeed());
 	m_speedText->SetText(cSpeedText);
 
+	// メーターの更新
+	UpdateMeter();
 
 	// 更新
 	m_speedText->Update();
+	m_speedBG->Update();
+	m_meterBG->Update();
+	m_needle->Update();
+}
+
+//=============================================================
+// [SpeedMeterUI] メーターの更新
+//=============================================================
+void SpeedMeterUI::UpdateMeter()
+{
+	// スピードから何個までバーを転倒するかを決める
+	float speed = m_vehicle->GetSpeed();
+	if (speed > 260.0f) { speed = 260.0f; }
+
+	m_showAngle += ((D3DX_PI * (0.27f + 0.56f * (speed / (float)100.0f))) - m_showAngle) * 0.08f;
+	m_meter->SetRot(m_showAngle);
 }
 
 //=============================================================
@@ -119,26 +111,8 @@ void SpeedMeterUI::Update()
 void SpeedMeterUI::DrawUI()
 {
 	// 描画
+	m_speedBG->DrawUI();
+	m_meterBG->DrawUI();
 	m_speedText->DrawUI();
-
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice;
-	pDevice = CRenderer::GetInstance()->GetDevice();
-
-	for (int i = 0; i < BAR_NUM; i++)
-	{
-		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, m_vtxBuff, 0, sizeof(VERTEX_2D));
-
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_2D);
-
-		// テクスチャの設定
-		pDevice->SetTexture(0, nullptr);
-
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, //プリミティブの種類
-			i * 4, //描画する最初の頂点インデックス
-			2); //描画するプリミティブ数
-	}
+	m_needle->DrawUI();
 }
