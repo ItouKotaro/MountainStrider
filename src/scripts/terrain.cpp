@@ -32,12 +32,12 @@ const float Terrain::TERRAIN_DISTANCE_HALF = Terrain::TERRAIN_DISTANCE / (float)
 void Terrain::Init()
 {
 	// メッシュフィールドを作成する
-	m_pField = new GameObject("TerrainField", "Field");
-	m_pField->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
-	m_pField->AddComponent<Road>();
+	m_field = new GameObject("TerrainField", "Field");
+	m_field->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
+	m_field->AddComponent<Road>();
 
-	m_pLimitField = new GameObject("LimitField");
-	m_pLimitField->AddComponent<CBoxCollider>(D3DXVECTOR3(TERRAIN_SCALE * (TERRAIN_SIZE - 3), 1.0f, TERRAIN_SCALE * (TERRAIN_SIZE - 3)));
+	m_limitField = new GameObject("LimitField");
+	m_limitField->AddComponent<CBoxCollider>(D3DXVECTOR3(TERRAIN_SCALE * (TERRAIN_SIZE - 3), 1.0f, TERRAIN_SCALE * (TERRAIN_SIZE - 3)));
 
 	// 当たり判定を更新する
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
@@ -54,6 +54,13 @@ void Terrain::Uninit()
 {
 	// 地形の破棄
 	UninitTerrain();
+
+	// 地形ノイズデータが既にある場合は破棄する
+	if (m_terrainNoise != nullptr)
+	{
+		delete m_terrainNoise;
+		m_terrainNoise = nullptr;
+	}
 }
 
 //=============================================================
@@ -68,7 +75,7 @@ void Terrain::Update()
 //=============================================================
 void Terrain::UninitTerrain()
 {
-	CCollision::RemoveCollision(m_pField);
+	CCollision::RemoveCollision(m_field);
 
 	if (m_terrainData != nullptr)
 	{
@@ -91,7 +98,7 @@ void Terrain::Generate()
 	this->UninitTerrain();
 
 	// コリジョンを作成する
-	CCollision::Create(m_pField);
+	CCollision::Create(m_field);
 
 	// シード値を設定する
 	srand(m_seed);
@@ -100,19 +107,19 @@ void Terrain::Generate()
 	GenerateTerrain();
 
 	CDataManager::GetInstance()->RemoveData("data\\terrain.bmp");
-	m_pField->GetComponent<CMeshField>()->SetTexture("data\\terrain.bmp");
+	m_field->GetComponent<CMeshField>()->SetTexture("data\\terrain.bmp");
 
 	// HeightfieldTerrainShapeを作成する
 	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
 	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
-	CCollision::GetCollision(m_pField)->SetFriction(100.0f);
-	CCollision::GetCollision(m_pField)->GetGhostObject()->setCollisionShape(m_terrainShape);
+	CCollision::GetCollision(m_field)->SetFriction(100.0f);
+	CCollision::GetCollision(m_field)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
 	// 設定したシェープを適用する
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
 	// 道のオブジェクトを生成する
-	m_pField->GetComponent<Road>()->Generate();
+	m_field->GetComponent<Road>()->Generate();
 
 	// ジェムの生成
 	for (int i = 0; i < 150; i++)
@@ -129,22 +136,21 @@ void Terrain::GenerateTerrain()
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 
-	// 地形IDに基づく生成処理
-	if (m_terrainID == 0)
+	// 地形ノイズデータが既にある場合は破棄する
+	if (m_terrainNoise != nullptr)
 	{
-		module::Perlin myModule;
-		myModule.SetSeed(rand());
-		module::ScaleBias scaled;
-		scaled.SetSourceModule(0, myModule);
-		scaled.SetScale(100.0f);
-
-		// 地形を生成する
-		heightMapBuilder.SetSourceModule(scaled);
-		heightMapBuilder.SetDestNoiseMap(heightMap);
-		heightMapBuilder.SetDestSize(TERRAIN_SIZE, TERRAIN_SIZE);
-		heightMapBuilder.SetBounds(0.0, 20.0, 0.0, 20.0);
-		heightMapBuilder.Build();
+		delete m_terrainNoise;
+		m_terrainNoise = nullptr;
 	}
+
+	// 地形IDに基づく生成処理
+	if (m_terrainID == 0) m_terrainNoise = new DesertTerrainNoise();
+	else m_terrainNoise = new DesertTerrainNoise();
+
+	// 初期化と生成
+	m_terrainNoise->SetNoiseMap(&heightMap);
+	m_terrainNoise->SetNoiseMapBuilder(&heightMapBuilder);
+	m_terrainNoise->Generate();
 
 	// テクスチャ画像に書き出す
 	utils::RendererImage renderer;
@@ -215,8 +221,8 @@ void Terrain::GenerateTerrain()
 	}
 
 	// 制限の高さを変更する
-	m_pLimitField->transform->SetPos(0.0f, m_minHeight - 5.0f, 0.0f);
-	CCollision::GetCollision(m_pLimitField)->GetGhostObject()->getWorldTransform().getOrigin() = btVector3(0.0f, m_minHeight - 5.0f, 0.0f);
+	m_limitField->transform->SetPos(0.0f, m_minHeight - 5.0f, 0.0f);
+	CCollision::GetCollision(m_limitField)->GetGhostObject()->getWorldTransform().getOrigin() = btVector3(0.0f, m_minHeight - 5.0f, 0.0f);
 
 	// 道を生成する
 	GenerateRoad();
@@ -229,13 +235,12 @@ void Terrain::GenerateTerrain()
 			float height = GetVertexHeight(x, y);
 
 			// 高さを設定する
-			m_pField->GetComponent<CMeshField>()->SetHeight(x, y, height);
-			//m_pShadowField->GetComponent<CMeshField>()->SetHeight(x, y, height);
+			m_field->GetComponent<CMeshField>()->SetHeight(x, y, height);
 		}
 	}
 
 	// 法線をリセットする
-	m_pField->GetComponent<CMeshField>()->ResetNormals();
+	m_field->GetComponent<CMeshField>()->ResetNormals();
 }
 
 //=============================================================
@@ -246,7 +251,7 @@ void Terrain::GenerateRoad()
 	// ポイント ------------------------------------------------
 
 	// 道のコンポーネントを取得する
-	auto pRoad = m_pField->GetComponent<Road>();
+	auto pRoad = m_field->GetComponent<Road>();
 
 	// 道を生成する
 	int routeData[TERRAIN_SIZE][TERRAIN_SIZE];

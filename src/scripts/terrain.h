@@ -10,6 +10,7 @@
 #include "internal/physics.h"
 #include "component.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
+#include "terrain_type.h"
 
 // 地形
 class Terrain
@@ -53,8 +54,9 @@ private:
 	Area m_startArea;
 
 	unsigned int m_seed;										// シード値
-	GameObject* m_pField;									// メッシュフィールド
-	GameObject* m_pLimitField;
+	TerrainNoise* m_terrainNoise;							// 地形ノイズデータ
+	GameObject* m_field;									// メッシュフィールド
+	GameObject* m_limitField;								// 制限フィールド
 	float* m_terrainData;										// 高度データ
 	btHeightfieldTerrainShape* m_terrainShape;	// 地形コリジョンシェイプ
 

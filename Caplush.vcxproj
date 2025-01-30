@@ -275,6 +275,7 @@
     <ClCompile Include="src\scripts\speedmeter_ui.cpp" />
     <ClCompile Include="src\scripts\status_ui.cpp" />
     <ClCompile Include="src\scripts\terrain.cpp" />
+    <ClCompile Include="src\scripts\terrain_type.cpp" />
     <ClCompile Include="src\scripts\trajectory.cpp" />
     <ClCompile Include="src\scripts\vehicle.cpp" />
     <ClCompile Include="src\scripts\vehicle_action.cpp" />
@@ -364,6 +365,7 @@
     <ClInclude Include="src\scripts\speedmeter_ui.h" />
     <ClInclude Include="src\scripts\status_ui.h" />
     <ClInclude Include="src\scripts\terrain.h" />
+    <ClInclude Include="src\scripts\terrain_type.h" />
     <ClInclude Include="src\scripts\trajectory.h" />
     <ClInclude Include="src\scripts\vehicle.h" />
     <ClInclude Include="src\scripts\vehicle_action.h" />

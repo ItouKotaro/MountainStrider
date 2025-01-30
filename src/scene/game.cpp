@@ -370,8 +370,8 @@ void CGameScene::SpawnBike()
 	m_bike->GetComponent<CVehicle>()->SetStatusUI(m_statusUI->GetComponent<CStatusUI>());
 
 	// スピードメーターUIを生成
-	//m_speedmeterUI = new GameObject("SpeedMeterUI", "UI");
-	//m_speedmeterUI->AddComponent<SpeedMeterUI>(m_bike->GetComponent<CVehicle>());
+	m_speedmeterUI = new GameObject("SpeedMeterUI", "UI");
+	m_speedmeterUI->AddComponent<SpeedMeterUI>(m_bike->GetComponent<CVehicle>());
 }
 
 //=============================================================
