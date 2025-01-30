@@ -137,7 +137,7 @@
             "path": "data\\PREFAB\\golden_ring.pref",
             "radius": 50.0,
             "destructible": false,
-            "offset": 30.0,
+            "offset": 25.0,
             "adjacent_distance": 100.0,
             "angle_range": 0.1,
             "match_inclination": false,
