@@ -24,6 +24,7 @@ private:
 	SingleComponent<CPolygon>* m_itemFrame[2];
 	SingleComponent<CPolygon>* m_itemBG[2];
 	SingleComponent<CPolygon>* m_itemTexture[2];
+	SingleComponent<CPolygon>* m_itemUseGuide;
 
 	AudioClip m_useSE;
 	GameObject* m_seManager;

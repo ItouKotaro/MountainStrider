@@ -67,6 +67,18 @@ void ItemSlot::Init()
 		"data\\TEXTURE\\UI\\item_toggle_c.png" : "data\\TEXTURE\\UI\\item_toggle_m.png"
 	);
 
+	// アイテムの使用方法のガイドを設定する
+	m_itemUseGuide = new SingleComponent<CPolygon>();
+	m_itemUseGuide->Init();
+	m_itemUseGuide->SetParent(gameObject);
+	m_itemUseGuide->transform->SetSize(50.0f, 50.0f);
+	m_itemUseGuide->transform->SetPos(m_selectIdx == 0 ? 55.0f : 225.0f, 160.0f);
+
+	m_itemUseGuide->SetTexture(
+		INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER ?
+		"data\\TEXTURE\\UI\\CONTROLLER\\button_y.png" : "data\\TEXTURE\\UI\\KEYBOARD\\key_f.png"
+	);
+
 	// 音を作成する
 	m_seManager = new GameObject();
 	m_seManager->AddComponent<AudioSource>();
@@ -92,6 +104,9 @@ void ItemSlot::Uninit()
 
 	m_itemSlotToggleGuide->Uninit();
 	delete m_itemSlotToggleGuide;
+
+	m_itemUseGuide->Uninit();
+	delete m_itemUseGuide;
 
 	m_seManager->Destroy();
 }
@@ -160,12 +175,19 @@ void ItemSlot::Update()
 	}
 
 	m_itemSlotToggleGuide->Update();
+	m_itemUseGuide->Update();
 
 	// 操作デバイスで表示するガイドを変更する
 	m_itemSlotToggleGuide->SetTexture(
 		INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER ?
 		"data\\TEXTURE\\UI\\item_toggle_c.png" : "data\\TEXTURE\\UI\\item_toggle_m.png"
 	);
+
+	m_itemUseGuide->SetTexture(
+		INPUT_INSTANCE->GetLastInput() == INPUT_INSTANCE->DEVICE_CONTROLLER ?
+		"data\\TEXTURE\\UI\\CONTROLLER\\button_y.png" : "data\\TEXTURE\\UI\\KEYBOARD\\key_f.png"
+	);
+	m_itemUseGuide->transform->SetPos(m_selectIdx == 0 ? 55.0f : 225.0f, 160.0f);
 }
 
 //=============================================================
@@ -181,4 +203,5 @@ void ItemSlot::DrawUI()
 	}
 
 	m_itemSlotToggleGuide->DrawUI();
+	m_itemUseGuide->DrawUI();
 }
