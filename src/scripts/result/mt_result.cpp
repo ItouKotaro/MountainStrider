@@ -644,7 +644,7 @@ void ResultBase::FinalResult(bool isSuccess)
 	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
 	{
 		totalMileage += (*itr).mileage;
-		totalFuel += (*itr).fuel * 0.6f;
+		totalFuel += (*itr).fuel;
 	}
 	fuelConsumption = totalMileage / totalFuel;
 	char fuelTextPara[64];
@@ -696,17 +696,17 @@ void ResultBase::FinalResult(bool isSuccess)
 	// 平均タイム
 	RANK timeRank;
 	if (time < 60) timeRank = RANK_S;
-	else if (time < 100) timeRank = RANK_A;
-	else if (time < 180) timeRank = RANK_B;
+	else if (time < 120) timeRank = RANK_A;
+	else if (time < 240) timeRank = RANK_B;
 	else timeRank = RANK_C;
 	if (timeRank == 0) timeRank = RANK_C;
 
 	// アクション
 	RANK actionRank = RANK_S;
 	int actionScore = GetAverageAction();
-	if (actionScore >= 3000) actionRank = RANK_S;
-	else if (actionScore >= 1800) actionRank = RANK_A;
-	else if (actionScore >= 600) actionRank = RANK_B;
+	if (actionScore >= 1200) actionRank = RANK_S;
+	else if (actionScore >= 600) actionRank = RANK_A;
+	else if (actionScore >= 100) actionRank = RANK_B;
 	else actionRank = RANK_C;
 
 	// 燃費
