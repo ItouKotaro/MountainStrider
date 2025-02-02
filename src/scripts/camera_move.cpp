@@ -153,7 +153,7 @@ void CCameraMove::UpdateTPS()
 	}
 
 	// Ž‹“_‚ÌˆÊ’u‚ðŒvŽZ‚·‚é
-	float distance = 100.0f;
+	float distance = -100.0f;
 	D3DXVECTOR3 posS = { 0.0f, 0.0f, -distance };
 	D3DXMATRIX mtxY, mtxX, mtxS;
 	D3DXMatrixRotationX(&mtxX, m_cameraRot.x);
