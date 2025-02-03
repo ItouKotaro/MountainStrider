@@ -17,6 +17,8 @@
 #include "component/3d/mesh.h"
 #include "component/other/audio.h"
 
+#include "scripts/mode/terminal.h"
+
 using namespace noise;
 
 AudioClip selectMoveSE;
@@ -160,7 +162,12 @@ void CTitleScene::Init()
 	static_cast<ShadowRenderBuffer*>(CRenderer::GetInstance()->GetRenderBuffer("main"))->SetShadowRange(600.0f);
 
 	Main::SetShowCursor(true);
+
+	// ゲームをリセットする
 	CGameScene::ResetGame();
+
+	// モードを破棄する
+	ModeManager::GetInstance()->LastUninit();
 }
 
 //=============================================================
@@ -217,9 +224,13 @@ void CTitleScene::Update()
 	if (INPUT_INSTANCE->onTrigger("space") || INPUT_INSTANCE->onTrigger("enter") ||
 		INPUT_INSTANCE->onTrigger("p:a") || INPUT_INSTANCE->onTrigger("p:start"))
 	{
+		// ゲームシーンを取得する
+		auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+
 		switch (m_select)
 		{
 		case CTitleScene::SELECT_START:
+			ModeManager::GetInstance()->SetMode(new TerminalMode());
 			CSceneManager::GetInstance()->SetScene("game");
 			break;
 		case CTitleScene::SELECT_END:

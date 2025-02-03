@@ -17,6 +17,7 @@
 #include "scripts/event/event_manager.h"
 #include "scripts/lake.h"
 #include "scripts/play_guide.h"
+#include "scripts/mode/mode_manager.h"
 
 // ゲームシーン
 class CGameScene : public CScene
@@ -65,7 +66,6 @@ public:
 private:
 	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する
 	void SpawnBike();												// バイクの生成
-	void ClearCondition();											// クリア条件
 
 	int m_travellingCount;										// 突破数
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
@@ -92,9 +92,6 @@ private:
 
 	// ポーズ
 	Pause* m_pause;
-
-	// 定数
-	const float EXTENSION_DISTANCE = 150.0f;
 };
 
 #endif // !_GAME_H_

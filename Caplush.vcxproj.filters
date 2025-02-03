@@ -109,6 +109,12 @@
     <Filter Include="ヘッダー ファイル\scripts\event">
       <UniqueIdentifier>{aba3870f-ef39-4801-82c3-11ff28fe9bf6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scripts\mode">
+      <UniqueIdentifier>{055eac36-f3d9-4d72-bd6e-d7a79b424c51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts\mode">
+      <UniqueIdentifier>{b613f9a7-f912-46dd-87e8-a2519bc4179d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\main.cpp">
@@ -374,6 +380,12 @@
     </ClCompile>
     <ClCompile Include="src\scripts\ring.cpp">
       <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\mode\mode_manager.cpp">
+      <Filter>ソース ファイル\scripts\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\mode\terminal.cpp">
+      <Filter>ソース ファイル\scripts\mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -643,6 +655,12 @@
     </ClInclude>
     <ClInclude Include="src\scripts\ring.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\mode\mode_manager.h">
+      <Filter>ヘッダー ファイル\scripts\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\mode\terminal.h">
+      <Filter>ヘッダー ファイル\scripts\mode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

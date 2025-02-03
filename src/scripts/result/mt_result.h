@@ -100,8 +100,8 @@ private:
 	float m_volumeFade;
 	const float BGM_VOLUME = 0.2f;
 	const float BGM_FADE = 0.001f;
-	const std::string DESC_END_TEXTURE = "data\\TEXTURE\\RESULT\\desc_end.png";
-	const std::string DESC_NEXT_TEXTURE = "data\\TEXTURE\\RESULT\\desc_next.png";
+	const char* DESC_END_TEXTURE = "data\\TEXTURE\\RESULT\\desc_end.png";
+	const char* DESC_NEXT_TEXTURE = "data\\TEXTURE\\RESULT\\desc_next.png";
 	const D3DXVECTOR2 DESC_SIZE = { 620.0f, 297.0f };
 
 	// ƒ{ƒ^ƒ“

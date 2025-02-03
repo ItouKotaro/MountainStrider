@@ -52,6 +52,9 @@ void CGameScene::Init()
 	m_pause = new Pause();
 	m_pause->Init();
 
+	// モードの初期化
+	ModeManager::GetInstance()->Init();
+
 	// 音を読み込む
 	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Master.bank");
 	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Master.strings.bank");
@@ -207,10 +210,14 @@ void CGameScene::Uninit()
 		m_result = nullptr;
 	}
 
+	// モードの終了
+	ModeManager::GetInstance()->Uninit();
+
 	// ポーズの破棄
 	if (m_pause != nullptr)
 	{
 		delete m_pause;
+		m_pause = nullptr;
 	}
 
 	// レンダーバッファのカメラをnullにする
@@ -253,6 +260,13 @@ void CGameScene::Update()
 		m_playGuide->Update();
 	}
 
+	// モードを更新する
+	ModeManager::GetInstance()->Update();
+
+	// 状態に応じてイベントを起こす
+	auto modeState = ModeManager::GetInstance()->GetState();
+	if (modeState == ModeTemplate::STATE_GOAL) onClear();
+	else if (modeState == ModeTemplate::STATE_FAIL) onGameOver();
 
 	// リザルトでは更新しないオブジェクト
 	if (m_endType == ENDTYPE_NONE)
@@ -284,9 +298,6 @@ void CGameScene::Update()
 		// 最高速度を記録する
 		int bikeSpeed = static_cast<int>(m_bike->GetComponent<CVehicle>()->GetSpeed());
 		m_highSpeed = m_highSpeed < bikeSpeed ? bikeSpeed : m_highSpeed;
-
-		// クリア条件
-		ClearCondition();
 	}
 
 	// リザルトの更新処理
@@ -318,6 +329,7 @@ void CGameScene::Draw()
 //=============================================================
 void CGameScene::LastUninit()
 {
+	// ゲームをリセットする
 	ResetGame();
 }
 
@@ -378,23 +390,23 @@ void CGameScene::SpawnBike()
 //=============================================================
 // [CGameScene] クリアの条件
 //=============================================================
-void CGameScene::ClearCondition()
-{
-	D3DXVECTOR3 vehiclePos = m_bike->transform->GetWPos();
-
-	// 地形の端に行ったとき
-	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
-		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
-	{
-		onClear();
-	}
-
-	// 最低高度よりも下に行ったとき
-	if (vehiclePos.y < m_terrain->GetMinHeight() - 5.0f)
-	{
-		onClear();
-	}
-}
+//void CGameScene::ClearCondition()
+//{
+//	D3DXVECTOR3 vehiclePos = m_bike->transform->GetWPos();
+//
+//	// 地形の端に行ったとき
+//	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
+//		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
+//	{
+//		onClear();
+//	}
+//
+//	// 最低高度よりも下に行ったとき
+//	if (vehiclePos.y < m_terrain->GetMinHeight() - 5.0f)
+//	{
+//		onClear();
+//	}
+//}
 
 //=============================================================
 // [CGameScene] ゲームオーバー時の処理

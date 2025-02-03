@@ -10,6 +10,7 @@
 #include "input_system.h"
 #include "data_field.h"
 #include "component/2d/text.h"
+#include "scripts/mode/mode_manager.h"
 
 //=============================================================
 // [CManager] コンストラクタ
@@ -64,6 +65,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================
 void CManager::Uninit()
 {
+	// モード管理の終了
+	ModeManager::GetInstance()->LastUninit();
+
 	// シーンマネージャーの終了
 	CSceneManager::GetInstance()->Uninit();
 

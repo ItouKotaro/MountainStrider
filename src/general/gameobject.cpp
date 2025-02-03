@@ -28,40 +28,23 @@ void GameObject::UpdateAll()
 	// 更新処理を行う
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (*itr == nullptr) continue;
-
-		try
-		{
-			if ((*itr)->GetActive())
-			{ // アクティブのとき
-				// コンポーネントの更新処理を行う
-				int idx = static_cast<int>((*itr)->m_components.size());
-				for (int i = idx - 1; i >= 0; i--)
+		if ((*itr)->GetActive())
+		{ // アクティブのとき
+			// コンポーネントの更新処理を行う
+			int idx = static_cast<int>((*itr)->m_components.size());
+			for (int i = idx - 1; i >= 0; i--)
+			{
+				if ((*itr)->m_components[i]->enabled)
 				{
-					if ((*itr)->m_components[i]->enabled)
-					{
-						(*itr)->m_components[i]->Update();
-					}
+					(*itr)->m_components[i]->Update();
 				}
 			}
 		}
-		catch (const std::exception&)
-		{
-			ofstream outputfile("error_report.txt");
-			outputfile << "名前: " + (*itr)->GetName() +"\n";
-			outputfile << "タグ: " + (*itr)->GetTag() + "\n";
-			outputfile << "コンポーネント一覧 -> ";
 
-			for (auto compItr = (*itr)->m_components.begin(); compItr != (*itr)->m_components.end(); compItr++)
-			{
-				outputfile << typeid(**compItr).name();
-				outputfile << "\n";
-			}
-			
-			// 終了
-			outputfile.close();
+		if (itr == m_gameObjects.end())
+		{
+			break;
 		}
-	
 	}
 }
 
