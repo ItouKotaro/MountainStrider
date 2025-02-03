@@ -140,20 +140,21 @@ void CCameraMove::UpdateTPS()
 	if (m_moveCounter <= 0)
 	{ // ç≈èâ
 		m_cameraRot = m_pTarget->transform->GetRot();
+		m_cameraRot.y += D3DX_PI;
 	}
 
 	// ê≥ãKâª
-	if (m_cameraRot.x < -D3DX_PI * 0.5f)
+	if (m_cameraRot.x > D3DX_PI * 0.5f - UP_LIMIT)
 	{
-		m_cameraRot.x = -D3DX_PI * 0.5f;
+		m_cameraRot.x = D3DX_PI * 0.5f - UP_LIMIT;
 	}
-	if (m_cameraRot.x > D3DX_PI * 0.5f)
+	if (m_cameraRot.x < -D3DX_PI * 0.5f + BOTTOM_LIMIT)
 	{
-		m_cameraRot.x = D3DX_PI * 0.5f;
+		m_cameraRot.x = -D3DX_PI * 0.5f + BOTTOM_LIMIT;
 	}
 
 	// éãì_ÇÃà íuÇåvéZÇ∑ÇÈ
-	float distance = -100.0f;
+	float distance = 100.0f;
 	D3DXVECTOR3 posS = { 0.0f, 0.0f, -distance };
 	D3DXMATRIX mtxY, mtxX, mtxS;
 	D3DXMatrixRotationX(&mtxX, m_cameraRot.x);

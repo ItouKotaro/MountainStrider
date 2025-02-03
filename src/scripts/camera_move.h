@@ -23,11 +23,14 @@ private:
 	void UpdateFPS();
 	void UpdateTPS();
 
-	GameObject* m_pTarget;			// ターゲット
-	D3DXVECTOR3 m_cameraRot;	// 回転
+	GameObject* m_pTarget;								// ターゲット
+	D3DXVECTOR3 m_cameraRot;						// 回転
 	D3DXVECTOR3 m_posS;
 	int m_moveCounter;
 	CManager::CursorPos m_oldCursor;					// 前回のカーソル位置
+	
+	const float UP_LIMIT = 0.5f;							// 上向きの制限
+	const float BOTTOM_LIMIT = 1.0f;					// 下向きの制限
 };
 
 #endif // !_CAMERA_MOVE_H_
