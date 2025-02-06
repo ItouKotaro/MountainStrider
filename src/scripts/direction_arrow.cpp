@@ -48,10 +48,13 @@ void DirectionArrow::Update()
 	pos = m_vehicle->transform->GetWPos();
 	pos.y = m_fadeY;
 	gameObject->transform->SetPos(pos);
+
+	// ‰ñ“]•ûŒü‚ðŒˆ‚ß‚é
 	m_angle += (Benlib::PosAngle(m_vehicle->transform->GetWPos(), m_destination) - m_angle) * 0.08f;
 	gameObject->transform->Translate(sinf(m_angle) * 50.0f, 0.0f, cosf(m_angle) * 50.0f);
 	gameObject->transform->SetRot(0.0f, m_angle, 0.0f);
 
+	// —á‚ð•ú‚Á‚Ä‚‚³‚ðŠm‚©‚ß‚é
 	btVector3 Start = btVector3(gameObject->transform->GetWPos().x, m_vehicle->transform->GetWPos().y + 20.0f, gameObject->transform->GetWPos().z);
 	btVector3 End = btVector3(gameObject->transform->GetWPos().x, m_vehicle->transform->GetWPos().y - 50.0f, gameObject->transform->GetWPos().z);
 
