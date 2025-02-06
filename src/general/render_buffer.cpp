@@ -180,6 +180,9 @@ void CameraRenderBuffer::Render()
 {
 	auto device = CRenderer::GetInstance()->GetDevice();
 
+	// ターゲットを変更する
+	ChangeTarget();
+
 	if (BeginScene())
 	{
 		// 画面クリア（バッファクリア＆Zバッファクリア）
@@ -199,4 +202,7 @@ void CameraRenderBuffer::Render()
 
 		EndScene();
 	}
+
+	// 戻る
+	ResetBuffer();
 }

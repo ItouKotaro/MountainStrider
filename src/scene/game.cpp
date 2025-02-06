@@ -52,9 +52,6 @@ void CGameScene::Init()
 	m_pause = new Pause();
 	m_pause->Init();
 
-	// モードの初期化
-	ModeManager::GetInstance()->Init();
-
 	// 音を読み込む
 	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Master.bank");
 	AudioManager::GetInstance()->LoadBank("data\\SOUND\\BANK\\Master.strings.bank");
@@ -135,6 +132,9 @@ void CGameScene::Init()
 	// カメラの移動設定を行う
 	m_camera->AddComponent<CCameraMove>()->SetTarget(m_bike);
 	m_camera->AddComponent<ResultCamera>();
+
+	// モードの初期化
+	ModeManager::GetInstance()->Init();
 
 	// 開始時間を記録する
 	m_startTime = timeGetTime();

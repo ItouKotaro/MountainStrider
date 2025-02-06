@@ -247,6 +247,7 @@
     <ClCompile Include="src\scripts\camera_move.cpp" />
     <ClCompile Include="src\scripts\decoration.cpp" />
     <ClCompile Include="src\scripts\destructible.cpp" />
+    <ClCompile Include="src\scripts\direction_arrow.cpp" />
     <ClCompile Include="src\scripts\environmental.cpp" />
     <ClCompile Include="src\scripts\environmental_type.cpp" />
     <ClCompile Include="src\scripts\event\event_manager.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="src\scripts\camera_move.h" />
     <ClInclude Include="src\scripts\decoration.h" />
     <ClInclude Include="src\scripts\destructible.h" />
+    <ClInclude Include="src\scripts\direction_arrow.h" />
     <ClInclude Include="src\scripts\environmental.h" />
     <ClInclude Include="src\scripts\environmental_type.h" />
     <ClInclude Include="src\scripts\event\event_manager.h" />

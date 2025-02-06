@@ -19,6 +19,8 @@ public:
 	void Uninit() override;
 	void Update() override;
 private:
+	D3DXVECTOR3 CalcNearGoal();
+	GameObject* m_directionObj;
 	const float EXTENSION_DISTANCE = 150.0f;
 };
 
