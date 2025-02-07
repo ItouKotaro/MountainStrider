@@ -50,8 +50,15 @@ void DirectionArrow::Update()
 	gameObject->transform->SetPos(pos);
 
 	// ‰ñ“]•ûŒü‚ğŒˆ‚ß‚é
-	m_angle += (Benlib::PosAngle(m_vehicle->transform->GetWPos(), m_destination) - m_angle) * 0.08f;
+	float oldAngle = m_angle;
+	m_angle += (Benlib::PosAngle(m_vehicle->transform->GetWPos(), m_destination) - m_angle) * 0.2f;
 	gameObject->transform->Translate(sinf(m_angle) * 50.0f, 0.0f, cosf(m_angle) * 50.0f);
+
+	if (fabsf(m_angle - oldAngle) >= D3DX_PI * 1.8f * 0.2f)
+	{
+		m_angle = Benlib::PosAngle(m_vehicle->transform->GetWPos(), m_destination);
+	}
+
 	gameObject->transform->SetRot(0.0f, m_angle, 0.0f);
 
 	// ƒŒƒC‚ğ•ú‚Á‚Ä‚‚³‚ğŠm‚©‚ß‚é
