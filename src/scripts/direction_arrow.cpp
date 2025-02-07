@@ -54,16 +54,37 @@ void DirectionArrow::Update()
 	gameObject->transform->Translate(sinf(m_angle) * 50.0f, 0.0f, cosf(m_angle) * 50.0f);
 	gameObject->transform->SetRot(0.0f, m_angle, 0.0f);
 
-	// 例を放って高さを確かめる
-	btVector3 Start = btVector3(gameObject->transform->GetWPos().x, m_vehicle->transform->GetWPos().y + 20.0f, gameObject->transform->GetWPos().z);
-	btVector3 End = btVector3(gameObject->transform->GetWPos().x, m_vehicle->transform->GetWPos().y - 50.0f, gameObject->transform->GetWPos().z);
+	// レイを放って高さを確かめる
+	auto gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+	float maxHeight = gameScene->GetTerrain()->GetMinHeight();
+	for (int i = 0; i < 2; i++)
+	{
+		D3DXVECTOR3 rayPos;
+		if (i == 0)
+		{
+			rayPos = { 0.0f, 0.0f, 5.0f };
+		}
+		else if (i == 1)
+		{
+			rayPos = { 0.0f, 0.0f, -5.0f };
+		}
 
-	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
-	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
-	if (RayCallback.hasHit())
-	{ // ヒットしたとき
-		m_fadeY += ((RayCallback.m_hitPointWorld.getY() + 5.0f) - m_fadeY) * 0.08f;
+		// 座標をマトリックスを加味して割り出す
+		D3DXMATRIX mtx = transform->GetMatrix();
+		D3DXVec3TransformCoord(&rayPos, &rayPos, &mtx);
+
+		btVector3 Start = btVector3(rayPos.x, rayPos.y + 20.0f, rayPos.z);
+		btVector3 End = btVector3(rayPos.x, rayPos.y - 50.0f, rayPos.z);
+
+		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+		CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
+		if (RayCallback.hasHit() && RayCallback.m_hitPointWorld.getY() > maxHeight)
+		{ // ヒットしたとき
+			maxHeight = RayCallback.m_hitPointWorld.getY();
+		}
 	}
+
+	m_fadeY += ((maxHeight + 5.0f) - m_fadeY) * 0.08f;
 
 	// 矢印のモデルの更新
 	m_arrowModel->Update();
