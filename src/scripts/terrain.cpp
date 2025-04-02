@@ -122,10 +122,10 @@ void Terrain::Generate()
 	m_field->GetComponent<Road>()->Generate();
 
 	// ƒWƒFƒ€‚Ì¶¬
-	for (int i = 0; i < m_gemNum; i++)
-	{
-		GenerateGem();
-	}
+	//for (int i = 0; i < m_gemNum; i++)
+	//{
+	//	GenerateGem();
+	//}
 }
 
 //=============================================================

@@ -388,27 +388,6 @@ void CGameScene::SpawnBike()
 }
 
 //=============================================================
-// [CGameScene] クリアの条件
-//=============================================================
-//void CGameScene::ClearCondition()
-//{
-//	D3DXVECTOR3 vehiclePos = m_bike->transform->GetWPos();
-//
-//	// 地形の端に行ったとき
-//	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
-//		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
-//	{
-//		onClear();
-//	}
-//
-//	// 最低高度よりも下に行ったとき
-//	if (vehiclePos.y < m_terrain->GetMinHeight() - 5.0f)
-//	{
-//		onClear();
-//	}
-//}
-
-//=============================================================
 // [CGameScene] ゲームオーバー時の処理
 //=============================================================
 void CGameScene::onGameOver()

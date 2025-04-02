@@ -99,7 +99,7 @@ void EventManager::AddEvent(EVENTID eventID)
 	switch (eventID)
 	{
 	case EventManager::EVENTID_METEO:
-		eventTemplate = new MeteoEvent();
+		//eventTemplate = new MeteoEvent();
 		break;
 	case EventManager::EVENTID_TORNADO:
 		eventTemplate = new TornadoEvent();
