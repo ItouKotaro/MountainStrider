@@ -110,7 +110,7 @@ void MeteoCollision::Init()
 	particle->GetTexture()->AddTexture("data\\TEXTURE\\PARTICLE\\smoke00.png");
 
 	// 音の生成
-	if (!m_fallSE) m_fallSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\EVENT\\meteo_fall.mp3", FMOD_3D, FMOD_LOOP_NORMAL);
+	if (!m_fallSE) m_fallSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\EVENT\\meteo_fall.mp3", FMOD_3D | FMOD_LOOP_NORMAL);
 	if (!m_landingSE) m_landingSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\EVENT\\meteo_landing.mp3", FMOD_3D);
 
 	// 音再生オブジェクトの生成
