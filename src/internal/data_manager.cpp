@@ -300,6 +300,68 @@ HRESULT CDataMesh::Load(const std::string& sPath)
 		}
 	}
 
+	// 頂点範囲の計算
+	CalcVertexRange();
+
 	// 成功
 	return S_OK;
+}
+
+//=============================================================
+// [CDataMesh] 頂点範囲の計算
+//=============================================================
+void CDataMesh::CalcVertexRange()
+{
+	int nNumVtx;			// 頂点数
+	DWORD sizeFVF;		// 頂点フォーマットのサイズ
+	BYTE* pVtxBuff;		// 頂点バッファへのポインタ
+
+	// 頂点数の取得
+	nNumVtx = m_pMesh->GetNumVertices();
+
+	// 頂点フォーマットのサイズを取得
+	sizeFVF = D3DXGetFVFVertexSize(m_pMesh->GetFVF());
+
+	// 頂点バッファのロック
+	m_pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+
+	for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
+	{
+		// 頂点座標の代入
+		D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVtxBuff;
+
+		// 最大値を取得する
+		if (vtx.x > m_vtxRange.max.x)
+		{
+			m_vtxRange.max.x = vtx.x;
+		}
+		if (vtx.y > m_vtxRange.max.y)
+		{
+			m_vtxRange.max.y = vtx.y;
+		}
+		if (vtx.z > m_vtxRange.max.z)
+		{
+			m_vtxRange.max.z = vtx.z;
+		}
+
+		// 最小値を取得する
+		if (vtx.x < m_vtxRange.min.x)
+		{
+			m_vtxRange.min.x = vtx.x;
+		}
+		if (vtx.y < m_vtxRange.min.y)
+		{
+			m_vtxRange.min.y = vtx.y;
+		}
+		if (vtx.z < m_vtxRange.min.z)
+		{
+			m_vtxRange.min.z = vtx.z;
+		}
+
+		// 頂点フォーマットのサイズ分ポインタを進める
+		pVtxBuff += sizeFVF;
+	}
+
+	// 頂点バッファのアンロック
+	m_pMesh->UnlockVertexBuffer();
 }

@@ -52,15 +52,19 @@ public:
 	CDataMesh();
 	void Clear() override;
 	HRESULT Load(const std::string& sPath);
-	LPD3DXMESH GetMesh() { return m_pMesh; }								// メッシュの取得
-	LPD3DXMESH GetShadowMesh() { return m_pShadowMesh; }		// 影用メッシュの取得
-	LPD3DXBUFFER GetBuffMat() { return m_pBuffMat; }					// マテリアルの取得
-	DWORD GetNumMat() { return m_dwNumMat; }							// マテリアル数の取得
+	LPD3DXMESH GetMesh() { return m_pMesh; }										// メッシュの取得
+	LPD3DXMESH GetShadowMesh() { return m_pShadowMesh; }			// 影用メッシュの取得
+	LPD3DXBUFFER GetBuffMat() { return m_pBuffMat; }							// マテリアルの取得
+	DWORD GetNumMat() { return m_dwNumMat; }									// マテリアル数の取得
+	Range<D3DXVECTOR3> GetVertexRange() { return m_vtxRange; }	// 頂点範囲の取得
 private:
+	void CalcVertexRange();
+
 	LPD3DXMESH m_pMesh;															// メッシュデータ
 	LPD3DXMESH m_pShadowMesh;													// 影用メッシュデータ
 	LPD3DXBUFFER m_pBuffMat;														// マテリアルデータ
 	DWORD m_dwNumMat;																// マテリアル数
+	Range<D3DXVECTOR3> m_vtxRange;										// 頂点範囲
 };
 
 // データ管理クラス

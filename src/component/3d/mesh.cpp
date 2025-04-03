@@ -66,7 +66,12 @@ void CMesh::Draw()
 	// 描画が必要か
 	if (m_camera != nullptr)
 	{
-		if (!Benlib::IsObjectInFrustum(m_camera->GetProjectionMatrix(), m_camera->GetViewMatrix(), transform->GetWPos(), 20.0f))
+		// 半径を求める
+		float maxRadius = Benlib::PosDistance({ 0.0f, 0.0f, 0.0f }, { m_pData->GetVertexRange().max.x * transform->GetWScale().x, m_pData->GetVertexRange().max.y * transform->GetWScale().y, m_pData->GetVertexRange().max.z * transform->GetWScale().z });
+		float minRadius = Benlib::PosDistance({ 0.0f, 0.0f, 0.0f }, { m_pData->GetVertexRange().min.x * transform->GetWScale().x, m_pData->GetVertexRange().min.y * transform->GetWScale().y, m_pData->GetVertexRange().min.z * transform->GetWScale().z });
+		float radius = maxRadius > minRadius ? maxRadius : minRadius;
+
+		if (!Benlib::IsObjectInFrustum(m_camera->GetProjectionMatrix(), m_camera->GetViewMatrix(), transform->GetWPos(), radius))
 		{ // 描画が必要ないとき
 			return;
 		}
@@ -182,21 +187,21 @@ HRESULT CMesh::LoadMeshX(std::string sPath, bool bShadow)
 	Uninit();
 
 	// メッシュを読み込む
-	CDataMesh* pMeshData = CDataManager::GetInstance()->RefMesh(sPath);
-	if (pMeshData == nullptr)
+	m_pData = CDataManager::GetInstance()->RefMesh(sPath);
+	if (m_pData == nullptr)
 	{ // 失敗
 		return E_FAIL;
 	}
 
 	// メッシュのデータを参照する
-	m_pMesh = pMeshData->GetMesh();
-	m_pBuffMat = pMeshData->GetBuffMat();
-	m_dwNumMat = pMeshData->GetNumMat();
+	m_pMesh = m_pData->GetMesh();
+	m_pBuffMat = m_pData->GetBuffMat();
+	m_dwNumMat = m_pData->GetNumMat();
 
 	// 影用メッシュの取得
 	if (CShadow::USE_SHADOW && bShadow)
 	{
-		m_pShadowMesh = pMeshData->GetShadowMesh();
+		m_pShadowMesh = m_pData->GetShadowMesh();
 	}
 
 	// モデルテクスチャの読み込み

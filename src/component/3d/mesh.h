@@ -11,6 +11,8 @@
 #include "main.h"
 #include "component/3d/camera.h"
 
+class CDataMesh;
+
 // メッシュ
 class CMesh : public Component
 {
@@ -40,12 +42,13 @@ public:
 private:
 	bool m_customColor;
 	D3DXCOLOR m_color;
-	float* m_fAlpha;																// 不透明度
+	float* m_fAlpha;																	// 不透明度
 	LPD3DXMESH m_pMesh;													// メッシュへのポインタ
 	ID3DXMesh* m_pShadowMesh;											// 影メッシュ
 	LPD3DXBUFFER m_pBuffMat;												// マテリアルへのポインタ
 	DWORD m_dwNumMat;														// マテリアルの数
-	std::vector<LPDIRECT3DTEXTURE9> m_apTexture;				// テクスチャ
+	CDataMesh* m_pData;														// データ
+	std::vector<LPDIRECT3DTEXTURE9> m_apTexture;			// テクスチャ
 
 	static CCamera* m_camera;
 };
