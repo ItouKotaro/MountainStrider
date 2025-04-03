@@ -86,17 +86,6 @@ namespace ParticleModule
 class ParticleSystem : public Component
 {
 public:
-	struct Range
-	{
-		float min;
-		float max;
-	};
-	struct RangeInt
-	{
-		int min;
-		int max;
-	};
-
 	// パーティクルデータ
 	struct ParticleData
 	{
@@ -143,7 +132,7 @@ public:
 	void SetAngle(const float& angle) { m_angle = { angle, angle }; }
 	void SetAngle(const float& min, const float& max) { m_angle = { min, max }; }
 	//@brief 回転の取得
-	Range GetAngle() { return m_angle; }
+	Range<float> GetAngle() { return m_angle; }
 
 	//@brief カラーの設定
 	void SetColor(const D3DXCOLOR& color) { m_color = color; }
@@ -154,19 +143,19 @@ public:
 	void SetSize(const float& size) { m_size = { size , size }; }
 	void SetSize(const float& min, const float& max) { m_size = { min, max }; }
 	//@brief サイズの取得
-	Range GetSize() { return m_size; }
+	Range<float> GetSize() { return m_size; }
 
 	//@brief 力の設定
 	void SetPower(const float& power) { m_power = { power, power }; }
 	void SetPower(const float& min, const float& max) { m_power = { min, max }; }
 	//@brief 力の取得
-	Range GetPower() { return m_power; }
+	Range<float> GetPower() { return m_power; }
 
 	//@brief 生存時間の設定
 	void SetLifetime(const int& time) { m_lifetime = { time, time }; }
 	void SetLifetime(const int& min, const int& max) { m_lifetime = { min, max }; }
 	//@brief 生存時間の取得
-	RangeInt GetLifetime() { return m_lifetime; }
+	Range<int> GetLifetime() { return m_lifetime; }
 
 	//@brief サイズの変動設定
 	void SetFluctuationSize(const float& value) { m_fluctuationSize = value; }
@@ -216,13 +205,13 @@ private:
 
 	// 標準設定
 	float m_gravity;											// 重力
-	Range m_size;											// サイズ
+	Range<float> m_size;									// サイズ
 	float m_fluctuationSize;								// サイズの変動
-	D3DXCOLOR m_color;								// カラー
+	D3DXCOLOR m_color;									// カラー
 	float m_fluctuationAlpha;							// 透明度の変動
-	Range m_angle;											// 回転
-	Range m_power;										// 力
-	RangeInt m_lifetime;									// 生存時間
+	Range<float> m_angle;								// 回転
+	Range<float> m_power;								// 力
+	Range<int> m_lifetime;								// 生存時間
 	float m_vortex;											// 渦
 
 	bool m_isPlaying;										// 再生中か
