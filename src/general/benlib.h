@@ -71,6 +71,15 @@ namespace Benlib
 	*/
 	D3DXQUATERNION LookAt(const D3DXVECTOR3& pos1, const D3DXVECTOR3& pos2);
 
+	/*
+	@brief 視錐台にオブジェクトがあるかを判定します
+	@param[in] matProj : プロジェクションマトリックス
+	@param[in] matView : ビューマトリックス
+	@param[in] center : オブジェクトの中心位置
+	@param[in] radius : オブジェクトの半径
+	@return 判定 (bool)
+	*/
+	bool IsObjectInFrustum(const D3DXMATRIX& matProj, const D3DXMATRIX& matView, const D3DXVECTOR3& center, const float& radius);
 
 	/*
 	@brief 整数型のランダム値を生成します
