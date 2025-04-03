@@ -390,6 +390,9 @@
     <ClCompile Include="src\scripts\direction_arrow.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\damage_effect.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -666,6 +669,9 @@
       <Filter>ヘッダー ファイル\scripts\mode</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\direction_arrow.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\damage_effect.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>

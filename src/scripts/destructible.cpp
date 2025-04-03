@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "component/3d/mesh.h"
 #include "component/3d/collision.h"
+#include "scripts/damage_effect.h"
 #include "scene/game.h"
 #include "vehicle.h"
 
@@ -82,6 +83,11 @@ void Destructible::OnTriggerEnter(GameObject* other)
 		if (vehicle != nullptr)
 		{
 			vehicle->AddDamage(m_decoData->type->damage);
+
+			// ダメージエフェクトを出す
+			GameObject* damageEffect = new GameObject("DamageEffect", "DMG");
+			damageEffect->transform->SetPos(vehicle->transform->GetWPos());
+			damageEffect->AddComponent<DamageEffect>()->Generate(m_decoData->type->damage);
 		}
 		
 		// ヒット音を鳴らす
