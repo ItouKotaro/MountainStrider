@@ -393,6 +393,9 @@
     <ClCompile Include="src\scripts\damage_effect.cpp">
       <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\mode\delivery.cpp">
+      <Filter>ソース ファイル\scripts\mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -673,6 +676,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\damage_effect.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\mode\delivery.h">
+      <Filter>ヘッダー ファイル\scripts\mode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
