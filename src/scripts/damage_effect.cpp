@@ -71,7 +71,7 @@ void DamageEffect::Generate(const float& damage, const float& time)
 	// 数字の割り出しに必要な計算
 	int numInt = static_cast<int>(damage);
 	int numFloat = static_cast<int>((damage - static_cast<float>(numInt)) / 0.1f);
-	int digit = static_cast<int>(log10f(numInt)) + 2;	// 2はlog10の桁数補完と少数第一位の合計
+	int digit = static_cast<int>(log10f(static_cast<float>(numInt))) + 2;	// 2はlog10の桁数補完と少数第一位の合計
 	float widthLength = digit * SIZE / 2.0f;	// ビルボードの位置
 
 	// 必要なビルボードを用意する
@@ -82,8 +82,8 @@ void DamageEffect::Generate(const float& damage, const float& time)
 		billboard->AddComponent<CBillboard>()->Set(SIZE, SIZE);
 
 		// 対象の数字を取得する
-		int targetNum = numInt / powf(10, digit - i - 2);
-		numInt -= targetNum * powf(10, digit - i - 2);
+		int targetNum = static_cast<int>(numInt / powf(10, static_cast<float>(digit - i - 2)));
+		numInt -= static_cast<int>(targetNum * powf(10, static_cast<float>(digit - i - 2)));
 
 		// 最後のループ（小数点の数に置き換える）
 		if (i == digit - 1)
