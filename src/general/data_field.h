@@ -37,7 +37,7 @@ private:
 class CDF_Int : public CDF
 {
 public:
-	CDF_Int() : CDF(TYPE::INT) {}
+	CDF_Int() : CDF(TYPE::INT), m_nData(0) {}
 	void SetValue(const int& data) { m_nData = data; }
 	int GetValue() { return m_nData; }
 private:
@@ -48,7 +48,7 @@ private:
 class CDF_Float : public CDF
 {
 public:
-	CDF_Float() : CDF(TYPE::FLOAT) {}
+	CDF_Float() : CDF(TYPE::FLOAT), m_fData(0.0f) {}
 	void SetValue(const float& data) { m_fData = data; }
 	float GetValue() { return m_fData; }
 private:
@@ -59,7 +59,7 @@ private:
 class CDF_Bool : public CDF
 {
 public:
-	CDF_Bool() : CDF(TYPE::BOOL) {}
+	CDF_Bool() : CDF(TYPE::BOOL), m_bData(false) {}
 	void SetValue(const bool& data) { m_bData = data; }
 	bool GetValue() { return m_bData; }
 private:
@@ -70,7 +70,7 @@ private:
 class CDF_String : public CDF
 {
 public:
-	CDF_String() : CDF(TYPE::STRING) {}
+	CDF_String() : CDF(TYPE::STRING), m_sData("") {}
 	void SetValue(const std::string& data) { m_sData = data; }
 	std::string GetValue() { return m_sData; }
 private:
@@ -81,7 +81,7 @@ private:
 class CDF_Vector3 : public CDF
 {
 public:
-	CDF_Vector3() : CDF(TYPE::VECTOR3) {}
+	CDF_Vector3() : CDF(TYPE::VECTOR3), m_vec3Data(D3DXVECTOR3(0.0f, 0.0f, 0.0f)) {}
 	void SetValue(const D3DXVECTOR3& data) { m_vec3Data = data; }
 	D3DXVECTOR3 GetValue() { return m_vec3Data; }
 private:
@@ -92,7 +92,7 @@ private:
 class CDF_Vector2 : public CDF
 {
 public:
-	CDF_Vector2() : CDF(TYPE::VECTOR2) {}
+	CDF_Vector2() : CDF(TYPE::VECTOR2), m_vec2Data(D3DXVECTOR2(0.0f, 0.0f)) {}
 	void SetValue(const D3DXVECTOR2& data) { m_vec2Data = data; }
 	D3DXVECTOR2 GetValue() { return m_vec2Data; }
 private:
