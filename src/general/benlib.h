@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include "d3dx9.h"	
 
-#define SAFE_ERASE(container, iterator) {iterator = container.erase(iterator); if(iterator == container.end()) break;}
-
 // 便利な機能を提供します
 namespace Benlib
 {
