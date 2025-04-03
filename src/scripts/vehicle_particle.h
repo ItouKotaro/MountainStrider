@@ -32,7 +32,6 @@ private:
 	Terrain* m_terrain;					// ’nŒ`
 	LakeManager* m_lake;			// ’r
 	GameObject* m_trajectory;	// ‹O“¹
-	GameObject* m_exhaust;		// ”r‹C
 	float m_backParticleTimer;
 
 	// ’è”
