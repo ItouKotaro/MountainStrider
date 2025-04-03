@@ -151,7 +151,7 @@ void LakeManager::Update()
 
 		// •‚—Í
 		m_vehicle->gameObject->GetComponent<CRigidBody>()->GetRigidBody()->applyCentralForce(
-			btVector3(0.0f, 15000.0f, 0.0f)
+			btVector3(0.0f, LAKE_FLOATING_POWER, 0.0f)
 		);
 
 		btVector3 linerVelocity = m_vehicle->gameObject->GetComponent<CRigidBody>()->GetRigidBody()->getLinearVelocity();

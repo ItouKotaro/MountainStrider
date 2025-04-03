@@ -57,6 +57,7 @@ private:
 
 	const float LAKE_INDEPTH = 3.0f;
 	const float LAKE_RESISTANCE = 0.99f;
+	const float LAKE_FLOATING_POWER = 13000.0f;
 };
 
 #endif // !_LAKE_H_
