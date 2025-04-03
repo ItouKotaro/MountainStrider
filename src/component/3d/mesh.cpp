@@ -63,6 +63,15 @@ void CMesh::Draw()
 		return;
 	}
 
+	// 描画が必要か
+	if (m_camera != nullptr)
+	{
+		if (!Benlib::IsObjectInFrustum(m_camera->GetProjectionMatrix(), m_camera->GetViewMatrix(), transform->GetWPos(), 20.0f))
+		{ // 描画が必要ないとき
+			return;
+		}
+	}
+
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 	D3DMATERIAL9 matDef;					// 現在のマテリアル保存用
 	D3DXMATERIAL* pMat;					// マテリアルデータへのポインタ
