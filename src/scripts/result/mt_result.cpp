@@ -28,6 +28,15 @@ UINT ResultBase::m_goalCount = 0;
 std::vector<ResultBase::ResultData> ResultBase::m_results = {};
 
 //=============================================================
+// [ResultBase] コンストラクタ
+//=============================================================
+ResultBase::ResultBase()
+{
+	// ゲームシーンを取得する
+	m_gameScene = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+}
+
+//=============================================================
 // [ResultBase] 結果を保存する
 //=============================================================
 void ResultBase::AddResult(ResultData data)

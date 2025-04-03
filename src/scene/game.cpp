@@ -431,7 +431,7 @@ void CGameScene::onGameOver()
 		ResultBase::AddResult(data);
 
 		// ゲームオーバーリザルトの初期化
-		m_result = new GameOverResult(this);
+		m_result = new GameOverResult();
 		m_result->Init();
 
 		// リザルトカメラを起動する
@@ -487,7 +487,7 @@ void CGameScene::onClear()
 		ResultBase::AddResult(data);
 
 		// クリアリザルトの初期化
-		m_result = new ClearResult(this);
+		m_result = new ClearResult();
 		m_result->Init();
 
 		// リザルトカメラを起動する

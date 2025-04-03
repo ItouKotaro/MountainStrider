@@ -17,6 +17,9 @@ class CGameScene;
 class ResultBase
 {
 public:
+	ResultBase();
+	virtual ~ResultBase() {};
+
 	virtual void Init() {};
 	virtual void Uninit() {};
 	virtual void Update() {};
@@ -67,7 +70,6 @@ protected:
 class ClearResult : public ResultBase
 {
 public:
-	ClearResult(CGameScene* scene) { m_gameScene = scene; }
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
@@ -116,7 +118,6 @@ private:
 class GameOverResult : public ResultBase
 {
 public:
-	GameOverResult(CGameScene* scene) { m_gameScene = scene; }
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
