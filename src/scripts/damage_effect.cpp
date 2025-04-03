@@ -41,8 +41,16 @@ void DamageEffect::Update()
 		transform->SetRot(0.0f, Benlib::PosAngle(transform->GetWPos(), m_camera->transform->GetWPos()), 0.0f);
 	}
 
-	// ã‚Éã¸‚³‚¹‚é
-	transform->Translate(0.0f, 0.5f, 0.0f);
+	// ã¸‚³‚¹‚é
+	transform->Translate(0.0f, UP_MOVE, 0.0f);
+
+	// “§–¾‰»
+	for (auto itr = m_billboards.begin(); itr != m_billboards.end(); itr++)
+	{
+		D3DXCOLOR color = (*itr)->GetComponent<CBillboard>()->GetColor();
+		color.a -= ALPHA;
+		(*itr)->GetComponent<CBillboard>()->SetColor(color);
+	}
 
 	// Žõ–½
 	m_time -= CManager::GetInstance()->GetDeltaTime();

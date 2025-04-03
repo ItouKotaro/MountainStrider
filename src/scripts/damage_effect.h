@@ -25,6 +25,8 @@ private:
 	GameObject* m_camera;															// カメラ
 	std::vector<GameObject*> m_billboards;									// ビルボード管理
 	const float SIZE = 5.0f;
+	const float UP_MOVE = 0.5f;
+	const float ALPHA = 0.02f;
 };
 
 #endif // !_DAMAGE_EFFECT_H_
