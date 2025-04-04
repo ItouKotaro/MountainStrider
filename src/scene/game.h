@@ -32,6 +32,7 @@ public:
 
 	static void ResetGame();		// ゲームのリセット
 	void HideUI();						// UIを非表示にする
+	void CalcResultData();		// リザルトデータを計算する
 	ResultBase::ResultData GetResultData() { return m_resultData; }	// リザルトデータを取得する
 
 	Terrain* GetTerrain() { return m_terrain; }
@@ -55,7 +56,6 @@ public:
 private:
 	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する
 	void SpawnBike();													// バイクの生成
-	void CalcResultData();											// リザルトデータを計算する
 
 	int m_travellingCount;												// 突破数
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ

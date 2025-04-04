@@ -42,6 +42,7 @@ void CGameScene::Init()
 	m_travellingCount = 0;
 	m_travellingDatas.clear();
 	m_actionPoint = 0;
+	m_highSpeed = 0.0f;
 	m_pause = nullptr;
 	m_oldResult = nullptr;
 
@@ -288,9 +289,6 @@ void CGameScene::Update()
 		// 入ったフレームだけの処理
 		if (m_oldResult == nullptr)
 		{
-			// リザルトデータを計算する
-			CalcResultData();
-
 			// UIを非表示にする
 			HideUI();
 

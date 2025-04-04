@@ -43,29 +43,34 @@ void TerminalMode::Update()
 	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
 		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
 	{
+		gameScene->CalcResultData();
 		ModeManager::GetInstance()->SetResult<ClearResult>();
 	}
 
 	// 最低高度よりも下に行ったとき
 	if (vehiclePos.y < gameScene->GetTerrain()->GetMinHeight() - 5.0f)
 	{
+		gameScene->CalcResultData();
 		ModeManager::GetInstance()->SetResult<ClearResult>();
 	}
 
 	// ゲームオーバー処理
 	if (gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel() <= 0.0f)
 	{ // 燃料が無くなったとき
+		gameScene->CalcResultData();
 		ModeManager::GetInstance()->SetResult<GameOverResult>();
 	}
 
 	// 耐久値が無くなったときの処理
 	if (gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance() <= 0)
 	{
+		gameScene->CalcResultData();
 		ModeManager::GetInstance()->SetResult<GameOverResult>();
 	}
 
 	if (INPUT_INSTANCE->onTrigger("@"))
 	{
+		gameScene->CalcResultData();
 		ModeManager::GetInstance()->SetResult<ClearResult>();
 	}
 
