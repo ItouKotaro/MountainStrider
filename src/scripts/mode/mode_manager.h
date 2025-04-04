@@ -7,38 +7,18 @@
 #ifndef _MODE_MANAGER_H_
 #define _MODE_MANAGER_H_
 
+#include "scripts/result/mt_result.h"
+
 // モード定義
 class ModeTemplate
 {
 public:
-	// 状態
-	enum STATE
-	{
-		STATE_GAME,	// ゲーム中（通常時）
-		STATE_GOAL,		// ゴール時
-		STATE_FAIL,		// 失敗時
-	};
-
-	ModeTemplate() : m_state(STATE_GAME) {}
+	ModeTemplate() {}
 	virtual ~ModeTemplate() {}
 	virtual void Init() {}
 	virtual void Uninit() {}
 	virtual void Update() {}
-
-	//@brief 状態を取得する
-	STATE GetState() { return m_state; }
-
-	//@brief 状態をリセットする
-	void ResetState() { m_state = STATE::STATE_GAME; }
-protected:
-	//@brief ゴールイベントを起こす
-	void onGoal() { m_state = STATE::STATE_GOAL; }
-
-	//@brief 失敗イベントを起こす
-	void onFail() { m_state = STATE::STATE_FAIL; }
-
-private:
-	STATE m_state;		// 状態
+	virtual void OnResultEvent() {}
 };
 
 // モード管理
@@ -50,11 +30,26 @@ public:
 	void Update();
 	void LastUninit();
 
-	//@brief 状態を取得する
-	ModeTemplate::STATE GetState() { return m_mode->GetState(); }
-
 	//@brief モードを設定する
 	void SetMode(ModeTemplate* mode);
+
+	//@brief リザルトを設定する
+	template<class T> void SetResult()
+	{
+		// リザルトが設定されていない場合のみ
+		if (m_result == nullptr)
+		{
+			// 新しいモードを設定する
+			m_result = new T();
+			m_result->Init();
+		}
+	}
+
+	//@brief モードを取得する
+	ModeTemplate* GetMode() { return m_mode; }
+
+	//@brief リザルトを取得する
+	ResultBase* GetResult() { return m_result; }
 
 	//@brief インスタンスを取得する
 	static ModeManager* GetInstance()
@@ -64,6 +59,7 @@ public:
 	}
 private:
 	ModeTemplate* m_mode;
+	ResultBase* m_result;
 };
 
 

@@ -113,8 +113,7 @@ void Pause::SetPause(const bool& enabled)
 	CPhysics::GetInstance()->SetUpdatePhysics(!m_isPause);
 
 	// カメラの有効・無効化
-	auto endType = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetEndType();
-	if (endType == CGameScene::ENDTYPE_NONE)
+	if (ModeManager::GetInstance()->GetResult() == nullptr)
 	{
 		GameObject::Find("Camera")->GetComponent<CCameraMove>()->enabled = !enabled;
 	}
@@ -125,6 +124,7 @@ void Pause::SetPause(const bool& enabled)
 //=============================================================
 void Pause::UpdateControl()
 {
+	// カーソルの表示
 	Main::SetShowCursor(INPUT_INSTANCE->GetLastInput() == CInputSystem::DEVICE_MOUSE);
 
 	auto padInfo = INPUT_INSTANCE->GetInputDevice<CGamepadDevice>()->GetState().Gamepad;

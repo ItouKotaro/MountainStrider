@@ -25,7 +25,13 @@ void ModeManager::Uninit()
 	if (m_mode != nullptr)
 	{
 		m_mode->Uninit();
-		m_mode->ResetState();
+	}
+
+	if (m_result != nullptr)
+	{
+		m_result->Uninit();
+		delete m_result;
+		m_result = nullptr;
 	}
 }
 

@@ -168,12 +168,6 @@ void CVehicle::Update()
 
 	// 地面との距離を更新する
 	UpdateGroundDistance();
-
-	// ゲームオーバー処理
-	if (m_fuel <= 0.0f)
-	{ // 燃料が無くなったとき
-		static_cast<CGameScene*>(CSceneManager::GetInstance()->GetCurrentScene()->pScene)->onGameOver();
-	}
 }
 
 //=============================================================
@@ -196,13 +190,6 @@ void CVehicle::AddDamage(const float& value)
 
 	// 耐久値を減らす
 	m_endurance -= value;
-
-	// 耐久値が無くなったときの処理
-	if (m_endurance <= 0)
-	{
-		// ゲームオーバー処理
-		static_cast<CGameScene*>(CSceneManager::GetInstance()->GetCurrentScene()->pScene)->onGameOver();
-	}
 }
 
 //=============================================================

@@ -24,16 +24,15 @@ class CGameScene : public CScene
 {
 public:
 	CGameScene(){}
-	void Init() override;			// 初期化
+	void Init() override;				// 初期化
 	void Uninit() override;			// 終了
 	void Update() override;		// 更新
 	void Draw() override;			// 描画
 	void LastUninit() override;	// 最終終了
 
-	static void ResetGame();				// ゲームのリセット
-
-	void onGameOver();			// ゲームオーバー処理
-	void onClear();					// クリア処理
+	static void ResetGame();		// ゲームのリセット
+	void HideUI();						// UIを非表示にする
+	ResultBase::ResultData GetResultData() { return m_resultData; }	// リザルトデータを取得する
 
 	Terrain* GetTerrain() { return m_terrain; }
 	LakeManager* GetLake() { return m_lake; }
@@ -53,42 +52,35 @@ public:
 	};
 	std::vector<TravellingData> GetTravellingData() { return m_travellingDatas; }
 
-	// 終了の種類
-	enum ENDTYPE
-	{
-		ENDTYPE_NONE,											// なし（通常）
-		ENDTYPE_CLEAR,											// クリア（山踏破）
-		ENDTYPE_GAMEOVER,									// ゲームオーバー
-	};
-	ENDTYPE m_endType;										// 終了理由
-	ENDTYPE GetEndType() { return m_endType; }
-
 private:
 	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する
-	void SpawnBike();												// バイクの生成
+	void SpawnBike();													// バイクの生成
+	void CalcResultData();											// リザルトデータを計算する
 
-	int m_travellingCount;										// 突破数
+	int m_travellingCount;												// 突破数
 	std::vector<TravellingData> m_travellingDatas;	// 走行データ
-	ResultBase* m_result;										// リザルト
 
-	Terrain* m_terrain;											// 地形
+	Terrain* m_terrain;													// 地形
 	EnvironmentalEffect* m_environmental;				// 環境
 	DecorationManager* m_decoration;						// 装飾
-	EventManager* m_events;									// イベント
-	LakeManager* m_lake;										// 湖
-	PlayGuideManager* m_playGuide;						// プレイガイド
+	EventManager* m_events;										// イベント
+	LakeManager* m_lake;											// 湖
+	//PlayGuideManager* m_playGuide;							// プレイガイド
 
-	GameObject* m_voidField;									// 奈落
-	GameObject* m_camera;									// カメラ
-	GameObject* m_bike;										// バイク
-	GameObject* m_statusUI;								// ステータスUI
-	GameObject* m_speedmeterUI;						// スピードメーターUI
-	GameObject* m_itemSlot;								// アイテムスロット
+	GameObject* m_voidField;										// 奈落
+	GameObject* m_camera;										// カメラ
+	GameObject* m_bike;												// バイク
+	GameObject* m_statusUI;										// ステータスUI
+	GameObject* m_speedmeterUI;								// スピードメーターUI
+	GameObject* m_itemSlot;										// アイテムスロット
+
+	ResultBase* m_oldResult;										// 過去のリザルト
+	ResultBase::ResultData m_resultData;					// リザルトデータ
 
 	// リザルトデータ用
-	DWORD m_startTime;										// 開始時間
-	int m_highSpeed;												// 最高速度
-	static int m_actionPoint;										// スコア
+	DWORD m_startTime;												// 開始時間
+	int m_highSpeed;													// 最高速度
+	static int m_actionPoint;											// スコア
 
 	// ポーズ
 	Pause* m_pause;

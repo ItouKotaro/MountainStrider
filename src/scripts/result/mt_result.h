@@ -35,26 +35,29 @@ public:
 		float fuel;			// 消費燃料
 		float endurance;	// 消費耐久値
 	};
-	static void AddResult(ResultData data);
-	static void Reset();
-	static int GetAverageTime();
-	static int GetAverageAction();
-	static int GetNumOfStep() { return static_cast<int>(m_results.size()); }
 
-	static float GetBeforeFuel() { return m_beforeFuel; }
-	static float GetBeforeEndurance() { return m_beforeEndurance; }
+protected:
+	CGameScene* m_gameScene;
+};
+
+// ターミナルモードのリザルト
+class TerminalResult : public ResultBase
+{
+public:
+	int GetAverageTime();
+	int GetAverageAction();
+	int GetNumOfStep();
+	float GetBeforeFuel() { return m_beforeFuel; }
+	float GetBeforeEndurance() { return m_beforeEndurance; }
 protected:
 	void FinalResult(bool isSuccess);
 
-	CGameScene* m_gameScene;
 	static float m_beforeFuel;							// 前回の燃料
 	static float m_beforeEndurance;					// 前回の耐久値
-	static UINT m_goalCount;							// 踏破回数
-	static std::vector<ResultData> m_results;	// 結果
 	GameObject* m_page;			// ページ管理
 
 	// 最終結果用
-	GameObject* m_scoreText;				// スコア
+	GameObject* m_scoreText;			// スコア
 	GameObject* m_timeRate;				// 時間の評価
 	GameObject* m_actionRate;			// アクションの評価
 	GameObject* m_fuelRate;				// 燃費の評価
@@ -67,7 +70,7 @@ protected:
 };
 
 // クリア時のリザルト
-class ClearResult : public ResultBase
+class ClearResult : public TerminalResult
 {
 public:
 	void Init() override;
@@ -115,7 +118,7 @@ private:
 
 
 // ゲームオーバー時のリザルト
-class GameOverResult : public ResultBase
+class GameOverResult : public TerminalResult
 {
 public:
 	void Init() override;

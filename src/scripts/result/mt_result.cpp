@@ -22,10 +22,10 @@
 #include "scripts/virtual_cursor.h"
 #include "scripts/ranking_system.h"
 
-float ResultBase::m_beforeFuel = CVehicle::MAX_FUEL;
-float ResultBase::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
-UINT ResultBase::m_goalCount = 0;
-std::vector<ResultBase::ResultData> ResultBase::m_results = {};
+#include "scripts/mode/terminal.h"
+
+float TerminalResult::m_beforeFuel = CVehicle::MAX_FUEL;
+float TerminalResult::m_beforeEndurance = CVehicle::MAX_ENDURANCE;
 
 //=============================================================
 // [ResultBase] コンストラクタ
@@ -37,32 +37,29 @@ ResultBase::ResultBase()
 }
 
 //=============================================================
-// [ResultBase] 結果を保存する
-//=============================================================
-void ResultBase::AddResult(ResultData data)
-{
-	m_results.push_back(data);
-}
-
-//=============================================================
 // [ResultBase] リセット
 //=============================================================
-void ResultBase::Reset()
-{
-	m_beforeFuel = CVehicle::MAX_FUEL;
-	m_beforeEndurance = CVehicle::MAX_ENDURANCE;
-	m_goalCount = 0;
-	m_results.clear();
-}
+//void ResultBase::Reset()
+//{
+//	m_beforeFuel = CVehicle::MAX_FUEL;
+//	m_beforeEndurance = CVehicle::MAX_ENDURANCE;
+//	m_goalCount = 0;
+//}
 
 //=============================================================
-// [ResultBase] 平均時間
+// [TerminalResult] 平均時間
 //=============================================================
-int ResultBase::GetAverageTime()
+int TerminalResult::GetAverageTime()
 {
 	int allTime = 0;
 	int count = 0;
-	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	
+	// ターミナルモードを取得する
+	TerminalMode* terminalMode = dynamic_cast<TerminalMode*>(ModeManager::GetInstance()->GetMode());
+	if (terminalMode == nullptr) { return -1; }
+
+	// 合計時間を算出する
+	for (auto itr = terminalMode->GetResultData().begin(); itr != terminalMode->GetResultData().end(); itr++)
 	{
 		if ((*itr).time != -1)
 		{
@@ -71,6 +68,7 @@ int ResultBase::GetAverageTime()
 		}
 	}
 
+	// 平均値にする
 	if (count > 0)
 	{
 		return allTime / count;
@@ -79,23 +77,43 @@ int ResultBase::GetAverageTime()
 }
 
 //=============================================================
-// [ResultBase] 平均アクション
+// [TerminalResult] 平均アクション
 //=============================================================
-int ResultBase::GetAverageAction()
+int TerminalResult::GetAverageAction()
 {
 	int allAction = 0;
 	int count = 0;
-	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+
+	// ターミナルモードを取得する
+	TerminalMode* terminalMode = dynamic_cast<TerminalMode*>(ModeManager::GetInstance()->GetMode());
+	if (terminalMode == nullptr) { return 0; }
+
+	// 合計アクションポイントを算出する
+	for (auto itr = terminalMode->GetResultData().begin(); itr != terminalMode->GetResultData().end(); itr++)
 	{
 		allAction += (*itr).action;
 		count++;
 	}
 
+	// 平均値にする
 	if (count > 0)
 	{
 		return allAction / count;
 	}
 	return allAction;
+}
+
+//=============================================================
+// [TerminalResult] 合計踏破数を取得する
+//=============================================================
+int TerminalResult::GetNumOfStep()
+{
+	// ターミナルモードを取得する
+	TerminalMode* terminalMode = dynamic_cast<TerminalMode*>(ModeManager::GetInstance()->GetMode());
+	if (terminalMode == nullptr) { return 0; }
+
+	// 踏破数を返す
+	return static_cast<int>(terminalMode->GetResultData().size());
 }
 
 
@@ -104,12 +122,17 @@ int ResultBase::GetAverageAction()
 //=============================================================
 void ClearResult::Init()
 {
-	// 踏破数をインクリメント
-	m_goalCount++;
-
 	// 進捗
 	m_progState = P_MTTEXT;
 	m_progCounter = 120;
+
+	// 踏破数を取得する
+	TerminalMode* terminalMode = dynamic_cast<TerminalMode*>(ModeManager::GetInstance()->GetMode());
+	int goalNum = 0;
+	if (terminalMode != nullptr)
+	{
+		goalNum = static_cast<int>(terminalMode->GetResultData().size()) + 1;
+	}
 
 	// BGMを再生する
 	m_volumeFade = 0.0f;
@@ -138,7 +161,7 @@ void ClearResult::Init()
 		m_mtText->GetComponent<CText>()->SetFontSize(130);
 		m_mtText->GetComponent<CText>()->SetOutlineColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 		m_mtText->GetComponent<CText>()->SetOutlineSize(2);
-		m_mtText->GetComponent<CText>()->SetText(std::to_string(m_goalCount) + "つ目の山を踏破しました");
+		m_mtText->GetComponent<CText>()->SetText(std::to_string(goalNum) + "つ目の山を踏破しました");
 		m_mtText->GetComponent<CText>()->SetAlign(CText::CENTER);
 		m_mtText->transform->SetPos(-2000.0f, 100.0f, 0.0f);
 		page->AddObject(0, m_mtText);
@@ -152,7 +175,7 @@ void ClearResult::Init()
 		page->AddObject(0, m_dataView);
 		
 		// 最新データを取得
-		ResultData data = m_results[m_results.size()-1];
+		ResultData data = m_gameScene->GetResultData();
 		m_dataView->GetComponent<ResultDataView>()->SetTime(data.time);
 		m_dataView->GetComponent<ResultDataView>()->SetHighSpeed(data.highSpeed);
 		m_dataView->GetComponent<ResultDataView>()->SetAction(data.action);
@@ -450,7 +473,7 @@ void GameOverResult::Init()
 		m_dataView->transform->Translate(60.0f, 350.0f, 0.0f);
 
 		// 最新データを取得
-		ResultData data = m_results[m_results.size() - 1];
+		ResultData data = m_gameScene->GetResultData();
 		m_dataView->GetComponent<ResultDataView>()->SetTime(-1);
 		m_dataView->GetComponent<ResultDataView>()->SetHighSpeed(data.highSpeed);
 		m_dataView->GetComponent<ResultDataView>()->SetAction(data.action);
@@ -633,11 +656,15 @@ void GameOverResult::Draw()
 }
 
 //=============================================================
-// [ResultBase] 最終結果
+// [TerminalResult] 最終結果
 //=============================================================
-void ResultBase::FinalResult(bool isSuccess)
+void TerminalResult::FinalResult(bool isSuccess)
 {
 	// データ計算 ------------------------------------------------------------------------------------
+
+	// ターミナルモードを取得する
+	TerminalMode* terminalMode = dynamic_cast<TerminalMode*>(ModeManager::GetInstance()->GetMode());
+	if (terminalMode == nullptr) { return; }
 
 	// 平均時間の表示形式を変更する
 	int time = GetAverageTime();
@@ -650,7 +677,7 @@ void ResultBase::FinalResult(bool isSuccess)
 	float fuelConsumption = 0.0f;
 	float totalMileage = 0.0f;
 	float totalFuel = 0.0f;
-	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	for (auto itr = terminalMode->GetResultData().begin(); itr != terminalMode->GetResultData().end(); itr++)
 	{
 		totalMileage += (*itr).mileage;
 		totalFuel += (*itr).fuel;
@@ -661,15 +688,15 @@ void ResultBase::FinalResult(bool isSuccess)
 
 	// スコア計算
 	int score = 0;
-	score += GetAverageAction() * static_cast<int>(m_results.size());
-	for (auto itr = m_results.begin(); itr != m_results.end(); itr++)
+	score += GetAverageAction() * static_cast<int>(terminalMode->GetResultData().size());
+	for (auto itr = terminalMode->GetResultData().begin(); itr != terminalMode->GetResultData().end(); itr++)
 	{
 		if ((*itr).time != -1)
 		{
 			score += (120 - (*itr).time) * 2;
 		}
 	}
-	score += CLEAR_POINT * static_cast<int>(isSuccess ? m_results.size() : m_results.size() - 1);
+	score += CLEAR_POINT * static_cast<int>(isSuccess ? terminalMode->GetResultData().size() : terminalMode->GetResultData().size() - 1);
 
 	// 成功していた場合は終了ポイントを加算する
 	if (isSuccess)

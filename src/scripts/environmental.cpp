@@ -25,24 +25,14 @@ void EnvironmentalEffect::Init(const std::string path)
 
 	// ŠÔ‚ğŒˆ‚ß‚é
 	TIME time = static_cast<TIME>(rand() % TIME::MAX);
-	if (ResultBase::GetNumOfStep() == 0)
-	{ // ‰‰ñ
-		time = TIME::MORNING;
-	}
+	time = TIME::MORNING;
 	SetTime(time);
 
 	// “VŒó‚ğŒˆ‚ß‚é
 	Weather* weather;
-	if (ResultBase::GetNumOfStep() == 0)
-	{ // ‰‰ñ
-		weather = new WeatherClear();
-	}
-	else
-	{
-		int weatherRand = rand() % 2;
-		if (weatherRand == 0) weather = new WeatherClear();
-		else weather = new WeatherRain();
-	}
+	int weatherRand = rand() % 2;
+	if (weatherRand == 0) weather = new WeatherClear();
+	else weather = new WeatherRain();
 	SetWeather(weather);
 
 

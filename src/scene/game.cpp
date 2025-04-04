@@ -39,11 +39,11 @@ int CGameScene::m_actionPoint = 0;
 void CGameScene::Init()
 {
 	// 変数の初期化
-	m_endType = ENDTYPE_NONE;
 	m_travellingCount = 0;
 	m_travellingDatas.clear();
 	m_actionPoint = 0;
 	m_pause = nullptr;
+	m_oldResult = nullptr;
 
 	// 乱数のシード設定
 	srand((unsigned int)clock());
@@ -123,11 +123,11 @@ void CGameScene::Init()
 	m_events->Init();
 
 	// プレイガイド
-	if (ResultBase::GetNumOfStep() == 0)
-	{
-		m_playGuide = new PlayGuideManager();
-		m_playGuide->Init();
-	}
+	//if (ResultBase::GetNumOfStep() == 0)
+	//{
+	//	m_playGuide = new PlayGuideManager();
+	//	m_playGuide->Init();
+	//}
 
 	// カメラの移動設定を行う
 	m_camera->AddComponent<CCameraMove>()->SetTarget(m_bike);
@@ -195,20 +195,12 @@ void CGameScene::Uninit()
 	}
 
 	// プレイガイドの破棄
-	if (m_playGuide != nullptr)
-	{
-		m_playGuide->Uninit();
-		delete m_playGuide;
-		m_playGuide = nullptr;
-	}
-
-	// リザルトマネージャーの破棄
-	if (m_result != nullptr)
-	{
-		m_result->Uninit();
-		delete m_result;
-		m_result = nullptr;
-	}
+	//if (m_playGuide != nullptr)
+	//{
+	//	m_playGuide->Uninit();
+	//	delete m_playGuide;
+	//	m_playGuide = nullptr;
+	//}
 
 	// モードの終了
 	ModeManager::GetInstance()->Uninit();
@@ -229,11 +221,6 @@ void CGameScene::Uninit()
 //=============================================================
 void CGameScene::Update()
 {
-	if (INPUT_INSTANCE->onTrigger("@"))
-	{
-		onClear();
-	}
-
 	// ポーズ
 	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("esc") || INPUT_INSTANCE->onTrigger("p:start"))
 	{
@@ -255,21 +242,16 @@ void CGameScene::Update()
 	m_environmental->Update();
 
 	// プレイガイドを更新する
-	if (m_playGuide != nullptr)
-	{
-		m_playGuide->Update();
-	}
+	//if (m_playGuide != nullptr)
+	//{
+	//	m_playGuide->Update();
+	//}
 
 	// モードを更新する
 	ModeManager::GetInstance()->Update();
 
-	// 状態に応じてイベントを起こす
-	auto modeState = ModeManager::GetInstance()->GetState();
-	if (modeState == ModeTemplate::STATE_GOAL) onClear();
-	else if (modeState == ModeTemplate::STATE_FAIL) onGameOver();
-
 	// リザルトでは更新しないオブジェクト
-	if (m_endType == ENDTYPE_NONE)
+	if (ModeManager::GetInstance()->GetResult() == nullptr)
 	{
 		// 湖を更新する
 		m_lake->Update();
@@ -279,7 +261,7 @@ void CGameScene::Update()
 	}
 
 	// 未ゲームオーバー時
-	if (m_endType == ENDTYPE_NONE)
+	if (ModeManager::GetInstance()->GetResult() == nullptr)
 	{
 		// カメラの情報を記録する
 		m_camera->GetComponent<ResultCamera>()->RecordData();
@@ -301,14 +283,34 @@ void CGameScene::Update()
 	}
 
 	// リザルトの更新処理
-	if (m_endType != ENDTYPE_NONE)
-	{ // ゲームオーバーのとき
+	if (ModeManager::GetInstance()->GetResult() != nullptr)
+	{
+		// 入ったフレームだけの処理
+		if (m_oldResult == nullptr)
+		{
+			// リザルトデータを計算する
+			CalcResultData();
+
+			// UIを非表示にする
+			HideUI();
+
+			// リザルトカメラを起動する
+			m_camera->GetComponent<ResultCamera>()->Play();
+			m_camera->GetComponent<CCameraMove>()->enabled = false;
+
+			// モードのリザルトイベント
+			ModeManager::GetInstance()->GetMode()->OnResultEvent();
+		}
+
 		// リザルトの更新
-		m_result->Update();
+		ModeManager::GetInstance()->GetResult()->Update();
 
 		// バイクを無効化する
 		m_bike->SetActive(false);
 	}
+
+	// 前回のリザルトとして更新する
+	m_oldResult = ModeManager::GetInstance()->GetResult();
 }
 
 //=============================================================
@@ -317,10 +319,10 @@ void CGameScene::Update()
 void CGameScene::Draw()
 {
 	// リザルトの描画処理
-	if (m_endType != ENDTYPE_NONE)
-	{ // ゲームオーバーのとき
+	if (ModeManager::GetInstance()->GetResult() != nullptr)
+	{
 		// リザルトの描画
-		m_result->Draw();
+		ModeManager::GetInstance()->GetResult()->Draw();
 	}
 }
 
@@ -341,8 +343,8 @@ void CGameScene::ResetGame()
 	// バイクの燃料と耐久値を回復させる
 	CVehicle::ResetState();
 
-	// リザルトデータのリセット
-	ResultBase::Reset();
+	//// リザルトデータのリセット
+	//ResultBase::Reset();
 
 	// ショップ情報のリセット
 	ShopManager::Reset();
@@ -351,6 +353,29 @@ void CGameScene::ResetGame()
 	ItemManager::GetInstance()->AllRemoveItem();
 
 	m_actionPoint = 0;
+}
+
+//=============================================================
+// [CGameScene] UIを非表示にする
+//=============================================================
+void CGameScene::HideUI()
+{
+	// ステータスUIを非表示にする
+	m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
+
+	// スピードメーターを非表示にする
+	m_speedmeterUI->SetActive(false);
+
+	// アイテムスロットを非表示にする
+	m_itemSlot->SetActive(false);
+
+	// プレイガイドを非表示にする
+	//if (m_playGuide != nullptr)
+	//{
+	//	m_playGuide->Uninit();
+	//	delete m_playGuide;
+	//	m_playGuide = nullptr;
+	//}
 }
 
 //=============================================================
@@ -388,116 +413,139 @@ void CGameScene::SpawnBike()
 }
 
 //=============================================================
-// [CGameScene] ゲームオーバー時の処理
+// [CGameScene] リザルトデータを計算する
 //=============================================================
-void CGameScene::onGameOver()
+void CGameScene::CalcResultData()
 {
-	if (m_endType == ENDTYPE_NONE)
-	{ // 1回のみの処理
-		// ステータスUIを非表示にする
-		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
-
-		// スピードメーターを非表示にする
-		m_speedmeterUI->SetActive(false);
-
-		// アイテムスロットを非表示にする
-		m_itemSlot->SetActive(false);
-
-		// プレイガイドを非表示にする
-		if (m_playGuide != nullptr)
-		{
-			m_playGuide->Uninit();
-			delete m_playGuide;
-			m_playGuide = nullptr;
+	// 走行距離を計算する
+	float mileage = 0.0f;
+	for (UINT i = 0; i < m_travellingDatas.size(); i++)
+	{
+		if (i + 1 < m_travellingDatas.size())
+		{ // 次があるとき
+			mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
 		}
-
-		// 走行距離を計算する
-		float mileage = 0.0f;
-		for (UINT i = 0; i < m_travellingDatas.size(); i++)
-		{
-			if (i + 1 < m_travellingDatas.size())
-			{ // 次があるとき
-				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
-			}
-		}
-
-		// リザルトデータの格納
-		ResultBase::ResultData data;
-		data.time = -1;
-		data.highSpeed = m_highSpeed;
-		data.action = 50;
-		data.mileage = mileage;
-		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
-		ResultBase::AddResult(data);
-
-		// ゲームオーバーリザルトの初期化
-		m_result = new GameOverResult();
-		m_result->Init();
-
-		// リザルトカメラを起動する
-		m_camera->GetComponent<ResultCamera>()->Play();
-		m_camera->GetComponent<CCameraMove>()->enabled = false;
-
-		// ゲームオーバートリガーを有効にする
-		m_endType = ENDTYPE_GAMEOVER;
 	}
+
+	// リザルトデータの格納
+	m_resultData.time = (timeGetTime() - m_startTime) / 1000;
+	m_resultData.highSpeed = m_highSpeed;
+	m_resultData.action = m_actionPoint;
+	m_resultData.mileage = mileage;
+	m_resultData.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
 }
 
-//=============================================================
-// [CGameScene] クリア時の処理
-//=============================================================
-void CGameScene::onClear()
-{
-	if (m_endType == ENDTYPE_NONE)
-	{ // 1回のみの処理
-		// ステータスUIを非表示にする
-		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
-
-		// スピードメーターを非表示にする
-		m_speedmeterUI->SetActive(false);
-
-		// アイテムスロットを非表示にする
-		m_itemSlot->SetActive(false);
-
-		// プレイガイドを非表示にする
-		if (m_playGuide != nullptr)
-		{
-			m_playGuide->Uninit();
-			delete m_playGuide;
-			m_playGuide = nullptr;
-		}
-
-		// 走行距離を計算する
-		float mileage = 0.0f;
-		for (UINT i = 0; i < m_travellingDatas.size(); i++)
-		{
-			if (i + 1 < m_travellingDatas.size())
-			{ // 次があるとき
-				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
-			}
-		}
-
-		// リザルトデータの格納
-		ResultBase::ResultData data;
-		data.time = (timeGetTime() - m_startTime) / 1000;
-		data.highSpeed = m_highSpeed;
-		data.action = m_actionPoint;
-		data.mileage = mileage;
-		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
-		ResultBase::AddResult(data);
-
-		// クリアリザルトの初期化
-		m_result = new ClearResult();
-		m_result->Init();
-
-		// リザルトカメラを起動する
-		m_camera->GetComponent<ResultCamera>()->Play();
-		m_camera->GetComponent<CCameraMove>()->enabled = false;
-
-		// クリアトリガーを有効にする
-		m_endType = ENDTYPE_CLEAR;
-	}
-}
+////=============================================================
+//// [CGameScene] ゲームオーバー時の処理
+////=============================================================
+//void CGameScene::onGameOver()
+//{
+//	if (m_endType == ENDTYPE_NONE)
+//	{ // 1回のみの処理
+//		// ステータスUIを非表示にする
+//		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
+//
+//		// スピードメーターを非表示にする
+//		m_speedmeterUI->SetActive(false);
+//
+//		// アイテムスロットを非表示にする
+//		m_itemSlot->SetActive(false);
+//
+//		// プレイガイドを非表示にする
+//		if (m_playGuide != nullptr)
+//		{
+//			m_playGuide->Uninit();
+//			delete m_playGuide;
+//			m_playGuide = nullptr;
+//		}
+//
+//		// 走行距離を計算する
+//		float mileage = 0.0f;
+//		for (UINT i = 0; i < m_travellingDatas.size(); i++)
+//		{
+//			if (i + 1 < m_travellingDatas.size())
+//			{ // 次があるとき
+//				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
+//			}
+//		}
+//
+//		// リザルトデータの格納
+//		ResultBase::ResultData data;
+//		data.time = -1;
+//		data.highSpeed = m_highSpeed;
+//		data.action = 50;
+//		data.mileage = mileage;
+//		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
+//		ResultBase::AddResult(data);
+//
+//		// ゲームオーバーリザルトの初期化
+//		m_result = new GameOverResult();
+//		m_result->Init();
+//
+//		// リザルトカメラを起動する
+//		m_camera->GetComponent<ResultCamera>()->Play();
+//		m_camera->GetComponent<CCameraMove>()->enabled = false;
+//
+//		// ゲームオーバートリガーを有効にする
+//		m_endType = ENDTYPE_GAMEOVER;
+//	}
+//}
+//
+////=============================================================
+//// [CGameScene] クリア時の処理
+////=============================================================
+//void CGameScene::onClear()
+//{
+//	if (m_endType == ENDTYPE_NONE)
+//	{ // 1回のみの処理
+//		// ステータスUIを非表示にする
+//		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
+//
+//		// スピードメーターを非表示にする
+//		m_speedmeterUI->SetActive(false);
+//
+//		// アイテムスロットを非表示にする
+//		m_itemSlot->SetActive(false);
+//
+//		// プレイガイドを非表示にする
+//		if (m_playGuide != nullptr)
+//		{
+//			m_playGuide->Uninit();
+//			delete m_playGuide;
+//			m_playGuide = nullptr;
+//		}
+//
+//		// 走行距離を計算する
+//		float mileage = 0.0f;
+//		for (UINT i = 0; i < m_travellingDatas.size(); i++)
+//		{
+//			if (i + 1 < m_travellingDatas.size())
+//			{ // 次があるとき
+//				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
+//			}
+//		}
+//
+//		// リザルトデータの格納
+//		ResultBase::ResultData data;
+//		data.time = (timeGetTime() - m_startTime) / 1000;
+//		data.highSpeed = m_highSpeed;
+//		data.action = m_actionPoint;
+//		data.mileage = mileage;
+//		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
+//		ResultBase::AddResult(data);
+//
+//		// クリアリザルトの初期化
+//		m_result = new ClearResult();
+//		m_result->Init();
+//
+//		// リザルトカメラを起動する
+//		m_camera->GetComponent<ResultCamera>()->Play();
+//		m_camera->GetComponent<CCameraMove>()->enabled = false;
+//
+//		// クリアトリガーを有効にする
+//		m_endType = ENDTYPE_CLEAR;
+//	}
+//}
 
 //=============================================================
 // [CGameScene] 地形ファイル一覧を取得する
