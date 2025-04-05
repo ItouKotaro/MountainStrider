@@ -36,7 +36,7 @@ private:
 class LakeManager
 {
 public:
-	LakeManager() : m_enabled(false), m_height(0.0f), m_fuelDamage(0.0f), m_enduranceDamage(0.0f), m_baseColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)){}
+	LakeManager() : m_enabled(false), m_height(0.0f), m_fuelDamage(0.0f), m_enduranceDamage(0.0f), m_vehicle(nullptr), m_baseColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)){}
 	void Init(Terrain* terrain, const std::string& path);
 	void Uninit();
 	void Update();
@@ -44,6 +44,7 @@ public:
 	D3DXCOLOR GetBaseColor() { return m_baseColor; }
 	float GetHeight() { return m_height; }
 private:
+	Terrain* m_terrain;
 	bool m_enabled;
 	float m_height;
 	float m_fuelDamage;

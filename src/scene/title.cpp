@@ -18,6 +18,7 @@
 #include "component/other/audio.h"
 
 #include "scripts/mode/terminal.h"
+#include "scripts/mode/delivery.h"
 
 using namespace noise;
 

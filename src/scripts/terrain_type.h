@@ -11,7 +11,7 @@
 class TerrainNoise
 {
 public:
-	TerrainNoise() : m_noiseMap(nullptr), m_noiseMapBuilder(nullptr){}
+	TerrainNoise();
 	virtual ~TerrainNoise() {}
 
 	// ê∂ê¨Ç∑ÇÈ
@@ -25,6 +25,8 @@ public:
 protected:
 	utils::NoiseMapBuilderPlane* m_noiseMapBuilder;
 	utils::NoiseMap* m_noiseMap;
+	int m_terrainSize;
+	float m_terrainScale;
 };
 
 

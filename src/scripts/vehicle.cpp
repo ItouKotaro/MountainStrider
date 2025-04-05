@@ -43,7 +43,7 @@ void CVehicle::Init()
 	m_measurePos = transform->GetWPos();
 	m_pStatusUI = nullptr;
 	m_fuelConsumption = 0.0f;
-	m_limitField = CCollision::GetCollision(GameObject::Find("LimitField"));
+	m_limitField = nullptr;
 
 	// プレイヤーを生成する
 	m_pPlayer = GameObject::LoadPrefab("data\\PREFAB\\player.pref");
@@ -367,9 +367,19 @@ void CVehicle::UpdateStatusUI()
 //=============================================================
 void CVehicle::UpdateGroundDistance()
 {
+	// 地形を取得する
+	auto terrain = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain();
+	float distanceHalf = (terrain->GetTerrainSize() * terrain->GetTerrainScale()) / 2.0f;
+
 	// 地面との距離を計測する
 	D3DXVECTOR3 frontPos = m_pFrontTire->transform->GetWPos();
 	D3DXVECTOR3 backPos = m_pBackTire->transform->GetWPos();
+
+	// 制限フィールドが見つかっていないときは探す
+	if (m_limitField == nullptr)
+	{
+		m_limitField = CCollision::GetCollision(GameObject::Find("LimitField"));
+	}
 
 	btVector3 Start;
 	btVector3 End;
@@ -395,10 +405,10 @@ void CVehicle::UpdateGroundDistance()
 			}
 
 			// もし地中に埋まっていた場合
-			if (RayCallback.m_collisionObject == m_limitField->GetGhostObject())
+			if (m_limitField != nullptr && RayCallback.m_collisionObject == m_limitField->GetGhostObject())
 			{
-				if (fabsf(transform->GetWPos().x) < Terrain::TERRAIN_DISTANCE_HALF - Terrain::TERRAIN_SCALE &&
-					fabsf(transform->GetWPos().z) < Terrain::TERRAIN_DISTANCE_HALF - Terrain::TERRAIN_SCALE)
+				if (fabsf(transform->GetWPos().x) < distanceHalf - terrain->GetTerrainScale() &&
+					fabsf(transform->GetWPos().z) < distanceHalf - terrain->GetTerrainScale())
 				{
 					SetPos({ transform->GetWPos().x, transform->GetWPos().y + 15.0f, transform->GetWPos().z });
 				}

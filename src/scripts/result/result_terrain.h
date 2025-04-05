@@ -22,7 +22,6 @@ public:
 	static const float TRAVELLING_POINT_SIZE;
 	static const int TRAVELLING_FRAME;
 	static const int TRAVELLING_ENDFRAME;
-	static const float POINT_SIZE;
 private:
 	void InitLakeMap();
 
@@ -38,6 +37,8 @@ private:
 	//	池データ
 	LPDIRECT3DVERTEXBUFFER9 m_lakeVtxBuff;	// 頂点情報
 	int m_numLake;
+
+	float m_pointSize;
 
 	const float MAP_ROLL = 0.0f;
 	const float LAKE_ROLL = D3DX_PI;

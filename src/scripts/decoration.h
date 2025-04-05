@@ -73,7 +73,7 @@ public:
 
 	static const int MAX_CHUNK = 100;
 	static const int LOAD_RANGE = 5;
-	static const float CHUNK_DIVISION;
+	//static const float CHUNK_DIVISION;
 	static const int DESTROY_LIMIT;
 private:
 
@@ -115,6 +115,7 @@ private:
 	std::vector<DecorationObject*> m_decoObjects;										// オブジェクト
 	Terrain* m_terrain;
 	int m_generateNum;
+	float m_chunkDivision;
 
 	// 前回のチャンク
 	int m_oldChunkX, m_oldChunkY;

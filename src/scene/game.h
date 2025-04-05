@@ -40,10 +40,10 @@ public:
 	GameObject* GetBike() { return m_bike; }
 	EnvironmentalEffect* GetEnvironmental() { return m_environmental; }
 	DecorationManager* GetDecoration() { return m_decoration; }
-
-	static void AddActionPoint(const int& point) { m_actionPoint += point; }
-	static int GetActionPoint() { return m_actionPoint; }
 	Pause* GetPause() { return m_pause; }
+
+	static void AddActionPoint(const int& point) { m_actionPoint += point; }		// アクションポイントの加算
+	static int GetActionPoint() { return m_actionPoint; }										// アクションポイントの取得
 
 	// 走行データ
 	struct TravellingData
@@ -52,6 +52,9 @@ public:
 		D3DXQUATERNION rot;
 	};
 	std::vector<TravellingData> GetTravellingData() { return m_travellingDatas; }
+
+	// 便利関数
+	void GenerateTerrain(const int& size = Terrain::TERRAIN_DEFAULT_SIZE, const float& scale = Terrain::TERRAIN_DEFAULT_SCALE, const std::string& terrain_path = "");
 
 private:
 	std::vector<std::string> GetTerrainFiles();			// 地形ファイル一覧を取得する

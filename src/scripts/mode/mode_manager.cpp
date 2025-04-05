@@ -98,3 +98,12 @@ void ModeManager::SetResult(ResultBase* result)
 	m_result = result;
 	m_result->Init();
 }
+
+//=============================================================
+// [ModeTemplate] コンストラクタ
+//=============================================================
+ModeTemplate::ModeTemplate()
+{
+	// ゲームシーンを取得する
+	m_game = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene);
+}

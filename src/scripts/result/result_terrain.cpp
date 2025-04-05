@@ -15,15 +15,19 @@ const int ResultTerrain::SIZE = 500;
 const float ResultTerrain::TRAVELLING_POINT_SIZE = 5.0f;
 const int ResultTerrain::TRAVELLING_FRAME = 1;
 const int ResultTerrain::TRAVELLING_ENDFRAME = 120;
-const float ResultTerrain::POINT_SIZE = SIZE / (float)Terrain::TERRAIN_SIZE;
+
 //=============================================================
 // [ResultTerrain] 初期化
 //=============================================================
 void ResultTerrain::Init()
 {
+	int terrainSize = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain()->GetTerrainSize();
+	float terrainScale = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain()->GetTerrainScale();
+
 	m_terrainVtxBuff = nullptr;
 	m_texture = nullptr;
 	m_travellingCounter = 0;
+	m_pointSize = static_cast<float>(SIZE) / terrainSize;
 
 	// 走行データを取得する
 	auto travellingData = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTravellingData();
@@ -97,7 +101,7 @@ void ResultTerrain::Init()
 	for (unsigned int i = 0; i < numData; i++)
 	{
 		// 頂点座標の設定
-		D3DXVECTOR3 pos = (travellingData[i].pos / static_cast<float>((Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE))) * SIZE;
+		D3DXVECTOR3 pos = (travellingData[i].pos / static_cast<float>((terrainSize * terrainScale))) * SIZE;
 		pos.y = pos.z;
 		pos.z = 0.0f;
 		pVtx[0].pos = D3DXVECTOR3(TRAVELLING_POINT_SIZE * -0.5f, TRAVELLING_POINT_SIZE * -0.5f, 0.0f) + pos;
@@ -298,16 +302,16 @@ void ResultTerrain::InitLakeMap()
 	if (!lake->IsEnabled())
 		return;
 
-	for (int x = 0; x < Terrain::TERRAIN_SIZE; x++)
+	for (int x = 0; x < terrain->GetTerrainSize(); x++)
 	{
-		for (int y = 0; y < Terrain::TERRAIN_SIZE; y++)
+		for (int y = 0; y < terrain->GetTerrainSize(); y++)
 		{
 			float height = lake->GetHeight();
 			float current = terrain->GetVertexHeight(x, y);
 			if (current < height)
 			{
 				LakePos pos;
-				pos.x = (Terrain::TERRAIN_SIZE-1) -x;
+				pos.x = (terrain->GetTerrainSize() - 1) -x;
 				pos.y = y;
 				lakePosList.push_back(pos);
 				m_numLake++;
@@ -332,15 +336,15 @@ void ResultTerrain::InitLakeMap()
 	for (auto itr = lakePosList.begin(); itr != lakePosList.end(); itr++)
 	{
 		D3DXVECTOR3 putPos;
-		putPos.x = (*itr).x * POINT_SIZE - SIZE *0.5f;
-		putPos.y = (*itr).y * POINT_SIZE - SIZE * 0.5f;
+		putPos.x = (*itr).x * m_pointSize - SIZE *0.5f;
+		putPos.y = (*itr).y * m_pointSize - SIZE * 0.5f;
 		putPos.z = 0.0f;
 
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f) + putPos ;
-		pVtx[1].pos = D3DXVECTOR3(POINT_SIZE, 0.0f, 0.0f) + putPos;
-		pVtx[2].pos = D3DXVECTOR3(0.0f, POINT_SIZE, 0.0f) + putPos;
-		pVtx[3].pos = D3DXVECTOR3(POINT_SIZE, POINT_SIZE, 0.0f) + putPos;
+		pVtx[1].pos = D3DXVECTOR3(m_pointSize, 0.0f, 0.0f) + putPos;
+		pVtx[2].pos = D3DXVECTOR3(0.0f, m_pointSize, 0.0f) + putPos;
+		pVtx[3].pos = D3DXVECTOR3(m_pointSize, m_pointSize, 0.0f) + putPos;
 
 		// サイズと回転
 		D3DXMATRIX rollMtx;

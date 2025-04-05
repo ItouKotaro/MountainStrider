@@ -15,6 +15,9 @@
 //=============================================================
 void LakeManager::Init(Terrain* terrain, const std::string& path)
 {
+	// 地形のポインタを記録する
+	m_terrain = terrain;
+
 	// SEを読み込む
 	m_underwaterSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\ENVIRONMENTAL\\underwater.mp3", FMOD_2D | FMOD_LOOP_NORMAL);
 	m_diveWaterSE = AudioManager::GetInstance()->CreateClip("data\\SOUND\\SE\\divewater.mp3", FMOD_2D);
@@ -23,9 +26,6 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 	m_audioPlayer->AddComponent<AudioSource>();
 	m_audioPlayer->GetComponent<AudioSource>()->Play(m_underwaterSE);
 	m_audioPlayer->GetComponent<AudioSource>()->SetPause(true);
-
-	// バイクを取得する
-	m_vehicle = GameObject::Find("Vehicle")->GetComponent<CVehicle>();
 
 	// jsonファイルを読み込む
 	std::ifstream ifs(path.c_str());
@@ -76,12 +76,13 @@ void LakeManager::Init(Terrain* terrain, const std::string& path)
 		{
 			for (auto itr = jInput["terrain"]["lake"]["textures"].begin(); itr != jInput["terrain"]["lake"]["textures"].end(); itr++)
 			{
+				// 池を生成する
 				GameObject* lakeFieldObj = new GameObject();
 				lakeFieldObj->transform->SetPos(0.0f, m_height, 0.0f);
 				auto lakeField = lakeFieldObj->AddComponent<LakeField>();
 
 				// サイズを設定する
-				lakeField->SetSize(Terrain::TERRAIN_DISTANCE * 1.5f, Terrain::TERRAIN_DISTANCE * 1.5f);
+				lakeField->SetSize(terrain->GetTerrainSize() * terrain->GetTerrainScale() * 1.5f, terrain->GetTerrainSize() * terrain->GetTerrainScale() * 1.5f);
 
 				std::string lakePath = "";
 				int lakeLoop = 1;
@@ -135,12 +136,19 @@ void LakeManager::Uninit()
 //=============================================================
 void LakeManager::Update()
 {
+	// バイクを取得する
+	if (m_vehicle == nullptr)
+	{
+		m_vehicle = GameObject::Find("Vehicle")->GetComponent<CVehicle>();
+		return;
+	}
 	if (!m_vehicle->gameObject->GetActive()) return;
 
+	float distanceHalf = (m_terrain->GetTerrainSize() * m_terrain->GetTerrainScale()) / 2.0f;
 	D3DXVECTOR3 pos = m_vehicle->transform->GetWPos();
 	if (m_enabled && pos.y <= m_height - LAKE_INDEPTH &&
-		-Terrain::TERRAIN_DISTANCE_HALF <= pos.x && pos.x <= Terrain::TERRAIN_DISTANCE_HALF &&
-		-Terrain::TERRAIN_DISTANCE_HALF <= pos.z && pos.z <= Terrain::TERRAIN_DISTANCE_HALF)
+		-distanceHalf <= pos.x && pos.x <= distanceHalf &&
+		-distanceHalf <= pos.z && pos.z <= distanceHalf)
 	{
 		// ダメージを与える
 		if (m_vehicle->gameObject->GetActive())

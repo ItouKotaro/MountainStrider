@@ -13,12 +13,14 @@
 class ModeTemplate
 {
 public:
-	ModeTemplate() {}
+	ModeTemplate();
 	virtual ~ModeTemplate() {}
 	virtual void Init() {}
 	virtual void Uninit() {}
 	virtual void Update() {}
 	virtual void OnResultEvent() {}
+protected:
+	CGameScene* m_game;
 };
 
 // ÉÇÅ[Éhä«óù

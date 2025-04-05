@@ -68,56 +68,19 @@ void CGameScene::Init()
 		CMesh::SetCamera(m_camera->GetComponent<CCamera>());
 	}
 
-	// 読み込む地形ファイルを決定する
-	auto terrainFiles = GetTerrainFiles();
-	if (terrainFiles.empty())
-	{ // 一つも地形ファイルが存在しないとき
-		MessageBox(NULL, "地形ファイルが見つかりませんでした\ndata/TERRAINS フォルダ内に地形ファイルを入れてください", "エラー", MB_OK);
-		Main::ExitApplication();
-		return;
-	}
+	// バイクのゲームオブジェクトのみ作成する
+	m_bike = new GameObject("Vehicle");
 
-	// 取得したパスの中から1つをランダムで取得して格納する
-	auto terrainPath = terrainFiles[rand() % terrainFiles.size()];
-
-	// 地面を作成
-	{
-		m_terrain = new Terrain();
-		m_terrain->SetSeed(rand());
-		m_terrain->Init();
-		m_terrain->LoadTerrainFile(terrainPath);
-		m_terrain->Generate();
-	}
-
-	// 装飾を生成する
-	m_decoration = new DecorationManager();
-	m_decoration->Init(m_terrain);
-	m_decoration->LoadTerrainFile(terrainPath);
-	m_decoration->Generate();
-
-	// 奈落
-	{
-		m_voidField = new GameObject("Void");
-		m_voidField->AddComponent<CField>();
-		m_voidField->GetComponent<CField>()->Set(Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2, Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE * 2);
-		m_voidField->transform->SetPos(0.0f, m_terrain->GetMinHeight() - 20.0f, 0.0f);
-	}
+	// モードの初期化
+	ModeManager::GetInstance()->Init();
 
 	// バイクの生成
 	SpawnBike();
-
-	// 湖を作成
-	m_lake = new LakeManager();
-	m_lake->Init(m_terrain, terrainPath);
 
 	// アイテムスロット
 	m_itemSlot = new GameObject("ItemSlot", "UI");
 	m_itemSlot->AddComponent<ItemSlot>();
 	m_itemSlot->transform->SetPos(CRenderer::SCREEN_WIDTH - 400.0f, 30.0f);
-
-	// 環境効果
-	m_environmental = new EnvironmentalEffect();
-	m_environmental->Init(terrainPath);
 
 	// イベント
 	m_events = new EventManager();
@@ -133,9 +96,6 @@ void CGameScene::Init()
 	// カメラの移動設定を行う
 	m_camera->AddComponent<CCameraMove>()->SetTarget(m_bike);
 	m_camera->AddComponent<ResultCamera>();
-
-	// モードの初期化
-	ModeManager::GetInstance()->Init();
 
 	// 開始時間を記録する
 	m_startTime = timeGetTime();
@@ -381,23 +341,19 @@ void CGameScene::HideUI()
 //=============================================================
 void CGameScene::SpawnBike()
 {
-	// 中心からレイを打ち、高さを取得する
+	// バイクを生成する
+	m_bike->AddComponent<CVehicle>();
+	m_bike->AddComponent<AudioListener>();
+
+	// バイクの初期値移動
 	btVector3 Start = btVector3(0.0f, 3000.0f, 0.0f);
 	btVector3 End = btVector3(0.0f, -3000.0f, 0.0f);
-	float hitY = 0.0f;
-
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 	CPhysics::GetInstance()->GetDynamicsWorld().rayTest(Start, End, RayCallback);
 	if (RayCallback.hasHit())
 	{ // ヒットしたとき
-		hitY = RayCallback.m_hitPointWorld.getY();
+		m_bike->GetComponent<CVehicle>()->SetPos({ 0.0f, RayCallback.m_hitPointWorld.getY() + 50.0f, 0.0f });
 	}
-
-	// バイクを生成する
-	m_bike = new GameObject("Vehicle");
-	m_bike->AddComponent<CVehicle>();
-	m_bike->GetComponent<CVehicle>()->SetPos({ 0.0f, hitY + 50.0f, 0.0f });
-	m_bike->AddComponent<AudioListener>();
 
 	// ステータスUIを生成
 	m_statusUI = new GameObject("StatusUI", "UI");
@@ -433,117 +389,55 @@ void CGameScene::CalcResultData()
 	m_resultData.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
 }
 
-////=============================================================
-//// [CGameScene] ゲームオーバー時の処理
-////=============================================================
-//void CGameScene::onGameOver()
-//{
-//	if (m_endType == ENDTYPE_NONE)
-//	{ // 1回のみの処理
-//		// ステータスUIを非表示にする
-//		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
-//
-//		// スピードメーターを非表示にする
-//		m_speedmeterUI->SetActive(false);
-//
-//		// アイテムスロットを非表示にする
-//		m_itemSlot->SetActive(false);
-//
-//		// プレイガイドを非表示にする
-//		if (m_playGuide != nullptr)
-//		{
-//			m_playGuide->Uninit();
-//			delete m_playGuide;
-//			m_playGuide = nullptr;
-//		}
-//
-//		// 走行距離を計算する
-//		float mileage = 0.0f;
-//		for (UINT i = 0; i < m_travellingDatas.size(); i++)
-//		{
-//			if (i + 1 < m_travellingDatas.size())
-//			{ // 次があるとき
-//				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
-//			}
-//		}
-//
-//		// リザルトデータの格納
-//		ResultBase::ResultData data;
-//		data.time = -1;
-//		data.highSpeed = m_highSpeed;
-//		data.action = 50;
-//		data.mileage = mileage;
-//		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
-//		ResultBase::AddResult(data);
-//
-//		// ゲームオーバーリザルトの初期化
-//		m_result = new GameOverResult();
-//		m_result->Init();
-//
-//		// リザルトカメラを起動する
-//		m_camera->GetComponent<ResultCamera>()->Play();
-//		m_camera->GetComponent<CCameraMove>()->enabled = false;
-//
-//		// ゲームオーバートリガーを有効にする
-//		m_endType = ENDTYPE_GAMEOVER;
-//	}
-//}
-//
-////=============================================================
-//// [CGameScene] クリア時の処理
-////=============================================================
-//void CGameScene::onClear()
-//{
-//	if (m_endType == ENDTYPE_NONE)
-//	{ // 1回のみの処理
-//		// ステータスUIを非表示にする
-//		m_statusUI->GetComponent<CStatusUI>()->SetVisible(false);
-//
-//		// スピードメーターを非表示にする
-//		m_speedmeterUI->SetActive(false);
-//
-//		// アイテムスロットを非表示にする
-//		m_itemSlot->SetActive(false);
-//
-//		// プレイガイドを非表示にする
-//		if (m_playGuide != nullptr)
-//		{
-//			m_playGuide->Uninit();
-//			delete m_playGuide;
-//			m_playGuide = nullptr;
-//		}
-//
-//		// 走行距離を計算する
-//		float mileage = 0.0f;
-//		for (UINT i = 0; i < m_travellingDatas.size(); i++)
-//		{
-//			if (i + 1 < m_travellingDatas.size())
-//			{ // 次があるとき
-//				mileage += Benlib::PosDistance(m_travellingDatas[i].pos, m_travellingDatas[i + 1].pos);
-//			}
-//		}
-//
-//		// リザルトデータの格納
-//		ResultBase::ResultData data;
-//		data.time = (timeGetTime() - m_startTime) / 1000;
-//		data.highSpeed = m_highSpeed;
-//		data.action = m_actionPoint;
-//		data.mileage = mileage;
-//		data.fuel = m_bike->GetComponent<CVehicle>()->GetFuelConsumption();
-//		ResultBase::AddResult(data);
-//
-//		// クリアリザルトの初期化
-//		m_result = new ClearResult();
-//		m_result->Init();
-//
-//		// リザルトカメラを起動する
-//		m_camera->GetComponent<ResultCamera>()->Play();
-//		m_camera->GetComponent<CCameraMove>()->enabled = false;
-//
-//		// クリアトリガーを有効にする
-//		m_endType = ENDTYPE_CLEAR;
-//	}
-//}
+//=============================================================
+// [CGameScene] 地形を生成する
+//=============================================================
+void CGameScene::GenerateTerrain(const int& size, const float& scale, const std::string& terrain_path)
+{
+	// 地形パスの決定（未入力でランダム）
+	std::string terrainPath = terrain_path;
+	if (terrainPath == "")
+	{
+		// 読み込む地形ファイルを決定する
+		auto terrainFiles = GetTerrainFiles();
+		if (terrainFiles.empty())
+		{ // 一つも地形ファイルが存在しないとき
+			MessageBox(NULL, "地形ファイルが見つかりませんでした\ndata/TERRAINS フォルダ内に地形ファイルを入れてください", "エラー", MB_OK);
+			Main::ExitApplication();
+			return;
+		}
+
+		// 取得したパスの中から1つをランダムで取得して格納する
+		terrainPath = terrainFiles[rand() % terrainFiles.size()];
+	}
+
+	// 地形を作成
+	m_terrain = new Terrain();
+	m_terrain->SetSeed(rand());
+	m_terrain->Init(size, scale);
+	m_terrain->LoadTerrainFile(terrainPath);
+	m_terrain->Generate();
+
+	// 装飾を生成する
+	m_decoration = new DecorationManager();
+	m_decoration->Init(m_terrain);
+	m_decoration->LoadTerrainFile(terrainPath);
+	m_decoration->Generate();
+
+	// 奈落
+	m_voidField = new GameObject("Void");
+	m_voidField->AddComponent<CField>();
+	m_voidField->GetComponent<CField>()->Set(size * scale * 2, size * scale * 2);
+	m_voidField->transform->SetPos(0.0f, m_terrain->GetMinHeight() - 20.0f, 0.0f);
+
+	// 湖を作成
+	m_lake = new LakeManager();
+	m_lake->Init(m_terrain, terrainPath);
+
+	// 環境効果
+	m_environmental = new EnvironmentalEffect();
+	m_environmental->Init(terrainPath);
+}
 
 //=============================================================
 // [CGameScene] 地形ファイル一覧を取得する

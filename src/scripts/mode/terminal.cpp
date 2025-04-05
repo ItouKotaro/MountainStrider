@@ -22,6 +22,9 @@
 //=============================================================
 void TerminalMode::Init()
 {
+	// 地形を生成する
+	m_game->GenerateTerrain();
+
 	// 方向矢印を生成する
 	m_directionObj = new GameObject("DirectionArrow");
 	m_directionObj->transform->SetPos(0.0f, 0.0f, 50.0f);
@@ -46,8 +49,9 @@ void TerminalMode::Update()
 	D3DXVECTOR3 vehiclePos = gameScene->GetBike()->transform->GetWPos();
 
 	// 地形の端に行ったとき
-	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
-		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
+	float distanceHalf = (gameScene->GetTerrain()->GetTerrainSize() * gameScene->GetTerrain()->GetTerrainScale()) / 2.0f;
+	if (vehiclePos.x <= -distanceHalf + EXTENSION_DISTANCE || vehiclePos.x >= distanceHalf - EXTENSION_DISTANCE ||
+		vehiclePos.z <= -distanceHalf + EXTENSION_DISTANCE || vehiclePos.z >= distanceHalf - EXTENSION_DISTANCE)
 	{
 		//gameScene->CalcResultData();
 		ModeManager::GetInstance()->SetResult(new ClearTerminalResult());
@@ -114,26 +118,27 @@ D3DXVECTOR3 TerminalMode::CalcNearGoal()
 	NEAR_PT nearPt;
 
 	// 一番近いポイントを導き出す
-	float nearDis = Terrain::TERRAIN_DISTANCE;
-	if (fabsf(vehiclePos.x - Terrain::TERRAIN_DISTANCE_HALF) < nearDis)
+	float nearDis = gameScene->GetTerrain()->GetTerrainSize() * gameScene->GetTerrain()->GetTerrainScale();
+	float distanceHalf = nearDis / 2.0f;
+	if (fabsf(vehiclePos.x - distanceHalf) < nearDis)
 	{
 		nearPt = LEFT;
-		nearDis = fabsf(vehiclePos.x - Terrain::TERRAIN_DISTANCE_HALF);
+		nearDis = fabsf(vehiclePos.x - distanceHalf);
 	}
-	if (fabsf(vehiclePos.x + Terrain::TERRAIN_DISTANCE_HALF) < nearDis)
+	if (fabsf(vehiclePos.x + distanceHalf) < nearDis)
 	{
 		nearPt = RIGHT;
-		nearDis = fabsf(vehiclePos.x + Terrain::TERRAIN_DISTANCE_HALF);
+		nearDis = fabsf(vehiclePos.x + distanceHalf);
 	}
-	if (fabsf(vehiclePos.z + Terrain::TERRAIN_DISTANCE_HALF) < nearDis)
+	if (fabsf(vehiclePos.z + distanceHalf) < nearDis)
 	{
 		nearPt = TOP;
-		nearDis = fabsf(vehiclePos.z + Terrain::TERRAIN_DISTANCE_HALF);
+		nearDis = fabsf(vehiclePos.z + distanceHalf);
 	}
-	if (fabsf(vehiclePos.z - Terrain::TERRAIN_DISTANCE_HALF) < nearDis)
+	if (fabsf(vehiclePos.z - distanceHalf) < nearDis)
 	{
 		nearPt = BOTTOM;
-		nearDis = fabsf(vehiclePos.z - Terrain::TERRAIN_DISTANCE_HALF);
+		nearDis = fabsf(vehiclePos.z - distanceHalf);
 	}
 
 	// それぞれの方向の目標地点を設定する
@@ -141,16 +146,16 @@ D3DXVECTOR3 TerminalMode::CalcNearGoal()
 	switch (nearPt)
 	{
 	case TOP:
-		destination = { 0.0f, 0.0f, -Terrain::TERRAIN_DISTANCE_HALF };
+		destination = { 0.0f, 0.0f, -distanceHalf };
 		break;
 	case BOTTOM:
-		destination = { 0.0f, 0.0f, Terrain::TERRAIN_DISTANCE_HALF };
+		destination = { 0.0f, 0.0f, distanceHalf };
 		break;
 	case LEFT:
-		destination = { Terrain::TERRAIN_DISTANCE_HALF, 0.0f, 0.0f };
+		destination = { distanceHalf, 0.0f, 0.0f };
 		break;
 	case RIGHT:
-		destination = { -Terrain::TERRAIN_DISTANCE_HALF, 0.0f, 0.0f };
+		destination = { -distanceHalf, 0.0f, 0.0f };
 		break;
 	}
 

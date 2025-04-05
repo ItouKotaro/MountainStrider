@@ -7,6 +7,7 @@
 #include "road.h"
 #include "terrain.h"
 #include "renderer.h"
+#include "scene/game.h"
 #include <fstream>
 
 //=============================================================
@@ -112,6 +113,9 @@ int Road::IsIndexRouted(const int& x, const int& y)
 //=============================================================
 void Road::Generate()
 {
+	// 地形を取得する
+	auto terrain = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain();
+
 	for (auto itr = m_pointData.begin(); itr != m_pointData.end(); itr++)
 	{
 		if ((*itr).empty())
@@ -153,9 +157,9 @@ void Road::Generate()
 		while (m_currentIdx + 1 < (*itr).size())
 		{
 			PointData nextData = (*itr)[m_currentIdx + 1];
-			float halfField = (Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE) / static_cast<float>(2.0f);
-			float halfScale = Terrain::TERRAIN_SCALE / static_cast<float>(2.0f);
-			D3DXVECTOR2 nextPos = { Terrain::TERRAIN_SCALE * nextData.x - halfField, Terrain::TERRAIN_SCALE * nextData.y - halfField };
+			float halfField = (terrain->GetTerrainSize() * terrain->GetTerrainScale()) / static_cast<float>(2.0f);
+			float halfScale = terrain->GetTerrainScale() / static_cast<float>(2.0f);
+			D3DXVECTOR2 nextPos = { terrain->GetTerrainScale() * nextData.x - halfField, terrain->GetTerrainScale() * nextData.y - halfField };
 
 			// 目標地点の方向に移動する
 			D3DXVECTOR2 dir = { (nextPos.x + halfScale) - m_currentPos.x, (nextPos.y + halfScale) - m_currentPos.y };
@@ -178,8 +182,8 @@ void Road::Generate()
 			}
 
 			// 目標地点に到着しているかを確認する
-			if (nextPos.x <= m_currentPos.x && m_currentPos.x <= nextPos.x + Terrain::TERRAIN_SCALE &&
-				nextPos.y <= m_currentPos.y && m_currentPos.y <= nextPos.y + Terrain::TERRAIN_SCALE)
+			if (nextPos.x <= m_currentPos.x && m_currentPos.x <= nextPos.x + terrain->GetTerrainScale() &&
+				nextPos.y <= m_currentPos.y && m_currentPos.y <= nextPos.y + terrain->GetTerrainScale())
 			{
 				// 次の地点を目標に設定する
 				m_currentIdx++;
@@ -317,11 +321,14 @@ void Road::CreateJumpStand(const D3DXVECTOR2& pos, const float& angle)
 //=============================================================
 void Road::OutputText()
 {
+	// 地形を取得する
+	auto terrain = static_cast<CGameScene*>(CSceneManager::GetInstance()->GetScene("game")->pScene)->GetTerrain();
+
 	// ファイルに経路データを書き出す
 	std::ofstream outputRoute("route.txt");
-	for (int y = 0; y < Terrain::TERRAIN_SIZE; y++)
+	for (int y = 0; y < terrain->GetTerrainSize(); y++)
 	{
-		for (int x = 0; x < Terrain::TERRAIN_SIZE; x++)
+		for (int x = 0; x < terrain->GetTerrainSize(); x++)
 		{
 			int num = -1;
 			for (auto itr = m_pointData.begin(); itr != m_pointData.end(); itr++)

@@ -11,7 +11,7 @@
 #include "scripts/mine.h"
 #include "scripts/ring.h"
 
-const float DecorationManager::CHUNK_DIVISION = (Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE) / (float)MAX_CHUNK;
+//const float DecorationManager::CHUNK_DIVISION = (Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE) / (float)MAX_CHUNK;
 const int DecorationManager::DESTROY_LIMIT = 60;
 
 //=============================================================
@@ -23,6 +23,8 @@ void DecorationManager::Init(Terrain* terrain)
 
 	m_oldChunkX = -1;
 	m_oldChunkY = -1;
+
+	m_chunkDivision = (terrain->GetTerrainSize() * terrain->GetTerrainScale()) / (float)MAX_CHUNK;
 }
 
 //=============================================================
@@ -244,8 +246,9 @@ void DecorationManager::GenerateDecoration()
 
 	// 位置を決める
 	D3DXVECTOR3 pos;
-	pos.x = Benlib::RandomFloat(-Terrain::TERRAIN_DISTANCE_HALF, Terrain::TERRAIN_DISTANCE_HALF);
-	pos.z = Benlib::RandomFloat(-Terrain::TERRAIN_DISTANCE_HALF, Terrain::TERRAIN_DISTANCE_HALF);
+	float distanceHalf = (m_terrain->GetTerrainSize() * m_terrain->GetTerrainScale()) / 2.0f;
+	pos.x = Benlib::RandomFloat(-distanceHalf, distanceHalf);
+	pos.z = Benlib::RandomFloat(-distanceHalf, distanceHalf);
 	pos.y = 0.0f;
 
 	// チャンクから周囲にオブジェクトがないかを確認する
@@ -424,10 +427,13 @@ DecorationManager::DecorationType* DecorationManager::RandomDecoType()
 //=============================================================
 void DecorationManager::GetChunk(int* x, int* y, const D3DXVECTOR3& pos)
 {
+	// 地形の半分の距離を取得する
+	float distanceHalf = (m_terrain->GetTerrainSize() * m_terrain->GetTerrainScale()) / 2.0f;
+
 	// 位置からチャンクを決める
 	int sx, sy;
-	sx = static_cast<int>((pos.x + Terrain::TERRAIN_DISTANCE_HALF) / (float)CHUNK_DIVISION);
-	sy = static_cast<int>((pos.z + Terrain::TERRAIN_DISTANCE_HALF) / (float)CHUNK_DIVISION);
+	sx = static_cast<int>((pos.x + distanceHalf) / (float)m_chunkDivision);
+	sy = static_cast<int>((pos.z + distanceHalf) / (float)m_chunkDivision);
 	if (sx >= MAX_CHUNK) sx = MAX_CHUNK - 1;
 	if (sy >= MAX_CHUNK) sy = MAX_CHUNK - 1;
 	if (sx < 0) sx = 0;

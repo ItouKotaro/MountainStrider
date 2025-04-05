@@ -22,29 +22,36 @@ using namespace noise;
 #include "renderer.h"
 
 // 静的メンバ変数の初期化
-const float Terrain::TERRAIN_SCALE = 150.0f;
-const float Terrain::TERRAIN_DISTANCE = Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE;
-const float Terrain::TERRAIN_DISTANCE_HALF = Terrain::TERRAIN_DISTANCE / (float)2.0f;
+const float Terrain::TERRAIN_DEFAULT_SCALE = 150.0f;
+//const float Terrain::TERRAIN_DISTANCE = 5.0f/*Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE*/;
+//const float Terrain::TERRAIN_DISTANCE_HALF = 2.0f/*Terrain::TERRAIN_DISTANCE / (float)2.0f*/;
 
 //=============================================================
 // [Terrain] 初期化
 //=============================================================
-void Terrain::Init()
+void Terrain::Init(const int& size, const float& scale)
 {
+	// サイズとスケールを記録する
+	m_size = size;
+	m_scale = scale;
+
 	// メッシュフィールドを作成する
 	m_field = new GameObject("TerrainField", "Field");
-	m_field->AddComponent<CMeshField>()->Create(TERRAIN_SIZE - 1, TERRAIN_SIZE - 1, TERRAIN_SCALE);
+	m_field->AddComponent<CMeshField>()->Create(size - 1, size - 1, scale);
 	m_field->AddComponent<Road>();
 
+	// リミットを生成する
 	m_limitField = new GameObject("LimitField");
-	m_limitField->AddComponent<CBoxCollider>(D3DXVECTOR3(TERRAIN_SCALE * (TERRAIN_SIZE - 3), 1.0f, TERRAIN_SCALE * (TERRAIN_SIZE - 3)));
+	m_limitField->AddComponent<CBoxCollider>(D3DXVECTOR3(scale * (size - 3), 1.0f, scale * (size - 3)));
 
 	// 当たり判定を更新する
 	CPhysics::GetInstance()->GetDynamicsWorld().stepSimulation(static_cast<btScalar>(1. / 60.), 1);
 
+	// 数値の初期化
 	m_terrainData = nullptr;
 	m_lakeEnabled = false;
 	m_lakeHeight = 0.0f;
+	m_heightColor.clear();
 }
 
 //=============================================================
@@ -110,8 +117,8 @@ void Terrain::Generate()
 	m_field->GetComponent<CMeshField>()->SetTexture("data\\terrain.bmp");
 
 	// HeightfieldTerrainShapeを作成する
-	m_terrainShape = new btHeightfieldTerrainShape(TERRAIN_SIZE, TERRAIN_SIZE, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
-	m_terrainShape->setLocalScaling(btVector3(TERRAIN_SCALE, 1.0f, TERRAIN_SCALE));
+	m_terrainShape = new btHeightfieldTerrainShape(m_size, m_size, m_terrainData, 1, -30000, 30000, 1, PHY_FLOAT, false);
+	m_terrainShape->setLocalScaling(btVector3(m_scale, 1.0f, m_scale));
 	CCollision::GetCollision(m_field)->SetFriction(100.0f);
 	CCollision::GetCollision(m_field)->GetGhostObject()->setCollisionShape(m_terrainShape);
 
@@ -192,21 +199,21 @@ void Terrain::GenerateTerrain()
 
 
 	// 地形情報を格納する
-	m_terrainData = new float[TERRAIN_SIZE * TERRAIN_SIZE];
-	for (int x = 0; x < TERRAIN_SIZE; x++)
+	m_terrainData = new float[m_size * m_size];
+	for (int x = 0; x < m_size; x++)
 	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
+		for (int y = 0; y < m_size; y++)
 		{
-			m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = heightMap.GetValue(x, y);
+			m_terrainData[x + (m_size - 1 - y) * m_size] = heightMap.GetValue(x, y);
 		}
 	}
 
 	// 最低と最高高度を取得する
 	m_minHeight = GetVertexHeight(0, 0);
 	m_maxHeight = GetVertexHeight(0, 0);
-	for (int x = 0; x < TERRAIN_SIZE; x++)
+	for (int x = 0; x < m_size; x++)
 	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
+		for (int y = 0; y < m_size; y++)
 		{
 			float value = GetVertexHeight(x, y);
 			if (value < m_minHeight)
@@ -228,9 +235,9 @@ void Terrain::GenerateTerrain()
 	GenerateRoad();
 
 	// メッシュ情報を変更する
-	for (int x = 0; x < TERRAIN_SIZE; x++)
+	for (int x = 0; x < m_size; x++)
 	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
+		for (int y = 0; y < m_size; y++)
 		{
 			float height = GetVertexHeight(x, y);
 
@@ -254,19 +261,27 @@ void Terrain::GenerateRoad()
 	auto pRoad = m_field->GetComponent<Road>();
 
 	// 道を生成する
-	int routeData[TERRAIN_SIZE][TERRAIN_SIZE];
-	for (int x = 0; x < TERRAIN_SIZE; x++)
+	std::vector<std::vector<int>> routeData;
+
+	// サイズを確保する
+	routeData.resize(m_size);
+	for (int i = 0; i < m_size; i++)
 	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
+		routeData[i].resize(m_size);
+	}
+
+	for (int x = 0; x < m_size; x++)
+	{
+		for (int y = 0; y < m_size; y++)
 		{
 			routeData[x][y] = 0;
 		}
 	}
 
 	// 周辺の高さ情報
-	for (int x = 0; x < TERRAIN_SIZE; x++)
+	for (int x = 0; x < m_size; x++)
 	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
+		for (int y = 0; y < m_size; y++)
 		{
 			float centerHeight = GetVertexHeight(x, y);
 			for (int sX = 0; sX < 3; sX++)
@@ -295,12 +310,12 @@ void Terrain::GenerateRoad()
 	}
 
 	// 中心によるほどポイントが高くなる
-	for (int x = 0; x < TERRAIN_SIZE; x++)
+	for (int x = 0; x < m_size; x++)
 	{
-		for (int y = 0; y < TERRAIN_SIZE; y++)
+		for (int y = 0; y < m_size; y++)
 		{
-			int dX = abs(x) <= abs(x - TERRAIN_SIZE) ? abs(x) : abs(x - TERRAIN_SIZE);
-			int dY = abs(y) <= abs(y - TERRAIN_SIZE) ? abs(y) : abs(y - TERRAIN_SIZE);
+			int dX = abs(x) <= abs(x - m_size) ? abs(x) : abs(x - m_size);
+			int dY = abs(y) <= abs(y - m_size) ? abs(y) : abs(y - m_size);
 			int disNear = dX <= dY ? dX : dY;
 
 			routeData[x][y] += static_cast<int>(disNear * 25);
@@ -313,9 +328,9 @@ void Terrain::GenerateRoad()
 		float rate = (m_lakeHeight + 1.0f) / static_cast<float>(2.0f);
 		float lakeHeight = m_minHeight + (m_maxHeight - m_minHeight) * rate;
 
-		for (int x = 0; x < TERRAIN_SIZE; x++)
+		for (int x = 0; x < m_size; x++)
 		{
-			for (int y = 0; y < TERRAIN_SIZE; y++)
+			for (int y = 0; y < m_size; y++)
 			{
 				float height = GetVertexHeight(x, y);
 				if (height <= lakeHeight)
@@ -334,22 +349,22 @@ void Terrain::GenerateRoad()
 		pRoad->AddIdx();
 
 		bool isAxisX = rand() % 2 == 0;
-		int currentX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
-		int currentY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
+		int currentX = isAxisX ? (rand() % m_size) : (rand() % 2 == 0 ? 0 : m_size - 1);
+		int currentY = isAxisX ? (rand() % 2 == 0 ? 0 : m_size - 1) : (rand() % m_size);
 
 		// 最終地点を設定する（縁）
 		Area startArea = NONE;
 		while (1)
 		{
 			isAxisX = rand() % 2 == 0;
-			currentX = isAxisX ? (rand() % TERRAIN_SIZE) : (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1);
-			currentY = isAxisX ? (rand() % 2 == 0 ? 0 : TERRAIN_SIZE - 1) : (rand() % TERRAIN_SIZE);
+			currentX = isAxisX ? (rand() % m_size) : (rand() % 2 == 0 ? 0 : m_size - 1);
+			currentY = isAxisX ? (rand() % 2 == 0 ? 0 : m_size - 1) : (rand() % m_size);
 
 			// 辺を割り出す
 			if (currentX == 0) startArea = LEFT;
-			if (currentX == TERRAIN_SIZE - 1) startArea = RIGHT;
+			if (currentX == m_size - 1) startArea = RIGHT;
 			if (currentY == 0) startArea = TOP;
-			if (currentY == TERRAIN_SIZE - 1) startArea = BOTTOM;
+			if (currentY == m_size - 1) startArea = BOTTOM;
 
 			if (m_startArea != startArea)
 			{
@@ -372,8 +387,8 @@ void Terrain::GenerateRoad()
 				{
 					// 除外リスト
 					if ((x == 0 && y == 0) ||
-						currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
-						currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+						currentX + x < 0 || m_size <= currentX + x ||
+						currentY + y < 0 || m_size <= currentY + y)
 					{ // 現在位置と範囲外
 						continue;	// スキップ
 					}
@@ -392,8 +407,8 @@ void Terrain::GenerateRoad()
 						{
 							// 除外リスト
 							if ((sx == 0 && sy == 0) ||
-								x + currentX + sx < 0 || TERRAIN_SIZE <= x + currentX + sx ||
-								y + currentY + sy < 0 || TERRAIN_SIZE <= y + currentY + sy)
+								x + currentX + sx < 0 || m_size <= x + currentX + sx ||
+								y + currentY + sy < 0 || m_size <= y + currentY + sy)
 							{ // 現在位置と範囲外
 								continue;	// スキップ
 							}
@@ -423,7 +438,7 @@ void Terrain::GenerateRoad()
 
 			bool isEnded = false;
 			// 終了条件: 中心にたどり着く
-			if (currentX == TERRAIN_SIZE / 2 && currentY == TERRAIN_SIZE / 2)
+			if (currentX == m_size / 2 && currentY == m_size / 2)
 			{
 				isEnded = true;
 			}
@@ -438,9 +453,9 @@ void Terrain::GenerateRoad()
 			// 終了条件: 別の辺に衝突
 			Area currentArea = NONE;
 			if (currentX == 0) currentArea = LEFT;
-			if (currentX == TERRAIN_SIZE - 1) currentArea = RIGHT;
+			if (currentX == m_size - 1) currentArea = RIGHT;
 			if (currentY == 0) currentArea = TOP;
-			if (currentY == TERRAIN_SIZE - 1) currentArea = BOTTOM;
+			if (currentY == m_size - 1) currentArea = BOTTOM;
 			if (currentArea != NONE && startArea != currentArea)
 			{
 				isEnded = true;
@@ -457,8 +472,8 @@ void Terrain::GenerateRoad()
 				for (int y = -1; y < 2; y++)
 				{
 					// 除外リスト
-					if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
-						currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+					if (currentX + x < 0 || m_size <= currentX + x ||
+						currentY + y < 0 || m_size <= currentY + y)
 					{ // 現在位置と範囲外
 						continue;	// スキップ
 					}
@@ -474,8 +489,8 @@ void Terrain::GenerateRoad()
 				for (int y = -1; y < 2; y++)
 				{
 					// 除外リスト
-					if (currentX + x < 0 || TERRAIN_SIZE <= currentX + x ||
-						currentY + y < 0 || TERRAIN_SIZE <= currentY + y)
+					if (currentX + x < 0 || m_size <= currentX + x ||
+						currentY + y < 0 || m_size <= currentY + y)
 					{ // 現在位置と範囲外
 						continue;	// スキップ
 					}
@@ -502,9 +517,9 @@ void Terrain::GenerateGem()
 	// ランダムで位置を決める
 	D3DXVECTOR3 generatePos;
 	generatePos = {
-		rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f,
+		rand() % static_cast<int>(m_size * m_scale) - m_size * m_scale * 0.5f,
 		0.0f,
-		rand() % static_cast<int>(TERRAIN_SIZE * TERRAIN_SCALE) - TERRAIN_SIZE * TERRAIN_SCALE * 0.5f
+		rand() % static_cast<int>(m_size * m_scale) - m_size * m_scale * 0.5f
 	};
 
 	btVector3 Start = btVector3(generatePos.x, m_maxHeight + 10.0f, generatePos.z);
@@ -524,10 +539,10 @@ void Terrain::GenerateGem()
 //=============================================================
 float Terrain::GetVertexHeight(const int& x, const int& y)
 {
-	if (0 <= x && x < TERRAIN_SIZE &&
-		0 <= y && y < TERRAIN_SIZE)
+	if (0 <= x && x < m_size &&
+		0 <= y && y < m_size)
 	{
-		return m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE];
+		return m_terrainData[x + (m_size - 1 - y) * m_size];
 	}
 	return 0.0f;
 }
@@ -537,10 +552,10 @@ float Terrain::GetVertexHeight(const int& x, const int& y)
 //=============================================================
 void Terrain::SetVertexHeight(const int& x, const int& y, const float& height)
 {
-	if (0 <= x && x < TERRAIN_SIZE &&
-		0 <= y && y < TERRAIN_SIZE)
+	if (0 <= x && x < m_size &&
+		0 <= y && y < m_size)
 	{
-		m_terrainData[x + (TERRAIN_SIZE - 1 - y) * TERRAIN_SIZE] = height;
+		m_terrainData[x + (m_size - 1 - y) * m_size] = height;
 	}
 }
 
@@ -648,8 +663,8 @@ D3DXCOLOR Terrain::GetVertexColor(const int& x, const int& y)
 	{
 		for (int vy = -1; vy < 2; vy++)
 		{
-			if (0 <= x + vx && x + vx < TERRAIN_SIZE &&
-				0 <= y + vy && y + vy < TERRAIN_SIZE)
+			if (0 <= x + vx && x + vx < m_size &&
+				0 <= y + vy && y + vy < m_size)
 			{
 				positiveHeight = positiveHeight < fabsf(height - GetVertexHeight(x + vx, y + vy)) ? fabsf(height - GetVertexHeight(x + vx, y + vy)) : positiveHeight;
 			}

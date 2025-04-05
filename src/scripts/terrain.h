@@ -16,7 +16,7 @@
 class Terrain
 {
 public:
-	void Init();
+	void Init(const int& size = TERRAIN_DEFAULT_SIZE, const float& scale = TERRAIN_DEFAULT_SCALE);
 	void Uninit();
 	void Update();
 	void Generate();
@@ -33,10 +33,13 @@ public:
 	// 頂点の高さを取得する
 	float GetVertexHeight(const int& x, const int& y);
 
-	static const int TERRAIN_SIZE = 150;
-	static const float TERRAIN_SCALE;
-	static const float TERRAIN_DISTANCE;
-	static const float TERRAIN_DISTANCE_HALF;
+	// 地形サイズを取得する
+	const int GetTerrainSize() { return m_size; }
+	// 地形スケールを取得する
+	const float GetTerrainScale() { return m_scale; }
+
+	static const int TERRAIN_DEFAULT_SIZE = 150;
+	static const float TERRAIN_DEFAULT_SCALE;
 private:
 	void UninitTerrain();
 	void GenerateGem();
@@ -64,6 +67,9 @@ private:
 	float m_maxHeight;	// 最高高度
 	float m_minHeight;	// 最低高度
 
+	int m_size;				// サイズ
+	float m_scale;			// スケール
+
 	bool m_lakeEnabled;	// 湖の有効状態
 	float m_lakeHeight;	// 湖の高さ
 
@@ -77,7 +83,7 @@ private:
 	// 山道を生成する
 	void GenerateRoad();
 
-	std::vector<int[TERRAIN_SIZE][TERRAIN_SIZE]> m_routeData;
+	//std::vector<std::map<RoutePath, int>> m_routeData;
 
 	// 高度カラーを追加する
 	void AddHeightColor(const float& height, const D3DXCOLOR& color);
