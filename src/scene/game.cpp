@@ -248,9 +248,6 @@ void CGameScene::Update()
 	//	m_playGuide->Update();
 	//}
 
-	// モードを更新する
-	ModeManager::GetInstance()->Update();
-
 	// リザルトでは更新しないオブジェクト
 	if (ModeManager::GetInstance()->GetResult() == nullptr)
 	{
@@ -259,6 +256,9 @@ void CGameScene::Update()
 
 		// イベントを更新する
 		m_events->Update();
+
+		// モードを更新する
+		ModeManager::GetInstance()->Update();
 	}
 
 	// 未ゲームオーバー時

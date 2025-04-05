@@ -49,35 +49,36 @@ void TerminalMode::Update()
 	if (vehiclePos.x <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.x >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE ||
 		vehiclePos.z <= -Terrain::TERRAIN_DISTANCE_HALF + EXTENSION_DISTANCE || vehiclePos.z >= Terrain::TERRAIN_DISTANCE_HALF - EXTENSION_DISTANCE)
 	{
-		gameScene->CalcResultData();
-		ModeManager::GetInstance()->SetResult<ClearTerminalResult>();
+		//gameScene->CalcResultData();
+		ModeManager::GetInstance()->SetResult(new ClearTerminalResult());
+		return;
 	}
 
 	// 最低高度よりも下に行ったとき
 	if (vehiclePos.y < gameScene->GetTerrain()->GetMinHeight() - 5.0f)
 	{
-		gameScene->CalcResultData();
-		ModeManager::GetInstance()->SetResult<ClearTerminalResult>();
+		ModeManager::GetInstance()->SetResult(new ClearTerminalResult());
+		return;
 	}
 
-	// ゲームオーバー処理
+	// 燃料が無くなったとき
 	if (gameScene->GetBike()->GetComponent<CVehicle>()->GetFuel() <= 0.0f)
-	{ // 燃料が無くなったとき
-		gameScene->CalcResultData();
-		ModeManager::GetInstance()->SetResult<GameOverTerminalResult>();
+	{
+		ModeManager::GetInstance()->SetResult(new GameOverTerminalResult());
+		return;
 	}
 
 	// 耐久値が無くなったときの処理
 	if (gameScene->GetBike()->GetComponent<CVehicle>()->GetEndurance() <= 0)
 	{
-		gameScene->CalcResultData();
-		ModeManager::GetInstance()->SetResult<GameOverTerminalResult>();
+		ModeManager::GetInstance()->SetResult(new GameOverTerminalResult());
+		return;
 	}
 
 	if (INPUT_INSTANCE->onTrigger("@"))
 	{
-		gameScene->CalcResultData();
-		ModeManager::GetInstance()->SetResult<ClearTerminalResult>();
+		ModeManager::GetInstance()->SetResult(new ClearTerminalResult());
+		return;
 	}
 
 	// 方向矢印の目的位置を更新する

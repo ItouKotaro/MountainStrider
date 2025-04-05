@@ -34,16 +34,7 @@ public:
 	void SetMode(ModeTemplate* mode);
 
 	//@brief リザルトを設定する
-	template<class T> void SetResult()
-	{
-		// リザルトが設定されていない場合のみ
-		if (m_result == nullptr)
-		{
-			// 新しいモードを設定する
-			m_result = new T();
-			m_result->Init();
-		}
-	}
+	void SetResult(ResultBase* result);
 
 	//@brief モードを取得する
 	ModeTemplate* GetMode() { return m_mode; }
