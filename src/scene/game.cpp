@@ -223,7 +223,7 @@ void CGameScene::Uninit()
 void CGameScene::Update()
 {
 	// ポーズ
-	if (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("esc") || INPUT_INSTANCE->onTrigger("p:start"))
+	if (ModeManager::GetInstance()->GetResult() == nullptr && (INPUT_INSTANCE->onTrigger("p") || INPUT_INSTANCE->onTrigger("esc") || INPUT_INSTANCE->onTrigger("p:start")))
 	{
 		m_pause->SetPause(!m_pause->GetPause());
 	}
