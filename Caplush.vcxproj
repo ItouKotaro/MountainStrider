@@ -261,7 +261,7 @@
     <ClCompile Include="src\scripts\item\item_slot.cpp" />
     <ClCompile Include="src\scripts\lake.cpp" />
     <ClCompile Include="src\scripts\mine.cpp" />
-    <ClCompile Include="src\scripts\mode\delivery.cpp" />
+    <ClCompile Include="src\scripts\mode\area.cpp" />
     <ClCompile Include="src\scripts\mode\mode_manager.cpp" />
     <ClCompile Include="src\scripts\mode\terminal.cpp" />
     <ClCompile Include="src\scripts\pause.cpp" />
@@ -357,7 +357,7 @@
     <ClInclude Include="src\scripts\item\item_slot.h" />
     <ClInclude Include="src\scripts\lake.h" />
     <ClInclude Include="src\scripts\mine.h" />
-    <ClInclude Include="src\scripts\mode\delivery.h" />
+    <ClInclude Include="src\scripts\mode\area.h" />
     <ClInclude Include="src\scripts\mode\mode_manager.h" />
     <ClInclude Include="src\scripts\mode\terminal.h" />
     <ClInclude Include="src\scripts\pause.h" />

@@ -8,6 +8,7 @@
 #define _MODE_MANAGER_H_
 
 #include "scripts/result/mt_result.h"
+#include "scene/game.h"
 
 // ƒ‚[ƒh’è‹`
 class ModeTemplate

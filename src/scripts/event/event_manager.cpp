@@ -56,7 +56,6 @@ void EventManager::Update()
 	{
 		// イベントを起こす
 		AddEvent(static_cast<EVENTID>(rand() % EVENTID_MAX));
-		//AddEvent(EVENTID_STRONGWIND);
 
 		// 時間を設定する
 		SetRandomTime();
@@ -99,7 +98,7 @@ void EventManager::AddEvent(EVENTID eventID)
 	switch (eventID)
 	{
 	case EventManager::EVENTID_METEO:
-		//eventTemplate = new MeteoEvent();
+		eventTemplate = new MeteoEvent();
 		break;
 	case EventManager::EVENTID_TORNADO:
 		eventTemplate = new TornadoEvent();
