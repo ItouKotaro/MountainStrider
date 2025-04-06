@@ -396,6 +396,9 @@
     <ClCompile Include="src\scripts\mode\area.cpp">
       <Filter>ソース ファイル\scripts\mode</Filter>
     </ClCompile>
+    <ClCompile Include="src\scripts\gem_popup.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\benlib.h">
@@ -679,6 +682,9 @@
     </ClInclude>
     <ClInclude Include="src\scripts\mode\area.h">
       <Filter>ヘッダー ファイル\scripts\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\gem_popup.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

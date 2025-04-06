@@ -256,6 +256,7 @@
     <ClCompile Include="src\scripts\event\strong_wind.cpp" />
     <ClCompile Include="src\scripts\event\tornado.cpp" />
     <ClCompile Include="src\scripts\gem.cpp" />
+    <ClCompile Include="src\scripts\gem_popup.cpp" />
     <ClCompile Include="src\scripts\item\items.cpp" />
     <ClCompile Include="src\scripts\item\item_manager.cpp" />
     <ClCompile Include="src\scripts\item\item_slot.cpp" />
@@ -352,6 +353,7 @@
     <ClInclude Include="src\scripts\event\strong_wind.h" />
     <ClInclude Include="src\scripts\event\tornado.h" />
     <ClInclude Include="src\scripts\gem.h" />
+    <ClInclude Include="src\scripts\gem_popup.h" />
     <ClInclude Include="src\scripts\item\items.h" />
     <ClInclude Include="src\scripts\item\item_manager.h" />
     <ClInclude Include="src\scripts\item\item_slot.h" />

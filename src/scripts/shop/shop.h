@@ -30,7 +30,7 @@ public:
 	bool PayPoint(const int& cost);
 
 	// Š‹à‚ğæ“¾‚·‚é
-	int GetPoints() { return m_points; }
+	static int GetPoints() { return m_points; }
 
 	static const float BAR_SPACE;
 private:

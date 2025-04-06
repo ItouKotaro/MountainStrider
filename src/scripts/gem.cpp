@@ -54,7 +54,7 @@ void Gem::OnTriggerEnter(GameObject* other)
 {
 	if (other->GetName() == "Vehicle")
 	{
-		ShopManager::AddPoint(5);
+		ShopManager::AddPoint(POINT_VALUE);
 
 		// ‰¹‚ð–Â‚ç‚·
 		GameObject* sePlayer = new GameObject();

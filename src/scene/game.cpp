@@ -25,6 +25,7 @@
 #include "scripts/shop/shop.h"
 #include "scripts/item/item_slot.h"
 #include "scripts/speedmeter_ui.h"
+#include "scripts/gem_popup.h"
 
 #include "scripts/mode/terminal.h"
 
@@ -83,6 +84,10 @@ void CGameScene::Init()
 	m_itemSlot = new GameObject("ItemSlot", "UI");
 	m_itemSlot->AddComponent<ItemSlot>();
 	m_itemSlot->transform->SetPos(CRenderer::SCREEN_WIDTH - 400.0f, 30.0f);
+
+	// ジェムポップアップUI
+	m_gemPopupUI = new GameObject("GemPopupUI", "UI");
+	m_gemPopupUI->AddComponent<GemPopupUI>();
 
 	// イベント
 	m_events = new EventManager();

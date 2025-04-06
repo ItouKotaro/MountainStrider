@@ -76,6 +76,7 @@ private:
 	GameObject* m_statusUI;										// ステータスUI
 	GameObject* m_speedmeterUI;								// スピードメーターUI
 	GameObject* m_itemSlot;										// アイテムスロット
+	GameObject* m_gemPopupUI;								// ジェムポップアップUI
 
 	ResultBase* m_oldResult;										// 過去のリザルト
 	ResultBase::ResultData m_resultData;					// リザルトデータ

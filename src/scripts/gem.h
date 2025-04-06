@@ -20,6 +20,7 @@ private:
 
 	static AudioClip m_pickupSE;
 	const float RENDER_DISTANCE = 1500.0f;
+	const int POINT_VALUE = 2;
 };
 
 #endif // !_GEM_H_
