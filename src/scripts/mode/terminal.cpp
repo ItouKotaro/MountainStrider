@@ -79,12 +79,6 @@ void TerminalMode::Update()
 		return;
 	}
 
-	if (INPUT_INSTANCE->onTrigger("@"))
-	{
-		ModeManager::GetInstance()->SetResult(new ClearTerminalResult());
-		return;
-	}
-
 	// 方向矢印の目的位置を更新する
 	m_directionObj->GetComponent<DirectionArrow>()->SetDestination(CalcNearGoal());
 }
