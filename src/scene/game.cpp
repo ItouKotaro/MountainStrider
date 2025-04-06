@@ -331,6 +331,9 @@ void CGameScene::HideUI()
 	// アイテムスロットを非表示にする
 	m_itemSlot->SetActive(false);
 
+	// ジェムポップアップUIを非表示にする
+	m_gemPopupUI->SetActive(false);
+
 	// プレイガイドを非表示にする
 	if (m_playGuide != nullptr)
 	{
