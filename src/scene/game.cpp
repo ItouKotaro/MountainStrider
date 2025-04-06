@@ -26,6 +26,8 @@
 #include "scripts/item/item_slot.h"
 #include "scripts/speedmeter_ui.h"
 
+#include "scripts/mode/terminal.h"
+
 #include "render/shadow_rb.h"
 #include <noise/noise.h>
 
@@ -87,11 +89,11 @@ void CGameScene::Init()
 	m_events->Init();
 
 	// プレイガイド
-	//if (ResultBase::GetNumOfStep() == 0)
-	//{
-	//	m_playGuide = new PlayGuideManager();
-	//	m_playGuide->Init();
-	//}
+	if (static_cast<TerminalMode*>(ModeManager::GetInstance()->GetMode())->GetResultData().size() == 0)
+	{
+		m_playGuide = new PlayGuideManager();
+		m_playGuide->Init();
+	}
 
 	// カメラの移動設定を行う
 	m_camera->AddComponent<CCameraMove>()->SetTarget(m_bike);
@@ -156,12 +158,12 @@ void CGameScene::Uninit()
 	}
 
 	// プレイガイドの破棄
-	//if (m_playGuide != nullptr)
-	//{
-	//	m_playGuide->Uninit();
-	//	delete m_playGuide;
-	//	m_playGuide = nullptr;
-	//}
+	if (m_playGuide != nullptr)
+	{
+		m_playGuide->Uninit();
+		delete m_playGuide;
+		m_playGuide = nullptr;
+	}
 
 	// モードの終了
 	ModeManager::GetInstance()->Uninit();
@@ -203,10 +205,10 @@ void CGameScene::Update()
 	m_environmental->Update();
 
 	// プレイガイドを更新する
-	//if (m_playGuide != nullptr)
-	//{
-	//	m_playGuide->Update();
-	//}
+	if (m_playGuide != nullptr)
+	{
+		m_playGuide->Update();
+	}
 
 	// リザルトでは更新しないオブジェクト
 	if (ModeManager::GetInstance()->GetResult() == nullptr)
@@ -301,9 +303,6 @@ void CGameScene::ResetGame()
 	// バイクの燃料と耐久値を回復させる
 	CVehicle::ResetState();
 
-	//// リザルトデータのリセット
-	//ResultBase::Reset();
-
 	// ショップ情報のリセット
 	ShopManager::Reset();
 
@@ -328,12 +327,12 @@ void CGameScene::HideUI()
 	m_itemSlot->SetActive(false);
 
 	// プレイガイドを非表示にする
-	//if (m_playGuide != nullptr)
-	//{
-	//	m_playGuide->Uninit();
-	//	delete m_playGuide;
-	//	m_playGuide = nullptr;
-	//}
+	if (m_playGuide != nullptr)
+	{
+		m_playGuide->Uninit();
+		delete m_playGuide;
+		m_playGuide = nullptr;
+	}
 }
 
 //=============================================================

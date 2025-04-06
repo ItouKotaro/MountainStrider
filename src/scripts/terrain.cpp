@@ -23,8 +23,6 @@ using namespace noise;
 
 // 静的メンバ変数の初期化
 const float Terrain::TERRAIN_DEFAULT_SCALE = 150.0f;
-//const float Terrain::TERRAIN_DISTANCE = 5.0f/*Terrain::TERRAIN_SIZE * Terrain::TERRAIN_SCALE*/;
-//const float Terrain::TERRAIN_DISTANCE_HALF = 2.0f/*Terrain::TERRAIN_DISTANCE / (float)2.0f*/;
 
 //=============================================================
 // [Terrain] 初期化
@@ -129,10 +127,10 @@ void Terrain::Generate()
 	m_field->GetComponent<Road>()->Generate();
 
 	// ジェムの生成
-	//for (int i = 0; i < m_gemNum; i++)
-	//{
-	//	GenerateGem();
-	//}
+	for (int i = 0; i < m_gemNum; i++)
+	{
+		GenerateGem();
+	}
 }
 
 //=============================================================
@@ -505,8 +503,8 @@ void Terrain::GenerateRoad()
 		}
 	}
 
-	// 生成する
-	pRoad->OutputText();
+	// テキストに出力する
+	//pRoad->OutputText();
 }
 
 //=============================================================
